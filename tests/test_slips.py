@@ -418,7 +418,7 @@ def test_weekly_presets_and_grading_end_to_end():
     names = {s["name"] for s in slips}
     assert "Serie A" in names and "Top 5 leagues" in names
     for s in slips:
-        assert s["odds"] >= s["target"] and len(s["picks"]) == s["legs"] == 10
+        assert s["odds"] >= s["target"] and len(s["picks"]) == s["legs"] and 1 <= s["legs"] <= 25   # the number of legs is free
         assert all(p["odds"] >= 1.25 for p in s["picks"])
         assert 0 < s["chance"] < 0.2
     week = {"built_at": now.isoformat(), "slips": slips}
@@ -727,11 +727,18 @@ def test_window_runs_to_the_next_tuesday_or_friday_morning():
     assert window_end(datetime(2026, 10, 13, 9, 0, tzinfo=utc)) == datetime(2026, 10, 16, 6, 0, tzinfo=utc)   # Tuesday -> Friday
     assert window_end(datetime(2026, 9, 23, 9, 0, tzinfo=utc)) == datetime(2026, 9, 25, 6, 0, tzinfo=utc)     # Wednesday -> Friday
     assert window_end(datetime(2026, 10, 15, 20, 0, tzinfo=utc)) == datetime(2026, 10, 20, 6, 0, tzinfo=utc)  # Thursday night -> Tuesday
-    from tools.weekly import core_end
-    fri = datetime(2026, 10, 9, 9, 0, tzinfo=utc)
-    assert core_end(fri, window_end(fri)) == fri + timedelta(days=6)                                         # weekend pull: core sees the UCL nights
-    tue = datetime(2026, 10, 13, 9, 0, tzinfo=utc)
-    assert core_end(tue, window_end(tue)) == window_end(tue)
+    from scudi_slips.comps import BY_NAME
+    from tools.weekly import comp_end, first_pull
+    fri, tue = datetime(2026, 10, 9, 9, 0, tzinfo=utc), datetime(2026, 10, 13, 9, 0, tzinfo=utc)
+    sa, sb, nl = BY_NAME["Serie A"], BY_NAME["Serie B"], BY_NAME["Nations League"]
+    assert comp_end(sa, tue, window_end(tue)) == tue + timedelta(days=8)          # big leagues: 8 days ahead at every pull
+    assert comp_end(nl, tue, window_end(tue)) == tue + timedelta(days=8)
+    assert comp_end(sb, tue, window_end(tue)) == window_end(tue)                  # others on Tuesday: to Friday morning
+    assert comp_end(sb, fri, window_end(fri)) == fri + timedelta(days=8)          # everyone on Friday
+    wed = datetime(2026, 9, 23, 9, 0, tzinfo=utc)
+    assert first_pull(datetime(2026, 10, 10, 13, 0, tzinfo=utc), sa, wed) == datetime(2026, 10, 6, 9, 0, tzinfo=utc)   # Serie A Sat 10 Oct: Tuesday 6 Oct
+    assert first_pull(datetime(2026, 10, 10, 13, 0, tzinfo=utc), sb, wed) == datetime(2026, 10, 9, 9, 0, tzinfo=utc)   # Serie B: that Friday
+    assert first_pull(datetime(2026, 10, 14, 13, 0, tzinfo=utc), sb, wed) == datetime(2026, 10, 9, 9, 0, tzinfo=utc)   # its Wednesday game: same Friday
     assert days_to_reset(datetime(2026, 9, 22, 9, 0, tzinfo=utc)) == 9 and days_to_reset(datetime(2026, 12, 31, 23, 0, tzinfo=utc)) == 1
 
 
@@ -745,6 +752,10 @@ class _FakeFeed:
 
     def __call__(self, path, params):
         self.calls.append((path, dict(params)))
+        if path.endswith("/events"):                     # the fixture list: free
+            name = self.by_key.get(path.split("/")[1])
+            lo, hi = params["commenceTimeFrom"], params["commenceTimeTo"]
+            return [{k: v for k, v in e.items() if k != "bookmakers"} for e in self.events.get(name, []) if lo <= e["commence_time"] <= hi], {}
         if path == "":
             return [{"key": k, "active": True, "has_outrights": False, "title": n} for n, k in self.active.items()], {"x-requests-remaining": str(self.remaining)}
         key = path.split("/")[1]
@@ -779,13 +790,21 @@ def test_full_pull_spends_only_on_competitions_with_matches_in_the_window(tmp_pa
     out, hist = tmp_path / "week.json", tmp_path / "history.json"
     assert main(["--out", str(out), "--history", str(hist), "--mode", "auto", "--now", "2026-09-23T09:00:00Z"], get=fake) == 0   # empty store: full
     w = json.loads(out.read_text())
-    called = [p for p, _ in fake.calls if p]
-    assert len(called) == len(active)                               # one call per competition in season, La Liga (not active) never called
-    assert all(q["commenceTimeTo"] == "2026-09-25T06:00:00Z" for p, q in fake.calls if p)
+    called = [p for p, _ in fake.calls if p.endswith("/odds")]
+    assert len(called) == len(active)                               # one odds call per competition in season, La Liga (not active) never called
+    ends = {p.split("/")[1]: q["commenceTimeTo"] for p, q in fake.calls if p.endswith("/odds")}
+    assert ends["soccer_uefa_nations_league"] == ends["soccer_italy_serie_a"] == "2026-10-01T09:00:00Z"   # 8 days for the big ones
+    assert ends["soccer_italy_serie_b"] == "2026-09-25T06:00:00Z"                                          # the rest: to Friday
+    fx = {f["competition"]: f for f in w["fixtures"]}
+    assert {"Serie A", "Serie B", "League One"} <= set(fx)          # every later match is listed, free of charge
+    assert fx["Serie A"]["priced_from"] == "2026-10-06T09:00:00+00:00" and fx["Serie B"]["priced_from"] == "2026-09-25T09:00:00+00:00"
+    assert all(f["priced_from"] is None for f in w["fixtures"] if f["competition"] == "Nations League")   # in the window but held back by the guards
     spent = {p["name"]: p["credits"] for p in w["pulled"]}
     assert spent["Nations League"] == 2 and spent["Serie A"] == 0 and spent["Serie B"] == 0 and spent["International Friendlies"] == 0
     assert {m["competition"] for m in w["matches"]} == {"Nations League"} and len(w["matches"]) == w["guard"]["kept"] >= 6
-    assert w["credits"]["remaining"] == "398" and w["competitions"][0]["group"] == "national" and w["competitions"][0]["espn"] == "uefa.nations"
+    comp = {c["name"]: c for c in w["competitions"]}
+    assert w["credits"]["remaining"] == "398" and comp["Nations League"]["group"] == "national" and comp["Nations League"]["espn"] == "uefa.nations"
+    assert [c["name"] for c in w["competitions"]][:2] == ["Serie A", "Nations League"]      # listed in the site's order, fixtures included
     assert {s["name"] for s in w["slips"]} == {"National teams"}      # one competition: no "All competitions" copy of it
     order = [p["name"] for p in w["pulled"]]
     assert order.index("Serie A") < order.index("Nations League") < order.index("Serie B") < order.index("League One")
@@ -904,3 +923,92 @@ def test_light_team_data_for_other_leagues_uses_only_rosters_and_schedules():
     assert pal["form"] == "WL" and pal["avg"]["record"] == "1-0-1" and "photo" not in pal["players"][0] and not pal.get("full")
     again, _p, _b = build(replay_fetch(rec), ["Serie B"], teams, players, now)                          # rebuilt, never counted twice
     assert again["tables"]["Serie B"] == table
+
+
+# ---------- v10.1: any number of legs, exactly optimal (decision 75) ----------
+
+def _brute_any(menus, need, must=None, groups=None, mins=None):
+    best = None
+    n = len(menus)
+
+    def rec(i, picks, idx):
+        nonlocal best
+        if i == n:
+            if not picks or (must and any(f and j not in idx for j, f in enumerate(must))):
+                return
+            if mins and any(sum(groups[j] == g for j in idx) < lo for g, lo in mins.items()):
+                return
+            ch, od = math.prod(p.chance for p in picks), math.prod(p.odds for p in picks)
+            if od >= need(len(picks)) and (best is None or ch > best[0]):
+                best = (ch, od, len(picks))
+            return
+        rec(i + 1, picks, idx)
+        for p in menus[i]:
+            rec(i + 1, [*picks, p], [*idx, i])
+    rec(0, [], [])
+    return best
+
+
+def test_free_number_of_legs_is_exactly_optimal_against_brute_force():
+    rng = random.Random(21)
+    for case in range(120):
+        menus = _random_menus(rng, 5 + case % 2)
+        target = [1.5, 2, 3, 5, 8, 15, 30][case % 7]
+        bonus = case % 3 == 0
+        need = (lambda k, t=target: t / (1 + snai_bonus_n(k))) if bonus else (lambda k, t=target: t)
+        must = [i == 1 for i in range(len(menus))] if case % 5 == 0 else None
+        groups = [i % 2 for i in range(len(menus))] if case % 4 == 0 else None
+        mins = {0: 2} if groups else None
+        slip = solve(menus, target, grid=0.004, auto_legs=True, row_target=need if bonus else None, must_use=must, groups=groups,
+                     group_limits={0: (2, None)} if groups else None)
+        best = _brute_any(menus, need, must, groups, mins)
+        if best is None:
+            assert slip is None
+            continue
+        assert slip is not None and slip.odds >= need(len(slip.picks)) * (1 - 1e-12)
+        assert slip.chance == pytest.approx(best[0], rel=1e-9), (case, slip, best)
+
+
+def snai_bonus_n(k):
+    return 1.035 ** (min(k, 30) - 4) - 1 if k >= 5 else 0.0
+
+
+def test_fixed_legs_are_now_exact_too_even_on_a_coarse_grid():
+    rng = random.Random(8)
+    for _ in range(40):
+        menus = _random_menus(rng, 6)
+        target = rng.uniform(3, 30)
+        legs = rng.randint(2, 5)
+        slip = solve(menus, target, legs=legs, grid=0.01)
+        best = _brute_any(menus, lambda k, t=target, L=legs: t if k == L else float("inf"))
+        if best is None:
+            assert slip is None
+        else:
+            assert slip is not None and slip.odds >= target and slip.chance == pytest.approx(best[0], rel=1e-9)
+
+
+def test_presets_choose_their_own_number_of_legs():
+    rng = random.Random(3)
+    now = datetime(2026, 10, 9, 10, 0, tzinfo=timezone.utc)
+    matches, _ = price_feed(_synthetic_feed(rng), now, now + timedelta(days=5))
+    slips = preset_slips(matches, now)
+    assert slips and all(s["legs"] == len(s["picks"]) and s["odds"] >= s["target"] for s in slips)
+    assert len({s["legs"] for s in slips}) >= 1 and all(1 <= s["legs"] <= 25 for s in slips)
+
+
+def test_a_priced_match_the_next_pull_does_not_cover_keeps_its_prices(tmp_path):
+    from scudi_slips.comps import BY_NAME
+    from tools.weekly import main
+
+    feed = _synthetic_feed(random.Random(9), n=4, comp="Serie B", day="2026-10-16")    # a Friday-night round, a week ahead
+    active = {"Serie B": BY_NAME["Serie B"].odds}
+    out, hist = tmp_path / "week.json", tmp_path / "history.json"
+    assert main(["--out", str(out), "--history", str(hist), "--mode", "full", "--now", "2026-10-09T09:00:00Z"], get=_FakeFeed(feed, active)) == 0
+    fri = json.loads(out.read_text())
+    assert fri["matches"] and all(m["priced_at"].startswith("2026-10-09") for m in fri["matches"])
+    fake = _FakeFeed(feed, active)
+    assert main(["--out", str(out), "--history", str(hist), "--mode", "full", "--now", "2026-10-13T09:00:00Z"], get=fake) == 0   # Tuesday
+    tue = json.loads(out.read_text())
+    assert {m["id"] for m in tue["matches"]} == {m["id"] for m in fri["matches"]}          # kept, not dropped
+    assert all(m["priced_at"].startswith("2026-10-09") for m in tue["matches"])            # with the day their prices are from
+    assert next(p for p in fake.calls if p[0].endswith("/odds"))[1]["commenceTimeTo"] == "2026-10-16T06:00:00Z"   # and no credit spent on them

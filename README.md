@@ -27,13 +27,15 @@ national teams (Nations League, World Cup and Euro qualifiers, World Cup, Euro, 
 lists); Europa and Conference League; Serie B, Championship, League One, La Liga 2, 2. Bundesliga, Ligue 2; and the top
 flights of the Netherlands, Portugal, Belgium, Turkey, Scotland, Austria, Switzerland, Denmark, Sweden, Norway and
 Greece. Not available: Ukraine (not in the free feed) and Poland (no free team data or scores).
-How the credits last: a full pull covers kickoffs up to the next Tuesday or Friday 06:00 UTC (the Friday pull looks six
-days ahead for the big leagues and the Champions League, so the Champions League nights show from Friday), asks the feed only for
-competitions in season (the list is free) and only for matches in that window (a call that returns nothing is free),
-so a competition costs 2 credits only when it has a match that week. Core and national-team competitions are always
-pulled; the others only while the credits left cover about 7 a day to the monthly reset. A typical month is about
-350-400 credits; each pull records what it spent and skipped in `data/week.json`, and the site shows the credits left. SNAI is not in any feed: its prices are typed by hand, either into the
-site (remembered in the browser) or into `data/snai.json` (key = date, home, away; codes 1 X 2 1X X2 12 O25 U25
+How the credits last (decision 75): the big leagues, the Champions League and national teams are priced 8 days ahead at
+every full pull (Tuesday and Friday); on Friday every competition is priced 8 days ahead; on Tuesday the others are priced to
+Friday morning. The feed is asked only for competitions in season (the list is free) and only for matches in that window
+(a call that returns nothing is free), so a competition costs 2 credits only when it has a match in the window. A priced
+match that the next pull does not cover keeps its last prices. Every later match of the next 21 days is listed anyway,
+from the feed's free events list, with the day its prices will arrive (the site's "Coming up" panel). Core and
+national-team competitions are always pulled; the others only while the credits left cover about 7 a day to the monthly
+reset. A typical month is about 400-430 credits; each pull records what it spent and skipped in `data/week.json`, and
+the site shows the credits left. SNAI is not in any feed: its prices are typed by hand, either into the site (remembered in the browser) or into `data/snai.json` (key = date, home, away; codes 1 X 2 1X X2 12 O25 U25
 GG NG, plus O15 U35 when read). The site shows feed chances at SNAI's prices wherever the two meet.
 
 Team and player data come from ESPN's public site API through `tools/teams.py` (full depth for the big leagues and the
@@ -65,7 +67,7 @@ Not available from any free source, so not shown: heatmaps, preferred foot, mark
 
 ```
 pip install numpy scipy pandas pytest ruff
-pytest -q            # 83 tests
+pytest -q            # 87 tests
 python3 -m tools.weekly --from-file tests/feed_week_sample.json --now 2026-10-09T09:00:00Z   # no key needed
 ODDS_API_KEY=... python3 -m tools.weekly                                                       # the real thing
 python3 tools/snai.py    # SNAI's margins and the slips at SNAI's typed prices -> results/snai_<date>.json
@@ -95,7 +97,9 @@ committed). Their results are in `results/`. The go-live exam and its pre-regist
 - `scudi_slips/sistema.py` — the exact sistema maths the site mirrors (tests compare the two).
 - `index.html` — the site; it reads `data/week.json`, `data/record.json`, `data/snai.json`, `data/teams.json` and
   `data/players.json` and falls back to example fixtures. Target multiplier from 1.5x to 1000x (by 0.5 to 5, by 5 to
-  50, by 10 to 100, by 100 to 1000; under 5x the number of matches follows the target), 1 to 25 matches on a slip,
+  50, by 10 to 100, by 100 to 1000), the number of matches chosen by the optimiser (Auto, any number from 1 to 25; the
+  exact best slip for the target, checked against brute force) or fixed by hand, country flags for national teams and
+  leagues, a "Coming up" list of later fixtures,
   competitions grouped (big leagues, national teams, European cups, second divisions, more of Europe), a National
   teams slip when national teams play, English or Italian (the EN/IT switch in the header; remembered per browser); a match opens on an animated pitch with the last line-ups,
   season averages and style tags; players open with their bio and transfer history; teams with results and squad.

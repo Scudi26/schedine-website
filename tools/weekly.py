@@ -11,10 +11,11 @@ Modes (decisions 73, 74):
         their upcoming matches get fresher prices, the rest is kept as it was. Nothing due = no call, no credit spent.
   auto  full on Friday and Tuesday (UTC) or while the stored week is empty (an international break), late otherwise.
 
-The window: a full pull covers kickoffs up to the next Tuesday or Friday 06:00 UTC at least 12 hours away (Friday's
-pull covers the weekend and Monday, Tuesday's the midweek), so no match is paid for twice in the same week. One
-exception: the weekend pull looks six days ahead for the core competitions, so the Champions League nights (and any
-midweek round of the big leagues) show from Friday, as before.
+The window (decision 75): the big leagues, the Champions League and national teams are priced 8 days ahead at every
+full pull; on the Friday pull every competition is priced 8 days ahead; on the Tuesday pull the other competitions are
+priced to Friday 06:00 (their weekend comes with Friday's pull). A priced match that the next pull does not cover keeps
+its last prices ("priced_at" says when). Beyond the priced window, the fixtures of the next 21 days come from the feed's
+events list, which is free, with the date their prices will arrive ("priced_from"), so every upcoming match is visible.
 
 Credits (free plan, 500 a month): one odds call = 2 credits (h2h + totals, one region), and only when it returns a match
 in the window: the calls carry commenceTimeFrom/commenceTimeTo, and the feed does not charge a call that returns
@@ -83,6 +84,8 @@ def replay_get(events: dict[str, list], now: datetime):
         lo, hi = params.get("commenceTimeFrom"), params.get("commenceTimeTo")
         if lo and hi:
             evs = [e for e in evs if lo <= e["commence_time"].replace("+00:00", "Z") <= hi]
+        if path.endswith("/events"):
+            evs = [{k: v for k, v in e.items() if k != "bookmakers"} for e in evs]
         return evs, {}
     return get
 
@@ -139,18 +142,35 @@ def in_season(get, names: list[str] | None) -> tuple[list[Comp], dict, str | Non
     return ordered(comps), headers, None
 
 
-def core_end(now: datetime, end: datetime) -> datetime:
-    """The weekend pull (window ending on a Tuesday) looks six days ahead for the core competitions."""
-    return max(end, now + timedelta(days=6)) if end.weekday() == 1 else end
+LOOK_AHEAD = timedelta(days=8)
+FIXTURE_DAYS = 21
 
 
-def pull(get, comps: list[Comp], now: datetime, end: datetime, remaining: int | None, end_core: datetime | None = None) -> dict:
+def comp_end(c: Comp, now: datetime, boundary: datetime) -> datetime:
+    """How far a full pull prices a competition: 8 days for the big leagues and national teams, and for every competition
+    on the weekend pull (the one whose boundary is a Tuesday); otherwise up to the boundary."""
+    return now + LOOK_AHEAD if c.group in ALWAYS or boundary.weekday() == 1 else boundary
+
+
+def first_pull(kickoff: datetime, c: Comp, now: datetime) -> datetime:
+    """The first scheduled full pull (Tuesday or Friday, 09:00 UTC) whose window prices this kickoff."""
+    t = now.replace(hour=9, minute=0, second=0, microsecond=0)
+    for _ in range(40):
+        if t >= now and t.weekday() in (1, 4) and kickoff <= comp_end(c, t, window_end(t)):
+            return t
+        t += timedelta(days=1)
+    return kickoff
+
+
+def pull(get, comps: list[Comp], now: datetime, end, remaining: int | None) -> dict:
     """One odds call per competition, cheapest-first order already applied; stops spending on the optional groups when
-    the credits left no longer cover the reserve. Returns events, what was spent and skipped, and the last headers."""
+    the credits left no longer cover the reserve. `end` is a datetime or a function of the competition.
+    Returns events, what was spent and skipped, and the last headers."""
+    end_for = end if callable(end) else (lambda c: end)
     events, pulled, skipped, errors, meta = {}, [], {}, [], {}
     base = {"regions": "eu", "markets": "h2h,totals", "oddsFormat": "decimal", "dateFormat": "iso", "commenceTimeFrom": iso(now)}
     for c in comps:
-        params = dict(base, commenceTimeTo=iso(end_core if end_core and c.group == "core" else end))
+        params = dict(base, commenceTimeTo=iso(end_for(c)))
         if not affordable(c, remaining, now):
             skipped[c.name] = "saving credits for the big leagues" if remaining is None or remaining >= COST else "no credits left"
             continue
@@ -177,6 +197,44 @@ def sort_names(names, extra: list[Comp] | None = None) -> list[str]:
     known = {c.name: c for c in (extra or [])}
     known.update(BY_NAME)
     return [c.name for c in ordered([known.get(n) or Comp(n, "", None, "national", "") for n in names])]
+
+
+def fixtures(get, comps: list[Comp], now: datetime, priced: set[str], days: int = FIXTURE_DAYS, covered=None) -> tuple[list[dict], list[str]]:
+    """Upcoming fixtures from the feed's events list (free: it never counts against the quota), minus the matches already
+    priced, each with the date of the pull that will price it (None: this pull covered it but the guards held it back,
+    usually too few bookmakers so far)."""
+    out, errors = [], []
+    params = {"dateFormat": "iso", "commenceTimeFrom": iso(now), "commenceTimeTo": iso(now + timedelta(days=days))}
+    for c in comps:
+        try:
+            evs, _h = get(f"/{c.odds}/events", params)
+        except Exception as e:  # a missing list only means fewer fixtures shown
+            errors.append(f"{c.name} fixtures: {e}")
+            continue
+        for ev in evs or []:
+            if ev.get("id") in priced:
+                continue
+            ko = datetime.fromisoformat(str(ev["commence_time"]).replace("Z", "+00:00"))
+            if ko <= now:
+                continue
+            held = covered is not None and covered(c, ko)
+            out.append({"id": ev["id"], "competition": c.name, "kickoff": ko.isoformat(), "home": ev.get("home_team"), "away": ev.get("away_team"),
+                        "priced_from": None if held else first_pull(ko, c, now).isoformat()})
+    out.sort(key=lambda f: (f["kickoff"], f["competition"], f["home"] or ""))
+    return out, errors
+
+
+def keep_unpulled(old: dict, fresh: list[dict], covered, now: datetime) -> list[dict]:
+    """Priced matches of the replaced file that this pull did not cover (later than its window for that competition, or a
+    competition it skipped): they keep their last prices until a pull covers them."""
+    ids = {m["id"] for m in fresh}
+    keep = []
+    for m in old.get("matches", []):
+        ko = datetime.fromisoformat(m["kickoff"])
+        if ko <= now or m["id"] in ids or covered(m["competition"], ko):
+            continue
+        keep.append(dict(m, priced_at=m.get("priced_at") or old.get("built_at")))
+    return keep
 
 
 def comp_info(names: list[str], extra: list[Comp] | None = None, old: list[dict] | None = None) -> list[dict]:
@@ -212,15 +270,15 @@ def preset_slips(matches, now: datetime) -> list[dict]:
         presets.append(("All competitions", list(matches), 10))
     out = []
     for name, pool, legs in presets:
-        legs = min(legs, len(pool))
-        if legs < 5:
+        if min(legs, len(pool)) < 5:
             continue
         menus = [[Pick(m.id, c, m.chances[c], m.estimate[c]) for c in m.estimate if c in SLIP_MENU and c in m.chances and m.estimate[c] >= MIN_ODDS] for m in pool]
         for t in TARGETS:
-            slip = solve(menus, t, legs=legs, grid=0.001 if len(pool) <= 12 else 0.002)
+            # the number of legs is free, as on the site: the likeliest slip that reaches the target (decision 75)
+            slip = solve(menus, t, grid=0.001 if len(pool) <= 12 else 0.002, auto_legs=True)
             if slip is None:
                 continue
-            out.append({"name": name, "target": t, "legs": legs, "built_at": now.isoformat(), "chance": slip.chance, "odds": slip.odds,
+            out.append({"name": name, "target": t, "legs": len(slip.picks), "built_at": now.isoformat(), "chance": slip.chance, "odds": slip.odds,
                         "bonus": snai_bonus([p.odds for p in slip.picks]),
                         "picks": [{"match": p.match_id, "code": p.code, "chance": p.chance, "odds": p.odds} for p in slip.picks]})
     return out
@@ -344,17 +402,23 @@ def main(argv=None, get=None):
         if note:
             notes.append(note)
         remaining = _int(headers.get("x-requests-remaining"))
-        end = now + timedelta(days=a.window_days) if a.window_days else window_end(now)
         extra = [c for c in comps if c.name not in BY_NAME]
-    wide = core_end(now, end) if mode == "full" and not a.window_days else end
-    got = pull(get, comps, now, end, remaining, wide)
-    end = max(end, wide)
+    if mode == "late":
+        end_for = lambda c: end
+    elif a.window_days:
+        fixed = now + timedelta(days=a.window_days)
+        end_for = lambda c: fixed
+    else:
+        boundary = window_end(now)
+        end_for = lambda c: comp_end(c, now, boundary)
+    got = pull(get, comps, now, end_for, remaining)
+    end = max([end_for(c) for c in comps] or [now])
     notes += got["errors"]
     if not got["events"] and got["errors"]:
         print("nothing could be pulled; the site keeps its current data:\n  " + "\n  ".join(notes))
         return 1
     matches, guard = price_feed(got["events"], now, end, need_sharp=a.need_sharp)
-    fresh = [match_record(m) for m in matches]
+    fresh = [dict(match_record(m), priced_at=now.isoformat()) for m in matches]
     meta = got["meta"] or (old.get("credits", {}) if mode == "late" else {})
     if mode == "late":
         data = merge_late(old, fresh, [c.name for c in comps], now)
@@ -363,14 +427,22 @@ def main(argv=None, get=None):
         note = f"late pull of {', '.join(c.name for c in comps)}: {len(fresh)} upcoming matches refreshed, preset slips unchanged"
     else:
         slips = preset_slips(matches, now)
-        names = sort_names({m["competition"] for m in fresh}, extra)
+        pulled_ok = {p["name"] for p in got["pulled"]}
+        by_name = {c.name: c for c in comps}
+        kept = keep_unpulled(old, fresh, lambda n, ko: n in pulled_ok and n in by_name and ko <= end_for(by_name[n]), now)
+        fx, fx_errors = fixtures(get, comps, now, {m["id"] for m in fresh + kept}, covered=lambda c, ko: c.name in pulled_ok and ko <= end_for(c))
+        notes += fx_errors
+        all_matches = sorted(fresh + kept, key=lambda m: (m["kickoff"], m["competition"], m["home"]))
+        names = sort_names({m["competition"] for m in all_matches} | {f["competition"] for f in fx}, extra)
         data = {"built_at": now.isoformat(), "window_end": end.isoformat(), "window_days": round((end - now).total_seconds() / 86400, 2),
                 "credits": meta, "guard": guard.__dict__, "competitions": comp_info(names, extra, old.get("competitions")),
-                "pulled": got["pulled"], "skipped": got["skipped"], "notes": notes, "matches": fresh, "slips": slips,
-                "pending": carry_pending(old, now)}
-        note = f"{guard.kept} matches priced in {len(names)} competitions, {len(slips)} preset slips built"
+                "pulled": got["pulled"], "skipped": got["skipped"], "notes": notes, "matches": all_matches, "slips": slips,
+                "fixtures": fx, "pending": carry_pending(old, now)}
+        note = f"{guard.kept} matches priced ({len(kept)} kept from the last pull), {len(fx)} more fixtures listed, {len(slips)} preset slips built"
     if mode == "late":
-        data["competitions"] = comp_info(sort_names({m["competition"] for m in data.get("matches", [])}, extra), extra, old.get("competitions"))
+        data["fixtures"] = [f for f in old.get("fixtures", []) if datetime.fromisoformat(f["kickoff"]) > now]
+        seen = {m["competition"] for m in data.get("matches", [])} | {f["competition"] for f in data["fixtures"]}
+        data["competitions"] = comp_info(sort_names(seen, extra), extra, old.get("competitions"))
     history = json.loads(hist_path.read_text()) if hist_path.exists() else {}
     history = add_snapshots(history, fresh, now)
     out.parent.mkdir(parents=True, exist_ok=True)
