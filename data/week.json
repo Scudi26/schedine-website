@@ -1,21 +1,876 @@
 {
- "built_at": "2026-09-22T14:53:28.338382+00:00",
- "window_days": 6.0,
+ "built_at": "2026-09-22T16:01:52.668482+00:00",
+ "window_end": "2026-09-25T06:00:00+00:00",
+ "window_days": 2.58,
  "credits": {
-  "remaining": "476",
-  "used": "24"
+  "remaining": "474",
+  "used": "26"
  },
  "guard": {
-  "kept": 0,
+  "kept": 8,
   "started": 0,
-  "outside_window": 114,
+  "outside_window": 0,
   "too_few_books": 0,
   "no_sharp": 0,
   "bad_fit": 0,
   "no_totals": 0,
-  "books_dropped": 0,
+  "books_dropped": 2,
   "notes": []
  },
- "matches": [],
- "slips": []
+ "competitions": [
+  {
+   "name": "Nations League",
+   "group": "national",
+   "country": "Europe",
+   "espn": "uefa.nations",
+   "odds": "soccer_uefa_nations_league"
+  }
+ ],
+ "pulled": [
+  {
+   "name": "Serie A",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Premier League",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "La Liga",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Bundesliga",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Ligue 1",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Champions League",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Nations League",
+   "matches": 8,
+   "credits": 2
+  },
+  {
+   "name": "Europa League",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Conference League",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Serie B",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Championship",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "League One",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "La Liga 2",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "2. Bundesliga",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Ligue 2",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Eredivisie",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Primeira Liga",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Belgian Pro League",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Süper Lig",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Scottish Premiership",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Austrian Bundesliga",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Swiss Super League",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Danish Superliga",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Allsvenskan",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Eliteserien",
+   "matches": 0,
+   "credits": 0
+  },
+  {
+   "name": "Greek Super League",
+   "matches": 0,
+   "credits": 0
+  }
+ ],
+ "skipped": {},
+ "notes": [],
+ "matches": [
+  {
+   "id": "8164f21d418a879733dd141cab8dfb14",
+   "competition": "Nations League",
+   "kickoff": "2026-09-24T16:00:00+00:00",
+   "home": "Andorra",
+   "away": "Malta",
+   "chances": {
+    "U25": 0.70207,
+    "2": 0.40348,
+    "1X": 0.59652,
+    "O15": 0.58263,
+    "U35": 0.87366,
+    "X": 0.34246,
+    "X2": 0.74594,
+    "12": 0.65754,
+    "O25": 0.29793,
+    "GG": 0.39957,
+    "1": 0.25406
+   },
+   "estimate": {
+    "1": 3.55,
+    "X": 2.72,
+    "2": 2.32,
+    "O25": 2.92,
+    "U25": 1.37,
+    "1X": 1.54,
+    "X2": 1.25,
+    "12": 1.4,
+    "O15": 1.58,
+    "U35": 1.05,
+    "GG": 2.3
+   },
+   "best": {
+    "1": [
+     "betfair_ex_eu",
+     4.0
+    ],
+    "X": [
+     "betfair_ex_eu",
+     2.88
+    ],
+    "2": [
+     "betfair_ex_eu",
+     2.46
+    ],
+    "O25": [
+     "betsson",
+     2.92
+    ],
+    "U25": [
+     "betsson",
+     1.37
+    ]
+   },
+   "books_used": 10,
+   "sharp_share": 0.182,
+   "lh": 0.8126,
+   "la": 1.0935
+  },
+  {
+   "id": "4f880a226d6ab27f137ec39da877e68c",
+   "competition": "Nations League",
+   "kickoff": "2026-09-24T18:45:00+00:00",
+   "home": "Austria",
+   "away": "Israel",
+   "chances": {
+    "U25": 0.36388,
+    "2": 0.12513,
+    "1X": 0.87487,
+    "O15": 0.84285,
+    "U35": 0.58525,
+    "X": 0.18403,
+    "X2": 0.30916,
+    "12": 0.81597,
+    "O25": 0.63612,
+    "GG": 0.56285,
+    "1": 0.69084
+   },
+   "estimate": {
+    "1": 1.395,
+    "X": 4.824999999999999,
+    "2": 6.9,
+    "O25": 1.51,
+    "U25": 2.465,
+    "1X": 1.08,
+    "X2": 2.83,
+    "12": 1.16,
+    "O15": 1.1,
+    "U35": 1.58,
+    "GG": 1.64
+   },
+   "best": {
+    "1": [
+     "betfair_ex_eu",
+     1.48
+    ],
+    "X": [
+     "betfair_ex_eu",
+     5.0
+    ],
+    "2": [
+     "betfair_ex_eu",
+     7.6
+    ],
+    "O25": [
+     "betsson",
+     1.52
+    ],
+    "U25": [
+     "betsson",
+     2.48
+    ]
+   },
+   "books_used": 11,
+   "sharp_share": 0.167,
+   "lh": 2.3611,
+   "la": 0.9171
+  },
+  {
+   "id": "153ad245de40be77011a5ffff62e0302",
+   "competition": "Nations League",
+   "kickoff": "2026-09-24T18:45:00+00:00",
+   "home": "Kosovo",
+   "away": "Republic of Ireland",
+   "chances": {
+    "U25": 0.60272,
+    "2": 0.30331,
+    "1X": 0.69669,
+    "O15": 0.67217,
+    "U35": 0.80444,
+    "X": 0.3017,
+    "X2": 0.60501,
+    "12": 0.6983,
+    "O25": 0.39728,
+    "GG": 0.48264,
+    "1": 0.39499
+   },
+   "estimate": {
+    "1": 2.3600000000000003,
+    "X": 3.1,
+    "2": 3.025,
+    "O25": 2.3,
+    "U25": 1.57,
+    "1X": 1.33,
+    "X2": 1.53,
+    "12": 1.32,
+    "O15": 1.37,
+    "U35": 1.14,
+    "GG": 1.9
+   },
+   "best": {
+    "1": [
+     "betfair_ex_eu",
+     2.52
+    ],
+    "X": [
+     "betfair_ex_eu",
+     3.25
+    ],
+    "2": [
+     "betfair_ex_eu",
+     3.3
+    ],
+    "O25": [
+     "onexbet",
+     2.41
+    ],
+    "U25": [
+     "onexbet",
+     1.62
+    ]
+   },
+   "books_used": 9,
+   "sharp_share": 0.2,
+   "lh": 1.2299,
+   "la": 1.0449
+  },
+  {
+   "id": "7eba39bc18096e656826ebb2792e95ab",
+   "competition": "Nations League",
+   "kickoff": "2026-09-24T18:45:00+00:00",
+   "home": "Liechtenstein",
+   "away": "Lithuania",
+   "chances": {
+    "U25": 0.54918,
+    "2": 0.74826,
+    "1X": 0.25174,
+    "O15": 0.70919,
+    "U35": 0.76204,
+    "X": 0.18143,
+    "X2": 0.92969,
+    "12": 0.81857,
+    "O25": 0.45082,
+    "GG": 0.33091,
+    "1": 0.07031
+   },
+   "estimate": {
+    "1": 11.0,
+    "X": 4.75,
+    "2": 1.3,
+    "O25": 2.02,
+    "U25": 1.7,
+    "1X": 3.31,
+    "X2": 1.02,
+    "12": 1.16,
+    "O15": 1.28,
+    "U35": 1.2,
+    "GG": 2.75
+   },
+   "best": {
+    "1": [
+     "betfair_ex_eu",
+     13.5
+    ],
+    "X": [
+     "betfair_ex_eu",
+     5.4
+    ],
+    "2": [
+     "onexbet",
+     1.34
+    ],
+    "O25": [
+     "onexbet",
+     2.19
+    ],
+    "U25": [
+     "onexbet",
+     1.74
+    ]
+   },
+   "books_used": 10,
+   "sharp_share": 0.182,
+   "lh": 0.4507,
+   "la": 2.0285
+  },
+  {
+   "id": "1b126f4039aa0e37f54d3142212702b7",
+   "competition": "Nations League",
+   "kickoff": "2026-09-24T18:45:00+00:00",
+   "home": "Netherlands",
+   "away": "Germany",
+   "chances": {
+    "U25": 0.36895,
+    "2": 0.35024,
+    "1X": 0.64976,
+    "O15": 0.84409,
+    "U35": 0.59074,
+    "X": 0.24869,
+    "X2": 0.59892,
+    "12": 0.75131,
+    "O25": 0.63105,
+    "GG": 0.66822,
+    "1": 0.40108
+   },
+   "estimate": {
+    "1": 2.325,
+    "X": 3.6900000000000004,
+    "2": 2.65,
+    "O25": 1.52,
+    "U25": 2.48,
+    "1X": 1.42,
+    "X2": 1.54,
+    "12": 1.23,
+    "O15": 1.1,
+    "U35": 1.58,
+    "GG": 1.39
+   },
+   "best": {
+    "1": [
+     "betfair_ex_eu",
+     2.52
+    ],
+    "X": [
+     "betfair_ex_eu",
+     3.9
+    ],
+    "2": [
+     "betfair_ex_eu",
+     2.84
+    ],
+    "O25": [
+     "betsson",
+     1.52
+    ],
+    "U25": [
+     "betsson",
+     2.48
+    ]
+   },
+   "books_used": 12,
+   "sharp_share": 0.333,
+   "lh": 1.6865,
+   "la": 1.5665
+  },
+  {
+   "id": "9352e6dce53be8e98217c70a28200e69",
+   "competition": "Nations League",
+   "kickoff": "2026-09-24T18:45:00+00:00",
+   "home": "Norway",
+   "away": "Denmark",
+   "chances": {
+    "U25": 0.44354,
+    "2": 0.20859,
+    "1X": 0.79141,
+    "O15": 0.79013,
+    "U35": 0.66728,
+    "X": 0.23175,
+    "X2": 0.44034,
+    "12": 0.76825,
+    "O25": 0.55646,
+    "GG": 0.5672,
+    "1": 0.55966
+   },
+   "estimate": {
+    "1": 1.71,
+    "X": 3.8600000000000003,
+    "2": 4.2,
+    "O25": 1.72,
+    "U25": 2.08,
+    "1X": 1.18,
+    "X2": 2.01,
+    "12": 1.21,
+    "O15": 1.18,
+    "U35": 1.39,
+    "GG": 1.63
+   },
+   "best": {
+    "1": [
+     "betfair_ex_eu",
+     1.8
+    ],
+    "X": [
+     "betfair_ex_eu",
+     4.2
+    ],
+    "2": [
+     "onexbet",
+     4.66
+    ],
+    "O25": [
+     "onexbet",
+     1.75
+    ],
+    "U25": [
+     "onexbet",
+     2.17
+    ]
+   },
+   "books_used": 12,
+   "sharp_share": 0.333,
+   "lh": 1.8593,
+   "la": 1.0512
+  },
+  {
+   "id": "4ab9287a169d5efd8818d7487d6e0f03",
+   "competition": "Nations League",
+   "kickoff": "2026-09-24T18:45:00+00:00",
+   "home": "Portugal",
+   "away": "Wales",
+   "chances": {
+    "U25": 0.37593,
+    "2": 0.05572,
+    "1X": 0.94428,
+    "O15": 0.83464,
+    "U35": 0.59835,
+    "X": 0.1356,
+    "X2": 0.19132,
+    "12": 0.8644,
+    "O25": 0.62407,
+    "GG": 0.42678,
+    "1": 0.80868
+   },
+   "estimate": {
+    "1": 1.21,
+    "X": 6.25,
+    "2": 13.5,
+    "O25": 1.52,
+    "U25": 2.48,
+    "1X": 1.01,
+    "X2": 4.27,
+    "12": 1.11,
+    "O15": 1.11,
+    "U35": 1.56,
+    "GG": 2.17
+   },
+   "best": {
+    "1": [
+     "betfair_ex_eu",
+     1.25
+    ],
+    "X": [
+     "betfair_ex_eu",
+     7.0
+    ],
+    "2": [
+     "betfair_ex_eu",
+     17.0
+    ],
+    "O25": [
+     "williamhill",
+     1.55
+    ],
+    "U25": [
+     "betsson",
+     2.48
+    ]
+   },
+   "books_used": 12,
+   "sharp_share": 0.333,
+   "lh": 2.6404,
+   "la": 0.5795
+  },
+  {
+   "id": "8f5c39e163f06383d2c06d0b7769963f",
+   "competition": "Nations League",
+   "kickoff": "2026-09-24T18:45:00+00:00",
+   "home": "Serbia",
+   "away": "Greece",
+   "chances": {
+    "U25": 0.56163,
+    "2": 0.34833,
+    "1X": 0.65167,
+    "O15": 0.70322,
+    "U35": 0.77222,
+    "X": 0.28441,
+    "X2": 0.63274,
+    "12": 0.71559,
+    "O25": 0.43837,
+    "GG": 0.51468,
+    "1": 0.36726
+   },
+   "estimate": {
+    "1": 2.525,
+    "X": 3.29,
+    "2": 2.6550000000000002,
+    "O25": 2.12,
+    "U25": 1.7,
+    "1X": 1.42,
+    "X2": 1.46,
+    "12": 1.29,
+    "O15": 1.32,
+    "U35": 1.21,
+    "GG": 1.8
+   },
+   "best": {
+    "1": [
+     "betfair_ex_eu",
+     2.72
+    ],
+    "X": [
+     "pinnacle",
+     3.4
+    ],
+    "2": [
+     "betfair_ex_eu",
+     2.86
+    ],
+    "O25": [
+     "onexbet",
+     2.18
+    ],
+    "U25": [
+     "onexbet",
+     1.75
+    ]
+   },
+   "books_used": 12,
+   "sharp_share": 0.333,
+   "lh": 1.2351,
+   "la": 1.1959
+  }
+ ],
+ "slips": [
+  {
+   "name": "National teams",
+   "target": 25,
+   "legs": 8,
+   "built_at": "2026-09-22T16:01:52.668482+00:00",
+   "chance": 0.027179742872970897,
+   "odds": 25.530643747702083,
+   "bonus": 0.14752300062499968,
+   "picks": [
+    {
+     "match": "8164f21d418a879733dd141cab8dfb14",
+     "code": "U25",
+     "chance": 0.7020717590209047,
+     "odds": 1.37
+    },
+    {
+     "match": "4f880a226d6ab27f137ec39da877e68c",
+     "code": "1",
+     "chance": 0.6908364873369943,
+     "odds": 1.395
+    },
+    {
+     "match": "153ad245de40be77011a5ffff62e0302",
+     "code": "X2",
+     "chance": 0.6050114941637275,
+     "odds": 1.53
+    },
+    {
+     "match": "7eba39bc18096e656826ebb2792e95ab",
+     "code": "2",
+     "chance": 0.7482578353267684,
+     "odds": 1.3
+    },
+    {
+     "match": "1b126f4039aa0e37f54d3142212702b7",
+     "code": "O25",
+     "chance": 0.631048919823888,
+     "odds": 1.52
+    },
+    {
+     "match": "9352e6dce53be8e98217c70a28200e69",
+     "code": "1",
+     "chance": 0.5596593213028389,
+     "odds": 1.71
+    },
+    {
+     "match": "4ab9287a169d5efd8818d7487d6e0f03",
+     "code": "O25",
+     "chance": 0.624070820759144,
+     "odds": 1.52
+    },
+    {
+     "match": "8f5c39e163f06383d2c06d0b7769963f",
+     "code": "U25",
+     "chance": 0.5616335302178573,
+     "odds": 1.7
+    }
+   ]
+  },
+  {
+   "name": "National teams",
+   "target": 30,
+   "legs": 8,
+   "built_at": "2026-09-22T16:01:52.668482+00:00",
+   "chance": 0.022847992060843182,
+   "odds": 30.025919129207047,
+   "bonus": 0.14752300062499968,
+   "picks": [
+    {
+     "match": "8164f21d418a879733dd141cab8dfb14",
+     "code": "U25",
+     "chance": 0.7020717590209047,
+     "odds": 1.37
+    },
+    {
+     "match": "4f880a226d6ab27f137ec39da877e68c",
+     "code": "O25",
+     "chance": 0.6361207463254387,
+     "odds": 1.51
+    },
+    {
+     "match": "153ad245de40be77011a5ffff62e0302",
+     "code": "U25",
+     "chance": 0.6027232626867187,
+     "odds": 1.57
+    },
+    {
+     "match": "7eba39bc18096e656826ebb2792e95ab",
+     "code": "2",
+     "chance": 0.7482578353267684,
+     "odds": 1.3
+    },
+    {
+     "match": "1b126f4039aa0e37f54d3142212702b7",
+     "code": "O25",
+     "chance": 0.631048919823888,
+     "odds": 1.52
+    },
+    {
+     "match": "9352e6dce53be8e98217c70a28200e69",
+     "code": "1",
+     "chance": 0.5596593213028389,
+     "odds": 1.71
+    },
+    {
+     "match": "4ab9287a169d5efd8818d7487d6e0f03",
+     "code": "O25",
+     "chance": 0.624070820759144,
+     "odds": 1.52
+    },
+    {
+     "match": "8f5c39e163f06383d2c06d0b7769963f",
+     "code": "GG",
+     "chance": 0.5146797749023131,
+     "odds": 1.8
+    }
+   ]
+  },
+  {
+   "name": "National teams",
+   "target": 40,
+   "legs": 8,
+   "built_at": "2026-09-22T16:01:52.668482+00:00",
+   "chance": 0.01720933796416674,
+   "odds": 40.072769324066705,
+   "bonus": 0.14752300062499968,
+   "picks": [
+    {
+     "match": "8164f21d418a879733dd141cab8dfb14",
+     "code": "U25",
+     "chance": 0.7020717590209047,
+     "odds": 1.37
+    },
+    {
+     "match": "4f880a226d6ab27f137ec39da877e68c",
+     "code": "1",
+     "chance": 0.6908364873369943,
+     "odds": 1.395
+    },
+    {
+     "match": "153ad245de40be77011a5ffff62e0302",
+     "code": "U25",
+     "chance": 0.6027232626867187,
+     "odds": 1.57
+    },
+    {
+     "match": "7eba39bc18096e656826ebb2792e95ab",
+     "code": "2",
+     "chance": 0.7482578353267684,
+     "odds": 1.3
+    },
+    {
+     "match": "1b126f4039aa0e37f54d3142212702b7",
+     "code": "1",
+     "chance": 0.40107677953050413,
+     "odds": 2.325
+    },
+    {
+     "match": "9352e6dce53be8e98217c70a28200e69",
+     "code": "1",
+     "chance": 0.5596593213028389,
+     "odds": 1.71
+    },
+    {
+     "match": "4ab9287a169d5efd8818d7487d6e0f03",
+     "code": "O25",
+     "chance": 0.624070820759144,
+     "odds": 1.52
+    },
+    {
+     "match": "8f5c39e163f06383d2c06d0b7769963f",
+     "code": "U25",
+     "chance": 0.5616335302178573,
+     "odds": 1.7
+    }
+   ]
+  },
+  {
+   "name": "National teams",
+   "target": 50,
+   "legs": 8,
+   "built_at": "2026-09-22T16:01:52.668482+00:00",
+   "chance": 0.013711673460118045,
+   "odds": 50.70105119185143,
+   "bonus": 0.14752300062499968,
+   "picks": [
+    {
+     "match": "8164f21d418a879733dd141cab8dfb14",
+     "code": "U25",
+     "chance": 0.7020717590209047,
+     "odds": 1.37
+    },
+    {
+     "match": "4f880a226d6ab27f137ec39da877e68c",
+     "code": "1",
+     "chance": 0.6908364873369943,
+     "odds": 1.395
+    },
+    {
+     "match": "153ad245de40be77011a5ffff62e0302",
+     "code": "U25",
+     "chance": 0.6027232626867187,
+     "odds": 1.57
+    },
+    {
+     "match": "7eba39bc18096e656826ebb2792e95ab",
+     "code": "2",
+     "chance": 0.7482578353267684,
+     "odds": 1.3
+    },
+    {
+     "match": "1b126f4039aa0e37f54d3142212702b7",
+     "code": "O25",
+     "chance": 0.631048919823888,
+     "odds": 1.52
+    },
+    {
+     "match": "9352e6dce53be8e98217c70a28200e69",
+     "code": "1",
+     "chance": 0.5596593213028389,
+     "odds": 1.71
+    },
+    {
+     "match": "4ab9287a169d5efd8818d7487d6e0f03",
+     "code": "O25",
+     "chance": 0.624070820759144,
+     "odds": 1.52
+    },
+    {
+     "match": "8f5c39e163f06383d2c06d0b7769963f",
+     "code": "X",
+     "chance": 0.284409315945487,
+     "odds": 3.29
+    }
+   ]
+  }
+ ],
+ "pending": []
 }
