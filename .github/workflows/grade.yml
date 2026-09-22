@@ -1,0 +1,24 @@
+name: grade slips
+on:
+  schedule:
+    - cron: "0 8 * * 2"
+    - cron: "0 8 * * 5"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  grade:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install numpy scipy
+      - name: grade every built slip
+        env: { ODDS_API_KEY: "${{ secrets.ODDS_API_KEY }}" }
+        run: python3 -m tools.grade --week data/week.json --record data/record.json
+      - name: commit the record
+        run: |
+          git config user.name scudi-bot && git config user.email bot@scudi.local
+          git add data/record.json && git commit -m "graded $(date -u +%F)" || echo "nothing new"
+          git push
