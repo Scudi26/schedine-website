@@ -13,9 +13,10 @@ as little as possible to the margin: pick the cheapest legs, land just above the
 | Piece | Where | When |
 |---|---|---|
 | `index.html` | GitHub Pages (this repository, root) | always on |
-| `.github/workflows/weekly.yml` → `tools/weekly.py` | GitHub Actions | Friday and Tuesday 09:00 UTC, or by hand |
+| `.github/workflows/weekly.yml` → `tools/weekly.py --mode auto` | GitHub Actions | every morning 09:00 UTC: full pull Tuesday and Friday, match-day refresh the other days (no credit spent when nothing kicks off within 18 hours) |
 | `.github/workflows/grade.yml` → `tools/grade.py` | GitHub Actions | Tuesday and Friday 08:00 UTC, or by hand |
 | `data/week.json`, `data/record.json` | written by the jobs, read by the site | |
+| `data/history.json` | one snapshot of every match's chances per pull: price movement on the site, closing chance of each graded leg | written by the weekly job |
 | `data/snai.json` | SNAI's prices, typed by hand (or pasted into the site) | before each matchweek |
 | `.github/workflows/teams.yml` → `tools/teams.py` | GitHub Actions | Thursday 07:00 UTC, or by hand |
 | `data/teams.json`, `data/players.json` | crests, squads, line-ups, season averages, transfers (ESPN public API) | written by the team job, read by the site |
@@ -73,6 +74,14 @@ committed). Their results are in `results/`. The go-live exam and its pre-regist
   guards), `season` (season simulator).
 - `tools/` — the jobs and the backtests.
 - `tests/` — the tests, including brute-force checks of the optimiser and replay fixtures for the feed.
+- Site features (decision 73): price movement per match; paste SNAI's page to read all its prices at once, margin per
+  pick and a "where SNAI is cheapest" board; the slip as a *sistema* (1 to 3 errors) with the chance and payout of
+  each outcome; "Mark as placed" saves the slip in the browser, a live tracker follows it on match day from ESPN's
+  public scores and settles it; the match preview adds the league table, home/away records, last five, injuries;
+  the player card adds percentiles against his position; "Is it working?" charts calibration, money against the
+  range chance allows, leaks by pick type and league, timing against the pre-kickoff price and near misses.
+  Placed slips live in the browser: "Back up my slips" / "Restore" moves them between devices.
+- `scudi_slips/sistema.py` — the exact sistema maths the site mirrors (tests compare the two).
 - `index.html` — the site; it reads `data/week.json`, `data/record.json`, `data/snai.json`, `data/teams.json` and
   `data/players.json` and falls back to example fixtures. Target multiplier from 5x to 1000x (by 5 to 50, by 10 to
   100, by 100 to 1000), up to 25 matches on a slip; a match opens on an animated pitch with the last line-ups,

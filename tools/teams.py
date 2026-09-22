@@ -26,8 +26,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 SLUGS = {"Serie A": "ita.1", "Premier League": "eng.1", "La Liga": "esp.1", "Bundesliga": "ger.1", "Ligue 1": "fra.1", "Champions League": "uefa.champions"}
-SITE = "https://site.api.espn.com/apis/site/v2/sports/soccer/{slug}"
-WEB = "https://site.web.api.espn.com/apis/site/v2/sports/soccer/{slug}"
+# site.api.espn.com sits behind Akamai and refuses some clients (it refused this project's sandbox and answers 403 to
+# browsers); site.web.api.espn.com serves the same payloads to everyone, so it is tried first (decision 73).
+SITE = "https://site.web.api.espn.com/apis/site/v2/sports/soccer/{slug}"
+SITE_FALLBACK = "https://site.api.espn.com/apis/site/v2/sports/soccer/{slug}"
+WEB = SITE
 TRANSFERS = "https://site.web.api.espn.com/apis/common/v3/sports/soccer/athletes/{pid}/transactions"
 LINEUP = "https://sports.core.api.espn.com/v2/sports/soccer/leagues/{slug}/events/{eid}/competitions/{eid}/competitors/{tid}/roster"
 STATS = {"possessionPct": "possession", "totalShots": "shots", "shotsOnTarget": "shots_on", "wonCorners": "corners", "passPct": "pass_pct",
@@ -62,13 +65,18 @@ def replay_fetch(recorded: dict):
     return get
 
 
-def _get(fetch, budget: Budget, url: str):
+def _get(fetch, budget: Budget, url: str, fallback: bool = True):
     if budget.spent():
         return None
     budget.calls += 1
     try:
         return fetch(url)
     except Exception as e:
+        other = url.replace("https://site.web.api.espn.com/", "https://site.api.espn.com/", 1)
+        if fallback and other != url:
+            got = _get(fetch, budget, other, fallback=False)
+            if got is not None:
+                return got
         budget.failed += 1
         print(f"  ! {url.split('/apis/')[-1][:90]}: {e}")
         return None
@@ -236,7 +244,7 @@ def build(fetch, comps: list[str], prev_teams: dict | None, prev_players: dict |
                 summ = _get(fetch, budget, f"{SITE.format(slug=slug)}/summary?event={eid}")
                 if summ is None:
                     continue
-                _absorb(teams[key], summ, eid, key, mine, other, ev.get("date"))
+                _absorb(teams[key], summ, eid, key, mine, other, ev.get("date"), comp)
                 seen_events[key].add(eid)
                 lu = _lineup(fetch, budget, slug, eid, int(key))
                 if lu and lu["xi"]:
@@ -261,9 +269,10 @@ def build(fetch, comps: list[str], prev_teams: dict | None, prev_players: dict |
                 continue
             players[str(pid)] = {"transfers": [_transfer(x) for x in r.get("transactions", [])]}
     out_teams = {"built_at": now.isoformat(), "source": "ESPN public site API (unofficial); logos and photos are ESPN's",
-                 "competitions": {c: SLUGS[c] for c in comps}, "teams": {}}
+                 "competitions": {c: SLUGS[c] for c in comps}, "teams": {}, "tables": {}}
     for key, t in teams.items():
         out_teams["teams"][key] = _finish(t)
+    out_teams["tables"] = tables(out_teams["teams"], comps)
     out_players = {"built_at": now.isoformat(), "players": players}
     return out_teams, out_players, budget
 
@@ -275,15 +284,31 @@ def _score(c: dict):
     return _num(s)
 
 
-def _absorb(team: dict, summ: dict, eid: str, key: str, mine: dict, other: dict, date: str | None):
+def _blank_record() -> dict:
+    return {"p": 0, "w": 0, "d": 0, "l": 0, "gf": 0, "ga": 0}
+
+
+def _add_result(r: dict, gf: float, ga: float):
+    r["p"] += 1
+    r["gf"] += gf
+    r["ga"] += ga
+    r["w" if gf > ga else "d" if gf == ga else "l"] += 1
+
+
+def _absorb(team: dict, summ: dict, eid: str, key: str, mine: dict, other: dict, date: str | None, comp: str | None = None):
     s = team["sums"]
     gf, ga = _score(mine), _score(other)
     if gf is not None and ga is not None:
         s["goals_for"] += gf
         s["goals_against"] += ga
         s["wins" if gf > ga else "draws" if gf == ga else "losses"] += 1
+        home = mine.get("homeAway") == "home"
+        if comp:
+            c = s.setdefault("by_comp", {}).setdefault(comp, {"all": _blank_record(), "home": _blank_record(), "away": _blank_record()})
+            _add_result(c["all"], gf, ga)
+            _add_result(c["home" if home else "away"], gf, ga)
         team.setdefault("results", []).append({"date": (date or "")[:10], "event": eid, "vs": (other.get("team") or {}).get("displayName"),
-                                               "vs_id": (other.get("team") or other).get("id"), "home": mine.get("homeAway") == "home", "gf": gf, "ga": ga})
+                                               "vs_id": (other.get("team") or other).get("id"), "home": home, "gf": gf, "ga": ga, "comp": comp})
         team["results"] = sorted(team["results"], key=lambda r: r["date"])[-10:]
     for bt in (summ.get("boxscore") or {}).get("teams", []):
         if str((bt.get("team") or {}).get("id")) != key:
@@ -302,6 +327,27 @@ def _transfer(x: dict) -> dict:
     f, t = x.get("from") or {}, x.get("to") or {}
     side = lambda d: dict({"id": d.get("id"), "name": d.get("displayName") or d.get("name")}, **_logos(d))
     return {"date": (x.get("date") or "")[:10], "from": side(f), "to": side(t), "type": x.get("type"), "amount": x.get("amount"), "fee": x.get("displayAmount")}
+
+
+def tables(teams: dict, comps: list[str]) -> dict:
+    """League tables built from the results the job stored: points, then goal difference, then goals scored.
+    The Champions League table is its single league phase. Home and away records ride along for the match preview."""
+    out = {}
+    for comp in comps:
+        rows = []
+        for t in teams.values():
+            rec = ((t.get("sums") or {}).get("by_comp") or {}).get(comp)
+            if comp not in (t.get("comps") or []):
+                continue
+            rec = rec or {"all": _blank_record(), "home": _blank_record(), "away": _blank_record()}
+            a = rec["all"]
+            rows.append({"id": t["id"], "p": a["p"], "w": a["w"], "d": a["d"], "l": a["l"], "gf": int(a["gf"]), "ga": int(a["ga"]),
+                         "pts": 3 * a["w"] + a["d"], "home": rec["home"], "away": rec["away"]})
+        rows.sort(key=lambda r: (-r["pts"], -(r["gf"] - r["ga"]), -r["gf"], r["id"]))
+        for i, r in enumerate(rows):
+            r["pos"] = i + 1
+        out[comp] = rows
+    return out
 
 
 def _finish(t: dict) -> dict:

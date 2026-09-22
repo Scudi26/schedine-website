@@ -540,3 +540,162 @@ def test_every_sample_week_team_resolves_to_a_real_espn_team():
     assert find_team("Paris Saint Germain", everyone)["id"] == 160 and find_team("Bodo/Glimt", everyone)["id"] == 2980
     assert find_team("Athletic Bilbao", everyone)["id"] == 93 and find_team("Man City", everyone)["id"] == 382
     assert find_team("Nowhere United", everyone) is None
+
+
+# ---------- match-day pulls, price history and closing chances (decision 73) ----------
+def _week_from(matches, now, slips=None):
+    from tools.weekly import match_record
+    return {"built_at": now.isoformat(), "window_days": 6.0, "matches": [match_record(m) for m in matches], "slips": slips or []}
+
+
+def test_history_snapshots_and_closing_chance():
+    from tools.weekly import add_snapshots, closing, match_record
+
+    rng = random.Random(3)
+    t0 = datetime(2026, 10, 9, 9, 0, tzinfo=timezone.utc)
+    m0, _ = price_feed(_synthetic_feed(rng), t0, t0 + timedelta(days=5))
+    hist = add_snapshots({}, [match_record(m) for m in m0], t0)
+    assert len(hist) == len(m0) >= 8 and all(len(h["snaps"]) == 1 for h in hist.values())
+    t1 = t0 + timedelta(hours=2)                       # a later pull the same morning: one more snapshot each
+    hist = add_snapshots(hist, [match_record(m) for m in m0], t1)
+    assert all(len(h["snaps"]) == 2 for h in hist.values())
+    hist = add_snapshots(hist, [match_record(m) for m in m0], t1)   # the same pull twice replaces, never duplicates
+    assert all(len(h["snaps"]) == 2 for h in hist.values())
+    m1 = m0
+    after = t1 + timedelta(days=3)                     # kicked off: no new snapshot, the last one is the closing view
+    hist = add_snapshots(hist, [match_record(m) for m in m1], after)
+    assert all(len(h["snaps"]) == 2 for h in hist.values())
+    mid = m1[0].id
+    assert closing(hist, mid)["t"] == t1.isoformat() and closing(hist, "nope") is None
+    assert add_snapshots(hist, [], after + timedelta(days=11)) == {}   # old matches are dropped
+
+
+def test_late_pull_refreshes_only_upcoming_matches_and_keeps_the_slips():
+    from tools.weekly import comps_due, match_record, merge_late
+
+    t0 = datetime(2026, 10, 9, 9, 0, tzinfo=timezone.utc)
+    feed = _synthetic_feed(random.Random(3), comp="Serie A", day="2026-10-10")
+    feed.update(_synthetic_feed(random.Random(4), comp="Premier League", day="2026-10-12"))
+    m0, _ = price_feed(feed, t0, t0 + timedelta(days=6))
+    old = _week_from(m0, t0, slips=[{"name": "kept"}])
+    t1 = datetime(2026, 10, 10, 9, 0, tzinfo=timezone.utc)
+    assert comps_due(old, t1, 18) == ["Serie A"]         # Premier League plays in two days: not refreshed, no credit spent
+    assert comps_due(old, datetime(2026, 10, 13, 9, 0, tzinfo=timezone.utc), 18) == []
+    t_mid = datetime(2026, 10, 10, 15, 30, tzinfo=timezone.utc)   # some Serie A matches have kicked off (13:00-15:00)
+    fresh_feed = _synthetic_feed(random.Random(9), comp="Serie A", day="2026-10-10")
+    m1, g = price_feed(fresh_feed, t_mid, t_mid + timedelta(days=6))
+    assert g.started > 0
+    merged = merge_late(old, [match_record(m) for m in m1], ["Serie A"], t_mid)
+    assert merged["slips"] == [{"name": "kept"}] and merged["refreshed"] == ["Serie A"]
+    ids_old = [m["id"] for m in old["matches"]]
+    assert sorted(m["id"] for m in merged["matches"]) == sorted(ids_old)   # nothing lost: started matches keep their prices
+    by_id = {m["id"]: m for m in merged["matches"]}
+    started = [m for m in old["matches"] if m["competition"] == "Serie A" and datetime.fromisoformat(m["kickoff"]) <= t_mid]
+    assert started and all(by_id[m["id"]] == m for m in started)
+    upcoming = [m.id for m in m1]
+    assert upcoming and all(by_id[i]["chances"] == match_record(next(x for x in m1 if x.id == i))["chances"] for i in upcoming)
+    pl = [m for m in old["matches"] if m["competition"] == "Premier League"]
+    assert all(by_id[m["id"]] == m for m in pl)
+
+
+def test_graded_legs_carry_outcome_and_closing_value():
+    from tools.weekly import add_snapshots
+
+    rng = random.Random(3)
+    now = datetime(2026, 10, 9, 10, 0, tzinfo=timezone.utc)
+    matches, _ = price_feed(_synthetic_feed(rng), now, now + timedelta(days=5))
+    slips = preset_slips(matches, now)
+    week = _week_from(matches, now, slips)
+    hist = add_snapshots({}, week["matches"], now)
+    scores = {m.id: {"id": m.id, "completed": True, "home_team": m.home, "away_team": m.away, "scores": [{"name": m.home, "score": "1"}, {"name": m.away, "score": "1"}]} for m in matches}
+    rec = grade(week, scores, {}, now + timedelta(days=4), hist)
+    s = rec["slips"][0]
+    assert len(s["leg_results"]) == s["legs"] and sum(x["won"] for x in s["leg_results"]) == s["legs_won"]
+    for leg in s["leg_results"]:
+        assert leg["score"] == "1-1" and leg["competition"] == "Serie A" and " v " in leg["name"]
+        assert "clv" in leg and abs(leg["clv"] - (leg["odds"] * leg["close_chance"] - 1)) < 1e-3
+    no_hist = grade(week, scores, {}, now + timedelta(days=4))
+    assert "clv" not in no_hist["slips"][0]["leg_results"][0]
+
+
+def test_weekly_main_auto_mode_replays_full_then_late(tmp_path):
+    from tools.weekly import main
+
+    feed = _synthetic_feed(random.Random(3), comp="Serie A", day="2026-10-10")
+    feed.update(_synthetic_feed(random.Random(4), comp="Premier League", day="2026-10-12"))
+    f = tmp_path / "feed.json"
+    f.write_text(json.dumps(feed))
+    out, hist = tmp_path / "week.json", tmp_path / "history.json"
+    args = ["--from-file", str(f), "--out", str(out), "--history", str(hist), "--mode", "auto", "--comps", "Serie A", "Premier League"]
+    assert main([*args, "--now", "2026-10-09T09:00:00Z"]) == 0          # Friday: full
+    full = json.loads(out.read_text())
+    n_sa = sum(m["competition"] == "Serie A" for m in full["matches"])
+    assert full["slips"] and n_sa >= 8 and len(full["matches"]) >= 16
+    assert main([*args, "--now", "2026-10-10T09:00:00Z"]) == 0          # Saturday: late, Serie A only
+    late = json.loads(out.read_text())
+    assert late["refreshed"] == ["Serie A"] and late["slips"] == full["slips"] and len(late["matches"]) == len(full["matches"])
+    h = json.loads(hist.read_text())
+    assert sum(len(v["snaps"]) == 2 for v in h.values()) == n_sa         # Serie A has two snapshots, Premier League one
+    before = out.read_text()
+    assert main([*args, "--now", "2026-10-14T09:00:00Z"]) == 0          # Wednesday: nothing due, nothing written
+    assert out.read_text() == before
+
+
+def test_team_job_builds_league_tables_and_falls_back_to_the_other_espn_host():
+    from datetime import datetime, timezone
+
+    from tools.teams import build, replay_fetch
+
+    _feed, rec = _espn_sample()
+    moved = {u.replace("https://site.web.api.espn.com/", "https://site.api.espn.com/", 1) if "/teams/" in u and u.endswith("/schedule") else u: v
+             for u, v in rec.items()}   # schedules only answer on the other host: the job must still find them
+    teams, _players, budget = build(replay_fetch(moved), ["Serie A"], {}, {}, datetime(2026, 10, 8, tzinfo=timezone.utc), transfers=False)
+    table = teams["tables"]["Serie A"]
+    assert len(table) == 20 and [r["pos"] for r in table] == list(range(1, 21))
+    assert all(r["p"] == 5 and r["w"] + r["d"] + r["l"] == 5 and r["pts"] == 3 * r["w"] + r["d"] for r in table)
+    assert all(r["home"]["p"] + r["away"]["p"] == r["p"] for r in table)
+    assert sum(r["gf"] for r in table) == sum(r["ga"] for r in table)          # every goal scored is a goal conceded
+    keys = [(-r["pts"], -(r["gf"] - r["ga"]), -r["gf"]) for r in table]
+    assert keys == sorted(keys)
+    assert budget.failed == 0
+    t = next(iter(teams["teams"].values()))
+    assert all(r["comp"] == "Serie A" for r in t["results"])
+
+
+# ---------- sistema bets ----------
+def test_sistema_straight_equals_the_accumulator_and_errors_add_chances():
+    from scudi_slips.sistema import plan
+
+    legs = [(0.72, 1.30), (0.74, 1.30), (0.68, 1.44), (0.61, 1.60), (0.75, 1.27), (0.75, 1.25), (0.75, 1.27), (0.62, 1.57), (0.60, 1.57), (0.72, 1.30)]
+    straight = plan(legs, 10, 10.0)
+    p_all = math.prod(p for p, _ in legs)
+    odds = math.prod(o for _, o in legs)
+    assert straight.tickets == 1 and abs(straight.chance_any - p_all) < 1e-12
+    assert abs(straight.average_return - p_all * odds) < 1e-9 and straight.outcomes[0].pays_min == pytest.approx(10 * odds)
+    one = plan(legs, 9, 10.0)
+    assert one.tickets == 10 and abs(one.per_ticket - 1.0) < 1e-12 and one.min_stake == 2.0
+    assert one.chance_any > straight.chance_any * 3                     # one error allowed: far likelier to get something back
+    assert abs(sum(o.chance for o in one.outcomes) - one.chance_any) < 1e-12
+    # all ten win: each 9-leg ticket pays its own odds, and the ten tickets together pay (sum over tickets of prod odds)
+    all_win = one.outcomes[0]
+    assert all_win.pays_min == pytest.approx(sum(odds / o for _, o in legs) * 1.0)
+    # exactly one loses: one ticket survives, the one without that leg
+    one_lost = one.outcomes[1]
+    assert one_lost.pays_min == pytest.approx(min(odds / o for _, o in legs)) and one_lost.pays_max == pytest.approx(max(odds / o for _, o in legs))
+    # average return equals the elementary-symmetric shortcut
+    e9 = sum(math.prod(p * o for j, (p, o) in enumerate(legs) if j != i) for i in range(10))
+    assert one.average_return == pytest.approx(e9 * (1.0 / 10.0) * 10 / 10.0)
+    two = plan(legs, 8, 45 * 0.05)
+    assert two.tickets == 45 and two.min_stake == pytest.approx(2.25) and two.chance_any > one.chance_any
+
+
+def test_sistema_bonus_switch_and_limits():
+    from scudi_slips.sistema import plan
+
+    legs = [(0.7, 1.35)] * 8
+    off, on = plan(legs, 7, 8.0), plan(legs, 7, 8.0, bonus_on=True)
+    assert on.average_return == pytest.approx(off.average_return * 1.035 ** 3)
+    with pytest.raises(ValueError):
+        plan(legs, 9, 1.0)
+    with pytest.raises(ValueError):
+        plan([(0.7, 1.3)] * 20, 15, 10.0)

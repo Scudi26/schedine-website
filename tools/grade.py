@@ -23,6 +23,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scudi_slips import settles
 from scudi_slips.feed import SPORT_KEYS
+from tools.weekly import closing
 
 API = "https://api.the-odds-api.com/v4/sports/{key}/scores"
 
@@ -47,9 +48,11 @@ def final_score(ev: dict) -> tuple[int, int] | None:
     return got[ev["home_team"]], got[ev["away_team"]]
 
 
-def grade(week: dict, scores: dict[str, dict], record: dict, now: datetime) -> dict:
+def grade(week: dict, scores: dict[str, dict], record: dict, now: datetime, history: dict | None = None) -> dict:
     done = {s["key"] for s in record.get("slips", [])}
     finals = {mid: final_score(ev) for mid, ev in scores.items()}
+    comp_of = {m["id"]: m["competition"] for m in week.get("matches", [])}
+    names = {m["id"]: f'{m["home"]} v {m["away"]}' for m in week.get("matches", [])}
     for slip in week.get("slips", []):
         key = f'{week["built_at"]}|{slip["name"]}|{slip["target"]}'
         if key in done:
@@ -60,12 +63,20 @@ def grade(week: dict, scores: dict[str, dict], record: dict, now: datetime) -> d
             if fs is None:
                 legs = None
                 break
-            legs.append(settles(p["code"], fs[0], fs[1]))
+            won = settles(p["code"], fs[0], fs[1])
+            leg = {"match": p["match"], "name": names.get(p["match"]), "competition": comp_of.get(p["match"]), "code": p["code"],
+                   "chance": round(p["chance"], 4), "odds": p["odds"], "won": won, "score": f"{fs[0]}-{fs[1]}"}
+            close = closing(history or {}, p["match"])
+            if close and p["code"] in close.get("p", {}):
+                leg["close_chance"] = close["p"][p["code"]]
+                leg["clv"] = round(p["odds"] * close["p"][p["code"]] - 1, 4)   # >0: the price taken beat the last pre-kickoff view
+            legs.append(leg)
         if legs is None:
             continue
+        won = [x["won"] for x in legs]
         record.setdefault("slips", []).append({"key": key, "name": slip["name"], "target": slip["target"], "legs": slip["legs"],
                                                "chance": slip["chance"], "odds": slip["odds"], "bonus": slip["bonus"],
-                                               "landed": all(legs), "legs_won": sum(legs), "graded_at": now.isoformat()})
+                                               "landed": all(won), "legs_won": sum(won), "graded_at": now.isoformat(), "leg_results": legs})
     graded = record.get("slips", [])
     exp = sum(s["chance"] for s in graded)
     record["summary"] = {"graded": len(graded), "expected_hits": round(exp, 2), "actual_hits": sum(s["landed"] for s in graded),
@@ -83,6 +94,7 @@ def main(argv=None):
     ap.add_argument("--week", default="data/week.json")
     ap.add_argument("--record", default="data/record.json")
     ap.add_argument("--scores-file")
+    ap.add_argument("--history", default="data/history.json")
     ap.add_argument("--now")
     a = ap.parse_args(argv)
     now = datetime.fromisoformat(a.now.replace("Z", "+00:00")) if a.now else datetime.now(timezone.utc)
@@ -97,7 +109,8 @@ def main(argv=None):
         scores = fetch_scores(comps, key)
     rec_path = Path(a.record)
     record = json.loads(rec_path.read_text()) if rec_path.exists() else {}
-    record = grade(week, scores, record, now)
+    hist = json.loads(Path(a.history).read_text()) if Path(a.history).exists() else {}
+    record = grade(week, scores, record, now, hist)
     rec_path.parent.mkdir(parents=True, exist_ok=True)
     rec_path.write_text(json.dumps(record, indent=1))
     print(record["summary"])

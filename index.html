@@ -230,6 +230,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 .scard:hover .pile span{transform:translateX(calc(var(--i)*3px))}
 .pile em{font-style:normal;font-size:11px;color:var(--muted);margin-left:6px;font-family:"DM Mono",monospace}
 .res .who{display:inline-flex;align-items:center;gap:7px;min-width:0}
+.p3 small{display:inline-flex;align-items:center;gap:5px}
 .p3 small .crest{vertical-align:middle}
 .frow small .crest{vertical-align:middle;margin-right:1px}
 .chip .crest{vertical-align:middle}
@@ -256,7 +257,9 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 .avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .phead h2{font-size:24px;line-height:1.05;font-weight:750}
 .phead .sub{display:flex;flex-wrap:wrap;gap:6px 10px;font-size:13px;color:var(--muted);margin-top:4px;align-items:center}
-.phead .sub img{width:18px;height:12px;object-fit:cover;border-radius:2px;vertical-align:middle}
+.phead .sub img.flag{width:18px;height:12px;object-fit:cover;border-radius:2px;vertical-align:middle}
+.phead .club{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13.5px;font-weight:600;color:var(--text)}
+.phead .club .crest{flex:none}
 .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .facts div{background:var(--ground);border-radius:12px;padding:8px 6px;text-align:center;min-width:0}
 .facts small{display:block;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
@@ -442,6 +445,128 @@ select{min-height:44px;border-radius:12px;border:1px solid var(--line);backgroun
   .targets{grid-template-columns:repeat(4,minmax(0,1fr))}
   .facts{grid-template-columns:repeat(2,1fr)}
 }
+
+/* v9: live tracker, paste, sistema, costs, movement, preview, analytics */
+.o0{order:0}.o7{order:7}.o8{order:8}
+.legbtns2{display:inline-flex;gap:8px;flex-wrap:wrap;align-items:center}
+.linkbtn{font-size:13px;font-weight:600;color:var(--brand);min-height:36px}
+.legmeta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:1px}
+.cost{font-size:10.5px;font-weight:700;letter-spacing:.03em;padding:2px 7px;border-radius:999px;background:color-mix(in srgb,var(--c) 16%,var(--ground));color:var(--c);font-family:"DM Mono",monospace}
+.cost.est{opacity:.7}
+.mv{font-size:10.5px;font-weight:700;font-family:"DM Mono",monospace;color:var(--muted)}
+.mv.up{color:var(--good)} .mv.down{color:var(--bad)}
+.live{position:relative;overflow:hidden;border-color:color-mix(in srgb,var(--good) 45%,var(--line))}
+.live::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 0% 0%,color-mix(in srgb,var(--good) 14%,transparent),transparent 60%);pointer-events:none}
+.live.lost{border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}.live.lost::before{background:radial-gradient(120% 90% at 0% 0%,color-mix(in srgb,var(--bad) 14%,transparent),transparent 60%)}
+.live.won{border-color:var(--brand)}.live.won::before{background:radial-gradient(120% 90% at 0% 0%,color-mix(in srgb,var(--brand) 24%,transparent),transparent 60%)}
+.livehead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;position:relative}
+.livehead h3{font-size:26px;line-height:1.05;font-weight:750}
+.pulse{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--good);margin-right:8px;box-shadow:0 0 0 0 var(--good);animation:pulse 1.6s infinite}
+.lost .pulse{background:var(--bad);animation:none}.won .pulse{background:var(--brand);animation:none}
+.livekv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 10px;position:relative}
+.livekv div{background:var(--ground);border-radius:14px;padding:9px 11px}
+.livekv small{display:block;font-size:11.5px;color:var(--muted)}
+.livekv b{font-size:19px;font-family:"Bricolage Grotesque",sans-serif}
+.lrows{display:flex;flex-direction:column;gap:6px;position:relative}
+.lrow{display:grid;grid-template-columns:40px minmax(0,1fr) auto 54px;gap:10px;align-items:center;padding:8px 10px;border-radius:14px;background:var(--ground);border:1px solid var(--line);transition:border-color .4s,background .4s}
+.lrow.win{border-color:color-mix(in srgb,var(--good) 55%,var(--line))}
+.lrow.lose{border-color:color-mix(in srgb,var(--bad) 55%,var(--line))}
+.lrow.done.win{background:color-mix(in srgb,var(--good) 10%,var(--ground))}
+.lrow.done.lose{background:color-mix(in srgb,var(--bad) 10%,var(--ground));opacity:.85}
+.lrow .clock{position:relative;width:36px;height:36px}
+.lrow .clock svg{width:36px;height:36px;transform:rotate(-90deg)}
+.lrow .clock circle{fill:none;stroke-width:3.5}
+.lrow .clock .bg{stroke:var(--raised)} .lrow .clock .fg{stroke:var(--good);transition:stroke-dasharray .8s}
+.lrow.lose .clock .fg{stroke:var(--bad)}
+.lrow .clock span{position:absolute;inset:0;display:grid;place-items:center;font-size:10px;font-family:"DM Mono",monospace;color:var(--muted)}
+.lrow .who{min-width:0;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:5px;align-items:center}
+.lrow .pk{display:block;font-weight:700;font-size:14.5px;color:var(--text)}
+.lrow .sc{font:750 20px "Bricolage Grotesque",sans-serif;font-variant-numeric:tabular-nums;min-width:48px;text-align:center}
+.lrow .sc.flash{animation:flash 1.2s ease-out}
+.lrow .lp{text-align:right;font-family:"DM Mono",monospace;font-size:13px}
+.lrow .lp small{display:block;font-size:10.5px;color:var(--muted);font-family:"Hanken Grotesk",sans-serif}
+.livefoot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;position:relative}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--ground);border:1px solid var(--line);border-radius:14px;padding:4px}
+.seg button{min-height:40px;border-radius:10px;font-size:13px;font-weight:600;color:var(--muted);text-align:center;transition:background .25s,color .25s}
+.seg button[aria-pressed="true"]{background:var(--text);color:var(--ground)}
+.seg button:disabled{opacity:.35;cursor:not-allowed}
+.sisbars{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.sisbar{display:grid;grid-template-columns:104px 1fr auto;gap:10px;align-items:center;font-size:13px}
+.sisbar .pay{white-space:nowrap}
+.sisbar .tr{height:10px;border-radius:999px;background:var(--raised);overflow:hidden}
+.sisbar .tr i{display:block;height:100%;border-radius:999px;background:var(--acc);transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.sisbar .pay{text-align:right;font-family:"DM Mono",monospace;font-size:12.5px}
+.sisbar.zero .tr i{background:var(--faint)}
+.costs{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.crow{display:grid;grid-template-columns:auto minmax(0,1fr) 62px 52px;gap:8px;align-items:center;font-size:13px}
+.crow .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crow .nm b{font-weight:600}
+.crow .tr{height:8px;border-radius:999px;background:var(--raised);overflow:hidden}
+.crow .tr i{display:block;height:100%;background:var(--c)}
+.crow .num{text-align:right}
+.paste textarea{width:100%;min-height:180px;border-radius:14px;border:1px solid var(--line);background:var(--ground);color:var(--text);padding:12px;font:13px/1.45 "DM Mono",monospace;resize:vertical}
+.paste textarea:focus{outline:2px solid var(--brand);outline-offset:1px}
+.prow2{display:grid;grid-template-columns:24px minmax(0,1fr);gap:10px;align-items:start;padding:9px 10px;border-radius:12px;background:var(--ground);border:1px solid var(--line)}
+.prow2.bad{border-color:color-mix(in srgb,var(--bad) 55%,var(--line))}
+.prow2 input{width:18px;height:18px;margin-top:2px;accent-color:var(--brand)}
+.prow2 .nm{display:flex;gap:6px;align-items:center;font-weight:600;font-size:14px}
+.prow2 .px{display:flex;flex-wrap:wrap;gap:4px 10px;font-family:"DM Mono",monospace;font-size:12px;color:var(--muted);margin-top:4px}
+.prow2 .px b{color:var(--text);font-weight:500}
+.spark{width:100%;height:auto;display:block}
+.spark .ln{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.spark .ln{stroke-dasharray:400;stroke-dashoffset:400;animation:draw 1.1s ease-out forwards}
+.spark text{font:10px "DM Mono",monospace;fill:var(--muted)}
+.spark .grid{stroke:var(--line);stroke-width:1}
+.mvlist{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.mvlist div{background:var(--ground);border-radius:12px;padding:7px 9px;font-size:12px;color:var(--muted)}
+.mvlist b{display:block;font:600 15px "DM Mono",monospace;color:var(--text)}
+.mini-table{width:100%;border-collapse:collapse;font-size:13px}
+.mini-table td,.mini-table th{padding:6px 6px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.mini-table th{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.mini-table td:nth-child(2),.mini-table th:nth-child(2){text-align:left}
+.mini-table td:nth-child(2){display:flex;gap:7px;align-items:center}
+.mini-table tr.me td{background:color-mix(in srgb,var(--acc) 12%,transparent);font-weight:700}
+.mini-table tr.gap td{border-bottom:0;color:var(--faint);text-align:center;padding:0}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.twocol > div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fchips{display:flex;gap:5px;flex-wrap:wrap}
+.fchip{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px 5px;border-radius:12px;background:var(--ground);border-bottom:3px solid var(--faint);min-width:42px;animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
+.fchip.W{border-color:var(--good)} .fchip.L{border-color:var(--bad)} .fchip.D{border-color:var(--muted)}
+.fchip b{font:600 12px "DM Mono",monospace} .fchip small{font-size:9.5px;color:var(--muted)}
+.split{font-size:12.5px;color:var(--muted);background:var(--ground);border-radius:12px;padding:8px 10px}
+.split b{color:var(--text)}
+.absent{display:flex;flex-wrap:wrap;gap:5px}
+.absent span{font-size:12px;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--bad) 13%,var(--ground));color:var(--text)}
+.absent span.key{background:color-mix(in srgb,var(--bad) 30%,var(--ground));font-weight:700}
+.pitch .pl.out circle{opacity:.35}
+.pitch .pl .x{stroke:var(--bad);stroke-width:.7;stroke-linecap:round}
+.pct{display:flex;flex-direction:column;gap:8px}
+.pctrow{display:grid;grid-template-columns:132px 1fr 44px;gap:10px;align-items:center;font-size:12.5px}
+.pctrow .tr{height:9px;border-radius:999px;background:var(--raised);overflow:hidden;position:relative}
+.pctrow .tr i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 45%,var(--raised)),var(--c));transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.pctrow .num{text-align:right}
+.analytics{padding-bottom:48px}
+.angrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.angrid .panel{display:flex;flex-direction:column;gap:10px}
+.angrid h3{font-size:20px;font-weight:700;line-height:1.15}
+.angrid svg{width:100%;height:auto;display:block}
+.chart text{font:10.5px "DM Mono",monospace;fill:var(--muted)}
+.chart .ax{stroke:var(--line)} .chart .diag{stroke:var(--faint);stroke-dasharray:4 4}
+.chart .band2{fill:color-mix(in srgb,var(--acc) 10%,transparent)} .chart .band1{fill:color-mix(in srgb,var(--acc) 18%,transparent)}
+.chart .exp{stroke:var(--faint);stroke-dasharray:5 4;fill:none;stroke-width:1.6}
+.chart .me{stroke:var(--brand);fill:none;stroke-width:2.4;stroke-dasharray:1200;stroke-dashoffset:1200;animation:draw 1.6s ease-out forwards}
+.chart .dot{fill:var(--acc);stroke:var(--ground);stroke-width:2;transform-box:fill-box;transform-origin:center;animation:pop .5s both}
+.chart .err{stroke:var(--acc);stroke-width:1.5}
+.near{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.near div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;font-size:13px;background:var(--ground);border-radius:12px;padding:8px 10px}
+.near small{display:block;color:var(--muted);font-size:11.5px}
+.near .sc{font-family:"DM Mono",monospace;color:var(--bad);align-self:center}
+.filebtn{display:inline-flex;align-items:center;cursor:pointer}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--good) 70%,transparent)}70%{box-shadow:0 0 0 10px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@keyframes flash{0%{color:var(--brand);transform:scale(1.35)}100%{color:var(--text);transform:none}}
+@media (max-width:960px){.angrid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:520px){#teamTag{display:none}.livekv{grid-template-columns:1fr 1fr}.livekv div:last-child{grid-column:1 / -1}.lrow{grid-template-columns:34px minmax(0,1fr) auto;}.lrow .lp{display:none}
+  .sisbar{grid-template-columns:88px 1fr auto}.sisbar .pay{font-size:11.5px}.twocol{grid-template-columns:minmax(0,1fr)}.pctrow{grid-template-columns:110px 1fr 40px}.seg button{font-size:12px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.chain .step{stroke-dashoffset:0}}
 </style>
 
@@ -491,10 +616,11 @@ select{min-height:44px;border-radius:12px;border:1px solid var(--line);backgroun
     </div>
     <div class="builder">
       <div class="col">
+      <div class="panel live o0" id="livePanel" hidden aria-live="polite"></div>
       <div class="panel o3">
-        <div class="legs-head"><span class="eyebrow" id="legsCount"></span><button class="chip" id="snaiBtn">Enter SNAI prices</button></div>
+        <div class="legs-head"><span class="eyebrow" id="legsCount"></span><span class="legbtns2"><button class="chip" id="pasteBtn">Paste SNAI page</button><button class="chip" id="snaiBtn">Type prices</button></span></div>
         <div class="legs" id="legs"></div>
-        <div class="legs-note"><span class="fine">Tap a leg to see the match and swap the pick. A swapped pick is locked and the rest of the slip rebuilds around it.</span><button class="linkbtn" id="unlockAll" hidden>Unlock all picks</button></div>
+        <div class="legs-note"><span class="fine">Tap a leg to see the match and swap the pick. A swapped pick is locked and the rest of the slip rebuilds around it.</span><span class="legbtns2"><button class="linkbtn" id="demoLive">Preview live mode</button><button class="linkbtn" id="unlockAll" hidden>Unlock all picks</button></span></div>
       </div>
         <div class="panel o6">
           <span class="eyebrow">Stake</span>
@@ -505,6 +631,17 @@ select{min-height:44px;border-radius:12px;border:1px solid var(--line);backgroun
           </div>
           <p class="fine" style="margin-top:10px" id="evLine"></p>
           <div class="row2" style="margin-top:14px"><button class="btn ghost" id="copyBtn">Copy slip</button><button class="btn primary" id="placeBtn">Mark as placed</button></div>
+        </div>
+        <div class="panel o7 sis" id="sisPanel">
+          <div class="legs-head" style="margin-bottom:6px"><span class="eyebrow">Play it as a sistema</span><button class="linkbtn" id="sisWhat">What is a sistema?</button></div>
+          <div class="seg" id="sisSeg" role="group" aria-label="Errors allowed"></div>
+          <div id="sisBody"></div>
+          <label class="switch" for="sisBonus"><input type="checkbox" id="sisBonus"><span>Count SNAI's bonus on each ticket (check on SNAI first)</span></label>
+        </div>
+        <div class="panel o8" id="costPanel" hidden>
+          <span class="eyebrow">Where SNAI's margin is lowest</span>
+          <p class="fine" style="margin-top:6px" id="costNote"></p>
+          <div class="costs" id="costBoard"></div>
         </div>
       </div>
 
@@ -583,6 +720,17 @@ select{min-height:44px;border-radius:12px;border:1px solid var(--line);backgroun
         <div class="tablewrap"><table class="rt" id="evRules"></table></div>
         <p class="fine" id="evRulesNote"></p>
       </div>
+    </div>
+  </section>
+
+  <section class="analytics" aria-labelledby="anTitle">
+    <div class="builder-head"><div><span class="eyebrow" id="anTag">Your record</span><h2 class="display" id="anTitle">Is it working?</h2></div>
+      <span class="legbtns2"><button class="chip" id="anExport">Back up my slips</button><label class="chip filebtn">Restore<input type="file" id="anImport" accept="application/json" hidden></label></span></div>
+    <div class="angrid">
+      <div class="panel"><h3 class="display">When Scudi says 70%, is it 70%?</h3><p class="fine" id="calNote"></p><svg id="calChart" viewBox="0 0 340 230" role="img" aria-label="Promised against actual hit rate"></svg></div>
+      <div class="panel"><h3 class="display">Your money against luck</h3><p class="fine" id="moneyNote"></p><svg id="moneyChart" viewBox="0 0 340 230" role="img" aria-label="Profit over time against the range chance produces"></svg></div>
+      <div class="panel"><h3 class="display">Where slips break</h3><p class="fine">Legs lost, against what the chances said. A bar well past its marker is a leak.</p><div class="pairs" id="leaks"></div></div>
+      <div class="panel"><h3 class="display">Near misses and timing</h3><div class="kv" style="margin-top:0"><div><small>Beat the pre-kickoff price</small><span class="display" id="clvShare">–</span></div><div><small>Average price edge</small><span class="display" id="clvAvg">–</span></div></div><p class="fine" id="clvNote" style="margin-top:8px"></p><div class="near" id="nearList"></div></div>
     </div>
   </section>
 
@@ -810,7 +958,115 @@ var Scudi = (function () {
     return best;
   }
 
-  return { matrix: matrix, candidates: candidates, menuFor: menuFor, solve: solve, MARKETS: MARKETS, snaiBonus: snaiBonus, haircutFrom: haircutFrom, ratiosFrom: ratiosFrom, price: price, SNAI_FLOOR: SNAI_FLOOR };
+  /* ---------- how a pick settles on a score (mirrors scudi_slips.picks) ---------- */
+  var WINS = { '1': function (h, a) { return h > a; }, 'X': function (h, a) { return h === a; }, '2': function (h, a) { return h < a; },
+    '1X': function (h, a) { return h >= a; }, 'X2': function (h, a) { return h <= a; }, '12': function (h, a) { return h !== a; },
+    'O15': function (h, a) { return h + a >= 2; }, 'O25': function (h, a) { return h + a >= 3; }, 'U25': function (h, a) { return h + a <= 2; },
+    'U35': function (h, a) { return h + a <= 3; }, 'GG': function (h, a) { return h >= 1 && a >= 1; }, 'NG': function (h, a) { return h === 0 || a === 0; } };
+  function settles(code, h, a) { return WINS[code](h, a); }
+
+  /* ---------- in play: the chance a pick wins from the current score and minute ----------
+     The goals still to come follow the pre-match expected goals, scaled by the time left (93 minutes with stoppage).
+     Simple on purpose: no red cards, no game-state effects. At kickoff it is the pre-match view; at full time, the result. */
+  function pois(l, k) { var p = Math.exp(-l); for (var i = 1; i <= k; i++) p *= l / i; return p; }
+  function inplay(code, lh, la, h, a, minute, finished) {
+    if (finished) return settles(code, h, a) ? 1 : 0;
+    var r = Math.max(0, Math.min(1, (93 - (minute || 0)) / 93)), x, y, p = 0, tot = 0;
+    for (x = 0; x < 11; x++) for (y = 0; y < 11; y++) { var q = pois(lh * r, x) * pois(la * r, y); tot += q; if (settles(code, h + x, a + y)) p += q; }
+    return p / tot;
+  }
+
+  /* ---------- SNAI "sistema": every k-leg ticket from n legs (mirrors scudi_slips.sistema) ---------- */
+  var SIS = { perTicket: 0.05, perSystem: 2, maxWin: 10000 };
+  function elementary(xs, k) { var e = [1], j; for (j = 1; j <= k; j++) e[j] = 0; xs.forEach(function (x) { for (j = k; j >= 1; j--) e[j] += e[j - 1] * x; }); return e[k]; }
+  function choose(n, k) { var c = 1; for (var i = 1; i <= k; i++) c = c * (n - k + i) / i; return Math.round(c); }
+  function sistema(legs, k, stake, bonusOn) {
+    var n = legs.length; if (k < 1 || k > n) return null;
+    var tickets = choose(n, k), per = stake / tickets, errs = n - k, outcomes = [], profit = 0;
+    var bonusK = function (os) { if (!bonusOn) return 0; var c = os.filter(function (o) { return o >= SNAI_FLOOR; }).length; return snaiBonus(c); };
+    function combosOf(arr, r, cb) { var idx = []; (function rec(start, depth) { if (depth === r) { cb(idx.map(function (j) { return arr[j]; })); return; } for (var i = start; i < arr.length; i++) { idx[depth] = i; rec(i + 1, depth + 1); } })(0, 0); }
+    function payout(winners) {
+      if (winners.length < k) return 0;
+      var os = winners.map(function (i) { return legs[i].o; });
+      if (!bonusOn) return Math.min(per * elementary(os, k), SIS.maxWin * choose(winners.length, k));
+      var tot = 0; combosOf(os, k, function (c) { var pr = c.reduce(function (a, b) { return a * b; }, 1); tot += Math.min(per * pr * (1 + bonusK(c)), SIS.maxWin); }); return tot;
+    }
+    var all = legs.map(function (_, i) { return i; });
+    for (var m = 0; m <= errs; m++) {
+      var tot = 0, acc = 0, lo = Infinity, hi = -Infinity;
+      combosOf(all, m, function (losers) {
+        var ls = {}; losers.forEach(function (i) { ls[i] = 1; });
+        var pr = 1; all.forEach(function (i) { pr *= ls[i] ? 1 - legs[i].p : legs[i].p; });
+        var pay = payout(all.filter(function (i) { return !ls[i]; }));
+        tot += pr; acc += pr * pay; if (pay < lo) lo = pay; if (pay > hi) hi = pay; if (pay > stake) profit += pr;
+      });
+      outcomes.push({ losers: m, chance: tot, min: lo, max: hi, avg: tot ? acc / tot : 0 });
+    }
+    var any = outcomes.reduce(function (a, o) { return a + o.chance; }, 0), ev = outcomes.reduce(function (a, o) { return a + o.chance * o.avg; }, 0);
+    return { n: n, k: k, tickets: tickets, perTicket: per, minStake: Math.max(SIS.perSystem, SIS.perTicket * tickets), chanceAny: any, chanceProfit: profit, avgReturn: stake ? ev / stake : 0, outcomes: outcomes };
+  }
+
+  /* ---------- reading SNAI's page when it is copied and pasted ----------
+     The known matches of the week are the anchors: wherever a home name is followed closely by its away name, the prices
+     that come next belong to that match. Columns default to the order SNAI shows them (1 X 2 · 1X X2 12 · U O 2.5 · GG NG);
+     a header in the pasted text overrides the order of the groups. A row whose numbers do not add up is flagged, not used. */
+  var SNAI_COLS = ['1', 'X', '2', '1X', 'X2', '12', 'U25', 'O25', 'GG', 'NG'];
+  function fold(s) { return String(s || '').normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9.,:\/\-– \n]/g, ' ').replace(/[ \t]+/g, ' '); }
+  function firstAt(t, re) { var m = re.exec(t); return m ? m.index : -1; }
+  function columnsFrom(text) {
+    var t = ' ' + fold(text).replace(/\n/g, ' ') + ' ';
+    var under = firstAt(t, /\s(under|u)\s/), over = firstAt(t, /\s(over|o)\s/);
+    var ng = firstAt(t, /\s(no ?goal|ng)\s/), gg = firstAt(t, /\s(goal|gg)\s/);
+    var groups = [
+      { ids: ['1', 'X', '2'], at: firstAt(t, /\s1\s+x\s+2\s/) },
+      { ids: ['1X', 'X2', '12'], at: firstAt(t, /\s1x\s+x2\s+12\s/) },
+      { ids: over > -1 && (under < 0 || over < under) ? ['O25', 'U25'] : ['U25', 'O25'], at: under < 0 ? over : over < 0 ? under : Math.min(under, over) },
+      { ids: ng > -1 && (gg < 0 || ng < gg) ? ['NG', 'GG'] : ['GG', 'NG'], at: gg < 0 ? ng : ng < 0 ? gg : Math.min(gg, ng) }];
+    if (groups.filter(function (g) { return g.at > -1; }).length < 3) return SNAI_COLS.slice();
+    return groups.map(function (g, i) { return { g: g, at: g.at < 0 ? 1e9 + i : g.at }; }).sort(function (a, b) { return a.at - b.at; }).reduce(function (acc, x) { return acc.concat(x.g.ids); }, []);
+  }
+  function plausible(pr) {
+    var ok = function (ids, lo, hi) { if (!ids.every(function (i) { return pr[i] > 1; })) return true; var s = ids.reduce(function (a, i) { return a + 1 / pr[i]; }, 0); return s > lo && s < hi; };
+    return ok(['1', 'X', '2'], 1.0, 1.2) && ok(['U25', 'O25'], 1.0, 1.2) && ok(['GG', 'NG'], 1.0, 1.2) &&
+      (!(pr['1'] && pr['X'] && pr['1X']) || pr['1X'] < Math.min(pr['1'], pr['X'])) && (!(pr['2'] && pr['X'] && pr['X2']) || pr['X2'] < Math.min(pr['2'], pr['X']));
+  }
+  function parseSnai(text, matches) {
+    var t = fold(text), cols = columnsFrom(text), hits = [];
+    matches.forEach(function (m) {
+      var best = null;
+      (m.names || [[m.home], [m.away]])[0].forEach(function (h) {
+        h = fold(h).trim(); if (h.length < 3) return;
+        for (var i = t.indexOf(h); i > -1; i = t.indexOf(h, i + 1)) {
+          if (i > 0 && /[a-z]/.test(t[i - 1])) continue;
+          (m.names || [[m.home], [m.away]])[1].forEach(function (a) {
+            a = fold(a).trim(); if (a.length < 3) return;
+            var j = t.indexOf(a, i + h.length);
+            if (j > -1 && j - (i + h.length) <= 40 && !/[a-z]/.test(t[j + a.length] || ' ') && (!best || i < best.i)) best = { i: i, end: j + a.length };
+          });
+        }
+      });
+      if (best) hits.push({ match: m, i: best.i, end: best.end });
+    });
+    hits.sort(function (x, y) { return x.i - y.i; });
+    hits = hits.filter(function (h, n) { return !n || h.i >= hits[n - 1].end; });
+    return hits.map(function (h, n) {
+      var seg = t.slice(h.end, n + 1 < hits.length ? hits[n + 1].i : t.length), nums = [], re = /(^|[\s:])(\d{1,3}[.,]\d{1,2}|[-–])(?=\s|$)/g, x;
+      while ((x = re.exec(seg))) {
+        var tok = x[2];
+        if (x[1] === ':') continue;                                     /* a kick-off time */
+        if (/^[-–]$/.test(tok)) { nums.push(null); continue; }
+        if (/^\d[.,]5$/.test(tok) && nums.length >= 6 && nums.length <= 7) continue;   /* the 2.5 goals line printed between the columns */
+        nums.push(parseFloat(tok.replace(',', '.')));
+        if (nums.length >= cols.length) break;
+      }
+      var prices = {}; cols.forEach(function (c, i) { if (nums[i] != null && nums[i] > 1) prices[c] = nums[i]; });
+      var got = Object.keys(prices).length;
+      return { match: h.match, prices: prices, count: got, ok: got >= 3 && prices['1'] && prices['X'] && prices['2'] && plausible(prices) };
+    });
+  }
+
+  return { matrix: matrix, candidates: candidates, menuFor: menuFor, solve: solve, MARKETS: MARKETS, snaiBonus: snaiBonus, haircutFrom: haircutFrom, ratiosFrom: ratiosFrom, price: price, SNAI_FLOOR: SNAI_FLOOR,
+    settles: settles, inplay: inplay, sistema: sistema, SIS: SIS, parseSnai: parseSnai, columnsFrom: columnsFrom, SNAI_COLS: SNAI_COLS };
 })();
 if (typeof module !== 'undefined') module.exports = Scudi;
 
@@ -918,7 +1174,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
       .then(function (f) {
         var byKey = {}, list = Object.keys(f.teams || {}).map(function (k) { return f.teams[k]; });
         list.forEach(function (t) { (t.keys || [t.key]).forEach(function (k) { if (k && !byKey[k]) byKey[k] = t; }); if (t.key) byKey[t.key] = t; });
-        return { list: list, byKey: byKey, built: f.built_at ? new Date(f.built_at) : null, example: /example/i.test(f.source || ''), source: f.source || '' };
+        return { list: list, byKey: byKey, tables: f.tables || {}, built: f.built_at ? new Date(f.built_at) : null, example: /example/i.test(f.source || ''), source: f.source || '' };
       })
       .catch(function () { return null; });
   }
@@ -944,9 +1200,15 @@ if (typeof module !== 'undefined') module.exports = Scudi;
       .then(function (f) { PLAYERS = f.players || {}; return PLAYERS; }).catch(function () { PLAYERS = {}; return PLAYERS; });
     return playersPromise;
   }
-  Promise.all([loadData(), loadRecord(), loadSnai(), loadTeams()]).then(function (res) {
+  /* price history: data/history.json, one snapshot per match per price pull (tools/weekly.py) */
+  function loadHistory() {
+    return fetch('data/history.json', { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).catch(function () { return null; });
+  }
+  Promise.all([loadData(), loadRecord(), loadSnai(), loadTeams(), loadHistory()]).then(function (res) {
     res[0].snaiMatches = attachSnai(res[0].matches, res[2]); res[0].snaiReadAt = res[2].readAt;
     res[0].teams = res[3]; res[0].teamMatches = attachTeams(res[0].matches, res[3]);
+    res[0].history = res[4];
+    if (res[4]) res[0].matches.forEach(function (m) { var h = res[4][m.id]; if (h && h.snaps && h.snaps.length) m.hist = h.snaps; });
     boot(res[0], res[1]);
   });
   function boot(DATA, LIVE_RECORD) {
@@ -987,7 +1249,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
       minChance: 0, maxOdds: 0, minN: 0, minLg: 'Serie A', perLg: 0, excluded: {}, locks: {}, actual: {} };
     s.frontier = {}; s.curve = {}; s.prev = {}; s.key = null;
   }
-  SLIPS.forEach(function (s) { fresh(s); s.stake = 5; s.placed = false; });
+  SLIPS.forEach(function (s) { fresh(s); s.stake = 5; });
   /* header: what the page is showing and where it came from */
   (function () {
     var g = DATA.guard, dropped = (g.started || 0) + (g.outside_window || 0) + (g.too_few_books || 0) + (g.no_sharp || 0) + (g.bad_fit || 0);
@@ -1000,7 +1262,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   (function () { var t; for (t = 5; t <= 50; t += 5) LADDER.push(t); for (t = 60; t <= 100; t += 10) LADDER.push(t); for (t = 200; t <= 1000; t += 100) LADDER.push(t); })();
   function ladderIndex(t) { var best = 0, i; for (i = 0; i < LADDER.length; i++) if (Math.abs(LADDER[i] - t) < Math.abs(LADDER[best] - t)) best = i; return best; }
   $('#tTicks').innerHTML = [5, 25, 50, 100, 500, 1000].map(function (t) { return '<span style="left:' + (ladderIndex(t) / (LADDER.length - 1) * 100).toFixed(2) + '%">' + t + 'x</span>'; }).join('');
-  var active = SLIPS[0], monthUsed = 15;
+  var active = SLIPS[0];
 
   function poolOf(s) { var c = s.cfg; return ALL.filter(function (m) { return c.comps.indexOf(m.lg) > -1 && c.days.indexOf(m.day) > -1 && m.kick > NOW; }); }
   function startedOf(s) { var c = s.cfg; return ALL.filter(function (m) { return c.comps.indexOf(m.lg) > -1 && c.days.indexOf(m.day) > -1 && m.kick <= NOW; }).length; }
@@ -1066,7 +1328,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
       return '<button class="scard" data-slip="' + s.id + '" aria-pressed="' + (s === active) + '" style="--c:var(' + s.c + ')">' +
         '<div class="scard-top"><div class="scard-name"><b>' + s.name + '</b><span>' + s.sub + '</span></div><span class="pill">' + s.cfg.legs + ' legs</span></div>' +
         (r ? '<div class="scard-big"><strong class="display">1 in ' + Math.round(1 / r.prob).toLocaleString('en-GB') + '</strong><span>to land</span></div>' + pile(r) +
-             '<div class="scard-foot"><span>Pays <b class="num">' + r.pays.toFixed(1) + 'x</b></span><span class="' + (s.placed ? 'placed' : '') + '">' + (s.placed ? 'Placed · ' + euro(s.stake) : 'Not placed') + '</span></div>'
+             '<div class="scard-foot"><span>Pays <b class="num">' + r.pays.toFixed(1) + 'x</b></span>' + (function () { var pl = placedOf(s); return '<span class="' + (pl ? 'placed' : '') + '">' + (pl ? (pl.settled ? (pl.landed ? 'Landed · ' : 'Settled · ') : 'Placed · ') + euro(pl.stake) : 'Not placed') + '</span>'; })() + '</div>'
            : '<div class="scard-big"><span>No slip fits these rules</span></div><div class="scard-foot"><span>Loosen a rule</span></div>') + '</button>';
     }).join('');
   }
@@ -1147,7 +1409,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
       var moved = freshList || s.prev[x.match.id] !== x.pick.id, locked = !!c.locks[x.match.id];
       return '<button class="leg' + (moved ? ' flip' : '') + (locked ? ' locked' : '') + '" data-m="' + x.match.id + '" style="--i:' + (moved ? i++ : 0) + '">' +
         '<time>' + x.match.t.replace(' ', '<br>') + '</time>' +
-        '<span class="leg-mid"><span class="leg-match">' + (x.match.th || x.match.ta ? crest(x.match.th, 'xs', x.match.home) + crest(x.match.ta, 'xs', x.match.away) : '') + '<span>' + x.match.home + ' – ' + x.match.away + (multi ? ' · ' + x.match.lg : '') + '</span></span><span class="leg-pick">' + x.pick.label + '</span><span class="bar"><i style="width:' + (x.pick.p * 100).toFixed(1) + '%"></i></span></span>' +
+        '<span class="leg-mid"><span class="leg-match">' + (x.match.th || x.match.ta ? crest(x.match.th, 'xs', x.match.home) + crest(x.match.ta, 'xs', x.match.away) : '') + '<span>' + x.match.home + ' – ' + x.match.away + (multi ? ' · ' + x.match.lg : '') + '</span></span><span class="leg-pick">' + x.pick.label + '</span><span class="bar"><i style="width:' + (x.pick.p * 100).toFixed(1) + '%"></i></span>' + legMeta(x) + '</span>' +
         '<span class="leg-odds"><b class="num">' + x.pick.odds.toFixed(2) + '</b><small class="num">' + Math.round(x.pick.p * 100) + '%</small><span class="src' + (x.pick.checked ? ' ok' : '') + '">' + (x.pick.checked ? 'SNAI' : 'est.') + '</span></span>' +
         '<span class="lock">' + (locked ? LOCK : CHEV) + '</span></button>';
     }).join('');
@@ -1224,17 +1486,21 @@ if (typeof module !== 'undefined') module.exports = Scudi;
     $('#payout').textContent = euro(payout);
     $('#evBack').textContent = euro(back);
     $('#evLine').textContent = 'Played many times, a ' + euro(s.stake) + ' slip like this returns ' + euro(back) + ' on average: the bookmaker keeps about ' + Math.round((1 - back / s.stake) * 100) + '%.' + (r.bonus ? ' Without the bonus it would keep about ' + Math.round((1 - r.prob * r.odds) * 100) + '%.' : '') + (r.checked === nL ? '' : ' This becomes exact once SNAI\'s prices are entered.');
-    $('#placeBtn').textContent = s.placed ? 'Placed · undo' : 'Mark as placed';
-    $('#budget').textContent = '€' + monthUsed + ' of €100';
+    var pl = placedOf(s);
+    $('#placeBtn').textContent = pl ? (pl.settled ? 'Settled · in your record' : 'Placed · undo') : 'Mark as placed';
+    $('#budget').textContent = '€' + Math.round(monthStakes()) + ' of €100';
+    renderSistema(); renderCostBoard();
   }
   $('#targets').onclick = function (e) { var b = e.target.closest('[data-t]'); if (b) { active.cfg.target = +b.dataset.t; changed(); } };
   $('#explorer').onclick = function (e) { var b = e.target.closest('[data-legs]'); if (b) { active.cfg.legs = +b.dataset.legs; clampLegs(); changed(); } };
   $('#bonusIn').onchange = function () { active.cfg.bonusIn = this.checked; changed(this.checked ? 'The target now counts SNAI\'s bonus, so the slip can be a little safer.' : 'The target is back to the plain combined odds.'); };
   var sliderTimer;
   $('#tSlider').oninput = function () { var v = LADDER[+this.value]; $('#tBig').textContent = v + 'x'; $('#tBigNote').textContent = 'searching…'; clearTimeout(sliderTimer); sliderTimer = setTimeout(function () { active.cfg.target = v; changed(); }, 180); };
-  $('#stakes').onclick = function (e) { var b = e.target.closest('[data-stake]'); if (!b) return; if (active.placed) monthUsed += (+b.dataset.stake) - active.stake; active.stake = +b.dataset.stake; renderSide(); renderCards(); };
+  $('#stakes').onclick = function (e) { var b = e.target.closest('[data-stake]'); if (!b) return; active.stake = +b.dataset.stake;
+    var pl = placedOf(active); if (pl && !pl.settled) { var list = placedList(); list.forEach(function (p) { if (p.id === pl.id) p.stake = active.stake; }); savePlaced(list); }
+    renderSide(); renderCards(); };
   $('#unlockAll').onclick = function () { active.cfg.locks = {}; changed('All picks unlocked. Scudi chose again.'); };
-  $('#placeBtn').onclick = function () { var s = active; if (!s.result) return; s.placed = !s.placed; monthUsed += s.placed ? s.stake : -s.stake; renderSide(); renderCards(); toast(s.placed ? 'Marked as placed at SNAI. It will be graded when the last match ends.' : 'Removed from placed slips.'); };
+  $('#placeBtn').onclick = placeActive;
   $('#copyBtn').onclick = function () {
     var s = active; if (!s.result) return;
     var txt = 'Scudi · ' + s.name + ' · ' + s.result.odds.toFixed(2) + 'x\n' + s.result.picks.map(function (x, i) { return (i + 1) + '. ' + x.match.home + ' – ' + x.match.away + ': ' + x.pick.label + ' @ ' + x.pick.odds.toFixed(2); }).join('\n');
@@ -1296,7 +1562,9 @@ if (typeof module !== 'undefined') module.exports = Scudi;
       var pos = slots(E.formation, Math.max(11, E.xi.length)), used = {}, out = '';
       E.xi.forEach(function (e) { var k = e.slot >= 1 && e.slot <= pos.length && !used[e.slot] ? e.slot : null; if (!k) { for (k = 1; used[k]; k++); } used[k] = 1; var pt = pos[k - 1] || { x: 30, y: 34 };
         var x = mirror ? 105 - pt.x : pt.x, y = pt.y, nm = (e.p.short || e.p.name || '').replace(/^.\. /, '');
-        out += '<g class="pl" tabindex="0" role="button" data-team="' + t.id + '" data-pid="' + e.p.id + '" style="--i:' + (n++) + '" aria-label="' + esc(e.p.name) + '"><circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="2.7" fill="' + col + '"/>' +
+        var hurt = !!e.p.injured;
+        out += '<g class="pl' + (hurt ? ' out' : '') + '" tabindex="0" role="button" data-team="' + t.id + '" data-pid="' + e.p.id + '" style="--i:' + (n++) + '" aria-label="' + esc(e.p.name) + (hurt ? ', injured' : '') + '"><circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="2.7" fill="' + col + '"/>' +
+          (hurt ? '<path class="x" d="M' + (x - 1.6).toFixed(1) + ' ' + (y - 1.6).toFixed(1) + ' l3.2 3.2 M' + (x + 1.6).toFixed(1) + ' ' + (y - 1.6).toFixed(1) + ' l-3.2 3.2"/>' : '') +
           '<text x="' + x.toFixed(1) + '" y="' + (y + 0.8).toFixed(1) + '">' + esc(e.p.jersey || '') + '</text><text class="nm" x="' + x.toFixed(1) + '" y="' + (y + 5.4).toFixed(1) + '">' + esc(nm.length > 12 ? nm.slice(0, 11) + '…' : nm) + '</text></g>'; });
       return out;
     };
@@ -1374,7 +1642,8 @@ if (typeof module !== 'undefined') module.exports = Scudi;
     var hasTeams = !!(m.th || m.ta);
     var d = openDrawer('<div class="drawer-top"><span class="tag" style="color:var(--acc)"><span class="dot"></span>' + m.lg + ' · ' + m.t + '</span>' + CLOSE + '</div>' +
       '<h2 class="display" id="dTitle" hidden>' + esc(m.home) + ' v ' + esc(m.away) + '</h2>' + teamHead(m) +
-      (hasTeams ? '<div>' + pitch(m) + '</div>' + styleStrip(m) : '<p class="fine">No team data for this match yet. The team-data job (Thursday mornings, or "team data" under Actions) fills the pitch, the squads and the transfer histories.</p>') +
+      (hasTeams ? '<div>' + pitch(m) + '</div>' + absentBlock(m) + styleStrip(m) + formBlock(m) + miniTable(m) + splitLine(m) : '<p class="fine">No team data for this match yet. The team-data job (Thursday mornings, or "team data" under Actions) fills the pitch, the squads and the transfer histories.</p>') +
+      movementBlock(m) +
       '<div><span class="eyebrow">The market\'s view</span><div class="p3" style="margin-top:10px"><div><strong class="display">' + Math.round(c.home * 100) + '%</strong><small>' + (m.th ? crest(m.th, 'xs', m.home) + ' ' : '') + esc(m.home) + '</small></div><div><strong class="display">' + Math.round(c.draw * 100) + '%</strong><small>Draw</small></div><div><strong class="display">' + Math.round(c.away * 100) + '%</strong><small>' + esc(m.away) + (m.ta ? ' ' + crest(m.ta, 'xs', m.away) : '') + '</small></div></div>' +
       '<div class="pbar"><i class="h" style="flex:0 0 ' + (c.home * 100).toFixed(1) + '%"></i><i class="d" style="flex:1 1 0"></i><i class="a" style="flex:0 0 ' + (c.away * 100).toFixed(1) + '%"></i></div><p class="fine" style="margin-top:8px">' + (m.books ? 'Consensus of ' + m.books + ' bookmakers, margin removed' + (m.sharp ? ', ' + Math.round(m.sharp * 100) + '% of the weight from Pinnacle and Betfair' : '') + '.' : 'The market\'s view, bookmaker margin removed.') + '</p></div>' +
       '<div><span class="eyebrow">Likely scores</span><div class="heatwrap" style="margin-top:10px"><div class="heat" role="img" aria-label="Score grid">' + heat + '</div><div class="tops">' + c.scores.slice(0, 4).map(function (x) { return '<span><b class="display">' + x.h + '–' + x.a + '</b><span class="num muted">' + (x.p * 100).toFixed(1) + '%</span></span>'; }).join('') + '</div></div><p class="fine" style="margin-top:8px">Grid: ' + esc(m.home) + ' goals down (0 to 4+), ' + esc(m.away) + ' goals across. Brighter is likelier.</p></div>' +
@@ -1436,10 +1705,10 @@ if (typeof module !== 'undefined') module.exports = Scudi;
     var facts = [['height', p.height_cm ? p.height_cm + ' cm' : '–'], ['weight', p.weight_kg ? p.weight_kg + ' kg' : '–'], ['apps', st.appearances != null ? st.appearances : '–'], ['goals', st.totalGoals != null ? st.totalGoals : '–'], ['assists', st.goalAssists != null ? st.goalAssists : '–'], ['yellows', st.yellowCards != null ? st.yellowCards : '–'], ['saves', st.saves != null ? st.saves : null], ['born', p.dob || '–']].filter(function (f) { return f[1] !== null; }).slice(0, 8);
     var d = openDrawer('<div class="drawer-top"><button class="back" id="dBack">' + BACK + ' Back</button>' + CLOSE + '</div>' +
       '<div class="dview"><div class="phead"><span class="avatar" style="--c:' + col + '">' + esc(init) + (p.photo ? '<img src="' + esc(p.photo) + '" alt="">' : '') + '</span><div><h2 class="display" id="dTitle">' + esc(p.name) + '</h2>' +
-      '<div class="sub">' + (p.jersey ? '<b class="num">#' + esc(p.jersey) + '</b>' : '') + '<span>' + esc(p.posName || p.pos || '') + '</span>' + (p.age ? '<span>' + p.age + ' years</span>' : '') + (p.nat ? '<span>' + (p.flag ? '<img src="' + esc(p.flag) + '" alt=""> ' : '') + esc(p.nat) + '</span>' : '') + (p.injured ? '<span style="color:var(--bad);font-weight:700">injured</span>' : '') + '</div>' +
-      '<div class="sub" style="margin-top:6px">' + crest(t, 'xs', t.name) + ' <span>' + esc(t.name) + '</span></div></div></div>' +
+      '<div class="sub">' + (p.jersey ? '<b class="num">#' + esc(p.jersey) + '</b>' : '') + '<span>' + esc(p.posName || p.pos || '') + '</span>' + (p.age ? '<span>' + p.age + ' years</span>' : '') + (p.nat ? '<span>' + (p.flag ? '<img class="flag" src="' + esc(p.flag) + '" alt=""> ' : '') + esc(p.nat) + '</span>' : '') + (p.injured ? '<span style="color:var(--bad);font-weight:700">injured</span>' : '') + '</div>' +
+      '<div class="club">' + crest(t, 'sm', t.name) + '<span>' + esc(t.name) + '</span></div></div></div>' +
       '<div class="facts">' + facts.map(function (f) { return '<div><small>' + f[0] + '</small><b' + (String(f[1]).length > 6 ? ' class="long"' : '') + '>' + esc(f[1]) + '</b></div>'; }).join('') + '</div>' +
-      miniPitch(t, p) +
+      pctBlock(t, p) + miniPitch(t, p) +
       '<div><span class="eyebrow">Transfer history</span><div class="tl" id="tl" style="margin-top:6px"><p class="fine">Loading…</p></div></div></div>');
     $('#dBack').onclick = back;
     loadPlayers().then(function (P) {
@@ -1482,6 +1751,424 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeDrawer(); });
   var toastTimer;
   function toast(msg) { var t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove('on'); }, 3600); }
+
+  /* ====================================================================================================
+     v9 (decision 73): price movement, SNAI paste + cost meter, sistema, live tracker, richer preview, record analytics
+     ==================================================================================================== */
+  var SLUG = { 'Serie A': 'ita.1', 'Premier League': 'eng.1', 'La Liga': 'esp.1', 'Bundesliga': 'ger.1', 'Ligue 1': 'fra.1', 'Champions League': 'uefa.champions',
+    'Serie B': 'ita.2', 'Championship': 'eng.2', 'La Liga 2': 'esp.2', '2. Bundesliga': 'ger.2', 'Ligue 2': 'fra.2' };
+  function seeded(str) { var h = 2166136261; for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return function () { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 1000003) / 1000003; }; }
+  function store(key, fallback) { try { var v = JSON.parse(localStorage.getItem(key) || 'null'); return v == null ? fallback : v; } catch (e) { return fallback; } }
+  function save(key, v) { try { localStorage.setItem(key, JSON.stringify(v)); } catch (e) {} }
+  function costColour(c) { return c >= -0.05 ? 'var(--good)' : c >= -0.08 ? 'var(--brand)' : 'var(--bad)'; }
+  function hhmm(d) { return ROME.format(d).slice(-5); }
+  function download(name, obj) {
+    if (!/github\.io$|^localhost$|^127\./.test(location.hostname) && location.protocol !== 'file:') { toast('Saving files works on your own site, not in this preview.'); return; }
+    try { var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(obj, null, 1)], { type: 'application/json' })); a.download = name; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
+    catch (e) { toast('Downloads are blocked in this preview. They work on the real site.'); }
+  }
+
+  /* ---------- 1. price movement ---------- */
+  if (!DATA.live) ALL.forEach(function (m) {            /* the preview has no pulls: example movement so the view can be seen */
+    if (m.hist) return;
+    var c = m.calc || (m.calc = Scudi.matrix(m.lh, m.la)), r = seeded(m.id + m.home), t0 = m.kick.getTime() - 36e5 * 34, d = 0;
+    m.hist = [0, 1, 2].map(function (i) { if (i) d += (r() - 0.5) * 0.045; var h = Math.max(0.05, c.home + d), a = Math.max(0.05, c.away - d * 0.75);
+      return { t: new Date(t0 + i * 36e5 * 13).toISOString(), p: { '1': h, 'X': Math.max(0.05, 1 - h - a), '2': a } }; });
+    m.histExample = true;
+  });
+  function movementOf(m, id) { var H = m.hist; if (!H || H.length < 2 || H[0].p[id] == null || H[H.length - 1].p[id] == null) return null; return H[H.length - 1].p[id] - H[0].p[id]; }
+  function legMeta(x) {
+    var c = x.pick.cost, mv = movementOf(x.match, x.pick.id), bits = '';
+    bits += c >= 0 ? '<span class="cost" style="--c:var(--good)" title="This price is above the market\'s fair price">' + (x.pick.checked ? 'SNAI ' : '') + 'value +' + (c * 100).toFixed(1) + '%</span>'
+      : '<span class="cost' + (x.pick.checked ? '' : ' est') + '" style="--c:' + costColour(c) + '" title="What the bookmaker\'s margin costs you on this pick">' + (x.pick.checked ? 'SNAI margin ' : 'est. margin ') + (-c * 100).toFixed(1) + '%</span>';
+    if (mv != null && Math.abs(mv) >= 0.005) bits += '<span class="mv ' + (mv > 0 ? 'up' : 'down') + '" title="How the market\'s chance for this pick moved since the first price pull">' + (mv > 0 ? '▲' : '▼') + ' ' + Math.abs(mv * 100).toFixed(1) + ' pts</span>';
+    return '<span class="legmeta">' + bits + '</span>';
+  }
+  function movementBlock(m) {
+    var H = m.hist;
+    if (!H || H.length < 2) return '<div><span class="eyebrow">Price movement</span><p class="fine" style="margin-top:6px">One price pull so far. The line appears after the next pull (every match-day morning).</p></div>';
+    var W = 340, Hh = 120, x0 = 30, x1 = W - 34, y0 = 10, y1 = Hh - 22, ids = [['1', 'var(--home)', m.home], ['X', 'var(--draw)', 'Draw'], ['2', 'var(--away)', m.away]];
+    var vals = []; H.forEach(function (s) { ids.forEach(function (d) { if (s.p[d[0]] != null) vals.push(s.p[d[0]]); }); });
+    var lo = Math.max(0, Math.min.apply(null, vals) - 0.04), hi = Math.min(1, Math.max.apply(null, vals) + 0.04);
+    var X = function (i) { return x0 + (x1 - x0) * i / (H.length - 1); }, Y = function (v) { return y0 + (y1 - y0) * (1 - (v - lo) / (hi - lo)); };
+    var svg = '<svg class="spark" viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="How the chances moved between price pulls">';
+    [lo, (lo + hi) / 2, hi].forEach(function (v) { svg += '<line class="grid" x1="' + x0 + '" x2="' + x1 + '" y1="' + Y(v).toFixed(1) + '" y2="' + Y(v).toFixed(1) + '"/><text x="' + (x0 - 4) + '" y="' + (Y(v) + 3).toFixed(1) + '" text-anchor="end">' + Math.round(v * 100) + '</text>'; });
+    ids.forEach(function (d, k) {
+      var pts = H.map(function (s, i) { return s.p[d[0]] == null ? null : [X(i), Y(s.p[d[0]])]; }).filter(Boolean);
+      if (pts.length < 2) return;
+      svg += '<path class="ln" style="stroke:' + d[1] + ';animation-delay:' + (k * 150) + 'ms" d="M' + pts.map(function (p) { return p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' L') + '"/>';
+      var l = pts[pts.length - 1]; svg += '<circle cx="' + l[0].toFixed(1) + '" cy="' + l[1].toFixed(1) + '" r="3" fill="' + d[1] + '"/>';
+    });
+    svg += '<text x="' + x0 + '" y="' + (Hh - 4) + '">' + esc(ROME_DAY.format(new Date(H[0].t)) + ' ' + hhmm(new Date(H[0].t))) + '</text><text x="' + x1 + '" y="' + (Hh - 4) + '" text-anchor="end">' + esc(ROME_DAY.format(new Date(H[H.length - 1].t)) + ' ' + hhmm(new Date(H[H.length - 1].t))) + '</text></svg>';
+    var list = '<div class="mvlist">' + ids.map(function (d) { var a = H[0].p[d[0]], b = H[H.length - 1].p[d[0]]; if (a == null || b == null) return ''; var dv = (b - a) * 100;
+      return '<div>' + esc(d[2]) + '<b>' + Math.round(b * 100) + '% <span class="mv ' + (dv > 0.4 ? 'up' : dv < -0.4 ? 'down' : '') + '">' + (dv > 0 ? '+' : '') + dv.toFixed(1) + '</span></b></div>'; }).join('') + '</div>';
+    return '<div><span class="eyebrow">Price movement · ' + H.length + ' pulls</span><div style="margin-top:8px">' + svg + '</div>' + list +
+      '<p class="fine" style="margin-top:8px">The market\'s chances at each price pull, margin removed. Late moves usually carry team news.' + (m.histExample ? ' Example movement: real pulls replace it.' : '') + '</p></div>';
+  }
+
+  /* ---------- 2. SNAI: paste the page, see the margin ---------- */
+  var IT_NAMES = { 'bayern munich': ['bayern monaco'], 'bayern': ['bayern monaco'], 'barcelona': ['barcellona'], 'sevilla': ['siviglia'], 'rb leipzig': ['lipsia'], 'leipzig': ['lipsia'],
+    'cologne': ['colonia'], 'koln': ['colonia'], 'freiburg': ['friburgo'], 'stuttgart': ['stoccarda'], 'mainz': ['magonza'], 'marseille': ['marsiglia'], 'nice': ['nizza'], 'lyon': ['lione'],
+    'mallorca': ['maiorca'], 'paris saint germain': ['psg', 'paris sg', 'paris saint-germain'], 'psg': ['paris sg', 'paris saint-germain'], 'eintracht frankfurt': ['eintracht francoforte', 'francoforte'],
+    'frankfurt': ['francoforte'], 'borussia monchengladbach': ['monchengladbach', "borussia m'gladbach", 'gladbach'], 'gladbach': ['monchengladbach'], 'atletico madrid': ['atl. madrid', 'atletico'],
+    'atletico': ['atletico madrid'], 'sporting cp': ['sporting lisbona', 'sporting'], 'club brugge': ['bruges', 'club bruges'], 'slavia praha': ['slavia praga'], 'slavia prague': ['slavia praga'],
+    'union berlin': ['union berlino'], 'augsburg': ['augusta'], 'strasbourg': ['strasburgo'], 'toulouse': ['tolosa'], 'manchester united': ['manchester utd', 'man utd'], 'man united': ['manchester utd', 'manchester united'],
+    'man city': ['manchester city'], 'tottenham': ['tottenham hotspur'], 'wolfsburg': ['wolfsburg'], 'bodo glimt': ['bodo/glimt', 'bodo glimt'], 'shakhtar donetsk': ['shakhtar'], 'fenerbahce': ['fenerbahce'],
+    'monaco': ['monaco'], 'inter': ['inter', 'internazionale'], 'internazionale': ['inter'], 'milan': ['milan'], 'ac milan': ['milan'] };
+  function namesFor(m) {
+    var out = [[m.home], [m.away]];
+    [[m.home, m.th, 0], [m.away, m.ta, 1]].forEach(function (x) {
+      var list = out[x[2]], k = tkey(x[0]);
+      if (x[1]) { list.push(x[1].name, x[1].short); (IT_NAMES[tkey(x[1].name)] || []).forEach(function (n) { list.push(n); }); }
+      (IT_NAMES[k] || []).forEach(function (n) { list.push(n); });
+      var w = String(x[0]).split(/\s+/); if (w.length > 1 && w[0].length >= 4) list.push(w[0]);
+    });
+    return out.map(function (l) { return l.filter(function (v, i) { return v && l.indexOf(v) === i; }); });
+  }
+  function openPaste() {
+    var d = openDrawer('<div class="drawer-top"><span class="tag" style="color:var(--acc)"><span class="dot"></span>SNAI prices</span>' + CLOSE + '</div>' +
+      '<div class="paste dview"><div><h2 class="display" id="dTitle" style="font-size:26px">Paste SNAI\'s page</h2><p class="fine" style="margin-top:6px">On snai.it open the competition (Serie A, Premier League…). Press <b>Ctrl + A</b>, then <b>Ctrl + C</b> (on a phone: select all, copy) and paste it below. Scudi finds this week\'s matches in the text and reads 1 X 2, double chance, under/over 2.5 and goal/no goal. Nothing leaves your browser.</p></div>' +
+      '<textarea id="pasteIn" placeholder="Paste SNAI\'s page here…" spellcheck="false"></textarea><div class="row2"><button class="btn ghost" id="pasteClear">Clear</button><button class="btn primary" id="pasteRead">Read prices</button></div><div id="pasteOut" class="form"></div></div>');
+    var rows = [];
+    $('#pasteClear').onclick = function () { $('#pasteIn').value = ''; $('#pasteOut').innerHTML = ''; rows = []; };
+    $('#pasteRead').onclick = function () {
+      var text = $('#pasteIn').value;
+      if (text.trim().length < 20) { toast('Paste the page first.'); return; }
+      rows = Scudi.parseSnai(text, ALL.map(function (m) { return { id: m.id, home: m.home, away: m.away, names: namesFor(m), ref: m }; }));
+      if (!rows.length) { $('#pasteOut').innerHTML = '<p class="fine">No match of this week was found in the text. Check it is SNAI\'s page for the right competition; if it is, send the pasted text to Claude so the reader can learn its layout.</p>'; return; }
+      var cols = Scudi.columnsFrom(text), good = rows.filter(function (r) { return r.ok; }).length;
+      $('#pasteOut').innerHTML = '<p class="fine">' + rows.length + ' match' + (rows.length > 1 ? 'es' : '') + ' found, ' + good + ' look right. Columns read as ' + cols.map(function (c) { return PICK_NAMES[c] || (c === 'NG' ? 'No goal' : c); }).join(' · ') + '. Untick anything wrong.</p>' +
+        rows.map(function (r, i) { var m = r.match.ref;
+          return '<label class="prow2' + (r.ok ? '' : ' bad') + '"><input type="checkbox" data-i="' + i + '"' + (r.ok ? ' checked' : '') + '><span><span class="nm">' + crest(m.th, 'xs', m.home) + crest(m.ta, 'xs', m.away) + esc(m.home) + ' – ' + esc(m.away) + '</span>' +
+            '<span class="px">' + Scudi.SNAI_COLS.concat().map(function (c) { return r.prices[c] ? (c === 'NG' ? 'NG' : c) + ' <b>' + r.prices[c].toFixed(2) + '</b>' : ''; }).join(' ') + (r.ok ? '' : ' · <span style="color:var(--bad)">numbers do not add up: check</span>') + '</span></span></label>'; }).join('') +
+        '<div class="row2"><button class="btn ghost" id="pasteSave">Save as snai.json</button><button class="btn primary" id="pasteUse">Use ' + good + ' matches</button></div>';
+      $$('#pasteOut input').forEach(function (b) { b.onchange = function () { $('#pasteUse').textContent = 'Use ' + $$('#pasteOut input:checked').length + ' matches'; }; });
+      $('#pasteUse').onclick = function () {
+        var chosen = $$('#pasteOut input:checked').map(function (b) { return rows[+b.dataset.i]; });
+        if (!chosen.length) { toast('Tick at least one match.'); return; }
+        var typed = {}; chosen.forEach(function (r) { typed[r.match.ref.id] = r.prices; });
+        remember(Scudi.ratiosFrom(chosen.map(function (r) { return r.match.ref; }), typed));
+        var keep = store('scudi-snai-typed', {});
+        chosen.forEach(function (r) { var m = r.match.ref; m.snai = Object.assign({}, m.snai || {}, r.prices); keep[matchKey(m)] = Object.assign(keep[matchKey(m)] || {}, r.prices); });
+        save('scudi-snai-typed', keep);
+        DATA.snaiMatches = ALL.filter(function (m) { return m.snai; }).length;
+        $('#srcTag').textContent = $('#srcTag').textContent.replace(/ · SNAI prices for \d+/, '') + ' · SNAI prices for ' + DATA.snaiMatches;
+        SLIPS.forEach(function (s) { s.result = undefined; s.frontier = {}; s.curve = {}; s.key = null; });
+        closeDrawer(); changed('SNAI prices read for ' + chosen.length + ' match' + (chosen.length > 1 ? 'es' : '') + '. The slips were rebuilt at SNAI\'s prices.');
+      };
+      $('#pasteSave').onclick = function () {
+        var chosen = $$('#pasteOut input:checked').map(function (b) { return rows[+b.dataset.i]; }), prices = {};
+        chosen.forEach(function (r) { var m = r.match.ref; prices[ROME_ISO.format(m.kick) + ' ' + m.home + ' ' + m.away] = r.prices; });
+        download('snai.json', { note: 'SNAI prices read from a pasted page. Upload to the data folder of the repository to use them on every device.', read_at: new Date().toISOString(), prices: prices });
+      };
+    };
+    setTimeout(function () { $('#pasteIn').focus(); }, 80);
+  }
+  $('#pasteBtn').onclick = openPaste;
+  function renderCostBoard() {
+    var h = Scudi.haircutFrom([], {}, MEMORY), rows = [], seen = 0;
+    ALL.forEach(function (m) { if (!m.snai || m.kick <= NOW) return; seen++; Scudi.candidates(m, 1.01, {}, h).forEach(function (c) { if (c.checked && c.odds >= Scudi.SNAI_FLOOR) rows.push({ m: m, c: c }); }); });
+    $('#costPanel').hidden = !rows.length;
+    if (!rows.length) return;
+    rows.sort(function (a, b) { return b.c.cost - a.c.cost; });
+    var margins = rows.map(function (r) { return -r.c.cost; }).sort(function (a, b) { return a - b; }), med = margins[Math.floor(margins.length / 2)];
+    var show = rows.slice(0, 7).concat([null]).concat(rows.slice(-3));
+    $('#costNote').textContent = 'SNAI prices for ' + seen + ' upcoming match' + (seen > 1 ? 'es' : '') + ', ' + rows.length + ' picks at 1.25 or more. Median margin ' + (med * 100).toFixed(1) + '%. The builder already prefers the cheap picks; this is where they are, and the dearest three. A green "+" means SNAI pays more than the market\'s fair price: rare, and worth a second look at the price.';
+    $('#costBoard').innerHTML = show.map(function (r) {
+      if (!r) return '<span class="grp">Dearest</span>';
+      var mg = Math.max(0, -r.c.cost);
+      return '<div class="crow"><span>' + crest(r.m.th, 'xs', r.m.home) + '</span><span class="nm"><b>' + esc(r.c.label) + '</b> <span class="muted">' + esc(r.m.home) + ' – ' + esc(r.m.away) + '</span></span><span class="tr" style="--c:' + costColour(r.c.cost) + '"><i style="width:' + Math.min(100, mg / 0.12 * 100).toFixed(1) + '%"></i></span><span class="num"' + (r.c.cost > 0 ? ' style="color:var(--good)"' : '') + '>' + (r.c.cost > 0 ? '+' + (r.c.cost * 100).toFixed(1) : (mg * 100).toFixed(1)) + '%</span></div>';
+    }).join('');
+  }
+
+  /* ---------- 3. sistema ---------- */
+  var SISS = { errs: 0, bonus: false };
+  function renderSistema() {
+    var s = active, r = s.result, seg = $('#sisSeg'), box = $('#sisBody');
+    if (!r) { seg.innerHTML = ''; box.innerHTML = '<p class="fine">No slip to split.</p>'; return; }
+    var n = r.picks.length, maxE = Math.min(3, Math.max(0, n - 2));
+    if (SISS.errs > maxE) SISS.errs = 0;
+    seg.innerHTML = [0, 1, 2, 3].map(function (e) { return '<button data-e="' + e + '" aria-pressed="' + (e === SISS.errs) + '"' + (e > maxE ? ' disabled' : '') + '>' + (e === 0 ? 'Plain slip' : e + ' error' + (e > 1 ? 's' : '')) + '</button>'; }).join('');
+    $('#sisBonus').checked = SISS.bonus;
+    var legs = r.picks.map(function (x) { return { p: x.pick.p, o: x.pick.odds }; }), k = n - SISS.errs, stake = s.stake;
+    var plan = Scudi.sistema(legs, k, stake, SISS.errs ? SISS.bonus : true), plain = Scudi.sistema(legs, n, stake, true);
+    var money = function (v) { return v >= 100 ? '€' + Math.round(v).toLocaleString('en-GB') : '€' + v.toFixed(2); };
+    var rows = plan.outcomes.map(function (o) { return { label: o.losers === 0 ? 'All ' + n + ' win' : o.losers + ' leg' + (o.losers > 1 ? 's' : '') + ' lose' + (o.losers > 1 ? '' : 's'), chance: o.chance, pay: Math.abs(o.max - o.min) < 0.005 ? money(o.min) : money(o.min) + '–' + money(o.max).slice(1) }; });
+    rows.push({ label: (SISS.errs + 1) + '+ legs lose', chance: 1 - plan.chanceAny, pay: '€0', zero: true });
+    var top = Math.max.apply(null, rows.map(function (x) { return x.chance; }));
+    var short = stake < plan.minStake - 1e-9;
+    box.innerHTML = '<p class="fine" style="margin:10px 0 8px">' + (SISS.errs ? 'SNAI turns your ' + n + ' picks into every ' + k + '-leg slip that can be made from them: <b>' + plan.tickets + ' tickets</b> at ' + money(plan.perTicket) + ' each. All ' + n + ' right pays the most; ' + (SISS.errs === 1 ? 'one wrong' : 'up to ' + SISS.errs + ' wrong') + ' still pays the tickets that avoided the misses.' : 'Your ' + n + ' picks as one ticket: everything must win. Choose "1 error" to see the same picks as a sistema.') + '</p>' +
+      '<div class="kv" style="margin-top:0;grid-template-columns:repeat(3,1fr)"><div><small>Something comes back</small><span class="display">' + (plan.chanceAny * 100).toFixed(1) + '%</span></div><div><small>Ends in profit</small><span class="display">' + (plan.chanceProfit * 100).toFixed(1) + '%</span></div><div><small>Average back per €1</small><span class="display">€' + plan.avgReturn.toFixed(2) + '</span></div></div>' +
+      '<div class="sisbars">' + rows.map(function (x) { return '<div class="sisbar' + (x.zero ? ' zero' : '') + '"><span>' + x.label + '</span><span class="tr"><i style="width:' + (x.chance / top * 100).toFixed(1) + '%"></i></span><span class="pay">' + (x.chance * 100).toFixed(1) + '% · ' + x.pay + '</span></div>'; }).join('') + '</div>' +
+      '<p class="fine" style="margin-top:10px">' + (SISS.errs ? (short ? '<b style="color:var(--bad)">SNAI needs at least ' + money(plan.minStake) + ' for this sistema (€0.05 a ticket, €2 a system).</b> ' : 'SNAI minimum for this sistema: ' + money(plan.minStake) + '. ') +
+        'Plain slip for comparison: ' + (plain.chanceAny * 100).toFixed(1) + '% to get anything back, €' + plain.avgReturn.toFixed(2) + ' back per €1 on average. A sistema does not beat the margin: it trades the top prize for a much better chance of getting something back.' : 'The bars show what happens to this slip. Most weeks, one or two legs fail.') + '</p>';
+  }
+  $('#sisSeg').onclick = function (e) { var b = e.target.closest('[data-e]'); if (!b || b.disabled) return; SISS.errs = +b.dataset.e; renderSistema(); };
+  $('#sisBonus').onchange = function () { SISS.bonus = this.checked; renderSistema(); };
+  $('#sisWhat').onclick = function () {
+    openDrawer('<div class="drawer-top"><span class="tag" style="color:var(--acc)"><span class="dot"></span>Sistema</span>' + CLOSE + '</div><div class="dview"><h2 class="display" id="dTitle" style="font-size:26px">What a sistema is</h2>' +
+      '<p>A normal slip is one ticket: every leg must win. A <b>sistema</b> takes the same picks and places <b>every smaller slip</b> that can be made from them, each as its own ticket, with your stake split between them.</p>' +
+      '<p><b>Example:</b> 10 picks as "9 su 10" (one error allowed) = the 10 different slips of 9 legs, each leaving out one pick. With €10, each ticket gets €1.</p>' +
+      '<div class="split"><b>All 10 win</b>: all 10 tickets pay. You get a little less than the plain slip would have paid, because each ticket is one leg shorter.</div>' +
+      '<div class="split"><b>Exactly one loses</b>: the plain slip would pay nothing; here one ticket (the one that left that pick out) still pays about a tenth of the full prize. Losing a long-priced leg leaves more; losing a short one leaves less.</div>' +
+      '<div class="split"><b>Two or more lose</b>: nothing comes back, as with the plain slip.</div>' +
+      '<p>"2 errors" makes every 8-leg slip (45 tickets for 10 picks) and "3 errors" every 7-leg slip (120 tickets). SNAI asks at least €0.05 a ticket and €2 a system. It does not change the maths of the margin; it swaps a chance at the big prize for a far better chance of getting part of your stake back, which is why Scudi shows both next to each other.</p>' +
+      '<p class="fine">On SNAI: add the picks, open <b>Sistema</b>, choose the "' + 'k su n' + '" line (for example 9 su 10) and the stake per ticket. SNAI\'s rules do not say whether the Bonus Multipla applies to system tickets; check it on your account and use the switch if it does.</p></div>');
+  };
+
+  /* ---------- 4. placed slips, the live tracker, settlement ---------- */
+  function placedList() { return store('scudi-placed', []); }
+  function savePlaced(list) { save('scudi-placed', list); }
+  function sigOf(s) { return s.result ? s.name + '|' + s.result.picks.map(function (x) { return x.match.id + ':' + x.pick.id; }).join(',') : ''; }
+  function placedOf(s) { var sig = sigOf(s); return sig ? placedList().filter(function (p) { return p.sig === sig; })[0] : null; }
+  function monthStakes() { var now = new Date(), key = now.getFullYear() + '-' + now.getMonth(); return placedList().filter(function (p) { var d = new Date(p.at); return d.getFullYear() + '-' + d.getMonth() === key; }).reduce(function (a, p) { return a + p.stake; }, 0); }
+  function placeActive() {
+    var s = active, r = s.result; if (!r) return;
+    var list = placedList(), have = placedOf(s);
+    if (have) { if (have.settled) { toast('That slip is already settled; it stays in your record.'); return; } savePlaced(list.filter(function (p) { return p.id !== have.id; })); toast('Removed from placed slips.'); }
+    else {
+      list.push({ id: Date.now(), sig: sigOf(s), name: s.name + (s.sub && /night/.test(s.sub) ? ' ' + s.sub.split(' ')[0] : ''), at: new Date().toISOString(), target: s.cfg.target, stake: s.stake, odds: r.odds, bonus: r.bonus, pays: r.pays, prob: r.prob,
+        legs: r.picks.map(function (x) { var m = x.match; return { mid: m.id, home: m.home, away: m.away, lg: m.lg, kick: m.kick.toISOString(), code: x.pick.id, label: x.pick.label, p: x.pick.p, odds: x.pick.odds, checked: !!x.pick.checked, lh: m.lh, la: m.la, th: m.th ? m.th.id : null, ta: m.ta ? m.ta.id : null }; }) });
+      savePlaced(list); toast('Marked as placed. Scudi follows it live on match day and adds it to your record when it settles.');
+    }
+    renderSide(); renderCards(); renderAnalytics(); liveTick();
+  }
+  var LIVE = { timer: null, demo: null, updated: null, error: null, shown: null, lastScores: {} };
+  function espnDate(d) { return ROME_ISO.format(d).replace(/-/g, ''); }
+  function fetchBoards(pairs) {
+    return Promise.all(pairs.map(function (p) {
+      return fetch('https://site.web.api.espn.com/apis/site/v2/sports/soccer/' + p[0] + '/scoreboard?dates=' + p[1], { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (j) { return j.events || []; });
+    })).then(function (lists) { return [].concat.apply([], lists); });
+  }
+  function eventFor(leg, events) {
+    var kick = new Date(leg.kick).getTime();
+    return events.filter(function (ev) {
+      var c = ((ev.competitions || [])[0] || {}).competitors || [], ids = c.map(function (x) { return String((x.team || {}).id); }), nm = c.map(function (x) { return tkey((x.team || {}).displayName || ''); });
+      var byId = leg.th != null && leg.ta != null && ids.indexOf(String(leg.th)) > -1 && ids.indexOf(String(leg.ta)) > -1;
+      var byName = nm.some(function (n) { return n && (n.indexOf(tkey(leg.home)) > -1 || tkey(leg.home).indexOf(n) > -1); }) && nm.some(function (n) { return n && (n.indexOf(tkey(leg.away)) > -1 || tkey(leg.away).indexOf(n) > -1); });
+      return (byId || byName) && Math.abs(new Date(ev.date).getTime() - kick) < 36e5 * 6;
+    })[0];
+  }
+  function stateFrom(leg, ev) {
+    if (!ev) return { state: new Date(leg.kick) > new Date() ? 'pre' : 'unknown' };
+    var comp = ev.competitions[0], st = (comp.status || ev.status || {}), ty = st.type || {}, cs = comp.competitors;
+    var home = cs.filter(function (c) { return c.homeAway === 'home'; })[0], away = cs.filter(function (c) { return c.homeAway === 'away'; })[0];
+    var swap = leg.th != null && home && String(home.team.id) === String(leg.ta);
+    var h = +(swap ? away.score : home.score) || 0, a = +(swap ? home.score : away.score) || 0;
+    var minute = parseInt(String(st.displayClock || '0'), 10) || (ty.state === 'in' ? (st.period === 2 ? 60 : 20) : 0);
+    if (/half/i.test(ty.description || ty.shortDetail || '')) minute = 45;
+    return { state: ty.completed ? 'post' : ty.state === 'in' ? 'in' : ty.state === 'post' ? 'post' : 'pre', h: h, a: a, minute: minute, detail: ty.shortDetail || '' };
+  }
+  function legLive(leg, st) {
+    var p = st.state === 'post' ? (Scudi.settles(leg.code, st.h, st.a) ? 1 : 0) : st.state === 'in' ? Scudi.inplay(leg.code, leg.lh || 1.3, leg.la || 1.1, st.h, st.a, st.minute, false) : leg.p;
+    return { p: p, now: st.state === 'pre' ? null : Scudi.settles(leg.code, st.h, st.a) };
+  }
+  function settle(rec, states) {
+    var won = rec.legs.map(function (l, i) { return Scudi.settles(l.code, states[i].h, states[i].a); });
+    rec.settled = true; rec.settledAt = new Date().toISOString(); rec.landed = won.every(Boolean); rec.payout = rec.landed ? rec.stake * rec.pays : 0;
+    rec.legs.forEach(function (l, i) { l.won = won[i]; l.score = states[i].h + '-' + states[i].a;
+      var m = ALL.filter(function (x) { return x.id === l.mid; })[0], H = m && m.hist;
+      if (H && H.length) { var before = H.filter(function (s) { return s.t < l.kick; }), c = (before.length ? before : H)[before.length ? before.length - 1 : H.length - 1]; if (c.p[l.code] != null) { l.close = c.p[l.code]; l.clv = l.odds * c.p[l.code] - 1; } } });
+  }
+  function liveTick() {
+    clearTimeout(LIVE.timer);
+    if (LIVE.demo) return;
+    var now = Date.now(), list = placedList();
+    var due = list.filter(function (p) { return !p.settled && p.legs.some(function (l) { return new Date(l.kick).getTime() - now < 15 * 6e4; }); });
+    var recent = list.filter(function (p) { return p.settled && now - new Date(p.settledAt).getTime() < 12 * 36e5; });
+    if (!due.length) { LIVE.shown = recent.length ? { rec: recent[recent.length - 1], states: null } : null; renderLive(); if (list.some(function (p) { return !p.settled; })) LIVE.timer = setTimeout(liveTick, 5 * 6e4); return; }
+    var pairs = {}; due.forEach(function (p) { p.legs.forEach(function (l) { var s = SLUG[l.lg]; if (s) pairs[s + '|' + espnDate(new Date(l.kick))] = [s, espnDate(new Date(l.kick))]; }); });
+    fetchBoards(Object.keys(pairs).map(function (k) { return pairs[k]; })).then(function (events) {
+      LIVE.error = null; LIVE.updated = new Date();
+      var all = placedList(), any = false;
+      due.forEach(function (d) {
+        var rec = all.filter(function (p) { return p.id === d.id; })[0]; if (!rec) return;
+        var states = rec.legs.map(function (l) { return stateFrom(l, eventFor(l, events)); });
+        if (states.every(function (s) { return s.state === 'post'; })) { settle(rec, states); any = true; }
+        LIVE.shown = { rec: rec, states: states };
+      });
+      if (any) { savePlaced(all); renderAnalytics(); renderCards(); toast('A placed slip has settled. Your record is updated.'); }
+      renderLive();
+      LIVE.timer = setTimeout(liveTick, 6e4);
+    }).catch(function () { LIVE.error = 'ESPN\'s live scores could not be read from this browser. Tell Claude: a small background job can fetch them instead.'; LIVE.shown = { rec: due[0], states: null }; renderLive(); LIVE.timer = setTimeout(liveTick, 3 * 6e4); });
+  }
+  function clockRing(st) {
+    var f = st.state === 'post' ? 1 : st.state === 'in' ? Math.min(1, st.minute / 90) : 0, L = 94.2;
+    return '<span class="clock"><svg viewBox="0 0 36 36"><circle class="bg" cx="18" cy="18" r="15"/><circle class="fg" cx="18" cy="18" r="15" stroke-dasharray="' + (f * L).toFixed(1) + ' ' + L + '"/></svg><span>' + (st.state === 'post' ? 'FT' : st.state === 'in' ? st.minute + "'" : st.state === 'pre' ? hhmm(st.kick || new Date()) : '–') + '</span></span>';
+  }
+  function renderLive() {
+    var panel = $('#livePanel'), sh = LIVE.shown;
+    if (!sh) { panel.hidden = true; return; }
+    var rec = sh.rec, legs = rec.legs, states = sh.states || legs.map(function (l) { return l.score ? { state: 'post', h: +l.score.split('-')[0], a: +l.score.split('-')[1] } : { state: new Date(l.kick) > new Date() ? 'pre' : 'unknown' }; });
+    var lp = legs.map(function (l, i) { return legLive(l, states[i]); }), chance = lp.reduce(function (a, x) { return a * x.p; }, 1);
+    var done = states.filter(function (s) { return s.state === 'post'; }).length, lost = lp.some(function (x, i) { return states[i].state === 'post' && x.p === 0; }), landed = done === legs.length && !lost;
+    var inplay = states.filter(function (s) { return s.state === 'in'; }).length;
+    panel.hidden = false; panel.className = 'panel live o0' + (lost ? ' lost' : landed ? ' won' : '');
+    var title = landed ? 'Landed. It pays ' + euro(rec.stake * rec.pays) : lost ? 'Slip lost' : inplay ? 'Live · still alive' : done ? 'Half-time for the slip · still alive' : 'Kick-off soon';
+    var failed = lost ? legs.filter(function (l, i) { return states[i].state === 'post' && lp[i].p === 0; })[0] : null;
+    panel.innerHTML = '<div class="livehead"><div><span class="eyebrow"><span class="pulse"></span>' + (LIVE.demo ? 'Simulated matchday · ' : '') + esc(rec.name) + ' · ' + euro(rec.stake) + '</span><h3 class="display" style="margin-top:6px">' + title + '</h3>' +
+      (failed ? '<p class="fine" style="margin-top:4px">' + esc(failed.home) + ' – ' + esc(failed.away) + ' ' + states[legs.indexOf(failed)].h + '–' + states[legs.indexOf(failed)].a + ': ' + esc(failed.label.toLowerCase()) + ' did not come in.</p>' : '') + '</div></div>' +
+      '<div class="livekv"><div><small>Chance it lands now</small><b>' + (lost ? '0%' : landed ? '100%' : chance >= 0.01 ? (chance * 100).toFixed(1) + '%' : '1 in ' + Math.round(1 / chance).toLocaleString('en-GB')) + '</b></div><div><small>Legs won so far</small><b>' + lp.filter(function (x, i) { return states[i].state === 'post' && x.p === 1; }).length + ' of ' + legs.length + '</b></div><div><small>Pays if it lands</small><b>' + euro(rec.stake * rec.pays) + '</b></div></div>' +
+      '<div class="lrows">' + legs.map(function (l, i) {
+        var st = states[i], x = lp[i], cls = st.state === 'pre' || st.state === 'unknown' ? '' : x.now ? ' win' : ' lose', key = rec.id + ':' + i, sc = st.state === 'pre' || st.state === 'unknown' ? '–' : st.h + '–' + st.a, flash = LIVE.lastScores[key] && LIVE.lastScores[key] !== sc;
+        LIVE.lastScores[key] = sc; st.kick = new Date(l.kick);
+        return '<div class="lrow' + cls + (st.state === 'post' ? ' done' : '') + '">' + clockRing(st) + '<span style="min-width:0"><span class="who">' + crest(teamById(l.th), 'xs', l.home) + crest(teamById(l.ta), 'xs', l.away) + '<span>' + esc(l.home) + ' – ' + esc(l.away) + '</span></span><span class="pk">' + esc(l.label) + '</span></span><span class="sc' + (flash ? ' flash' : '') + '">' + sc + '</span><span class="lp">' + Math.round(x.p * 100) + '%<small>' + (st.state === 'post' ? (x.p ? 'won' : 'lost') : st.state === 'in' ? 'live' : 'to play') + '</small></span></div>';
+      }).join('') + '</div>' +
+      '<div class="livefoot"><span class="fine">' + (LIVE.error ? '<b style="color:var(--bad)">' + LIVE.error + '</b>' : LIVE.demo ? 'Simulated goals from each match\'s expected goals. Nothing here is real.' : LIVE.updated ? 'ESPN live scores · updated ' + hhmm(LIVE.updated) + ' · refreshes every minute' : 'Scores appear at kick-off.') + '</span>' +
+      (LIVE.demo ? '<button class="linkbtn" id="liveStop">Stop the simulation</button>' : '<button class="linkbtn" id="liveRefresh">Refresh now</button>') + '</div>';
+    if ($('#liveStop')) $('#liveStop').onclick = stopDemo;
+    if ($('#liveRefresh')) $('#liveRefresh').onclick = liveTick;
+  }
+  function startDemo() {
+    var r = active.result; if (!r) { toast('Build a slip first.'); return; }
+    stopDemo(true);
+    var rnd = seeded('demo' + Date.now()), legs = r.picks.map(function (x, i) { var m = x.match; return { mid: m.id, home: m.home, away: m.away, lg: m.lg, kick: new Date(Date.now() + (i % 3) * 9000).toISOString(), code: x.pick.id, label: x.pick.label, p: x.pick.p, odds: x.pick.odds, lh: m.lh, la: m.la, th: m.th ? m.th.id : null, ta: m.ta ? m.ta.id : null }; });
+    var rec = { id: 'demo', name: active.name, stake: active.stake, pays: r.pays, legs: legs }, states = legs.map(function () { return { state: 'pre', h: 0, a: 0, minute: 0 }; }), t0 = Date.now();
+    LIVE.demo = setInterval(function () {
+      var el = (Date.now() - t0) / 150;   /* one match minute every 0.15 s */
+      legs.forEach(function (l, i) { var start = (i % 3) * 60, m = Math.floor(el - start), st = states[i];
+        if (m < 0) return; if (m >= 93) { st.state = 'post'; st.minute = 90; return; }
+        st.state = 'in'; while (st.minute < m) { st.minute++; if (rnd() < l.lh / 93) st.h++; if (rnd() < l.la / 93) st.a++; } });
+      LIVE.shown = { rec: rec, states: states }; renderLive();
+      if (states.every(function (s) { return s.state === 'post'; })) { clearInterval(LIVE.demo); LIVE.demo = 'done'; renderLive(); }
+    }, 150);
+    $('#livePanel').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+  }
+  function stopDemo(quiet) { if (LIVE.demo && LIVE.demo !== 'done') clearInterval(LIVE.demo); LIVE.demo = null; LIVE.shown = null; LIVE.lastScores = {}; if (quiet !== true) liveTick(); }
+  $('#demoLive').onclick = function () { if (LIVE.demo) stopDemo(); else startDemo(); };
+
+  /* ---------- 5. richer match preview ---------- */
+  function miniTable(m) {
+    var tab = T && T.tables && T.tables[m.lg]; if (!tab || !tab.length || (!m.th && !m.ta)) return '';
+    var mine = [m.th, m.ta].filter(Boolean).map(function (t) { return String(t.id); }), keep = {};
+    tab.forEach(function (r, i) { if (mine.indexOf(String(r.id)) > -1) for (var j = Math.max(0, i - 1); j <= Math.min(tab.length - 1, i + 1); j++) keep[j] = 1; });
+    if (tab.length) keep[0] = 1;
+    var rows = '', last = -1;
+    Object.keys(keep).map(Number).sort(function (a, b) { return a - b; }).forEach(function (i) {
+      if (last > -1 && i > last + 1) rows += '<tr class="gap"><td colspan="5">·  ·  ·</td></tr>';
+      var r = tab[i], t = teamById(r.id);
+      rows += '<tr class="' + (mine.indexOf(String(r.id)) > -1 ? 'me' : '') + '"><td>' + r.pos + '</td><td>' + crest(t, 'xs', t ? t.name : '') + esc(t ? t.short || t.name : r.id) + '</td><td>' + r.p + '</td><td>' + (r.gf - r.ga > 0 ? '+' : '') + (r.gf - r.ga) + '</td><td><b>' + r.pts + '</b></td></tr>';
+      last = i;
+    });
+    return '<div><span class="eyebrow">' + esc(m.lg === 'Champions League' ? 'League phase' : m.lg) + ' table</span><table class="mini-table" style="margin-top:6px"><tr><th>#</th><th>Team</th><th>P</th><th>GD</th><th>Pts</th></tr>' + rows + '</table></div>';
+  }
+  function splitLine(m) {
+    var tab = T && T.tables && T.tables[m.lg]; if (!tab) return '';
+    var row = function (t) { return t ? tab.filter(function (r) { return String(r.id) === String(t.id); })[0] : null; }, h = row(m.th), a = row(m.ta);
+    var fmt = function (rec, where, name) { if (!rec || !rec.p) return ''; return '<div class="split"><b>' + esc(name) + ' ' + where + '</b>: ' + rec.w + 'W ' + rec.d + 'D ' + rec.l + 'L · ' + (rec.gf / rec.p).toFixed(1) + ' scored, ' + (rec.ga / rec.p).toFixed(1) + ' conceded a game</div>'; };
+    var out = fmt(h && h.home, 'at home', m.home) + fmt(a && a.away, 'away', m.away);
+    return out ? '<div style="display:flex;flex-direction:column;gap:6px">' + out + '</div>' : '';
+  }
+  function formChips(t) {
+    if (!t || !t.results || !t.results.length) return '<span class="fine">no results on file</span>';
+    return '<div class="fchips">' + t.results.slice(-5).map(function (r, i) { var w = r.gf > r.ga ? 'W' : r.gf === r.ga ? 'D' : 'L';
+      return '<span class="fchip ' + w + '" style="animation-delay:' + (i * 60) + 'ms" title="' + esc((r.home ? 'v ' : 'at ') + r.vs + ', ' + r.date) + '">' + crest(teamById(r.vs_id), 'xs', r.vs) + '<b>' + r.gf + '–' + r.ga + '</b><small>' + (r.home ? 'H' : 'A') + '</small></span>'; }).join('') + '</div>';
+  }
+  function formBlock(m) { if (!m.th && !m.ta) return ''; return '<div><span class="eyebrow">Last five</span><div class="twocol" style="margin-top:8px"><div><span class="fine">' + esc(m.home) + '</span>' + formChips(m.th) + '</div><div><span class="fine">' + esc(m.away) + '</span>' + formChips(m.ta) + '</div></div></div>'; }
+  function keyPlayers(t) { var ps = (t && t.players || []).slice().sort(function (a, b) { var s = function (p) { var x = p.stats || {}; return (x.totalGoals || 0) * 3 + (x.goalAssists || 0) * 2 + (x.appearances || 0) * 0.5; }; return s(b) - s(a); }); return ps.slice(0, 4).map(function (p) { return p.id; }); }
+  function absentBlock(m) {
+    var one = function (t, name) { if (!t) return ''; var out = (t.players || []).filter(function (p) { return p.injured; }), key = keyPlayers(t);
+      return '<div><span class="fine">' + esc(name) + '</span><div class="absent" style="margin-top:4px">' + (out.length ? out.map(function (p) { return '<span class="' + (key.indexOf(p.id) > -1 ? 'key' : '') + '">' + esc(p.short || p.name) + ' · ' + esc(p.pos || '') + '</span>'; }).join('') : '<span style="background:var(--ground);color:var(--muted)">none reported</span>') + '</div></div>'; };
+    if (!m.th && !m.ta) return '';
+    return '<div><span class="eyebrow">Out injured</span><div class="twocol" style="margin-top:8px">' + one(m.th, m.home) + one(m.ta, m.away) + '</div><p class="fine" style="margin-top:6px">Bold: one of the team\'s most involved players. The market has usually priced known absences in already.</p></div>';
+  }
+  function pctBlock(t, p) {
+    if (!T || !p.pos) return '';
+    var peers = []; T.list.forEach(function (tt) { (tt.players || []).forEach(function (q) { if (q.pos === p.pos && (q.stats || {}).appearances >= 1) peers.push(q); }); });
+    if (peers.length < 12 || !(p.stats || {}).appearances) return '';
+    var rate = function (q, k) { var s = q.stats || {}; return (s[k] || 0) / Math.max(1, s.appearances || 0); };
+    var metrics = p.pos === 'G' ? [['Appearances', function (q) { return (q.stats || {}).appearances || 0; }, true], ['Saves a game', function (q) { return rate(q, 'saves'); }, true], ['Goals conceded a game', function (q) { return rate(q, 'goalsConceded'); }, false], ['Yellow cards a game', function (q) { return rate(q, 'yellowCards'); }, false]]
+      : [['Appearances', function (q) { return (q.stats || {}).appearances || 0; }, true], ['Goals a game', function (q) { return rate(q, 'totalGoals'); }, true], ['Assists a game', function (q) { return rate(q, 'goalAssists'); }, true], ['Yellow cards a game', function (q) { return rate(q, 'yellowCards'); }, false]];
+    var col = '#' + ((t.color && t.color !== 'ffffff') ? t.color : '4da3ff');
+    metrics = metrics.filter(function (mt) { var vs = peers.map(mt[1]); return Math.max.apply(null, vs) > Math.min.apply(null, vs); });
+    if (!metrics.length) return '';
+    return '<div><span class="eyebrow">Against every ' + esc((p.posName || p.pos).toLowerCase()) + ' on file (' + peers.length + ')</span><div class="pct" style="margin-top:10px">' + metrics.map(function (mt) {
+      var v = mt[1](p), below = peers.filter(function (q) { return mt[2] ? mt[1](q) < v : mt[1](q) > v; }).length, pc = Math.round(below / peers.length * 100);
+      return '<div class="pctrow" style="--c:' + col + '"><span>' + mt[0] + ' <b class="num">' + (v % 1 ? v.toFixed(2) : v) + '</b></span><span class="tr"><i style="width:' + Math.max(3, pc) + '%"></i></span><span class="num">' + pc + '<small>th</small></span></div>'; }).join('') +
+      '</div><p class="fine" style="margin-top:6px">Percentile: the share of players in the same position he is ahead of. Cards count better when fewer.' + (T.example ? ' Example data.' : '') + '</p></div>';
+  }
+
+  /* ---------- 6. the record, analysed ---------- */
+  function paperSlips() { return (LIVE_RECORD && LIVE_RECORD.slips || []).filter(function (s) { return s.leg_results && s.leg_results.length; }); }
+  function exampleRecord() {
+    var r = seeded('scudi-example-record'), picks = ['1', '2', '12', '1X', 'X2', 'O15', 'O25', 'U35', 'GG'], lgs = ['Serie A', 'Premier League', 'La Liga', 'Bundesliga', 'Ligue 1', 'Champions League'], out = [], t0 = Date.now() - 36e5 * 24 * 7 * 20;
+    for (var i = 0; i < 44; i++) {
+      var legs = [];
+      for (var j = 0; j < 10; j++) { var p = 0.55 + r() * 0.3, code = picks[Math.floor(r() * picks.length)], m = ALL[(i * 7 + j) % ALL.length];
+        legs.push({ home: m.home, away: m.away, lg: lgs[Math.floor(r() * lgs.length)], code: code, label: PICK_NAMES[code], p: p, odds: Math.max(1.25, Math.round(100 / (p * 1.065)) / 100), won: r() < p, score: Math.floor(r() * 3) + '-' + Math.floor(r() * 3), clv: (r() - 0.5) * 0.06 }); }
+      var odds = legs.reduce(function (a, l) { return a * l.odds; }, 1), prob = legs.reduce(function (a, l) { return a * l.p; }, 1), landed = legs.every(function (l) { return l.won; });
+      out.push({ name: i % 2 ? 'Top 5 leagues' : 'Serie A', at: new Date(t0 + i * 36e5 * 24 * 3.4).toISOString(), stake: 5, pays: odds * 1.2293, prob: prob, legs: legs, settled: true, landed: landed, payout: landed ? 5 * odds * 1.2293 : 0 });
+    }
+    return out;
+  }
+  function analyticsData() {
+    var placed = placedList().filter(function (p) { return p.settled; }), paper = paperSlips();
+    var legs = [], slips = [];
+    placed.forEach(function (p) { slips.push({ src: 'placed', name: p.name, at: p.at, stake: p.stake, pays: p.pays, prob: p.prob, landed: p.landed, payout: p.payout, legs: p.legs }); });
+    paper.forEach(function (s) { slips.push({ src: 'paper', name: s.name, at: s.graded_at, stake: 5, pays: s.odds * (1 + s.bonus), prob: s.chance, landed: s.landed, payout: s.landed ? 5 * s.odds * (1 + s.bonus) : 0,
+      legs: s.leg_results.map(function (l) { return { home: (l.name || '').split(' v ')[0], away: (l.name || '').split(' v ')[1] || '', lg: l.competition, code: l.code, label: PICK_NAMES[l.code] || l.code, p: l.chance, odds: l.odds, won: l.won, score: l.score, clv: l.clv }; }) }); });
+    var example = !slips.length;
+    if (example) slips = exampleRecord().map(function (s) { s.src = 'example'; return s; });
+    slips.forEach(function (s) { (s.legs || []).forEach(function (l) { if (l.won != null) legs.push(l); }); });
+    return { slips: slips.sort(function (a, b) { return (a.at || '').localeCompare(b.at || ''); }), legs: legs, example: example, placed: placed.length, paper: paper.length };
+  }
+  function renderAnalytics() {
+    var A = analyticsData();
+    $('#anTag').textContent = A.example ? 'Your record · example until the first graded weekend' : 'Your record · ' + A.placed + ' placed, ' + A.paper + ' paper slips';
+    /* calibration */
+    var bins = [[0.5, 0.6], [0.6, 0.7], [0.7, 0.8], [0.8, 0.9], [0.9, 1.01]].map(function (b) { var ls = A.legs.filter(function (l) { return l.p >= b[0] && l.p < b[1]; }), n = ls.length;
+      return { n: n, prom: n ? ls.reduce(function (a, l) { return a + l.p; }, 0) / n : 0, act: n ? ls.filter(function (l) { return l.won; }).length / n : 0 }; }).filter(function (b) { return b.n; });
+    var W = 340, H = 230, x0 = 38, x1 = W - 12, y0 = 12, y1 = H - 30, X = function (v) { return x0 + (x1 - x0) * (v - 0.45) / 0.55; }, Y = function (v) { return y0 + (y1 - y0) * (1 - (v - 0.3) / 0.7); };
+    var svg = '<g class="chart">'; [0.5, 0.6, 0.7, 0.8, 0.9, 1].forEach(function (v) { svg += '<text x="' + X(v).toFixed(1) + '" y="' + (H - 12) + '" text-anchor="middle">' + Math.round(v * 100) + '</text>'; });
+    [0.3, 0.5, 0.7, 0.9].forEach(function (v) { svg += '<line class="ax" x1="' + x0 + '" x2="' + x1 + '" y1="' + Y(v).toFixed(1) + '" y2="' + Y(v).toFixed(1) + '"/><text x="' + (x0 - 5) + '" y="' + (Y(v) + 3).toFixed(1) + '" text-anchor="end">' + Math.round(v * 100) + '</text>'; });
+    svg += '<line class="diag" x1="' + X(0.45) + '" y1="' + Y(0.45) + '" x2="' + X(1) + '" y2="' + Y(1) + '"/>';
+    bins.forEach(function (b, i) { var sd = Math.sqrt(b.prom * (1 - b.prom) / b.n); svg += '<line class="err" x1="' + X(b.prom).toFixed(1) + '" x2="' + X(b.prom).toFixed(1) + '" y1="' + Y(Math.min(1, b.prom + 2 * sd)).toFixed(1) + '" y2="' + Y(Math.max(0.3, b.prom - 2 * sd)).toFixed(1) + '"/>' +
+      '<circle class="dot" style="animation-delay:' + (i * 90) + 'ms" cx="' + X(b.prom).toFixed(1) + '" cy="' + Y(b.act).toFixed(1) + '" r="' + (3 + Math.min(7, Math.sqrt(b.n) / 2)).toFixed(1) + '"><title>' + Math.round(b.prom * 100) + '% promised, ' + Math.round(b.act * 100) + '% happened, ' + b.n + ' legs</title></circle>'; });
+    svg += '<text x="' + x1 + '" y="' + (H - 1) + '" text-anchor="end">promised %</text><text x="' + x0 + '" y="' + (y0 - 2) + '">happened %</text></g>';
+    $('#calChart').innerHTML = svg;
+    var outside = bins.filter(function (b) { return Math.abs(b.act - b.prom) > 2 * Math.sqrt(b.prom * (1 - b.prom) / b.n); }).length;
+    $('#calNote').textContent = A.legs.length + ' legs graded' + (A.example ? ' (example)' : '') + '. Each dot is a group of legs: across is what Scudi promised, up is how often they won; the bar is the range chance alone allows. ' + (outside ? outside + ' group' + (outside > 1 ? 's sit' : ' sits') + ' outside its range: worth a look once there are more legs.' : 'Every group sits within its range.');
+    /* money against luck */
+    var sl = A.slips.filter(function (s) { return s.stake; }), cum = 0, exp = 0, v = 0, pts = [];
+    var staked = 0;
+    sl.forEach(function (s) { staked += s.stake; cum += s.payout - s.stake; exp += s.prob * s.pays * s.stake - s.stake; v += s.prob * (1 - s.prob) * Math.pow(s.pays * s.stake, 2); pts.push({ me: cum, exp: exp, sd: Math.sqrt(v), floor: -staked }); });
+    if (pts.length) {
+      var low = function (p, k) { return Math.max(p.floor, p.exp - k * p.sd); };
+      var lo = Math.min.apply(null, pts.map(function (p) { return Math.min(p.me, low(p, 2)); })), hi = Math.max.apply(null, pts.map(function (p) { return Math.max(p.me, p.exp + 2 * p.sd); }));
+      var MX = function (i) { return x0 + (x1 - x0) * (i + 1) / pts.length; }, MY = function (val) { return y0 + (y1 - y0) * (1 - (val - lo) / (hi - lo || 1)); };
+      var band = function (k) { return 'M' + x0 + ' ' + MY(0) + ' ' + pts.map(function (p, i) { return 'L' + MX(i).toFixed(1) + ' ' + MY(p.exp + k * p.sd).toFixed(1); }).join(' ') + ' ' + pts.slice().reverse().map(function (p, j) { var i = pts.length - 1 - j; return 'L' + MX(i).toFixed(1) + ' ' + MY(low(p, k)).toFixed(1); }).join(' ') + ' Z'; };
+      var g = '<g class="chart"><path class="band2" d="' + band(2) + '"/><path class="band1" d="' + band(1) + '"/>';
+      [lo, 0, hi].forEach(function (val) { g += '<line class="ax" x1="' + x0 + '" x2="' + x1 + '" y1="' + MY(val).toFixed(1) + '" y2="' + MY(val).toFixed(1) + '"/><text x="' + (x0 - 5) + '" y="' + (MY(val) + 3).toFixed(1) + '" text-anchor="end">' + (val < 0 ? '−' : '') + '€' + Math.abs(Math.round(val)) + '</text>'; });
+      g += '<path class="exp" d="M' + x0 + ' ' + MY(0) + ' ' + pts.map(function (p, i) { return 'L' + MX(i).toFixed(1) + ' ' + MY(p.exp).toFixed(1); }).join(' ') + '"/>';
+      g += '<path class="me" d="M' + x0 + ' ' + MY(0) + ' ' + pts.map(function (p, i) { return 'L' + MX(i).toFixed(1) + ' ' + MY(p.me).toFixed(1); }).join(' ') + '"/>';
+      g += '<text x="' + x1 + '" y="' + (H - 12) + '" text-anchor="end">' + pts.length + ' slips</text></g>';
+      $('#moneyChart').innerHTML = g;
+      var last = pts[pts.length - 1], z = last.sd ? (last.me - last.exp) / last.sd : 0; if (last.me <= low(last, 2) + 1e-9 && last.me > last.floor + 1e-9) z = -2.01;
+      $('#moneyNote').textContent = (A.placed ? 'Your placed slips' : A.example ? 'Example slips at €5' : 'Paper slips at €5 each') + ': ' + (last.me < 0 ? 'down ' : 'up ') + euro(Math.abs(last.me)) + ', against an expected ' + (last.exp < 0 ? '−' : '+') + euro(Math.abs(last.exp)) + '. Gold is you, the dashed line is the average, the bands are where chance alone puts you two times in three and nineteen times in twenty. ' + (Math.abs(z) <= 2 ? 'You are inside the bands.' : z > 2 ? 'You are above the bands: luck, most likely.' : 'You are below the bands: check the calibration.');
+    } else { $('#moneyChart').innerHTML = ''; $('#moneyNote').textContent = 'No slips yet.'; }
+    /* leaks */
+    var groups = {}; A.legs.forEach(function (l) { [['pick', l.label || PICK_NAMES[l.code] || l.code], ['league', l.lg]].forEach(function (k) { if (!k[1]) return; var gk = k[0] + ':' + k[1], gg = groups[gk] = groups[gk] || { name: k[1], kind: k[0], n: 0, lost: 0, exp: 0, v: 0 }; gg.n++; gg.lost += l.won ? 0 : 1; gg.exp += 1 - l.p; gg.v += l.p * (1 - l.p); }); });
+    var gl = Object.keys(groups).map(function (k) { var gg = groups[k]; gg.z = (gg.lost - gg.exp) / Math.sqrt(gg.v || 1); return gg; }).filter(function (gg) { return gg.n >= 8; }).sort(function (a, b) { return b.z - a.z; }).slice(0, 6);
+    var mx = Math.max.apply(null, gl.map(function (gg) { return Math.max(gg.lost, gg.exp); }).concat([1]));
+    $('#leaks').innerHTML = gl.length ? gl.map(function (gg) { return '<div class="pair"><b>' + esc(gg.name) + ' <span class="muted" style="font-weight:400">' + (gg.kind === 'pick' ? 'pick' : '') + '</span></b><span class="num muted">lost ' + gg.lost + ' · expected ' + gg.exp.toFixed(1) + '</span><div class="bars"><i style="width:' + (gg.exp / mx * 100).toFixed(1) + '%"></i><i class="b" style="width:' + (gg.lost / mx * 100).toFixed(1) + '%;background:' + (gg.z > 2 ? 'var(--bad)' : 'var(--acc)') + '"></i></div></div>'; }).join('') : '<p class="fine">Not enough legs yet.</p>';
+    /* timing and near misses */
+    var cl = A.legs.filter(function (l) { return l.clv != null; });
+    $('#clvShare').textContent = cl.length ? Math.round(cl.filter(function (l) { return l.clv > 0; }).length / cl.length * 100) + '%' : '–';
+    var cavg = cl.length ? cl.reduce(function (a, l) { return a + l.clv; }, 0) / cl.length * 100 : null;
+    $('#clvAvg').textContent = cavg == null ? '–' : (Math.abs(cavg) < 0.05 ? '0.0' : (cavg > 0 ? '+' : '−') + Math.abs(cavg).toFixed(1)) + '%';
+    $('#clvNote').textContent = cl.length ? 'Across ' + cl.length + ' legs: how often the price you took was better than the market\'s last view before kick-off. Above 50% means your timing is good; it is the one free sign of a real edge.' : 'Appears once legs are graded with a later price pull to compare against.';
+    var near = A.slips.filter(function (s) { return !s.landed && s.legs && s.legs.filter(function (l) { return !l.won; }).length === 1; }).slice(-5).reverse();
+    $('#nearList').innerHTML = near.length ? '<span class="eyebrow" style="margin-top:6px">Lost by one leg</span>' + near.map(function (s) { var l = s.legs.filter(function (x) { return !x.won; })[0];
+      return '<div><span><b>' + esc(s.name) + '</b> <span class="muted">' + euro(s.stake) + ' for ' + euro(s.stake * s.pays) + '</span><small>' + esc(l.home + ' – ' + l.away) + ': ' + esc((l.label || '').toLowerCase()) + ' (' + Math.round(l.p * 100) + '%)</small></span><span class="sc">' + esc(l.score || '') + '</span></div>'; }).join('') : '';
+    $('#budget').textContent = '€' + Math.round(monthStakes()) + ' of €100';
+  }
+  $('#anExport').onclick = function () { download('scudi-placed-slips.json', { exported_at: new Date().toISOString(), placed: placedList() }); };
+  $('#anImport').onchange = function () {
+    var f = this.files && this.files[0]; if (!f) return;
+    f.text().then(function (txt) { var j = JSON.parse(txt), list = placedList(), ids = list.map(function (p) { return p.id; }), add = (j.placed || []).filter(function (p) { return ids.indexOf(p.id) < 0; });
+      savePlaced(list.concat(add)); renderAnalytics(); renderCards(); toast(add.length + ' slip' + (add.length === 1 ? '' : 's') + ' restored.'); }).catch(function () { toast('That file is not a Scudi backup.'); });
+  };
 
   /* ---------- the season record (format of site/data/record.json; example values here) ---------- */
   var RECORD = LIVE_RECORD ? { live: true, slips: LIVE_RECORD.slips.map(function (s) { return { name: s.name, chance: s.chance, landed: s.landed, placed: false, stake: 0, payout: s.odds * (1 + s.bonus) * 5 }; }) } : { slips: [
@@ -1573,7 +2260,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   })();
 
   /* ---------- boot ---------- */
-  solveActive(); renderCards(); renderRules(); renderBuilder(true); renderEvidence(); renderRecord(); renderSimControls();
+  solveActive(); renderCards(); renderRules(); renderBuilder(true); renderEvidence(); renderRecord(); renderSimControls(); renderAnalytics(); liveTick();
   }   /* end boot */
 })();
 
