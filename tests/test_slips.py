@@ -476,11 +476,11 @@ def _espn_sample():
 def test_teams_job_builds_squads_lineups_and_averages_and_is_incremental():
     from datetime import datetime, timezone
 
-    from tools.teams import SLUGS, build, replay_fetch
+    from tools.teams import FULL, build, replay_fetch
 
     feed, rec = _espn_sample()
     now = datetime(2026, 10, 8, 9, 0, tzinfo=timezone.utc)
-    teams, players, budget = build(replay_fetch(rec), list(SLUGS), {}, {}, now)
+    teams, players, budget = build(replay_fetch(rec), FULL, {}, {}, now)
     names = {n for evs in feed.values() for e in evs for n in (e["home_team"], e["away_team"])}
     from tools.sample_espn import REGISTRY
     from tools.teams import find_team
@@ -495,7 +495,7 @@ def test_teams_job_builds_squads_lineups_and_averages_and_is_incremental():
     assert len(players["players"]) == len(distinct) * 23
     assert budget.failed == 0
     # second run: nothing refetched except the lists, rosters and schedules
-    teams2, players2, budget2 = build(replay_fetch(rec), list(SLUGS), teams, players, now)
+    teams2, players2, budget2 = build(replay_fetch(rec), FULL, teams, players, now)
     assert budget2.calls < budget.calls / 3
     for k, t in teams2["teams"].items():
         assert t["avg"] == teams["teams"][k]["avg"] and t["last"] == teams["teams"][k]["last"]
@@ -699,3 +699,208 @@ def test_sistema_bonus_switch_and_limits():
         plan(legs, 9, 1.0)
     with pytest.raises(ValueError):
         plan([(0.7, 1.3)] * 20, 15, 10.0)
+
+
+# ---------- v10: more competitions, cheaper pulls, free grading (decision 74) ----------
+
+def test_registry_is_consistent_and_discovers_national_friendlies_only():
+    from scudi_slips.comps import BY_KEY, COMPETITIONS, GROUP_ORDER, discovered
+    from scudi_slips.feed import SPORT_KEYS
+
+    assert len({c.name for c in COMPETITIONS}) == len({c.odds for c in COMPETITIONS}) == len(COMPETITIONS)
+    assert all(c.group in GROUP_ORDER for c in COMPETITIONS) and SPORT_KEYS == {c.name: c.odds for c in COMPETITIONS}
+    assert {"Serie B", "Championship", "League One", "Süper Lig", "Belgian Pro League", "Eliteserien", "Nations League", "World Cup", "Euro"} <= {c.name for c in COMPETITIONS}
+    assert "soccer_uefa_nations_league" in BY_KEY
+    fr = discovered({"key": "soccer_international_friendlies", "title": "International Friendlies", "active": True, "has_outrights": False})
+    assert fr and fr.group == "national" and fr.espn == "fifa.friendly"
+    assert discovered({"key": "soccer_fifa_world_cup_womens", "title": "FIFA Women's World Cup", "has_outrights": False}) is None
+    assert discovered({"key": "soccer_fifa_world_cup_winner", "title": "World Cup Winner", "has_outrights": True}) is None
+    assert discovered({"key": "soccer_epl", "title": "EPL"}) is None                      # already in the registry
+    assert discovered({"key": "soccer_brazil_campeonato", "title": "Brazil Série A"}) is None  # not a national-team competition
+
+
+def test_window_runs_to_the_next_tuesday_or_friday_morning():
+    from tools.weekly import days_to_reset, window_end
+
+    utc = timezone.utc
+    assert window_end(datetime(2026, 10, 9, 9, 0, tzinfo=utc)) == datetime(2026, 10, 13, 6, 0, tzinfo=utc)    # Friday -> Tuesday
+    assert window_end(datetime(2026, 10, 13, 9, 0, tzinfo=utc)) == datetime(2026, 10, 16, 6, 0, tzinfo=utc)   # Tuesday -> Friday
+    assert window_end(datetime(2026, 9, 23, 9, 0, tzinfo=utc)) == datetime(2026, 9, 25, 6, 0, tzinfo=utc)     # Wednesday -> Friday
+    assert window_end(datetime(2026, 10, 15, 20, 0, tzinfo=utc)) == datetime(2026, 10, 20, 6, 0, tzinfo=utc)  # Thursday night -> Tuesday
+    from tools.weekly import core_end
+    fri = datetime(2026, 10, 9, 9, 0, tzinfo=utc)
+    assert core_end(fri, window_end(fri)) == fri + timedelta(days=6)                                         # weekend pull: core sees the UCL nights
+    tue = datetime(2026, 10, 13, 9, 0, tzinfo=utc)
+    assert core_end(tue, window_end(tue)) == window_end(tue)
+    assert days_to_reset(datetime(2026, 9, 22, 9, 0, tzinfo=utc)) == 9 and days_to_reset(datetime(2026, 12, 31, 23, 0, tzinfo=utc)) == 1
+
+
+class _FakeFeed:
+    """The odds feed's interface over recorded events, counting calls and credits the way the feed does."""
+
+    def __init__(self, events, active, remaining=400, fail=()):
+        from scudi_slips.comps import BY_NAME
+        self.events, self.active, self.remaining, self.fail, self.calls, self.by_key = events, active, remaining, set(fail), [], {BY_NAME[n].odds: n for n in events if n in BY_NAME}
+        self.by_key.update({k: n for n, k in active.items() if n not in BY_NAME})
+
+    def __call__(self, path, params):
+        self.calls.append((path, dict(params)))
+        if path == "":
+            return [{"key": k, "active": True, "has_outrights": False, "title": n} for n, k in self.active.items()], {"x-requests-remaining": str(self.remaining)}
+        key = path.split("/")[1]
+        name = self.by_key.get(key)
+        if name in self.fail:
+            raise RuntimeError("HTTP 500: boom")
+        lo, hi = params["commenceTimeFrom"], params["commenceTimeTo"]
+        evs = [e for e in self.events.get(name, []) if lo <= e["commence_time"] <= hi]
+        cost = 2 if evs else 0
+        self.remaining -= cost
+        return evs, {"x-requests-remaining": str(self.remaining), "x-requests-used": str(500 - self.remaining), "x-requests-last": str(cost)}
+
+
+def _national_feed():
+    feed = _synthetic_feed(random.Random(5), n=8, comp="Nations League", day="2026-09-24")
+    for i, e in enumerate(feed["Nations League"]):
+        e["id"] = f"nl{i}"
+    feed.update(_synthetic_feed(random.Random(6), n=6, comp="Serie B", day="2026-09-26"))
+    feed.update(_synthetic_feed(random.Random(7), n=6, comp="League One", day="2026-09-26"))
+    feed.update(_synthetic_feed(random.Random(8), n=6, comp="Serie A", day="2026-10-10"))   # after the window: must not be paid for
+    return feed
+
+
+def test_full_pull_spends_only_on_competitions_with_matches_in_the_window(tmp_path):
+    from scudi_slips.comps import BY_NAME
+    from tools.weekly import main
+
+    feed = _national_feed()
+    active = {n: BY_NAME[n].odds for n in ("Serie A", "Nations League", "Serie B", "League One", "Premier League")}
+    active["International Friendlies"] = "soccer_international_friendlies"
+    fake = _FakeFeed(feed, active)
+    out, hist = tmp_path / "week.json", tmp_path / "history.json"
+    assert main(["--out", str(out), "--history", str(hist), "--mode", "auto", "--now", "2026-09-23T09:00:00Z"], get=fake) == 0   # empty store: full
+    w = json.loads(out.read_text())
+    called = [p for p, _ in fake.calls if p]
+    assert len(called) == len(active)                               # one call per competition in season, La Liga (not active) never called
+    assert all(q["commenceTimeTo"] == "2026-09-25T06:00:00Z" for p, q in fake.calls if p)
+    spent = {p["name"]: p["credits"] for p in w["pulled"]}
+    assert spent["Nations League"] == 2 and spent["Serie A"] == 0 and spent["Serie B"] == 0 and spent["International Friendlies"] == 0
+    assert {m["competition"] for m in w["matches"]} == {"Nations League"} and len(w["matches"]) == w["guard"]["kept"] >= 6
+    assert w["credits"]["remaining"] == "398" and w["competitions"][0]["group"] == "national" and w["competitions"][0]["espn"] == "uefa.nations"
+    assert {s["name"] for s in w["slips"]} == {"National teams"}      # one competition: no "All competitions" copy of it
+    order = [p["name"] for p in w["pulled"]]
+    assert order.index("Serie A") < order.index("Nations League") < order.index("Serie B") < order.index("League One")
+
+
+def test_optional_competitions_wait_when_credits_run_low_and_errors_do_not_lose_the_rest(tmp_path):
+    from scudi_slips.comps import BY_NAME
+    from tools.weekly import main
+
+    feed = _national_feed()
+    active = {n: BY_NAME[n].odds for n in ("Nations League", "Serie B", "League One")}
+    out, hist = tmp_path / "week.json", tmp_path / "history.json"
+    fake = _FakeFeed(feed, active, remaining=40)                    # 25 Sep: 6 days to reset x 7 = 42 held back
+    assert main(["--out", str(out), "--history", str(hist), "--mode", "full", "--now", "2026-09-25T09:00:00Z"], get=fake) == 0
+    w = json.loads(out.read_text())
+    assert [p["name"] for p in w["pulled"]] == ["Nations League"]
+    assert w["skipped"] == {"Serie B": "saving credits for the big leagues", "League One": "saving credits for the big leagues"}
+    fake = _FakeFeed(feed, active, remaining=400, fail={"Nations League"})
+    assert main(["--out", str(out), "--history", str(hist), "--mode", "full", "--now", "2026-09-25T09:00:00Z"], get=fake) == 0
+    w = json.loads(out.read_text())
+    assert {m["competition"] for m in w["matches"]} == {"Serie B", "League One"} and any("Nations League" in n for n in w["notes"])
+    before = out.read_text()
+    fake = _FakeFeed(feed, active, fail={"Nations League", "Serie B", "League One"})
+    assert main(["--out", str(out), "--history", str(hist), "--mode", "full", "--now", "2026-09-25T09:00:00Z"], get=fake) == 1
+    assert out.read_text() == before                                # nothing pulled at all: the site keeps what it had
+
+
+def test_match_day_refresh_covers_big_leagues_and_national_teams_only(tmp_path):
+    from scudi_slips.comps import BY_NAME
+    from tools.weekly import main
+
+    feed = _national_feed()
+    feed["Nations League"] = [dict(e, commence_time=e["commence_time"].replace("2026-09-24", "2026-09-26")) for e in feed["Nations League"]]
+    active = {n: BY_NAME[n].odds for n in ("Nations League", "Serie B")}
+    out, hist = tmp_path / "week.json", tmp_path / "history.json"
+    assert main(["--out", str(out), "--history", str(hist), "--mode", "full", "--now", "2026-09-25T09:00:00Z"], get=_FakeFeed(feed, active)) == 0
+    full = json.loads(out.read_text())
+    assert {m["competition"] for m in full["matches"]} == {"Nations League", "Serie B"}
+    fake = _FakeFeed(feed, active)
+    assert main(["--out", str(out), "--history", str(hist), "--mode", "auto", "--now", "2026-09-26T09:00:00Z"], get=fake) == 0   # Saturday
+    late = json.loads(out.read_text())
+    assert [p for p, _ in fake.calls] == ["/soccer_uefa_nations_league/odds"] and late["refreshed"] == ["Nations League"]
+    assert late["slips"] == full["slips"] and len(late["matches"]) == len(full["matches"])
+
+
+def test_full_pull_carries_the_replaced_weeks_slips_for_grading(tmp_path):
+    from tools.grade import main as grade_main
+    from tools.weekly import main
+
+    feed = _national_feed()
+    active = {"Nations League": "soccer_uefa_nations_league"}
+    out, hist, rec = tmp_path / "week.json", tmp_path / "history.json", tmp_path / "record.json"
+    assert main(["--out", str(out), "--history", str(hist), "--mode", "full", "--now", "2026-09-23T09:00:00Z"], get=_FakeFeed(feed, active)) == 0
+    first = json.loads(out.read_text())
+    assert first["slips"]
+    assert main(["--out", str(out), "--history", str(hist), "--mode", "full", "--now", "2026-09-25T09:00:00Z"], get=_FakeFeed({}, active)) == 0
+    second = json.loads(out.read_text())
+    assert second["matches"] == [] and second["pending"][0]["built_at"] == first["built_at"] and second["pending"][0]["slips"] == first["slips"]
+    # ESPN scoreboard: every Nations League match 1-0 to the home side, names spelled as ESPN spells them
+    events = [{"id": str(900 + i), "date": m["kickoff"].replace("+00:00", "Z"), "competitions": [{"status": {"type": {"completed": True, "state": "post", "name": "STATUS_FULL_TIME"}},
+               "competitors": [{"homeAway": "home", "score": "1", "team": {"displayName": m["home"] + " FC"}}, {"homeAway": "away", "score": "0", "team": {"displayName": m["away"]}}]}]}
+              for i, m in enumerate(first["matches"])]
+    calls = []
+
+    def espn(url):
+        calls.append(url)
+        assert "uefa.nations/scoreboard?dates=20260923-20260925" in url
+        return {"events": events}
+    grade_main(["--week", str(out), "--record", str(rec), "--history", str(hist), "--now", "2026-09-25T10:00:00Z"], fetch=espn)
+    r = json.loads(rec.read_text())
+    assert len(calls) == 1 and r["summary"]["graded"] == len(first["slips"])
+    assert all(x["score"] == "1-0" for s in r["slips"] for x in s["leg_results"])
+
+
+def test_espn_settles_on_ninety_minutes_and_matches_national_team_spellings():
+    from tools.grade import espn_final, same_team
+
+    assert same_team("Czech Republic", "Czechia") == 2 and same_team("Turkey", "Türkiye") == 2 and same_team("Ireland", "Republic of Ireland") == 2
+    assert same_team("Bosnia & Herzegovina", "Bosnia-Herzegovina") == 2 and same_team("Bosnia and Herzegovina", "Bosnia-Herzegovina") == 2
+    assert same_team("Inter", "Internazionale") == 2 and same_team("Germany", "Netherlands") == 0
+    ev = lambda name, h, a, lines=None: {"competitions": [{"status": {"type": {"completed": True, "name": name}}, "competitors": [
+        {"homeAway": "home", "score": str(h), "linescores": [{"value": v} for v in (lines or [])[0::2]]},
+        {"homeAway": "away", "score": str(a), "linescores": [{"value": v} for v in (lines or [])[1::2]]}]}]}
+    assert espn_final(ev("STATUS_FULL_TIME", 2, 1)) == (2, 1)
+    assert espn_final(ev("STATUS_FINAL_AET", 2, 1, [1, 0, 0, 1, 1, 0])) == (1, 1)     # 1-1 after 90 minutes, 2-1 after extra time
+    assert espn_final(ev("STATUS_FINAL_PEN", 1, 1)) is None                            # no periods listed: left open
+    postponed = ev("STATUS_POSTPONED", 0, 0)
+    postponed["competitions"][0]["status"]["type"]["completed"] = False
+    assert espn_final(postponed) is None
+
+
+def test_light_team_data_for_other_leagues_uses_only_rosters_and_schedules():
+    from tools.teams import SITE, WEB, build, replay_fetch
+
+    slug = "ita.2"
+    rec, names = {}, ["Palermo", "Sampdoria", "Bari", "Spezia"]
+    rec[f"{SITE.format(slug=slug)}/teams"] = {"sports": [{"leagues": [{"teams": [{"team": {"id": str(700 + i), "displayName": n, "abbreviation": n[:3].upper(), "logos": []}} for i, n in enumerate(names)]}]}]}
+    games = [(0, 1, 2, 0), (2, 3, 1, 1), (0, 2, 0, 1), (1, 3, 3, 2)]
+    for i in range(len(names)):
+        tid = str(700 + i)
+        rec[f"{WEB.format(slug=slug)}/teams/{tid}/roster"] = {"athletes": [{"id": str(9000 + 10 * i + k), "displayName": f"Player {i}{k}", "position": {"abbreviation": "M", "displayName": "Midfielder"},
+                                                                            "headshot": {"href": "x"}, "flag": {"href": "y"}} for k in range(3)]}
+        evs = []
+        for g, (h, a, gh, ga) in enumerate(games):
+            if i in (h, a):
+                evs.append({"id": str(5000 + g), "date": f"2026-09-{10 + g:02d}T18:00Z", "competitions": [{"status": {"type": {"completed": True}}, "competitors": [
+                    {"homeAway": "home", "score": {"value": gh}, "team": {"id": str(700 + h), "displayName": names[h]}},
+                    {"homeAway": "away", "score": {"value": ga}, "team": {"id": str(700 + a), "displayName": names[a]}}]}]})
+        rec[f"{SITE.format(slug=slug)}/teams/{tid}/schedule"] = {"events": evs}
+    now = datetime(2026, 9, 22, tzinfo=timezone.utc)
+    teams, players, budget = build(replay_fetch(rec), ["Serie B"], {}, {}, now)
+    assert budget.failed == 0 and budget.calls == 1 + 2 * len(names) and players["players"] == {}     # no summaries, lineups or transfers
+    table = teams["tables"]["Serie B"]
+    assert [r["pts"] for r in table] == [4, 3, 3, 1] and sum(r["p"] for r in table) == 2 * len(games)
+    pal = next(t for t in teams["teams"].values() if t["name"] == "Palermo")
+    assert pal["form"] == "WL" and pal["avg"]["record"] == "1-0-1" and "photo" not in pal["players"][0] and not pal.get("full")
+    again, _p, _b = build(replay_fetch(rec), ["Serie B"], teams, players, now)                          # rebuilt, never counted twice
+    assert again["tables"]["Serie B"] == table

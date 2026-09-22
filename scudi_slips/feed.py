@@ -19,16 +19,12 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
+from .comps import COMPETITIONS
 from .consensus import SHARP_WEIGHTS, BookMarket, consensus, usable
 from .matrix import fit_market
 from .picks import PICKS, SLIP_MENU
 
-SPORT_KEYS = {
-    "Serie A": "soccer_italy_serie_a", "Premier League": "soccer_epl", "La Liga": "soccer_spain_la_liga",
-    "Bundesliga": "soccer_germany_bundesliga", "Ligue 1": "soccer_france_ligue_one", "Champions League": "soccer_uefa_champs_league",
-    "Serie B": "soccer_italy_serie_b", "Championship": "soccer_efl_champ", "La Liga 2": "soccer_spain_segunda_division",
-    "2. Bundesliga": "soccer_germany_bundesliga2", "Ligue 2": "soccer_france_ligue_two",
-}
+SPORT_KEYS = {c.name: c.odds for c in COMPETITIONS}   # every competition the site can show (scudi_slips/comps.py)
 DIRECT = {"1": ("h2h", "home"), "X": ("h2h", "draw"), "2": ("h2h", "away"), "O25": ("totals", "over"), "U25": ("totals", "under")}
 
 

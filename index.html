@@ -17,7 +17,7 @@
   --ground:#0B0E1F; --surface:#141833; --raised:#1E2348; --line:#2C3263;
   --text:#F3EFE2; --muted:#A7ACCB; --faint:#6E74A3;
   --brand:#E9B949; --brand-ink:#241A00;
-  --sa:#4DA3FF; --t5:#FF9F5A; --ut:#A78BFA; --uw:#F472B6; --my:#E9B949;
+  --sa:#4DA3FF; --t5:#FF9F5A; --ut:#A78BFA; --uw:#F472B6; --nt:#3FD0C9; --my:#E9B949;
   --good:#46D39A; --bad:#FF7A88;
   --home:#F3EFE2; --draw:#5C6396; --away:#7CC4F5;
   --acc:var(--sa);
@@ -104,7 +104,7 @@ b.num,strong.num{font-weight:500}
 .linkbtn{min-height:44px;display:inline-flex;align-items:center;color:var(--brand);font-weight:600}
 
 
-.targets{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:12px}
+.targets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:12px}
 .tgt{min-height:56px;border-radius:14px;border:1px solid var(--line);background:var(--ground);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:all .25s;padding:4px 2px;min-width:0}
 .tgt b{font-size:15px;font-weight:700;letter-spacing:-.02em}
 .tgt small{font-size:10.5px;color:var(--muted);white-space:nowrap}
@@ -374,6 +374,15 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 .rgroup.wide{grid-column:1 / -1}
 .rgroup.two{grid-column:span 2}
 .chipwrap{display:flex;flex-wrap:wrap;gap:8px}
+.cgroup{display:flex;flex-wrap:wrap;gap:8px;align-items:center;width:100%;padding:8px 0 10px;border-bottom:1px dashed color-mix(in srgb,var(--line) 70%,transparent)}
+.cgroup:last-child{border-bottom:0}
+.cghead{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 4px 0 0;margin-right:4px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cghead small{font-size:11px;font-weight:600;letter-spacing:0;text-transform:none;padding:2px 8px;border-radius:999px;background:var(--raised);color:var(--faint);transition:all .25s}
+.cghead[aria-pressed="true"] small{background:color-mix(in srgb,var(--acc) 22%,var(--raised));color:var(--acc)}
+.cghead:hover span{color:var(--text)}
+.lang{display:inline-flex;flex:none;border:1px solid var(--line);border-radius:999px;padding:2px;background:var(--surface)}
+.lang button{min-width:40px;min-height:30px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-align:center;transition:all .25s}
+.lang button[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink)}
 .chipwrap .chip small{font-weight:500;color:var(--muted);margin-left:6px}
 .chipwrap .chip[aria-pressed="true"] small{color:var(--ground)}
 .chipwrap.small .chip{min-height:38px;padding:0 13px;font-size:13px;font-weight:500}
@@ -579,6 +588,7 @@ select{min-height:44px;border-radius:12px;border:1px solid var(--line);backgroun
       Scudi
     </div>
     <div class="tags"><span class="tag brand"><span class="dot"></span>Paper mode</span><span class="tag" id="srcTag">Loading…</span><span class="tag" id="teamTag" hidden></span></div>
+    <div class="lang" role="group" aria-label="Language" data-noi18n><button data-lang="en" aria-pressed="true" title="English">EN</button><button data-lang="it" aria-pressed="false" title="Italiano">IT</button></div>
   </div>
 </header>
 
@@ -595,7 +605,7 @@ select{min-height:44px;border-radius:12px;border:1px solid var(--line);backgroun
     <div class="rules-head"><div><span class="eyebrow">Your rules</span><h2 class="display" id="rTitle">What may go on this slip</h2></div>
       <div class="rules-actions"><span class="fine" id="poolLine"></span><button class="chip" id="resetRules">Reset this slip</button></div></div>
     <div class="rules">
-      <div class="rgroup two"><span class="eyebrow">Competitions</span><div class="chipwrap" id="rComps" role="group" aria-label="Competitions"></div></div>
+      <div class="rgroup wide"><span class="eyebrow">Competitions</span><div class="chipwrap" id="rComps" role="group" aria-label="Competitions"></div></div>
       <div class="rgroup"><span class="eyebrow">Days</span><div class="chipwrap" id="rDays" role="group" aria-label="Days"></div></div>
       <div class="rgroup wide"><span class="eyebrow">Picks you accept</span><div class="chipwrap" id="rPresets" role="group" aria-label="Pick presets"></div><div class="chipwrap small" id="rPicks" role="group" aria-label="Pick types"></div></div>
       <div class="rgroup"><span class="eyebrow">Every leg at least this likely</span><div class="slider"><input type="range" id="rMinP" min="45" max="80" step="5" value="45" aria-label="Minimum chance per leg"><b class="num" id="rMinPV">any</b></div></div>
@@ -649,7 +659,7 @@ select{min-height:44px;border-radius:12px;border:1px solid var(--line);backgroun
         <div class="panel o1">
           <span class="eyebrow">Target multiplier</span>
           <div class="tbig"><b class="display" id="tBig">25x</b><span class="fine" id="tBigNote"></span></div>
-          <div class="tslider"><input type="range" id="tSlider" min="0" max="23" step="1" value="4" aria-label="Target multiplier, 5x to 1000x"><div class="ticks" id="tTicks" aria-hidden="true"></div></div>
+          <div class="tslider"><input type="range" id="tSlider" min="0" max="30" step="1" value="11" aria-label="Target multiplier, 1.5x to 1000x"><div class="ticks" id="tTicks" aria-hidden="true"></div></div>
           <div class="targets" id="targets"></div>
           <div class="legsrow"><span class="eyebrow">Matches on the slip</span><span class="stepper big"><button data-step="legs" data-d="-1" aria-label="One match fewer">−</button><b class="num" id="legsN">10</b><button data-step="legs" data-d="1" aria-label="One match more">+</button></span></div>
           <div class="explorer" id="explorer" role="group" aria-label="Chance of landing by number of matches"></div>
@@ -660,7 +670,7 @@ select{min-height:44px;border-radius:12px;border:1px solid var(--line);backgroun
           <div class="readout">
             <div><span class="eyebrow">Combined odds</span><div><span class="odo display" id="odo" aria-live="polite"></span></div><p class="fine" id="payLine" style="margin-top:6px"></p></div>
             <div class="dial" role="img" id="dialBox" aria-label="Chance that every leg wins">
-              <svg viewBox="0 0 140 96"><path class="track" d="M14 76 A56 56 0 0 1 126 76"/><path class="val" id="dialVal" d="M14 76 A56 56 0 0 1 126 76" stroke-dasharray="0 176"/><text x="14" y="94" text-anchor="middle">0</text><text x="126" y="94" text-anchor="middle">5%</text></svg>
+              <svg viewBox="0 0 140 96"><path class="track" d="M14 76 A56 56 0 0 1 126 76"/><path class="val" id="dialVal" d="M14 76 A56 56 0 0 1 126 76" stroke-dasharray="0 176"/><text x="14" y="94" text-anchor="middle">0</text><text x="126" y="94" text-anchor="middle" id="dialMax">5%</text></svg>
               <div class="dial-read"><strong class="display" id="hitPct">–</strong><span id="hitIn">–</span></div>
             </div>
           </div>
@@ -783,6 +793,143 @@ select{min-height:44px;border-radius:12px;border:1px solid var(--line);backgroun
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
+/* Italian templates for the translator (i18n.js); keys are the English templates with numbers, dates and names lifted out */
+window.SCUDI_IT = {"Scudi":"Scudi","Paper mode":"Modalità prova","Loading…":"Caricamento…","Matchweek":"Giornata","Your rules.":"Le tue regole.","The best":"La migliore","slip they allow.":"schedina che permettono.","Choose the leagues, the number of matches and the kinds of pick you accept. Scudi searches every combination and keeps the one with the highest chance of landing on your multiplier, tuned to SNAI's accumulator bonus.":"Scegli i campionati, il numero di partite e i tipi di esito che accetti. Scudi prova ogni combinazione e tiene quella con la probabilità più alta di entrare alla tua quota, tarata sul bonus multipla di SNAI.","This week's slips":"Le schedine della settimana","Your rules":"Le tue regole","What may go on this slip":"Cosa può entrare in questa schedina","Reset this slip":"Azzera questa schedina","Competitions":"Competizioni","Days":"Giorni","Picks you accept":"Esiti che accetti","Pick presets":"Esiti predefiniti","Pick types":"Tipi di esito","Every leg at least this likely":"Ogni evento almeno così probabile","Minimum chance per leg":"Probabilità minima per evento","any":"qualsiasi","No leg priced above":"Nessun evento con quota sopra","Maximum price per leg":"Quota massima per evento","League rules":"Regole per campionato","At least":"Almeno","from":"da","League for the minimum":"Campionato per il minimo","At most":"Al massimo","per league":"per campionato","Left out by you":"Escluse da te","Paste SNAI page":"Incolla la pagina SNAI","Type prices":"Scrivi le quote","Tap a leg to see the match and swap the pick. A swapped pick is locked and the rest of the slip rebuilds around it.":"Tocca un evento per vedere la partita e cambiare esito. L'esito scelto resta bloccato e il resto della schedina si ricostruisce intorno.","Preview live mode":"Prova la modalità live","Unlock all picks":"Sblocca tutti gli esiti","Stake":"Puntata","Pays if it lands":"Paga se entra","Average return per slip":"Ritorno medio per schedina","Copy slip":"Copia schedina","Mark as placed":"Segna come giocata","Play it as a sistema":"Giocala a sistema","What is a sistema?":"Cos'è un sistema?","Errors allowed":"Errori concessi","Count SNAI's bonus on each ticket (check on SNAI first)":"Conta il bonus SNAI su ogni colonna (verificalo prima su SNAI)","Where SNAI's margin is lowest":"Dove il margine SNAI è più basso","Target multiplier":"Quota obiettivo","Target multiplier, {0} to {1}":"Quota obiettivo, da {0} a {1}","Matches on the slip":"Partite nella schedina","One match fewer":"Una partita in meno","One match more":"Una partita in più","Chance of landing by number of matches":"Probabilità che entri per numero di partite","Chance of landing for each number of matches under your rules. Tap a bar to use it.":"Probabilità che entri per ogni numero di partite con le tue regole. Tocca una barra per usarla.","Count SNAI's bonus toward the target":"Conta il bonus SNAI nella quota obiettivo","Combined odds":"Quota totale","Chance that every leg wins":"Probabilità che ogni evento vinca","How the chance shrinks, leg by leg":"Come cala la probabilità, evento dopo evento","Cumulative chance after each leg":"Probabilità cumulata dopo ogni evento","SNAI accumulator bonus":"Bonus multipla SNAI","SNAI bonus by number of legs":"Bonus SNAI per numero di eventi","Bonus rule as reported by betting comparison sites in {0} {1}: {2} compounded for each leg from the fifth, every leg priced {3} or more, no antepost. Check it on snai.it before the first real slip.":"Regola del bonus come riportata dai siti di comparazione a {0} {1}: {2} composto per ogni evento dal quinto, ogni evento a quota {3} o più, niente antepost. Verificala su snai.it prima della prima schedina vera.","{0} matches":"{0} partite","five leagues":"cinque campionati","{0}{1} to {2}{3}":"dal {0}{1} al {2}{3}","Tested on {0} seasons":"Provato su {0} stagioni","Real results and real Bet{0} prices. No free file holds SNAI's past prices.":"Risultati veri e quote vere di Bet{0}. Nessun file gratuito contiene le quote passate di SNAI.","When Scudi says {0}, is it {1}?":"Quando Scudi dice {0}, è davvero {1}?","Picks in the range slips use ({0} to {1}): what was promised, what happened.":"Esiti nella fascia usata dalle schedine (da {0} a {1}): cosa era promesso, cosa è successo.","\"Both teams score\" needed a {0} point correction (fitted on {1}{2}, checked on {3}{4}): it is back on the menu. \"Not both score\" stayed {5}{6} points too kind after the correction and remains out.":"\"Goal\" richiedeva una correzione di {0} punti (stimata sul {1}{2}, verificata sul {3}{4}): è tornato nel menu. \"No goal\" restava {5}{6} punti troppo generoso anche dopo la correzione e resta fuori.","Did past slips land as often as predicted?":"Le schedine passate sono entrate quanto previsto?","Every past round rebuilt by the same optimiser, then settled on the real scores.":"Ogni giornata passata ricostruita dallo stesso ottimizzatore, poi controllata sui risultati veri.","Every gap is within what chance alone produces (none beyond {0} standard deviations).":"Ogni scarto è dentro quello che produce il solo caso (nessuno oltre {0} deviazioni standard).","How many legs?":"Quanti eventi?","Serie A at {0}: chance of landing by number of legs, and the average return per {1} with SNAI's bonus.":"Serie A a {0}: probabilità che entri per numero di eventi e ritorno medio per {1} con il bonus SNAI.","Using all ten matches costs about ten cents per euro against the best six or seven. The top {0} slip chooses its ten from about {1} matches, so it does much better: {2} in {3} and {4}. At SNAI's own prices these returns will be lower if its margins are wider than Bet{5}'s.":"Usare tutte e dieci le partite costa circa dieci centesimi per euro rispetto alle sei o sette migliori. La schedina top {0} sceglie le sue dieci tra circa {1} partite, quindi va molto meglio: {2} su {3} e {4}. Alle quote di SNAI questi ritorni saranno più bassi se i suoi margini sono più larghi di quelli di Bet{5}.","The exam it had to pass":"L'esame che doveva superare","Pass marks written down first, then run once on two seasons never used in development ({0}{1} and {2}{3}, {4} matches).":"Soglie scritte prima, poi un'unica prova su due stagioni mai usate nello sviluppo ({0}{1} e {2}{3}, {4} partite).","A wider pool helps a little":"Più partite tra cui scegliere aiutano un po'","Same {0} weekends, best ten at {1}, chance of landing and return per {2} with the bonus:":"Stessi {0} weekend, migliori dieci a {1}, probabilità che entri e ritorno per {2} con il bonus:","Bet{0}'s chances are as honest in Serie B, the Championship and the other second divisions (worst gap {1} points in the slip band). The gain is small because the top{2} weekend already offers {3} matches; the wider pool matters most on thin weekends.":"Le probabilità di Bet{0} sono altrettanto oneste in Serie B, Championship e nelle altre serie cadette (scarto peggiore {1} punti nella fascia delle schedine). Il guadagno è piccolo perché il weekend top{2} offre già {3} partite; la scelta più ampia conta soprattutto nei weekend con poche partite.","What your rules cost":"Quanto costano le tue regole","Top {0} leagues at {1} on {2} past weekends: chance of landing and average return per {3} (SNAI bonus included), by number of matches and by the picks allowed.":"Top {0} campionati a {1} su {2} weekend passati: probabilità che entri e ritorno medio per {3} (bonus SNAI incluso), per numero di partite e per esiti ammessi.","Your record":"Il tuo storico","Is it working?":"Sta funzionando?","Back up my slips":"Salva le mie schedine","Restore":"Ripristina","Promised against actual hit rate":"Probabilità promessa contro esiti reali","Your money against luck":"I tuoi soldi contro la fortuna","Profit over time against the range chance produces":"Guadagno nel tempo contro la fascia prodotta dal caso","Where slips break":"Dove si rompono le schedine","Legs lost, against what the chances said. A bar well past its marker is a leak.":"Eventi persi, contro quanto dicevano le probabilità. Una barra ben oltre il suo segno è una perdita da chiudere.","Near misses and timing":"Schedine sfiorate e tempismo","Beat the pre-kickoff price":"Meglio della quota prima del calcio d'inizio","Average price edge":"Vantaggio medio di quota","Season so far":"Stagione finora","example record":"storico di esempio","Every slip Scudi builds is graded from the final scores, placed or not, so luck and method can be told apart. Below is what the record will look like.":"Ogni schedina che Scudi costruisce viene controllata sui risultati finali, giocata o no, così fortuna e metodo si possono distinguere. Qui sotto com'è fatto lo storico.","Graded":"Controllate","Expected hits":"Vincite attese","Landed":"Entrate","back":"tornati","This month's budget":"Budget del mese","{0} of {1}":"{0} di {1}","Riskiest habit":"L'abitudine più rischiosa","chasing a dry run":"rincorrere un periodo a secco","A whole season, simulated":"Una stagione intera, simulata","Your four slips at their current settings and stakes, played every week. {0} simulated seasons give the honest range, including the dry runs.":"Le tue schedine con le impostazioni e le puntate attuali, giocate ogni settimana. {0} stagioni simulate danno la fascia onesta, periodi a secco compresi.","Fewer weeks":"Meno settimane","More weeks":"Più settimane","weeks":"settimane","Simulate the season":"Simula la stagione","Staked over the season":"Puntato nella stagione","Hits: expected · {0} range":"Vincite: attese · fascia {0}","Hits: expected":"Vincite: attese","{0} range":"fascia {0}","Longest dry run: typical · bad":"Periodo a secco più lungo: tipico · brutto","Longest dry run: typical":"Periodo a secco più lungo: tipico","bad":"brutto","Chance of no hit at all":"Probabilità di non vincere mai","Season result: {0} range":"Risultato della stagione: fascia {0}","Chance of a losing season":"Probabilità di una stagione in perdita","How Scudi builds a slip":"Come Scudi costruisce una schedina","Reads the sharpest prices":"Legge le quote più affidabili","Over ten seasons the market's own probabilities beat our model every year, so every chance on this page comes from them.":"In dieci stagioni le probabilità del mercato hanno battuto il nostro modello ogni anno, quindi ogni probabilità di questa pagina viene da lì.","Searches every combination":"Prova ogni combinazione","Result, double chance and goals picks for every match: it keeps the one set with the highest chance that still reaches your multiplier.":"Esito finale, doppia chance e gol per ogni partita: tiene l'insieme con la probabilità più alta che arriva ancora alla tua quota.","Checks it against SNAI":"La confronta con SNAI","You type the prices SNAI shows for the legs. Scudi recomputes the odds, the bonus and what the slip really costs, and swaps a leg if the target is missed.":"Scrivi le quote che SNAI mostra per gli eventi. Scudi ricalcola quota, bonus e costo vero della schedina, e cambia un evento se la quota obiettivo non è raggiunta.","Prices pulled {0}, {1} {2} {3}":"Quote scaricate {0} {1} {2} {3}","{0} held back by guards":"{0} scartate dai controlli","{0} credits left":"{0} crediti rimasti","Team data":"Dati squadre","example":"esempio","National teams":"Nazionali","{0} legs":"{0} eventi","{0} leg":"{0} evento","{0} in {1}":"{0} su {1}","to land":"che entri","Not placed":"Non giocata","Build your own":"Costruiscila tu","all on":"tutte attive","Second divisions":"Serie cadette","off":"spente","More of Europe":"Altri campionati europei","Big leagues":"Grandi campionati","European cups":"Coppe europee","Only wins":"Solo vittorie","Only results":"Solo esito finale","Results + double chance":"Esito finale + doppia chance","Only goals":"Solo gol","Everything":"Tutto","Home win":"Vittoria casa (1)","Draw":"Pareggio (X)","Away win":"Vittoria ospite (2)","Home or draw":"Casa o pareggio (1X)","Away or draw":"Ospite o pareggio (X2)","No draw":"Niente pareggio (12)","Both score":"Goal (GG)","Over {0}":"Over {0}","Under {0}":"Under {0}","{0} of {1} matches can be used under these rules":"{0} partite su {1} usabili con queste regole","Matches that have kicked off are skipped automatically.":"Le partite già iniziate vengono saltate da sole.","Matches that have kicked off are skipped automatically. No SNAI prices remembered yet.":"Le partite già iniziate vengono saltate da sole. Nessuna quota SNAI ancora in memoria.","No SNAI prices remembered yet.":"Nessuna quota SNAI ancora in memoria.","SNAI prices remembered: {0}":"Quote SNAI in memoria: {0}","estimates scaled by {0}":"stime ridotte: {0}",", with a separate figure for":", con un valore a parte per","{0} match has already kicked off and is skipped.":"{0} partita è già iniziata e viene saltata.","{0} matches have already kicked off and are skipped.":"{0} partite sono già iniziate e vengono saltate.","home win":"vittoria casa","draw":"pareggio","away win":"vittoria ospite","home or draw":"casa o pareggio","away or draw":"ospite o pareggio","no draw":"niente pareggio","over {0}":"over {0}","under {0}":"under {0}","both score":"goal","{0} {1} to {2} {3}":"da {0} {1} a {2} {3}","everything":"tutto","{0} in {1} with {2} matches":"{0} su {1} con {2} partite","{0} with {1} matches":"{0} con {1} partite","{0} with {1} match":"{0} con {1} partita","{0} matches: {1} in {2}":"{0} partite: {1} su {2}","{0} matches: {1}":"{0} partite: {1}","{0} matches: no slip":"{0} partite: nessuna schedina","The small number is \"{0} in N\" (or the % when it is likelier than {1} in {2}) to land at {3} with that many matches under your rules. × means no slip fits. Tap a bar to use it.":"Il numero piccolo è \"{0} su N\" (o la % quando è più probabile di {1} su {2}) che entri a {3} con quel numero di partite e le tue regole. × vuol dire che nessuna schedina va bene. Tocca una barra per usarla.","prices are estimates":"quote stimate","{0} win":"Vittoria {0}","{0} or draw":"{0} o pareggio","What the bookmaker's margin costs you on this pick":"Quanto ti costa il margine del bookmaker su questo esito","est. margin {0}":"margine stim. {0}","est.":"stima","{0} times the stake":"{0} volte la puntata","about {0} in {1}":"circa {0} su {1}","better than {0} in {1}":"meglio di {0} su {1}","Chance that every leg wins: {0}":"Probabilità che ogni evento vinca: {0}","Pays {0} with SNAI's {1} bonus":"Paga {0} con il bonus SNAI del {1}","Riskiest leg:":"Evento più rischioso:",", {0} win ({1}). It is the red dot.":", vittoria {0} ({1}). È il punto rosso.",", {0} or draw ({1}). It is the red dot.":", {0} o pareggio ({1}). È il punto rosso.",", draw ({0}). It is the red dot.":", pareggio ({0}). È il punto rosso.",", no draw ({0}). It is the red dot.":", niente pareggio ({0}). È il punto rosso.",", over {0} goals ({1}). It is the red dot.":", over {0} ({1}). È il punto rosso.",", under {0} goals ({1}). It is the red dot.":", under {0} ({1}). È il punto rosso.",", both teams score ({0}). It is the red dot.":", goal ({0}). È il punto rosso.","All {0} legs are at {1} or more, so the full {2} applies. {3} prices are still estimates.":"Tutti i {0} eventi sono a {1} o più, quindi vale tutto il {2}. {3} quote sono ancora stimate.","All {0} legs are at {1} or more, so the full {2} applies. Every price is SNAI's own.":"Tutti i {0} eventi sono a {1} o più, quindi vale tutto il {2}. Ogni quota è di SNAI.","Played many times, a {0} slip like this returns {1} on average: the bookmaker keeps about {2}. Without the bonus it would keep about {3}. This becomes exact once SNAI's prices are entered.":"Giocata tante volte, una schedina così da {0} rende in media {1}: il bookmaker tiene circa il {2}. Senza bonus terrebbe circa il {3}. Il conto diventa esatto quando inserisci le quote SNAI.","Played many times, a {0} slip like this returns {1} on average: the bookmaker keeps about {2}. This becomes exact once SNAI's prices are entered.":"Giocata tante volte, una schedina così da {0} rende in media {1}: il bookmaker tiene circa il {2}. Il conto diventa esatto quando inserisci le quote SNAI.","Played many times, a {0} slip like this returns {1} on average: the bookmaker keeps about {2}. Without the bonus it would keep about {3}.":"Giocata tante volte, una schedina così da {0} rende in media {1}: il bookmaker tiene circa il {2}. Senza bonus terrebbe circa il {3}.","Played many times, a {0} slip like this returns {1} on average: the bookmaker keeps about {2}.":"Giocata tante volte, una schedina così da {0} rende in media {1}: il bookmaker tiene circa il {2}.","Plain slip":"Schedina secca","{0} error":"{0} errore","{0} errors":"{0} errori","Your {0} picks as one ticket: everything must win. Choose \"{1} error\" to see the same picks as a sistema.":"I tuoi {0} esiti in una sola schedina: deve vincere tutto. Scegli \"{1} errore\" per vedere gli stessi esiti a sistema.","Something comes back":"Torna qualcosa","Ends in profit":"Finisce in guadagno","Average back per {0}":"Ritorno medio per {0}","All {0} win":"Vincono tutti i {0}","{0}+ legs lose":"{0}+ eventi persi","The bars show what happens to this slip. Most weeks, one or two legs fail.":"Le barre mostrano cosa succede a questa schedina. Quasi ogni settimana saltano uno o due eventi.","promised":"promesso","happened":"successo","Over {0} goals":"Over {0}","Under {0} goals":"Under {0}","expected to land":"attese vincenti","landed":"entrate","{0}, all ten, {1}":"{0}, tutte e dieci, {1}","{0} rounds":"{0} giornate","Top {0}, best ten, {1}":"Top {0}, migliori dieci, {1}","{0} weekends":"{0} weekend","Matches":"Partite","Home win {0} → {1}":"Vittoria casa {0} → {1}","pass":"superato","Home or draw {0} → {1}":"Casa o pareggio {0} → {1}","Over {0} goals {1} → {2}":"Over {0} {1} → {2}","Both teams score {0} → {1}":"Goal {0} → {1}","Away or draw {0} → {1}":"Ospite o pareggio {0} → {1}","Top {0}, {1}: {2} expected":"Top {0}, {1}: {2} attese","{0} landed":"{0} entrate","{0}, {1}: {2} expected":"{0}, {1}: {2} attese","Not both score {0} → {1}":"No goal {0} → {1}","kept out":"tenuto fuori","Verdict: PASS. Every offered pick type within {0} points of its promise (worst {1}). The slip series are thin (two seasons ≈ {2} slips each, {3}–{4} expected hits), so calibration is the strong test here; the live record continues it.":"Verdetto: SUPERATO. Ogni tipo di esito offerto entro {0} punti dalla sua promessa (peggiore {1}). Le serie di schedine sono corte (due stagioni ≈ {2} schedine ciascuna, {3}–{4} vincite attese), quindi qui la prova forte è la calibrazione; lo storico dal vivo la continua.","Top {0} ({1} matches)":"Top {0} ({1} partite)","+ second divisions ({0})":"+ serie cadette ({0})","+ NL, PT, BE, TR ({0})":"+ NL, PT, BE, TR ({0})","With only results, more than eight matches overshoot the target (ten legs come out near {0}), so the chance collapses. Asking for at least five {1} legs out of ten costs little: {2} in {3} and {4} instead of {5} in {6} and {7}. \"At most two per league\" gives {8} in {9} and {10}, but could only be built on {11} of weekends. Bet{12} prices; SNAI's may be less generous.":"Con il solo esito finale, più di otto partite superano la quota obiettivo (dieci eventi arrivano intorno a {0}), quindi la probabilità crolla. Chiedere almeno cinque eventi di {1} su dieci costa poco: {2} su {3} e {4} invece di {5} su {6} e {7}. \"Al massimo due per campionato\" dà {8} su {9} e {10}, ma si poteva costruire solo nel {11} dei weekend. Quote Bet{12}; quelle SNAI possono essere meno generose.","{0} graded":"{0} controllate","expected {0}":"attese {0}","landed {0}":"entrate {0}","Top {0} leagues":"Top {0} campionati","top {0} leagues":"top {0} campionati","Expected {0} hits so far, landed {1}: within what chance alone produces. One hit this early is luck, not proof, and a long dry run is not proof of a fault either.":"Finora {0} vincite attese, {1} entrate: dentro quello che produce il solo caso. Una vincita così presto è fortuna, non una prova, e nemmeno un lungo periodo a secco prova un difetto.","example until the first graded weekend":"esempio fino al primo weekend controllato","{0} promised, {1} happened, {2} legs":"{0} promesso, {1} successo, {2} eventi","promised %":"% promessa","happened %":"% successa","{0} legs graded (example). Each dot is a group of legs: across is what Scudi promised, up is how often they won; the bar is the range chance alone allows. Every group sits within its range.":"{0} eventi controllati (esempio). Ogni punto è un gruppo di eventi: in orizzontale la probabilità promessa da Scudi, in verticale quante volte hanno vinto; la barra è la fascia concessa dal solo caso. Ogni gruppo sta nella sua fascia.","{0} slips":"{0} schedine","Example slips at {0}: down {1}, against an expected {2}. Gold is you, the dashed line is the average, the bands are where chance alone puts you two times in three and nineteen times in twenty. You are inside the bands.":"Schedine di esempio a {0}: sotto di {1}, contro un atteso di {2}. L'oro sei tu, la linea tratteggiata è la media, le fasce sono dove ti mette il solo caso due volte su tre e diciannove volte su venti. Sei dentro le fasce.","pick":"esito","lost {0}":"persi {0}","Across {0} legs: how often the price you took was better than the market's last view before kick-off. Above {1} means your timing is good; it is the one free sign of a real edge.":"Su {0} eventi: quante volte la quota presa era migliore dell'ultima valutazione del mercato prima del calcio d'inizio. Sopra il {1} il tuo tempismo è buono; è l'unico segnale gratuito di un vantaggio reale.","Lost by one leg":"Perse per un evento","{0} for {1}":"{0} per {1}","{0} – {1}: over {2} ({3})":"{0} – {1}: over {2} ({3})","{0} – {1}: under {2} ({3})":"{0} – {1}: under {2} ({3})","{0} – {1}: both score ({2})":"{0} – {1}: goal ({2})","{0} – {1}: no draw ({2})":"{0} – {1}: niente pareggio ({2})","{0} – {1}: draw ({2})":"{0} – {1}: pareggio ({2})","{0} – {1}: home or draw ({2})":"{0} – {1}: casa o pareggio ({2})","{0} – {1}: away or draw ({2})":"{0} – {1}: ospite o pareggio ({2})","{0} – {1}: home win ({2})":"{0} – {1}: vittoria casa ({2})","{0} – {1}: away win ({2})":"{0} – {1}: vittoria ospite ({2})","only wins":"solo vittorie","only results":"solo esito finale","results + double chance":"esito finale + doppia chance","only goals":"solo gol","no slip":"nessuna schedina","every competition":"tutte le competizioni","big leagues":"grandi campionati","national teams":"nazionali","european cups":"coppe europee","second divisions":"serie cadette","more of europe":"altri campionati europei","{0} competitions":"{0} competizioni","{0} match":"{0} partita","No SNAI bonus under five legs":"Niente bonus SNAI sotto i cinque eventi","SNAI's bonus starts at five legs. This slip has {0}.":"Il bonus SNAI parte da cinque eventi. Questa schedina ne ha {0}.","At {0} the best slip has {1} match.":"A {0} la schedina migliore ha {1} partita.","At {0} the best slip has {1} matches.":"A {0} la schedina migliore ha {1} partite.","Back to {0} matches.":"Di nuovo {0} partite.","The target now counts SNAI's bonus, so the slip can be a little safer.":"Ora la quota obiettivo conta il bonus SNAI, quindi la schedina può essere un po' più sicura.","The target is back to the plain combined odds.":"La quota obiettivo torna a essere la semplice quota totale.","{0} pick types":"{0} tipi di esito","no slip fits at this target":"nessuna schedina va bene a questa quota","No slip fits these rules at {0}. Fewer matches, a looser rule or a lower target will find one. The bars on the right show which numbers of matches work.":"Nessuna schedina rispetta queste regole a {0}. Con meno partite, una regola più larga o una quota più bassa se ne trova una. Le barre a destra mostrano quanti eventi funzionano.","No slip fits these rules":"Nessuna schedina rispetta queste regole","Loosen a rule":"Allarga una regola","Keep at least one kind of pick.":"Tieni almeno un tipo di esito.","each leg {0}+":"ogni evento {0}+","no leg above {0}":"nessun evento sopra {0}","at least {0} from {1}":"almeno {0} da {1}","at most {0} per league":"al massimo {0} per campionato","Rules reset for this slip.":"Regole azzerate per questa schedina.","Keep at least one competition.":"Tieni almeno una competizione.","Keep at least one day.":"Tieni almeno un giorno.","No matches would be left.":"Non resterebbe nessuna partita.","Close":"Chiudi","{0} v {1}":"{0} – {1}","no team data":"nessun dato squadra","No team data for this match yet. The team-data job ({0} mornings, or \"team data\" under Actions) fills the pitch, the squads and the transfer histories.":"Ancora nessun dato squadra per questa partita. Il lavoro \"team data\" (il {0} mattina, o \"team data\" in Actions) riempie il campo, le rose e le storie dei trasferimenti.","Price movement":"Movimento delle quote","One price pull so far. The line appears after the next pull (every match-day morning).":"Finora un solo scaricamento delle quote. La linea compare dopo il prossimo (ogni mattina di partite).","The market's view":"La valutazione del mercato","Consensus of {0} bookmakers, margin removed, {1} of the weight from Pinnacle and Betfair.":"Consenso di {0} bookmaker, margine tolto, {1} del peso da Pinnacle e Betfair.","Likely scores":"Risultati probabili","Score grid":"Griglia dei risultati","Grid: {0} goals down ({1} to {2}+), {3} goals across. Brighter is likelier.":"Griglia: gol di {0} in verticale (da {1} a {2}+), gol di {3} in orizzontale. Più chiaro è più probabile.","Picks for this match":"Esiti per questa partita","Chance, price, and what the bookmaker's margin costs you on that pick. Choose one to lock it, even outside your rules; the rest of the slip rebuilds to stay on target.":"Probabilità, quota e quanto ti costa il margine del bookmaker su quell'esito. Sceglierne uno lo blocca, anche fuori dalle tue regole; il resto della schedina si ricostruisce per restare in quota.","Result":"Esito finale","Double chance":"Doppia chance","Goals":"Gol","Both teams score":"Goal (segnano entrambe)","Leave this match out":"Escludi questa partita","Locked. The other legs were rebuilt to stay at {0}.":"Bloccato. Gli altri eventi sono stati ricostruiti per restare a {0}.","Let Scudi choose":"Lascia scegliere Scudi","{0} – {1} is left out. Undo it in your rules.":"{0} – {1} è esclusa. Puoi annullare nelle tue regole.","Back in play.":"Di nuovo in gioco.","SNAI's prices":"Le quote SNAI","Open each pick on SNAI and type the price you see. Scudi then recomputes the odds, the bonus and the true cost. If the slip falls short of the target it swaps a leg and asks you to check the new one.":"Apri ogni esito su SNAI e scrivi la quota che vedi. Scudi ricalcola quota, bonus e costo vero. Se la schedina non arriva alla quota obiettivo cambia un evento e ti chiede di controllare quello nuovo.","estimate {0}":"stima {0}","Back to estimates":"Torna alle stime","Apply prices":"Applica le quote","{0} checked at SNAI":"{0} verificati su SNAI","This price is above the market's fair price":"Questa quota è sopra la quota equa del mercato","SNAI value {0}":"valore SNAI {0}","SNAI margin {0}":"margine SNAI {0}","SNAI prices for {0} upcoming matches, {1} picks at {2} or more. Median margin {3}. The builder already prefers the cheap picks; this is where they are, and the dearest three. A green \"+\" means SNAI pays more than the market's fair price: rare, and worth a second look at the price.":"Quote SNAI per {0} prossime partite, {1} esiti a {2} o più. Margine mediano {3}. Il costruttore preferisce già gli esiti economici; eccoli qui, con i tre più cari. Un \"+\" verde vuol dire che SNAI paga più della quota equa del mercato: raro, e vale un secondo sguardo alla quota.","Dearest":"I più cari","Scudi changed {0} legs to stay on target. Check their prices on SNAI too.":"Scudi ha cambiato {0} eventi per restare in quota. Controlla anche le loro quote su SNAI.","Scudi changed {0} leg to stay on target. Check its price on SNAI too.":"Scudi ha cambiato {0} evento per restare in quota. Controlla anche la sua quota su SNAI.","entered":"inserita","Back to estimated prices.":"Di nuovo alle quote stimate.","SNAI prices":"Quote SNAI","SNAI prices for {0}":"Quote SNAI per {0}","Paste SNAI's page":"Incolla la pagina SNAI","On snai.it open the competition ({0}, {1}…). Press":"Su snai.it apri la competizione ({0}, {1}…). Premi","Ctrl + A":"Ctrl + A",", then":", poi","Ctrl + C":"Ctrl + C","(on a phone: select all, copy) and paste it below. Scudi finds this week's matches in the text and reads {0} X {1}, double chance, under/over {2} and goal/no goal. Nothing leaves your browser.":"(sul telefono: seleziona tutto, copia) e incolla qui sotto. Scudi trova le partite della settimana nel testo e legge {0} X {1}, doppia chance, under/over {2} e goal/no goal. Niente esce dal tuo browser.","Clear":"Svuota","Read prices":"Leggi le quote","No match of this week was found in the text. Check it is SNAI's page for the right competition; if it is, send the pasted text to Claude so the reader can learn its layout.":"Nel testo non c'è nessuna partita di questa settimana. Controlla che sia la pagina SNAI della competizione giusta; se lo è, manda il testo incollato a Claude così il lettore impara il formato.","Paste the page first.":"Prima incolla la pagina.","{0} matches found, {1} look right. Columns read as Home win · Draw · Away win · Home or draw · Away or draw · No draw · Under {2} · Over {3} · Both score · No goal. Untick anything wrong.":"{0} partite trovate, {1} sembrano giuste. Colonne lette come 1 · X · 2 · 1X · X2 · 12 · Under {2} · Over {3} · Goal · No goal. Togli la spunta a ciò che è sbagliato.","Save as snai.json":"Salva come snai.json","Use {0} matches":"Usa {0} partite","Use {0} match":"Usa {0} partita","SNAI prices read for {0} matches. The slips were rebuilt at SNAI's prices.":"Quote SNAI lette per {0} partite. Le schedine sono state ricostruite alle quote SNAI.","SNAI turns your {0} picks into every {1}-leg slip that can be made from them:":"SNAI trasforma i tuoi {0} esiti in tutte le schedine da {1} eventi che se ne possono fare:","{0} tickets":"{0} colonne","at {0} each. All {1} right pays the most; one wrong still pays the tickets that avoided the misses.":"da {0} l'una. Tutti e {1} giusti paga di più; con uno sbagliato pagano comunque le colonne che hanno evitato l'errore.","at {0} each. All {1} right pays the most; up to {2} wrong still pays the tickets that avoided the misses.":"da {0} l'una. Tutti e {1} giusti paga di più; fino a {2} sbagliati pagano comunque le colonne che hanno evitato gli errori.","{0} leg loses":"{0} evento perso","{0} legs lose":"{0} eventi persi","SNAI minimum for this sistema: {0}.":"Minimo SNAI per questo sistema: {0}.","SNAI minimum for this sistema: {0}. Plain slip for comparison: {1} to get anything back, {2} back per {3} on average. A sistema does not beat the margin: it trades the top prize for a much better chance of getting something back.":"Minimo SNAI per questo sistema: {0}. La schedina secca per confronto: {1} di riavere qualcosa, {2} di ritorno per {3} in media. Un sistema non batte il margine: scambia il premio pieno con una probabilità molto più alta di riavere qualcosa.","SNAI needs at least {0} for this sistema ({1} a ticket, {2} a system).":"SNAI chiede almeno {0} per questo sistema ({1} a colonna, {2} a sistema).","Plain slip for comparison: {0} to get anything back, {1} back per {2} on average. A sistema does not beat the margin: it trades the top prize for a much better chance of getting something back.":"La schedina secca per confronto: {0} di riavere qualcosa, {1} di ritorno per {2} in media. Un sistema non batte il margine: scambia il premio pieno con una probabilità molto più alta di riavere qualcosa.","Sistema":"Sistema","What a sistema is":"Cos'è un sistema","A normal slip is one ticket: every leg must win. A":"Una schedina normale è una sola colonna: ogni evento deve vincere. Un","sistema":"sistema","takes the same picks and places":"prende gli stessi esiti e gioca","every smaller slip":"ogni schedina più piccola","that can be made from them, each as its own ticket, with your stake split between them.":"che se ne può fare, ognuna come colonna a sé, con la puntata divisa tra loro.","Example:":"Esempio:","{0} picks as \"{1} su {2}\" (one error allowed) = the {3} different slips of {4} legs, each leaving out one pick. With {5}, each ticket gets {6}.":"{0} esiti come \"{1} su {2}\" (un errore concesso) = le {3} diverse schedine da {4} eventi, ognuna senza un esito. Con {5}, ogni colonna riceve {6}.",": all {0} tickets pay. You get a little less than the plain slip would have paid, because each ticket is one leg shorter.":": pagano tutte le {0} colonne. Prendi un po' meno di quanto avrebbe pagato la schedina secca, perché ogni colonna ha un evento in meno.","Exactly one loses":"Ne perde esattamente uno",": the plain slip would pay nothing; here one ticket (the one that left that pick out) still pays about a tenth of the full prize. Losing a long-priced leg leaves more; losing a short one leaves less.":": la schedina secca non pagherebbe niente; qui una colonna (quella senza quell'esito) paga ancora circa un decimo del premio pieno. Perdere un evento a quota alta lascia di più; perderne uno a quota bassa lascia meno.","Two or more lose":"Ne perdono due o più",": nothing comes back, as with the plain slip.":": non torna niente, come con la schedina secca.","\"{0} errors\" makes every {1}-leg slip ({2} tickets for {3} picks) and \"{4} errors\" every {5}-leg slip ({6} tickets). SNAI asks at least {7} a ticket and {8} a system. It does not change the maths of the margin; it swaps a chance at the big prize for a far better chance of getting part of your stake back, which is why Scudi shows both next to each other.":"\"{0} errori\" gioca ogni schedina da {1} eventi ({2} colonne con {3} esiti) e \"{4} errori\" ogni schedina da {5} eventi ({6} colonne). SNAI chiede almeno {7} a colonna e {8} a sistema. Non cambia la matematica del margine; scambia una probabilità del premio grosso con una probabilità molto più alta di riavere parte della puntata, per questo Scudi li mostra uno accanto all'altro.","On SNAI: add the picks, open":"Su SNAI: aggiungi gli esiti, apri",", choose the \"k su n\" line (for example {0} su {1}) and the stake per ticket. SNAI's rules do not say whether the Bonus Multipla applies to system tickets; check it on your account and use the switch if it does.":", scegli la riga \"k su n\" (per esempio {0} su {1}) e l'importo per colonna. Il regolamento SNAI non dice se il Bonus Multipla vale sulle colonne di un sistema; verificalo sul tuo conto e usa l'interruttore se vale.","Copying is blocked in this preview. It will work on the real site.":"In questa anteprima la copia è bloccata. Sul sito vero funzionerà.","Slip copied. Keep it next to SNAI while you enter the picks.":"Schedina copiata. Tienila accanto a SNAI mentre inserisci gli esiti.","Marked as placed. Scudi follows it live on match day and adds it to your record when it settles.":"Segnata come giocata. Scudi la segue dal vivo il giorno delle partite e la aggiunge al tuo storico quando si chiude.","undo":"annulla","Placed":"Giocata","Removed from placed slips.":"Tolta dalle schedine giocate.","Simulated matchday":"Giornata simulata","still alive":"ancora viva","Live":"Live","Chance it lands now":"Probabilità che entri adesso","Legs won so far":"Eventi vinti finora","live":"live","to play":"da giocare","Simulated goals from each match's expected goals. Nothing here is real.":"Gol simulati dai gol attesi di ogni partita. Qui niente è reale.","Stop the simulation":"Ferma la simulazione","Pick at least one slip that has a result.":"Scegli almeno una schedina che abbia un risultato.","{0} matches this round":"{0} partite in questa giornata","Best of {0} matches":"Il meglio di {0} partite","{0} night":"{0} sera","Pays":"Paga","Fewer":"Meno","More":"Di più","Pts":"Pt","Likely line-ups on the pitch":"Formazioni probabili in campo","{0}: last line-up, {1}, {2} {3}":"{0}: ultima formazione, {1} {2} {3}","Out injured":"Infortunati","Bold: one of the team's most involved players. The market has usually priced known absences in already.":"In grassetto: uno dei giocatori più impiegati della squadra. Di solito il mercato ha già messo nelle quote le assenze note.","How they play":"Come giocano","season averages":"medie stagionali","possession":"possesso palla","shots a game":"tiri a partita","on target":"in porta","passes completed":"passaggi riusciti","tackles + interceptions":"contrasti + intercetti","goals for a game":"gol fatti a partita","goals against a game":"gol subiti a partita","Keeps the ball":"Tiene palla","Presses, wins the ball back":"Pressa e recupera palla","Back three":"Difesa a tre","Back four":"Difesa a quattro","Shoots a lot":"Tira molto","Few shots":"Tira poco","Direct":"Gioco diretto","Sits deep":"Difende basso","Scores freely":"Segna tanto","Tight at the back":"Solida dietro","{0} and {1} matches this season, all competitions the site follows. Tags compare with the median of the {2} teams on file. Example data.":"{0} e {1} partite in questa stagione, in tutte le competizioni che il sito segue. Le etichette confrontano con la mediana delle {2} squadre in archivio. Dati di esempio.","{0} and {1} matches this season, all competitions the site follows. Tags compare with the median of the {2} teams on file.":"{0} e {1} partite in questa stagione, in tutte le competizioni che il sito segue. Le etichette confrontano con la mediana delle {2} squadre in archivio.","Last five":"Ultime cinque","at {0}, {1}{2}{3}":"in casa di {0}, {1}{2}{3}","v {0}, {1}{2}{3}":"contro {0}, {1}{2}{3}","{0} table":"Classifica {0}","League phase table":"Classifica fase campionato","League phase":"Fase campionato","Team":"Squadra","{0} at home":"{0} in casa",": {0}W {1}D {2}L":": {0}V {1}N {2}P","{0} scored, {1} conceded a game":"{0} fatti, {1} subiti a partita","{0} away":"{0} in trasferta","Back":"Indietro","shots / game":"tiri / partita","goals for":"gol fatti","against":"subiti","Style":"Stile","Last results":"Ultimi risultati","at {0}":"in casa di {0}","v {0}":"contro {0}","v":"contro","at":"in casa di","Squad":"Rosa","Goalkeepers":"Portieri","Defenders":"Difensori","Midfielders":"Centrocampisti","Forwards":"Attaccanti","Goalkeeper":"Portiere","Defender":"Difensore","Midfielder":"Centrocampista","Forward":"Attaccante","{0} app":"{0} pres.","{0} a":"{0} assist","{0} g":"{0} gol","Example data in ESPN's shapes. Source: ESPN public data via the team-data job, {0}, {1} {2}.":"Dati di esempio nel formato ESPN. Fonte: dati pubblici ESPN tramite il lavoro \"team data\", {0} {1} {2}.","Source: ESPN public data via the team-data job, {0}, {1} {2}.":"Fonte: dati pubblici ESPN tramite il lavoro \"team data\", {0} {1} {2}.","{0} years":"{0} anni","injured":"infortunato","height":"altezza","{0} cm":"{0} cm","weight":"peso","{0} kg":"{0} kg","apps":"presenze","goals":"gol","assists":"assist","yellows":"gialli","saves":"parate","born":"nato","Against every goalkeeper on file ({0})":"Contro tutti i portieri in archivio ({0})","Against every defender on file ({0})":"Contro tutti i difensori in archivio ({0})","Against every midfielder on file ({0})":"Contro tutti i centrocampisti in archivio ({0})","Against every forward on file ({0})":"Contro tutti gli attaccanti in archivio ({0})","Appearances":"Presenze","Goals a game":"Gol a partita","Assists a game":"Assist a partita","Shots a game":"Tiri a partita","Shots on target a game":"Tiri in porta a partita","Saves a game":"Parate a partita","Goals conceded a game":"Gol subiti a partita","th":"°","st":"°","nd":"°","rd":"°","Yellow cards a game":"Cartellini gialli a partita","Percentile: the share of players in the same position he is ahead of. Cards count better when fewer. Example data.":"Percentile: la quota di giocatori nello stesso ruolo che supera. Per i cartellini, meno è meglio. Dati di esempio.","Percentile: the share of players in the same position he is ahead of. Cards count better when fewer.":"Percentile: la quota di giocatori nello stesso ruolo che supera. Per i cartellini, meno è meglio.","Transfer history":"Storia dei trasferimenti","Undisclosed":"Non comunicato","Fees as ESPN lists them; \"undisclosed\" means the clubs never published one.":"Cifre come le riporta ESPN; \"non comunicato\" vuol dire che i club non l'hanno mai resa pubblica.","No transfers on file.":"Nessun trasferimento in archivio.","Slot in the last line-up":"Posizione nell'ultima formazione","{0}{1}{2}{3} on {4}, {5} {6}. Attacking left to right. No free source publishes heatmaps or preferred foot, so Scudi does not invent them.":"{0}{1}{2}{3} il {4} {5} {6}. Attacca da sinistra a destra. Nessuna fonte gratuita pubblica heatmap o piede preferito, quindi Scudi non li inventa.","Free":"Svincolato","Transfer":"Trasferimento","Loan":"Prestito","Return from loan":"Rientro dal prestito","{0}M":"{0} mln","All prices are SNAI's. {0}, pays {1} with the bonus.":"Tutte le quote sono SNAI. {0}, paga {1} con il bonus.","On average this season loses {0} ({1} of stakes). The typical season is worse than the average because the rare hits carry it. Prices are estimates; SNAI's own prices will move these numbers.":"In media questa stagione perde {0} (il {1} delle puntate). La stagione tipica va peggio della media perché la reggono le rare vincite. Le quote sono stime; quelle vere di SNAI sposteranno questi numeri.","Scudi Mockup":"Scudi","Example prices":"Quote di esempio","Giornata {0}":"Giornata {0}","How the market's chance for this pick moved since the first price pull":"Come si è mossa la probabilità del mercato per questo esito dal primo scaricamento","▲ {0} pts":"▲ {0} pt","▼ {0} pts":"▼ {0} pt","Price movement · {0} pulls":"Movimento delle quote · {0} scaricamenti","{0} pulls":"{0} scaricamenti","How the chances moved between price pulls":"Come si sono mosse le probabilità tra gli scaricamenti","The market's chances at each price pull, margin removed. Late moves usually carry team news. Example movement: real pulls replace it.":"Le probabilità del mercato a ogni scaricamento, margine tolto. I movimenti tardivi di solito portano notizie di formazione. Movimento di esempio: gli scaricamenti veri lo sostituiscono.","The market's chances at each price pull, margin removed. Late moves usually carry team news.":"Le probabilità del mercato a ogni scaricamento, margine tolto. I movimenti tardivi di solito portano notizie di formazione.","The market's view, bookmaker margin removed.":"La valutazione del mercato, margine del bookmaker tolto.","No matches in the window (pulled {0}, {1} {2})":"Nessuna partita nella finestra (scaricate {0} {1} {2})","International week":"Settimana delle nazionali","Team data · example":"Dati squadre · esempio","{0} matches · {1}":"{0} partite · {1}","Sat":"sab","World Cup qualifiers":"Qualificazioni Mondiali","Euro qualifiers":"Qualificazioni Europei","World Cup":"Mondiali","Euro":"Europei","Scottish Premiership":"Premiership scozzese","Austrian Bundesliga":"Bundesliga austriaca","Swiss Super League":"Super League svizzera","Danish Superliga":"Superliga danese","Greek Super League":"Super League greca","Belgian Pro League":"Pro League belga","International Friendlies":"Amichevoli internazionali","Champions League {0}":"Champions League {0}","Top 5 leagues":"Top 5 campionati","All competitions":"Tutte le competizioni","Italy":"Italia","France":"Francia","Spain":"Spagna","Germany":"Germania","England":"Inghilterra","Portugal":"Portogallo","Netherlands":"Paesi Bassi","Belgium":"Belgio","Croatia":"Croazia","Switzerland":"Svizzera","Czech Republic":"Repubblica Ceca","Czechia":"Repubblica Ceca","Scotland":"Scozia","Poland":"Polonia","Hungary":"Ungheria","Turkey":"Turchia","Türkiye":"Turchia","Sweden":"Svezia","Slovakia":"Slovacchia","Ukraine":"Ucraina","Romania":"Romania","Norway":"Norvegia","Denmark":"Danimarca","Austria":"Austria","Israel":"Israele","Serbia":"Serbia","Greece":"Grecia","Wales":"Galles","Republic of Ireland":"Irlanda","Ireland":"Irlanda","Northern Ireland":"Irlanda del Nord","Kosovo":"Kosovo","Liechtenstein":"Liechtenstein","Lithuania":"Lituania","Andorra":"Andorra","Malta":"Malta","Iceland":"Islanda","Finland":"Finlandia","Slovenia":"Slovenia","Albania":"Albania","North Macedonia":"Macedonia del Nord","Montenegro":"Montenegro","Bosnia-Herzegovina":"Bosnia-Erzegovina","Bosnia and Herzegovina":"Bosnia-Erzegovina","Bulgaria":"Bulgaria","Georgia":"Georgia","Armenia":"Armenia","Azerbaijan":"Azerbaigian","Kazakhstan":"Kazakistan","Cyprus":"Cipro","Estonia":"Estonia","Latvia":"Lettonia","Luxembourg":"Lussemburgo","Moldova":"Moldavia","Belarus":"Bielorussia","Faroe Islands":"Isole Fær Øer","Gibraltar":"Gibilterra","San Marino":"San Marino","Russia":"Russia","Settled":"Chiusa","in your record":"nel tuo storico","Landed · {0}":"Entrata · {0}","Settled · {0}":"Chiusa · {0}","Placed · {0}":"Giocata · {0}","Landed. It pays {0}":"Entrata! Paga {0}","Slip lost":"Schedina persa","Half-time for the slip":"Schedina a metà strada","Kick-off soon":"Si comincia a breve","{0} – {1} {2}–{3}: {4} win did not come in.":"{0} – {1} {2}–{3}: vittoria {4} non è entrata.","{0} – {1} {2}–{3}: {4} or draw did not come in.":"{0} – {1} {2}–{3}: {4} o pareggio non è entrato.","{0} – {1} {2}–{3}: draw did not come in.":"{0} – {1} {2}–{3}: il pareggio non è entrato.","{0} – {1} {2}–{3}: no draw did not come in.":"{0} – {1} {2}–{3}: niente pareggio non è entrato.","{0} – {1} {2}–{3}: over {4} goals did not come in.":"{0} – {1} {2}–{3}: over {4} non è entrato.","{0} – {1} {2}–{3}: under {4} goals did not come in.":"{0} – {1} {2}–{3}: under {4} non è entrato.","{0} – {1} {2}–{3}: both teams score did not come in.":"{0} – {1} {2}–{3}: goal non è entrato.","won":"vinto","lost":"perso","ESPN live scores":"Risultati live ESPN","updated {0}":"aggiornati alle {0}","refreshes every minute":"si aggiornano ogni minuto","Scores appear at kick-off.":"I risultati compaiono al calcio d'inizio.","Refresh now":"Aggiorna ora","ESPN's live scores could not be read from this browser. Tell Claude: a small background job can fetch them instead.":"Da questo browser non si leggono i risultati live di ESPN. Dillo a Claude: un piccolo lavoro in background può prenderli al posto tuo.","A placed slip has settled. Your record is updated.":"Una schedina giocata si è chiusa. Il tuo storico è aggiornato.","At SNAI's prices no slip reaches {0} under your rules.":"Alle quote SNAI nessuna schedina arriva a {0} con le tue regole.","Build a slip first.":"Prima costruisci una schedina.","Downloads are blocked in this preview. They work on the real site.":"In questa anteprima i download sono bloccati. Sul sito vero funzionano.","Every price must be a number above {0}.":"Ogni quota deve essere un numero sopra {0}.","Saving files works on your own site, not in this preview.":"Salvare file funziona sul tuo sito, non in questa anteprima.","That file is not a Scudi backup.":"Quel file non è un salvataggio di Scudi.","That slip is already settled; it stays in your record.":"Quella schedina è già chiusa; resta nel tuo storico.","Tick at least one match.":"Spunta almeno una partita.","With that pick no slip reaches {0} under your rules.":"Con quell'esito nessuna schedina arriva a {0} con le tue regole.","{0} slip restored.":"{0} schedina ripristinata.","{0} slips restored.":"{0} schedine ripristinate.","SNAI is about {0} below the estimates. Scudi changed {1} legs to stay on target. Check their prices on SNAI too.":"SNAI è circa il {0} sotto le stime. Scudi ha cambiato {1} eventi per restare in quota. Controlla anche le loro quote su SNAI.","SNAI is about {0} below the estimates. Scudi changed {1} leg to stay on target. Check its price on SNAI too.":"SNAI è circa il {0} sotto le stime. Scudi ha cambiato {1} evento per restare in quota. Controlla anche la sua quota su SNAI.","All picks unlocked. Scudi chose again.":"Tutti gli esiti sbloccati. Scudi ha scelto di nuovo.","{0} leg is under {1} and will not count for the bonus.":"{0} evento è sotto {1} e non conta per il bonus.","{0} legs are under {1} and will not count for the bonus.":"{0} eventi sono sotto {1} e non contano per il bonus.","{0}: likely eleven from the squad":"{0}: undici probabile dalla rosa","{0}: no squad yet":"{0}: rosa non ancora disponibile","{0}: no team data":"{0}: nessun dato squadra","likely eleven from the squad":"undici probabile dalla rosa","no squad yet":"rosa non ancora disponibile","Back five":"Difesa a cinque","Direct, on the counter":"Diretta, in contropiede","Leaky":"Difesa fragile","Patient build-up":"Costruzione paziente","Free-scoring":"Segna tanto","Likely slot":"Posizione probabile","no results on file":"nessun risultato in archivio","Appears once legs are graded with a later price pull to compare against.":"Compare quando ci sono eventi controllati con uno scaricamento successivo con cui confrontarli.","{0} legs graded (example).":"{0} eventi controllati (esempio).","{0} legs graded.":"{0} eventi controllati.","Each dot is a group of legs: across is what Scudi promised, up is how often they won; the bar is the range chance alone allows.":"Ogni punto è un gruppo di eventi: in orizzontale la probabilità promessa da Scudi, in verticale quante volte hanno vinto; la barra è la fascia concessa dal solo caso.","Every group sits within its range.":"Ogni gruppo sta nella sua fascia.","{0} group sits outside its range: worth a look once there are more legs.":"{0} gruppo è fuori dalla sua fascia: da guardare quando ci saranno più eventi.","{0} groups sit outside its range: worth a look once there are more legs.":"{0} gruppi sono fuori dalla loro fascia: da guardare quando ci saranno più eventi.","Example slips at {0}: down {1}, against an expected {2}.":"Schedine di esempio a {0}: sotto di {1}, contro un atteso di {2}.","Example slips at {0}: up {1}, against an expected {2}.":"Schedine di esempio a {0}: sopra di {1}, contro un atteso di {2}.","Paper slips at {0} each: down {1}, against an expected {2}.":"Schedine di prova a {0} l'una: sotto di {1}, contro un atteso di {2}.","Paper slips at {0} each: up {1}, against an expected {2}.":"Schedine di prova a {0} l'una: sopra di {1}, contro un atteso di {2}.","Your placed slips: down {0}, against an expected {1}.":"Le tue schedine giocate: sotto di {0}, contro un atteso di {1}.","Your placed slips: up {0}, against an expected {1}.":"Le tue schedine giocate: sopra di {0}, contro un atteso di {1}.","Gold is you, the dashed line is the average, the bands are where chance alone puts you two times in three and nineteen times in twenty.":"L'oro sei tu, la linea tratteggiata è la media, le fasce sono dove ti mette il solo caso due volte su tre e diciannove volte su venti.","You are inside the bands.":"Sei dentro le fasce.","You are above the bands: luck, most likely.":"Sei sopra le fasce: molto probabilmente fortuna.","You are below the bands: check the calibration.":"Sei sotto le fasce: controlla la calibrazione.","No slips yet.":"Ancora nessuna schedina.","Refresh":"Aggiorna","{0} to {1}":"da {0} a {1}"};
+
+/* ---------- language: English (the source) or Italian (decision 74) ----------
+   The page is written in English. In Italian, every text the page shows is looked up in a dictionary of templates:
+   numbers, dates, team and competition names are lifted out first ("Pays {0} with SNAI's +{1} bonus"), the template
+   is translated, and the lifted values go back in. A watcher does this for everything the page draws later too, so the
+   app code stays in one language. Anything not in the dictionary simply stays in English. */
+(function () {
+  var KEY = 'scudi-lang', LANG = '';
+  try { LANG = localStorage.getItem(KEY) || ''; } catch (e) { LANG = ''; }
+  var q = /[?&]lang=(en|it)\b/.exec(location.search || ''); if (q) LANG = q[1];
+  if (LANG !== 'en' && LANG !== 'it') LANG = /^it\b/i.test(navigator.language || '') ? 'it' : 'en';
+  var COLLECT = !!window.__I18N_COLLECT, DICT = window.SCUDI_IT || {}, seen = {};
+  var DAYS = { Mon: 'lun', Tue: 'mar', Wed: 'mer', Thu: 'gio', Fri: 'ven', Sat: 'sab', Sun: 'dom',
+    Monday: 'lunedì', Tuesday: 'martedì', Wednesday: 'mercoledì', Thursday: 'giovedì', Friday: 'venerdì', Saturday: 'sabato', Sunday: 'domenica' };
+  var MONTHS = { Jan: 'gen', Feb: 'feb', Mar: 'mar', Apr: 'apr', May: 'mag', Jun: 'giu', Jul: 'lug', Aug: 'ago', Sep: 'set', Sept: 'set', Oct: 'ott', Nov: 'nov', Dec: 'dic',
+    January: 'gennaio', February: 'febbraio', March: 'marzo', April: 'aprile', June: 'giugno', July: 'luglio', August: 'agosto', September: 'settembre', October: 'ottobre', November: 'novembre', December: 'dicembre' };
+  var WORDS = Object.keys(DAYS).concat(Object.keys(MONTHS)).sort(function (a, b) { return b.length - a.length; });
+  var WORD_RE = new RegExp('\\b(' + WORDS.join('|') + ')\\b', 'g');
+  var NUM_RE = /[+−-]?[€$]?\d+(?:[.,:]\d+)*(?:%|x|€)?/g;
+  var NAME_RE = null, NAMES = {};
+  var FORM = { W: 'V', D: 'N', L: 'P' };
+  var RULES = [[/^Last results ([WDL]+)$/, function (_m, f) { return 'Ultimi risultati ' + f.replace(/[WDL]/g, function (c) { return FORM[c]; }); }],
+    [/^(.+), injured$/, function (_m, who) { return who + ', infortunato'; }]];
+  /* single letters that mean something only where they sit: last-five results, home/away */
+  var LETTERS = [['.formrow i', FORM], ['.fchip small', { H: 'C', A: 'T' }]];
+  function escRe(x) { return x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+  function names(list) {
+    (list || []).forEach(function (n) { n = String(n || '').trim(); if (n.length >= 3 && /[A-Za-zÀ-ÿ]/.test(n)) NAMES[n] = 1; });
+    var all = Object.keys(NAMES).sort(function (a, b) { return b.length - a.length; });
+    NAME_RE = all.length ? new RegExp('(' + all.map(escRe).join('|') + ')', 'g') : null;   /* case-sensitive: "euro" in a sentence is not "Euro" */
+    if (on) sweep(document.body);
+  }
+  var LETTER = /[A-Za-zÀ-ÖØ-öø-ÿ]/;
+  /* the template of a text and the values lifted out of it */
+  function keyOf(text) {
+    var vals = [], mark = function (v) { vals.push(v); return String.fromCharCode(0xE100 + vals.length - 1); }, k = text;
+    if (NAME_RE) k = k.replace(NAME_RE, function (m, _g, at, all) {
+      var before = all.charAt(at - 1), after = all.charAt(at + m.length);
+      return (before && LETTER.test(before)) || (after && LETTER.test(after)) ? m : mark(m);
+    });
+    k = k.replace(WORD_RE, function (m) { return mark(m); });
+    k = k.replace(NUM_RE, function (m) { return mark(m); });
+    /* renumber in order of appearance so the key reads {0}, {1}, ... */
+    var order = [], out = k.replace(/[\uE100-\uEFFF]/g, function (m) { order.push(vals[m.charCodeAt(0) - 0xE100]); return '{' + (order.length - 1) + '}'; });
+    return { k: out, vals: order };
+  }
+  function valueIt(v) { return DAYS[v] || MONTHS[v] || DICT[v] || v; }
+  function tr(text) {
+    if (!text || !LETTER.test(text)) return text;
+    var lead = /^\s*/.exec(text)[0], trail = /\s*$/.exec(text)[0], core = text.slice(lead.length, text.length - trail.length);
+    if (!core) return text;
+    if (DICT[core] !== undefined) return lead + DICT[core] + trail;
+    if (/^[A-Z0-9]{1,4}$/.test(core)) return text;          /* crest monograms, pick codes */
+    var rule = RULES.filter(function (r) { return r[0].test(core); })[0];
+    if (rule) return lead + core.replace(rule[0], rule[1]) + trail;
+    var t = keyOf(core);
+    if (DICT[t.k] === undefined && core.indexOf(' · ') > -1) {   /* "12 matches · every competition · only results": piece by piece */
+      return lead + core.split(' · ').map(function (part) { return tr(part); }).join(' · ') + trail;
+    }
+    if (!LETTER.test(t.k.replace(/\{\d+\}/g, ''))) return lead + t.k.replace(/\{(\d+)\}/g, function (_m, i) { return valueIt(t.vals[+i]); }) + trail;
+    var hit = DICT[t.k];
+    if (hit === undefined) { if (COLLECT && !seen[t.k]) seen[t.k] = core; return text; }
+    return lead + hit.replace(/\{(\d+)\}/g, function (_m, i) { var v = t.vals[+i]; return v == null ? '' : valueIt(v); }) + trail;
+  }
+  /* ---------- applying it to the page ---------- */
+  var ORIG = new WeakMap(), SET = new WeakMap(), AORIG = new WeakMap(), ATTRS = ['title', 'aria-label', 'placeholder'], on = false, obs = null;
+  function skip(el) { for (; el && el.nodeType === 1; el = el.parentNode) { var n = el.nodeName; if (n === 'SCRIPT' || n === 'STYLE' || n === 'TEXTAREA' || el.hasAttribute('data-noi18n')) return true; } return false; }
+  function doText(node) {
+    var cur = node.data;
+    if (SET.get(node) === cur) return;
+    if (skip(node.parentNode)) return;
+    var out = tr(cur), par = node.parentNode;
+    if (out === cur && cur.length === 1 && par && par.matches) LETTERS.forEach(function (l) { if (l[1][cur] && par.matches(l[0])) out = l[1][cur]; });
+    ORIG.set(node, cur);
+    if (out !== cur) { SET.set(node, out); node.data = out; } else SET.set(node, cur);
+  }
+  function doAttrs(el) {
+    if (skip(el)) return;
+    var st = AORIG.get(el) || {};
+    ATTRS.forEach(function (a) {
+      var v = el.getAttribute(a); if (v == null) return;
+      if (st['set:' + a] === v) return;
+      var out = tr(v); st[a] = v; st['set:' + a] = out; AORIG.set(el, st);
+      if (out !== v) el.setAttribute(a, out);
+    });
+  }
+  function sweep(root) {
+    if (!root) return;
+    if (root.nodeType === 3) { doText(root); return; }
+    if (root.nodeType !== 1 || skip(root)) return;
+    doAttrs(root);
+    var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT), n;
+    while ((n = w.nextNode())) { if (n.nodeType === 3) doText(n); else if (ATTRS.some(function (a) { return n.hasAttribute(a); })) doAttrs(n); }
+  }
+  function start() {
+    on = true;
+    sweep(document.body);
+    obs = new MutationObserver(function (recs) {
+      recs.forEach(function (r) {
+        if (r.type === 'characterData') doText(r.target);
+        else if (r.type === 'attributes') doAttrs(r.target);
+        else r.addedNodes.forEach(sweep);
+      });
+    });
+    obs.observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ATTRS });
+  }
+  function stop() {
+    on = false; if (obs) obs.disconnect(); obs = null;
+    var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT), n;
+    while ((n = w.nextNode())) {
+      if (n.nodeType === 3) { var o = ORIG.get(n); if (o != null && SET.get(n) === n.data && o !== n.data) n.data = o; ORIG.delete(n); SET.delete(n); }
+      else { var st = AORIG.get(n); if (st) { ATTRS.forEach(function (a) { if (st[a] != null && n.getAttribute(a) === st['set:' + a]) n.setAttribute(a, st[a]); }); AORIG.delete(n); } }
+    }
+  }
+  function setLang(l) {
+    if (l === LANG && (on || l === 'en')) return;
+    LANG = l; try { localStorage.setItem(KEY, l); } catch (e) {}
+    document.documentElement.lang = l;
+    Array.prototype.forEach.call(document.querySelectorAll('.lang [data-lang]'), function (b) { b.setAttribute('aria-pressed', String(b.dataset.lang === l)); });
+    if (l === 'it' || COLLECT) { if (!on) start(); } else stop();
+    try { window.dispatchEvent(new CustomEvent('scudi-lang', { detail: l })); } catch (e) {}
+  }
+  window.Scudi18n = { names: names, tr: function (t) { return LANG === 'it' || COLLECT ? tr(t) : t; }, keyOf: keyOf, lang: function () { return LANG; }, set: setLang,
+    missing: function () { return seen; } };
+  function boot() {
+    document.documentElement.lang = LANG;
+    Array.prototype.forEach.call(document.querySelectorAll('.lang [data-lang]'), function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.lang === LANG));
+      b.addEventListener('click', function () { setLang(b.dataset.lang); });
+    });
+    if (LANG === 'it' || COLLECT) start();
+  }
+  if (document.body) boot(); else document.addEventListener('DOMContentLoaded', boot);
+})();
+
 /* ===== Scudi slip maths (shared by the page and the tests) ===== */
 var Scudi = (function () {
   /* Dixon–Coles score matrix from two expected-goals numbers */
@@ -1114,6 +1261,20 @@ if (typeof module !== 'undefined') module.exports = Scudi;
     mk('Champions League', 'Wed 21:00', 521, 'Man City', 'PSG', 1.70, 1.45), mk('Champions League', 'Wed 21:00', 521, 'Betis', 'Porto', 1.40, 1.15),
     mk('Champions League', 'Wed 21:00', 521, 'Slovan Bratislava', 'Stuttgart', 0.90, 1.85)];
 
+  /* every competition the price job can pull (scudi_slips/comps.py): name, group, ESPN slug. week.json carries the same
+     list for the competitions it holds, so a competition added there later still gets its group and slug. */
+  var REG = [['Serie A', 'core', 'ita.1'], ['Premier League', 'core', 'eng.1'], ['La Liga', 'core', 'esp.1'], ['Bundesliga', 'core', 'ger.1'], ['Ligue 1', 'core', 'fra.1'],
+    ['Champions League', 'core', 'uefa.champions'], ['Nations League', 'national', 'uefa.nations'], ['World Cup qualifiers', 'national', 'fifa.worldq.uefa'], ['Euro qualifiers', 'national', 'uefa.euroq'],
+    ['World Cup', 'national', 'fifa.world'], ['Euro', 'national', 'uefa.euro'], ['Europa League', 'cups', 'uefa.europa'], ['Conference League', 'cups', 'uefa.europa.conf'],
+    ['Serie B', 'second', 'ita.2'], ['Championship', 'second', 'eng.2'], ['League One', 'second', 'eng.3'], ['La Liga 2', 'second', 'esp.2'], ['2. Bundesliga', 'second', 'ger.2'], ['Ligue 2', 'second', 'fra.2'],
+    ['Eredivisie', 'europe', 'ned.1'], ['Primeira Liga', 'europe', 'por.1'], ['Belgian Pro League', 'europe', 'bel.1'], ['Süper Lig', 'europe', 'tur.1'], ['Scottish Premiership', 'europe', 'sco.1'],
+    ['Austrian Bundesliga', 'europe', 'aut.1'], ['Swiss Super League', 'europe', 'sui.1'], ['Danish Superliga', 'europe', 'den.1'], ['Allsvenskan', 'europe', 'swe.1'], ['Eliteserien', 'europe', 'nor.1'],
+    ['Greek Super League', 'europe', 'gre.1']];
+  var GROUPS = [['core', 'Big leagues'], ['national', 'National teams'], ['cups', 'European cups'], ['second', 'Second divisions'], ['europe', 'More of Europe']];
+  var COMP_INFO = {}; REG.forEach(function (r, i) { COMP_INFO[r[0]] = { group: r[1], espn: r[2], i: i }; });
+  function compInfo(list) { (list || []).forEach(function (c) { if (c && c.name && !COMP_INFO[c.name]) COMP_INFO[c.name] = { group: c.group || 'national', espn: c.espn || null, i: 900 + Object.keys(COMP_INFO).length }; }); }
+  function groupOf(lg) { return (COMP_INFO[lg] || { group: 'national' }).group; }
+
   var EXAMPLE = SA.concat(OTHERS, UT, UW), DAYNUM = { Sat: 10, Sun: 11, Mon: 12, Tue: 13, Wed: 14 };
   EXAMPLE.forEach(function (m) { m.day = m.t.slice(0, 3); m.kick = new Date('2026-10-' + DAYNUM[m.day] + 'T' + m.t.slice(4) + ':00+02:00'); });
   var ROME = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Rome', weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false });
@@ -1128,11 +1289,15 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   function loadData() {
     return fetch('data/week.json', { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (w) {
+        compInfo(w.competitions);
         var live = (w.matches || []).map(fromWeek).filter(function (m) { return m.lh > 0 && m.la > 0; });
-        if (!live.length) throw new Error('empty week');
-        return { matches: live, built: new Date(w.built_at), guard: w.guard || {}, credits: w.credits || {}, live: true };
+        if (!live.length) { var e = new Error('empty week'); e.week = w; throw e; }
+        return { matches: live, built: new Date(w.built_at), guard: w.guard || {}, credits: w.credits || {}, live: true, windowEnd: w.window_end ? new Date(w.window_end) : null };
       })
-      .catch(function () { return { matches: EXAMPLE, built: null, guard: {}, credits: {}, live: false }; });
+      .catch(function (e) {
+        var w = e && e.week;   /* a real pull that found nothing in its window (an international break): say so, show the examples */
+        return { matches: EXAMPLE, built: null, guard: {}, credits: (w && w.credits) || {}, live: false, emptyPull: w && w.built_at ? { built: new Date(w.built_at), end: w.window_end ? new Date(w.window_end) : null } : null };
+      });
   }
   function loadRecord() {
     return fetch('data/record.json', { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
@@ -1168,7 +1333,10 @@ if (typeof module !== 'undefined') module.exports = Scudi;
     'gladbach': 'borussia monchengladbach', 'dortmund': 'borussia dortmund', 'leverkusen': 'bayer leverkusen', 'leipzig': 'rb leipzig', 'frankfurt': 'eintracht frankfurt', 'werder': 'werder bremen',
     'shakhtar': 'shakhtar donetsk', 'bodo glimt': 'bodo glimt', 'tottenham': 'tottenham hotspur', 'spurs': 'tottenham hotspur', 'brighton': 'brighton hove albion', 'wolves': 'wolverhampton wanderers',
     'newcastle': 'newcastle united', 'west ham': 'west ham united', 'forest': 'nottingham forest', 'sporting': 'sporting cp', 'sporting lisbon': 'sporting cp', 'porto': 'fc porto', 'psv': 'psv eindhoven',
-    'juve': 'juventus', 'verona': 'hellas verona', 'hellas verona': 'hellas verona', 'atalanta': 'atalanta', 'roma': 'roma', 'lazio': 'lazio', 'napoli': 'napoli', 'fenerbahce': 'fenerbahce', 'galatasaray': 'galatasaray' };
+    'juve': 'juventus', 'verona': 'hellas verona', 'hellas verona': 'hellas verona', 'atalanta': 'atalanta', 'roma': 'roma', 'lazio': 'lazio', 'napoli': 'napoli', 'fenerbahce': 'fenerbahce', 'galatasaray': 'galatasaray',
+    /* national teams: the odds feed's spelling against ESPN's */
+    'czech republic': 'czechia', 'turkey': 'turkiye', 'ireland': 'republic of ireland', 'bosnia and herzegovina': 'bosnia herzegovina', 'bosnia': 'bosnia herzegovina',
+    'korea republic': 'south korea', 'usa': 'united states', 'cote d ivoire': 'ivory coast', 'macedonia': 'north macedonia', 'holland': 'netherlands' };
   function loadTeams() {
     return fetch('data/teams.json', { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (f) {
@@ -1214,7 +1382,8 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   function boot(DATA, LIVE_RECORD) {
   var ALL = DATA.matches, NOW = new Date();   /* a match that has kicked off is never offered */
   /* ---------- the week's matches and the five slips ---------- */
-  var ORDER = ['Serie A', 'Premier League', 'La Liga', 'Bundesliga', 'Ligue 1', 'Champions League', 'Serie B', 'Championship', 'La Liga 2', '2. Bundesliga', 'Ligue 2', 'Eredivisie', 'Primeira Liga', 'Belgian Pro League', 'Süper Lig'];
+  var ORDER = Object.keys(COMP_INFO).sort(function (a, b) { var A = COMP_INFO[a], B = COMP_INFO[b], ga = GROUPS.map(function (g) { return g[0]; });
+    return ga.indexOf(A.group) - ga.indexOf(B.group) || A.i - B.i; });
   var TOP5 = ['Serie A', 'Premier League', 'La Liga', 'Bundesliga', 'Ligue 1'];
   var COMPS = ORDER.filter(function (g) { return ALL.some(function (m) { return m.lg === g; }); });
   ALL.forEach(function (m) { if (COMPS.indexOf(m.lg) < 0) COMPS.push(m.lg); });
@@ -1223,7 +1392,10 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   function span(list) { if (!list.length) return ''; var ks = list.map(function (m) { return m.kick; }).sort(function (a, b) { return a - b; }); return ROME.format(ks[0]).replace(',', '') + ' to ' + ROME.format(ks[ks.length - 1]).replace(',', ''); }
   var top5Pool = ALL.filter(function (m) { return TOP5.indexOf(m.lg) > -1; }), saPool = ALL.filter(function (m) { return m.lg === 'Serie A'; });
   var uclA = ALL.filter(function (m) { return m.lg === 'Champions League' && m.day === UCL_DAYS[0]; }), uclB = ALL.filter(function (m) { return m.lg === 'Champions League' && m.day === UCL_DAYS[1]; });
+  var natPool = ALL.filter(function (m) { return groupOf(m.lg) === 'national'; }), NAT_COMPS = COMPS.filter(function (g) { return groupOf(g) === 'national'; });
   var PICK_IDS = Scudi.MARKETS.map(function (m) { return m.id; });
+  /* a pick label inside a sentence: generic ones lower-cased, team names keep their capital */
+  function lcPick(l) { return /^(Draw|No draw|Over|Under|Both)/.test(l) ? l.charAt(0).toLowerCase() + l.slice(1) : l; }
   var PICK_NAMES = { '1': 'Home win', 'X': 'Draw', '2': 'Away win', '1X': 'Home or draw', 'X2': 'Away or draw', '12': 'No draw', 'O15': 'Over 1.5', 'O25': 'Over 2.5', 'U25': 'Under 2.5', 'U35': 'Under 3.5', 'GG': 'Both score' };
   /* SNAI price ratios remembered from earlier weeks (a per-viewer convenience; the real site keeps them in its data file) */
   var MEMORY = []; try { MEMORY = JSON.parse(localStorage.getItem('scudi-snai-ratios') || '[]'); } catch (e) { MEMORY = []; }
@@ -1242,26 +1414,32 @@ if (typeof module !== 'undefined') module.exports = Scudi;
     { id: 't5', name: 'Top 5 leagues', sub: 'Best of ' + top5Pool.length + ' matches', c: '--t5', window: span(top5Pool), def: { comps: TOP5.filter(function (g) { return COMPS.indexOf(g) > -1; }), legs: Math.min(10, top5Pool.length) } },
     { id: 'ut', name: 'Champions League', sub: (DAYNAME[UCL_DAYS[0]] || 'First') + ' night', c: '--ut', window: span(uclA), def: { comps: ['Champions League'], days: [UCL_DAYS[0]], legs: Math.min(9, uclA.length) } },
     { id: 'uw', name: 'Champions League', sub: (DAYNAME[UCL_DAYS[1]] || 'Second') + ' night', c: '--uw', window: span(uclB), def: { comps: ['Champions League'], days: [UCL_DAYS[1]], legs: Math.min(9, uclB.length) } },
+    { id: 'nt', name: 'National teams', sub: natPool.length + ' matches · ' + (NAT_COMPS.length === 1 ? NAT_COMPS[0] : NAT_COMPS.length + ' competitions'), c: '--nt', window: span(natPool), def: { comps: NAT_COMPS, legs: Math.min(8, natPool.length) } },
     { id: 'my', name: 'Your rules', sub: 'Build your own', c: '--my', window: span(ALL), def: { comps: COMPS.slice(), legs: Math.min(8, ALL.length), allowed: ['1', 'X', '2'] } }]
-    .filter(function (s) { return s.def.legs >= 2 && (s.id === 'my' || s.def.comps.every(function (g) { return COMPS.indexOf(g) > -1; })); });
+    .filter(function (s) { return s.def.legs >= 1 && s.def.comps.length && (s.id === 'my' || s.def.comps.every(function (g) { return COMPS.indexOf(g) > -1; })); });
   function fresh(s) {
     s.cfg = { comps: s.def.comps.slice(), days: (s.def.days || DAYS).slice(), legs: s.def.legs, target: 25, bonusIn: false, allowed: setOf(s.def.allowed || PICK_IDS),
-      minChance: 0, maxOdds: 0, minN: 0, minLg: 'Serie A', perLg: 0, excluded: {}, locks: {}, actual: {} };
+      minChance: 0, maxOdds: 0, minN: 0, minLg: s.def.comps[0] || 'Serie A', perLg: 0, excluded: {}, locks: {}, actual: {} };
     s.frontier = {}; s.curve = {}; s.prev = {}; s.key = null;
   }
   SLIPS.forEach(function (s) { fresh(s); s.stake = 5; });
   /* header: what the page is showing and where it came from */
   (function () {
     var g = DATA.guard, dropped = (g.started || 0) + (g.outside_window || 0) + (g.too_few_books || 0) + (g.no_sharp || 0) + (g.bad_fit || 0);
-    $('#srcTag').textContent = (DATA.live ? 'Prices pulled ' + ROME_DAY.format(DATA.built) + ' ' + ROME.format(DATA.built).slice(-5) + ' · ' + ALL.length + ' matches' + (dropped ? ' · ' + dropped + ' held back by guards' : '') : 'Example prices') + (DATA.snaiMatches ? ' · SNAI prices for ' + DATA.snaiMatches : '');
+    var left = DATA.credits && DATA.credits.remaining != null ? ' · ' + DATA.credits.remaining + ' credits left' : '';
+    $('#srcTag').textContent = (DATA.live ? 'Prices pulled ' + ROME_DAY.format(DATA.built) + ' ' + ROME.format(DATA.built).slice(-5) + ' · ' + ALL.length + ' matches' + (dropped ? ' · ' + dropped + ' held back by guards' : '')
+      : DATA.emptyPull ? 'No matches in the window (pulled ' + ROME_DAY.format(DATA.emptyPull.built) + ') · example prices' : 'Example prices') + left + (DATA.snaiMatches ? ' · SNAI prices for ' + DATA.snaiMatches : '');
     if (DATA.teams) { var tt = $('#teamTag'); tt.hidden = false; tt.textContent = DATA.teams.example ? 'Team data · example' : 'Team data ' + (DATA.teams.built ? ROME_DAY.format(DATA.teams.built) : '') + ' · ' + DATA.teamMatches + ' of ' + ALL.length + ' matches'; }
-    $('#weekTag').textContent = DATA.live ? 'Matchweek · ' + ROME_DAY.format(ALL.reduce(function (a, m) { return m.kick < a ? m.kick : a; }, ALL[0].kick)) + ' – ' + ROME_DAY.format(ALL.reduce(function (a, m) { return m.kick > a ? m.kick : a; }, ALL[0].kick)) : 'Matchweek · 10–14 October 2026 · example';
+    $('#weekTag').textContent = DATA.live ? (natPool.length === ALL.length ? 'International week · ' : 'Matchweek · ') + ROME_DAY.format(ALL.reduce(function (a, m) { return m.kick < a ? m.kick : a; }, ALL[0].kick)) + ' – ' + ROME_DAY.format(ALL.reduce(function (a, m) { return m.kick > a ? m.kick : a; }, ALL[0].kick)) : 'Matchweek · 10–14 October 2026 · example';
   })();
-  /* the target ladder: 5x to 50x by 5, to 100x by 10, to 1000x by 100; seven quick picks carry a "1 in N" */
-  var LADDER = [], QUICK = [10, 25, 50, 100, 250, 500, 1000], STAKES = [2, 5, 10], MAX_LEGS = 25;
-  (function () { var t; for (t = 5; t <= 50; t += 5) LADDER.push(t); for (t = 60; t <= 100; t += 10) LADDER.push(t); for (t = 200; t <= 1000; t += 100) LADDER.push(t); })();
+  /* the target ladder: 1.5x to 5x by 0.5, to 50x by 5, to 100x by 10, to 1000x by 100; eight quick picks carry their chance */
+  var LADDER = [], QUICK = [1.5, 2, 5, 10, 25, 50, 100, 1000], STAKES = [2, 5, 10], MAX_LEGS = 25, MIN_LEGS = 1;
+  (function () { var t; for (t = 1.5; t < 5; t += 0.5) LADDER.push(t); for (t = 5; t <= 50; t += 5) LADDER.push(t); for (t = 60; t <= 100; t += 10) LADDER.push(t); for (t = 200; t <= 1000; t += 100) LADDER.push(t); })();
+  /* a chance as people say it: "62%" when it is likely, "1 in 39" when it is not */
+  function oneIn(p) { return p >= 0.2 ? Math.round(p * 100) + '%' : '1 in ' + Math.round(1 / p).toLocaleString('en-GB'); }
   function ladderIndex(t) { var best = 0, i; for (i = 0; i < LADDER.length; i++) if (Math.abs(LADDER[i] - t) < Math.abs(LADDER[best] - t)) best = i; return best; }
-  $('#tTicks').innerHTML = [5, 25, 50, 100, 500, 1000].map(function (t) { return '<span style="left:' + (ladderIndex(t) / (LADDER.length - 1) * 100).toFixed(2) + '%">' + t + 'x</span>'; }).join('');
+  $('#tSlider').max = LADDER.length - 1;
+  $('#tTicks').innerHTML = [1.5, 5, 25, 50, 100, 500, 1000].map(function (t) { return '<span style="left:' + (ladderIndex(t) / (LADDER.length - 1) * 100).toFixed(2) + '%">' + t + 'x</span>'; }).join('');
   var active = SLIPS[0];
 
   function poolOf(s) { var c = s.cfg; return ALL.filter(function (m) { return c.comps.indexOf(m.lg) > -1 && c.days.indexOf(m.day) > -1 && m.kick > NOW; }); }
@@ -1291,8 +1469,9 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   var pct = function (x) { return (x * 100).toFixed(1) + '%'; };
   function describe(s) {
     var c = s.cfg, n = Object.keys(c.allowed).length, p = PRESETS.filter(function (x) { return x.ids.length === n && x.ids.every(function (i) { return c.allowed[i]; }); })[0], bits = [];
-    bits.push(c.legs + ' matches');
-    bits.push(c.comps.length === COMPS.length ? 'every competition' : c.comps.length === 5 && c.comps.indexOf('Champions League') < 0 ? 'top 5 leagues' : c.comps.join(', '));
+    bits.push(c.legs + (c.legs === 1 ? ' match' : ' matches'));
+    var grpAll = GROUPS.filter(function (gr) { var mine = COMPS.filter(function (g) { return groupOf(g) === gr[0]; }); return mine.length > 1 && mine.length === c.comps.length && mine.every(function (g) { return c.comps.indexOf(g) > -1; }); })[0];
+    bits.push(c.comps.length === COMPS.length ? 'every competition' : c.comps.length === 5 && TOP5.every(function (g) { return c.comps.indexOf(g) > -1; }) ? 'top 5 leagues' : grpAll ? grpAll[1].toLowerCase() : c.comps.length > 4 ? c.comps.length + ' competitions' : c.comps.join(', '));
     bits.push(p ? p.label.toLowerCase() : n + ' pick types');
     if (c.minChance) bits.push('each leg ' + Math.round(c.minChance * 100) + '%+');
     if (c.maxOdds) bits.push('no leg above ' + c.maxOdds.toFixed(2));
@@ -1327,7 +1506,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
       var r = s.result === undefined ? (s.result = run(s, s.cfg.target)) : s.result;
       return '<button class="scard" data-slip="' + s.id + '" aria-pressed="' + (s === active) + '" style="--c:var(' + s.c + ')">' +
         '<div class="scard-top"><div class="scard-name"><b>' + s.name + '</b><span>' + s.sub + '</span></div><span class="pill">' + s.cfg.legs + ' legs</span></div>' +
-        (r ? '<div class="scard-big"><strong class="display">1 in ' + Math.round(1 / r.prob).toLocaleString('en-GB') + '</strong><span>to land</span></div>' + pile(r) +
+        (r ? '<div class="scard-big"><strong class="display">' + oneIn(r.prob) + '</strong><span>to land</span></div>' + pile(r) +
              '<div class="scard-foot"><span>Pays <b class="num">' + r.pays.toFixed(1) + 'x</b></span>' + (function () { var pl = placedOf(s); return '<span class="' + (pl ? 'placed' : '') + '">' + (pl ? (pl.settled ? (pl.landed ? 'Landed · ' : 'Settled · ') : 'Placed · ') + euro(pl.stake) : 'Not placed') + '</span>'; })() + '</div>'
            : '<div class="scard-big"><span>No slip fits these rules</span></div><div class="scard-foot"><span>Loosen a rule</span></div>') + '</button>';
     }).join('');
@@ -1346,7 +1525,12 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   function renderRules() {
     var s = active, c = s.cfg, pool = poolOf(s), byComp = {}, byDay = {};
     ALL.forEach(function (m) { byComp[m.lg] = (byComp[m.lg] || 0) + 1; if (c.comps.indexOf(m.lg) > -1) byDay[m.day] = (byDay[m.day] || 0) + 1; });
-    $('#rComps').innerHTML = COMPS.map(function (g) { return '<button class="chip" data-comp="' + g + '" aria-pressed="' + (c.comps.indexOf(g) > -1) + '">' + g + '<small>' + byComp[g] + '</small></button>'; }).join('');
+    var chip = function (g) { return '<button class="chip" data-comp="' + g + '" aria-pressed="' + (c.comps.indexOf(g) > -1) + '">' + g + '<small>' + byComp[g] + '</small></button>'; };
+    var present = GROUPS.filter(function (gr) { return COMPS.some(function (g) { return groupOf(g) === gr[0]; }); });
+    $('#rComps').innerHTML = present.length < 2 ? COMPS.map(chip).join('') : present.map(function (gr) {
+      var mine = COMPS.filter(function (g) { return groupOf(g) === gr[0]; }), on = mine.filter(function (g) { return c.comps.indexOf(g) > -1; }).length;
+      return '<div class="cgroup"><button class="cghead" data-group="' + gr[0] + '" aria-pressed="' + (on === mine.length) + '"><span>' + gr[1] + '</span><small>' + (on === mine.length ? 'all on' : on ? on + ' of ' + mine.length : 'off') + '</small></button>' + mine.map(chip).join('') + '</div>';
+    }).join('');
     $('#rDays').innerHTML = DAYS.map(function (d) { return '<button class="chip" data-day="' + d + '" aria-pressed="' + (c.days.indexOf(d) > -1 && !!byDay[d]) + '"' + (byDay[d] ? '' : ' disabled') + '>' + d + '<small>' + (byDay[d] || 0) + '</small></button>'; }).join('');
     var n = Object.keys(c.allowed).length;
     $('#rPresets').innerHTML = PRESETS.map(function (p) { var on = p.ids.length === n && p.ids.every(function (i) { return c.allowed[i]; }); return '<button class="chip" data-preset="' + p.id + '" aria-pressed="' + on + '">' + p.label + '</button>'; }).join('');
@@ -1354,17 +1538,27 @@ if (typeof module !== 'undefined') module.exports = Scudi;
     $('#rMinP').value = c.minChance ? Math.round(c.minChance * 100) : 45; $('#rMinPV').textContent = c.minChance ? Math.round(c.minChance * 100) + '%' : 'any';
     $('#rMaxO').value = c.maxOdds || 4.1; $('#rMaxOV').textContent = c.maxOdds ? c.maxOdds.toFixed(2) : 'any';
     $('#rMinN').textContent = c.minN; $('#rPerLg').textContent = c.perLg || 'any';
-    $('#rMinLg').innerHTML = c.comps.map(function (g) { return '<option' + (g === c.minLg ? ' selected' : '') + '>' + g + '</option>'; }).join('');
+    $('#rMinLg').innerHTML = c.comps.map(function (g) { return '<option value="' + g + '"' + (g === c.minLg ? ' selected' : '') + '>' + g + '</option>'; }).join('');
     var out = Object.keys(c.excluded);
     $('#rOutBox').hidden = !out.length;
     $('#rOut').innerHTML = out.map(function (id) { var m = ALL.filter(function (x) { return x.id === id; })[0]; return '<button class="chip x" data-back="' + id + '">' + (m.th || m.ta ? crest(m.th, 'xs', m.home) + crest(m.ta, 'xs', m.away) + ' ' : '') + m.home + ' – ' + m.away + '</button>'; }).join('');
     $('#poolLine').textContent = usable(s) + ' of ' + pool.length + ' matches can be used under these rules';
     var started = startedOf(s), h = Scudi.haircutFrom([], {}, MEMORY);
-    $('#kickLine').textContent = (started ? started + ' match' + (started > 1 ? 'es have' : ' has') + ' already kicked off and ' + (started > 1 ? 'are' : 'is') + ' skipped. ' : 'Matches that have kicked off are skipped automatically. ') +
-      (h.n ? 'SNAI prices remembered: ' + h.n + ' · estimates scaled by ' + Math.round((1 - h.all) * 100) + '%' + (Object.keys(h).filter(function (k) { return k !== 'all' && k !== 'n'; }).length ? ', with a separate figure for ' + Object.keys(h).filter(function (k) { return k !== 'all' && k !== 'n'; }).map(function (k) { return PICK_NAMES[k].toLowerCase(); }).join(', ') : '') + '.' : 'No SNAI prices remembered yet.');
+    /* separate pieces (spans) so each one can be translated on its own */
+    var own = Object.keys(h).filter(function (k) { return k !== 'all' && k !== 'n'; });
+    $('#kickLine').innerHTML = '<span>' + (started ? started + ' match' + (started > 1 ? 'es have' : ' has') + ' already kicked off and ' + (started > 1 ? 'are' : 'is') + ' skipped.' : 'Matches that have kicked off are skipped automatically.') + '</span> ' +
+      (h.n ? '<span>SNAI prices remembered: ' + h.n + '</span> · <span>estimates scaled by ' + Math.round((1 - h.all) * 100) + '%</span>' +
+        (own.length ? '<span>, with a separate figure for</span> ' + own.map(function (k) { return '<span>' + PICK_NAMES[k].toLowerCase() + '</span>'; }).join(', ') : '') + '.' : '<span>No SNAI prices remembered yet.</span>');
   }
   function changed(msg) { active.frontier = {}; active.curve = {}; active.key = null; solveActive(); renderRules(); renderBuilder(false); renderCards(); if (msg) toast(msg); }
-  $('#rComps').onclick = function (e) { var b = e.target.closest('[data-comp]'); if (!b) return; var c = active.cfg, i = c.comps.indexOf(b.dataset.comp);
+  $('#rComps').onclick = function (e) {
+    var gb = e.target.closest('[data-group]');
+    if (gb) { var cg = active.cfg, mine = COMPS.filter(function (g) { return groupOf(g) === gb.dataset.group; }), all = mine.every(function (g) { return cg.comps.indexOf(g) > -1; });
+      if (all) { var rest = cg.comps.filter(function (g) { return mine.indexOf(g) < 0; }); if (!rest.length) { toast('Keep at least one competition.'); return; } cg.comps = rest; }
+      else mine.forEach(function (g) { if (cg.comps.indexOf(g) < 0) cg.comps.push(g); });
+      cg.comps.sort(function (x, y) { return COMPS.indexOf(x) - COMPS.indexOf(y); }); if (cg.comps.indexOf(cg.minLg) < 0) { cg.minLg = cg.comps[0]; cg.minN = 0; }
+      if (!poolOf(active).length) { cg.days = DAYS.slice(); } clampLegs(); changed(); return; }
+    var b = e.target.closest('[data-comp]'); if (!b) return; var c = active.cfg, i = c.comps.indexOf(b.dataset.comp);
     if (i > -1) { if (c.comps.length === 1) { toast('Keep at least one competition.'); return; } c.comps.splice(i, 1); } else c.comps.push(b.dataset.comp);
     c.comps.sort(function (x, y) { return COMPS.indexOf(x) - COMPS.indexOf(y); }); if (c.comps.indexOf(c.minLg) < 0) { c.minLg = c.comps[0]; c.minN = 0; }
     clampLegs(); changed(); };
@@ -1379,10 +1573,10 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   $('#rMinLg').onchange = function () { active.cfg.minLg = this.value; changed(); };
   $('#rOut').onclick = function (e) { var b = e.target.closest('[data-back]'); if (b) { delete active.cfg.excluded[b.dataset.back]; changed('Back in play.'); } };
   $('#resetRules').onclick = function () { fresh(active); changed('Rules reset for this slip.'); };
-  function clampLegs() { var c = active.cfg, max = Math.max(2, Math.min(MAX_LEGS, poolOf(active).length)); if (c.legs > max) c.legs = max; if (c.minN > c.legs) c.minN = c.legs; if (c.perLg && c.perLg * c.comps.length < c.legs) c.perLg = 0; }
+  function clampLegs() { var c = active.cfg, max = Math.max(MIN_LEGS, Math.min(MAX_LEGS, poolOf(active).length)); if (c.legs > max) c.legs = max; if (c.minN > c.legs) c.minN = c.legs; if (c.perLg && c.perLg * c.comps.length < c.legs) c.perLg = 0; }
   document.addEventListener('click', function (e) {
     var b = e.target.closest('[data-step]'); if (!b) return; var c = active.cfg, d = +b.dataset.d, k = b.dataset.step;
-    if (k === 'legs') { var max = Math.min(MAX_LEGS, poolOf(active).length); c.legs = Math.max(2, Math.min(max, c.legs + d)); clampLegs(); }
+    if (k === 'legs') { var max = Math.min(MAX_LEGS, poolOf(active).length); c.legs = Math.max(MIN_LEGS, Math.min(max, c.legs + d)); clampLegs(); }
     if (k === 'minN') c.minN = Math.max(0, Math.min(c.legs, c.minN + d));
     if (k === 'perLg') { var v = (c.perLg || 0) + d; c.perLg = v <= 0 ? 0 : Math.min(c.legs, v); }
     if (k === 'weeks') { SIM.weeks = Math.max(4, Math.min(52, SIM.weeks + d)); $('#simWeeks').textContent = SIM.weeks; return; }
@@ -1404,7 +1598,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
       legs.innerHTML = '<p class="muted" style="padding:20px">No slip fits these rules at ' + c.target + 'x. Fewer matches, a looser rule or a lower target will find one. The bars on the right show which numbers of matches work.</p>';
       $('#legsCount').textContent = 'no slip'; clearSide(); return;
     }
-    $('#legsCount').textContent = r.picks.length + ' legs · ' + (r.checked ? r.checked + ' checked at SNAI' : 'prices are estimates');
+    $('#legsCount').textContent = r.picks.length + (r.picks.length === 1 ? ' leg · ' : ' legs · ') + (r.checked ? r.checked + ' checked at SNAI' : 'prices are estimates');
     legs.innerHTML = r.picks.map(function (x) {
       var moved = freshList || s.prev[x.match.id] !== x.pick.id, locked = !!c.locks[x.match.id];
       return '<button class="leg' + (moved ? ' flip' : '') + (locked ? ' locked' : '') + '" data-m="' + x.match.id + '" style="--i:' + (moved ? i++ : 0) + '">' +
@@ -1430,23 +1624,23 @@ if (typeof module !== 'undefined') module.exports = Scudi;
     if (s.curve[c.legs] === undefined) s.curve[c.legs] = s.result ? s.result.prob : 0;
     $('#targets').innerHTML = QUICK.map(function (t) {
       var f = s.frontier[t];
-      return '<button class="tgt" data-t="' + t + '" aria-pressed="' + (t === c.target) + '"><b class="display">' + t + 'x</b><small>' + (f ? '1 in ' + Math.round(1 / f).toLocaleString('en-GB') : f === 0 ? 'no slip' : '…') + '</small></button>';
+      return '<button class="tgt" data-t="' + t + '" aria-pressed="' + (t === c.target) + '"><b class="display">' + t + 'x</b><small>' + (f ? oneIn(f) : f === 0 ? 'no slip' : '…') + '</small></button>';
     }).join('');
     $('#tSlider').value = ladderIndex(c.target);
     if ($('#tBig').textContent !== c.target + 'x') { $('#tBig').textContent = c.target + 'x'; if (!reduced) { $('#tBig').classList.remove('bump'); void $('#tBig').offsetWidth; $('#tBig').classList.add('bump'); } }
-    $('#tBigNote').textContent = s.result ? '1 in ' + Math.round(1 / s.result.prob).toLocaleString('en-GB') + ' with ' + c.legs + ' matches' : 'no slip fits at this target';
+    $('#tBigNote').textContent = s.result ? oneIn(s.result.prob) + ' with ' + c.legs + (c.legs === 1 ? ' match' : ' matches') : 'no slip fits at this target';
     $('#legsN').textContent = c.legs; $('#bonusIn').checked = c.bonusIn;
-    $('#explorer').classList.toggle('dense', maxL - 1 > 16);
-    for (n = 2; n <= maxL; n++) if (s.curve[n] > best) best = s.curve[n];
+    $('#explorer').classList.toggle('dense', maxL > 16);
+    for (n = MIN_LEGS; n <= maxL; n++) if (s.curve[n] > best) best = s.curve[n];
     var bars = '';
-    for (n = 2; n <= maxL; n++) {
+    for (n = MIN_LEGS; n <= maxL; n++) {
       var v = s.curve[n], h = v ? Math.max(6, v / best * 62) : 3;
-      bars += '<button data-legs="' + n + '" class="' + (v === 0 ? 'none' : '') + '" aria-pressed="' + (n === c.legs) + '" aria-label="' + n + ' matches' + (v ? ': 1 in ' + Math.round(1 / v) : v === 0 ? ': no slip' : '') + '"><em class="num">' + (v ? Math.round(1 / v) : v === 0 ? '×' : '·') + '</em><i style="height:' + h.toFixed(0) + 'px"></i><span>' + n + '</span></button>';
+      bars += '<button data-legs="' + n + '" class="' + (v === 0 ? 'none' : '') + '" aria-pressed="' + (n === c.legs) + '" aria-label="' + n + ' matches' + (v ? ': 1 in ' + Math.round(1 / v) : v === 0 ? ': no slip' : '') + '"><em class="num">' + (v ? (v >= 0.2 ? Math.round(v * 100) + '%' : Math.round(1 / v)) : v === 0 ? '×' : '·') + '</em><i style="height:' + h.toFixed(0) + 'px"></i><span>' + n + '</span></button>';
     }
     $('#explorer').innerHTML = bars;
-    $('#explorerNote').textContent = 'The small number is "1 in N" to land at ' + c.target + 'x with that many matches under your rules. × means no slip fits. Tap a bar to use it.';
+    $('#explorerNote').textContent = 'The small number is "1 in N" (or the % when it is likelier than 1 in 5) to land at ' + c.target + 'x with that many matches under your rules. × means no slip fits. Tap a bar to use it.';
     var todoT = QUICK.filter(function (t) { return s.frontier[t] === undefined; }), todoL = [];
-    for (n = 2; n <= maxL; n++) if (s.curve[n] === undefined) todoL.push(n);
+    for (n = MIN_LEGS; n <= maxL; n++) if (s.curve[n] === undefined) todoL.push(n);
     if (!todoT.length && !todoL.length) return;
     setTimeout(function () {
       if (s.key !== key || s !== active) return;
@@ -1459,8 +1653,10 @@ if (typeof module !== 'undefined') module.exports = Scudi;
     var s = active, c = s.cfg, r = s.result, L = 175.9;
     odo($('#odo'), r.odds.toFixed(2));
     $('#hitPct').textContent = r.prob < 0.01 ? (r.prob * 100).toFixed(2) + '%' : pct(r.prob);
-    $('#hitIn').textContent = 'about 1 in ' + Math.round(1 / r.prob);
-    $('#dialVal').setAttribute('stroke-dasharray', (Math.min(1, r.prob / 0.05) * L).toFixed(1) + ' ' + L);
+    $('#hitIn').textContent = r.prob >= 0.2 ? 'better than 1 in 5' : 'about 1 in ' + Math.round(1 / r.prob);
+    var top = r.prob > 0.25 ? 1 : r.prob > 0.05 ? 0.25 : 0.05;   /* the dial's scale follows the target: 5%, 25% or 100% */
+    $('#dialMax').textContent = Math.round(top * 100) + '%';
+    $('#dialVal').setAttribute('stroke-dasharray', (Math.min(1, r.prob / top) * L).toFixed(1) + ' ' + L);
     $('#dialBox').setAttribute('aria-label', 'Chance that every leg wins: ' + pct(r.prob));
     $('#payLine').textContent = r.bonus ? 'Pays ' + r.pays.toFixed(1) + 'x with SNAI\'s +' + pct(r.bonus) + ' bonus' : 'No SNAI bonus under five legs';
     var W = 340, H = 150, x0 = 30, x1 = W - 14, y0 = 14, y1 = H - 26, nL = r.picks.length, cum = 1, pts = [], worst = 0, wi = 0;
@@ -1475,7 +1671,8 @@ if (typeof module !== 'undefined') module.exports = Scudi;
     $('#chain').innerHTML = [1, 0.5, 0].map(function (v) { return '<line class="grid" x1="' + x0 + '" x2="' + x1 + '" y1="' + Y(v) + '" y2="' + Y(v) + '"/><text x="' + (x0 - 5) + '" y="' + (Y(v) + 3) + '" text-anchor="end">' + v * 100 + '%</text>'; }).join('') +
       '<path class="area" d="' + path + ' V' + Y(0) + ' H' + x0 + ' Z"/><path class="step" d="' + path + '"/>' + dots + labels;
     var w = r.picks[wi];
-    $('#riskLine').innerHTML = 'Riskiest leg: <b>' + w.match.home + ' – ' + w.match.away + '</b>, ' + w.pick.label.toLowerCase() + ' (' + Math.round(w.pick.p * 100) + '%). It is the red dot.';
+    var wl = lcPick(w.pick.label);
+    $('#riskLine').innerHTML = 'Riskiest leg: <b>' + w.match.home + ' – ' + w.match.away + '</b>, ' + wl + ' (' + Math.round(w.pick.p * 100) + '%). It is the red dot.';
     var lad = '', hiL = Math.max(10, nL), top = Scudi.snaiBonus(hiL), n;
     for (n = 5; n <= hiL; n++) lad += '<div class="' + (n === nL ? 'on' : '') + '"><span class="num">+' + (Scudi.snaiBonus(n) * 100).toFixed(hiL > 11 ? 0 : 1) + '%</span><i style="height:' + (12 + Scudi.snaiBonus(n) / top * 52).toFixed(0) + 'px"></i><span>' + n + '</span></div>';
     $('#ladder').innerHTML = lad;
@@ -1491,11 +1688,26 @@ if (typeof module !== 'undefined') module.exports = Scudi;
     $('#budget').textContent = '€' + Math.round(monthStakes()) + ' of €100';
     renderSistema(); renderCostBoard();
   }
-  $('#targets').onclick = function (e) { var b = e.target.closest('[data-t]'); if (b) { active.cfg.target = +b.dataset.t; changed(); } };
+  /* low targets (under 5x) are best reached with few matches: the number of matches follows the target there, and the
+     number chosen for the higher targets comes back when the target goes up again */
+  function bestLegsFor(s, t) {
+    var maxL = Math.min(MAX_LEGS, poolOf(s).length, Math.max(1, Math.floor(Math.log(t * 1.3) / Math.log(MIN_LEG)))), best = s.cfg.legs, bp = 0, n, r;
+    for (n = MIN_LEGS; n <= maxL; n++) { r = run(s, t, n, true); if (r && r.prob > bp) { bp = r.prob; best = n; } }
+    return best;
+  }
+  function setTarget(v) {
+    var c = active.cfg, was = c.target, before = c.legs;
+    c.target = v;
+    if (v < 5) { if (was >= 5) c.legsHigh = c.legs; c.legs = bestLegsFor(active, v); }
+    else if (was < 5 && c.legsHigh) { c.legs = c.legsHigh; c.legsHigh = 0; }
+    clampLegs();
+    changed(c.legs !== before ? (v < 5 ? 'At ' + v + 'x the best slip has ' + c.legs + (c.legs === 1 ? ' match.' : ' matches.') : 'Back to ' + c.legs + ' matches.') : '');
+  }
+  $('#targets').onclick = function (e) { var b = e.target.closest('[data-t]'); if (b) setTarget(+b.dataset.t); };
   $('#explorer').onclick = function (e) { var b = e.target.closest('[data-legs]'); if (b) { active.cfg.legs = +b.dataset.legs; clampLegs(); changed(); } };
   $('#bonusIn').onchange = function () { active.cfg.bonusIn = this.checked; changed(this.checked ? 'The target now counts SNAI\'s bonus, so the slip can be a little safer.' : 'The target is back to the plain combined odds.'); };
   var sliderTimer;
-  $('#tSlider').oninput = function () { var v = LADDER[+this.value]; $('#tBig').textContent = v + 'x'; $('#tBigNote').textContent = 'searching…'; clearTimeout(sliderTimer); sliderTimer = setTimeout(function () { active.cfg.target = v; changed(); }, 180); };
+  $('#tSlider').oninput = function () { var v = LADDER[+this.value]; $('#tBig').textContent = v + 'x'; $('#tBigNote').textContent = 'searching…'; clearTimeout(sliderTimer); sliderTimer = setTimeout(function () { setTarget(v); }, 180); };
   $('#stakes').onclick = function (e) { var b = e.target.closest('[data-stake]'); if (!b) return; active.stake = +b.dataset.stake;
     var pl = placedOf(active); if (pl && !pl.settled) { var list = placedList(); list.forEach(function (p) { if (p.id === pl.id) p.stake = active.stake; }); savePlaced(list); }
     renderSide(); renderCards(); };
@@ -1521,6 +1733,8 @@ if (typeof module !== 'undefined') module.exports = Scudi;
 
   /* ---------- crests, the pitch, team and player views (data/teams.json + data/players.json from tools/teams.py) ---------- */
   var T = DATA.teams;
+  /* names the translator must leave alone (and lift out of sentences): teams, competitions */
+  if (window.Scudi18n) Scudi18n.names(ALL.reduce(function (a, m) { a.push(m.home, m.away); return a; }, []).concat(Object.keys(COMP_INFO), T ? T.list.reduce(function (a, t) { a.push(t.name, t.short); return a; }, []) : []));
   function esc(x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   document.addEventListener('error', function (e) {
     var el = e.target; if (!el || el.tagName !== 'IMG' || !el.closest('.crest,.avatar,.sub')) return;
@@ -1755,8 +1969,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   /* ====================================================================================================
      v9 (decision 73): price movement, SNAI paste + cost meter, sistema, live tracker, richer preview, record analytics
      ==================================================================================================== */
-  var SLUG = { 'Serie A': 'ita.1', 'Premier League': 'eng.1', 'La Liga': 'esp.1', 'Bundesliga': 'ger.1', 'Ligue 1': 'fra.1', 'Champions League': 'uefa.champions',
-    'Serie B': 'ita.2', 'Championship': 'eng.2', 'La Liga 2': 'esp.2', '2. Bundesliga': 'ger.2', 'Ligue 2': 'fra.2' };
+  var SLUG = {}; Object.keys(COMP_INFO).forEach(function (k) { if (COMP_INFO[k].espn) SLUG[k] = COMP_INFO[k].espn; });
   function seeded(str) { var h = 2166136261; for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return function () { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 1000003) / 1000003; }; }
   function store(key, fallback) { try { var v = JSON.parse(localStorage.getItem(key) || 'null'); return v == null ? fallback : v; } catch (e) { return fallback; } }
   function save(key, v) { try { localStorage.setItem(key, JSON.stringify(v)); } catch (e) {} }
@@ -1944,9 +2157,10 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   function eventFor(leg, events) {
     var kick = new Date(leg.kick).getTime();
     return events.filter(function (ev) {
-      var c = ((ev.competitions || [])[0] || {}).competitors || [], ids = c.map(function (x) { return String((x.team || {}).id); }), nm = c.map(function (x) { return tkey((x.team || {}).displayName || ''); });
-      var byId = leg.th != null && leg.ta != null && ids.indexOf(String(leg.th)) > -1 && ids.indexOf(String(leg.ta)) > -1;
-      var byName = nm.some(function (n) { return n && (n.indexOf(tkey(leg.home)) > -1 || tkey(leg.home).indexOf(n) > -1); }) && nm.some(function (n) { return n && (n.indexOf(tkey(leg.away)) > -1 || tkey(leg.away).indexOf(n) > -1); });
+      var ak = function (x) { var t = tkey(x); return ALIASES[t] || t; };
+      var c = ((ev.competitions || [])[0] || {}).competitors || [], ids = c.map(function (x) { return String((x.team || {}).id); }), nm = c.map(function (x) { return ak((x.team || {}).displayName || ''); });
+      var byId = leg.th != null && leg.ta != null && ids.indexOf(String(leg.th)) > -1 && ids.indexOf(String(leg.ta)) > -1, hk = ak(leg.home), awk = ak(leg.away);
+      var byName = nm.some(function (n) { return n && (n.indexOf(hk) > -1 || hk.indexOf(n) > -1); }) && nm.some(function (n) { return n && (n.indexOf(awk) > -1 || awk.indexOf(n) > -1); });
       return (byId || byName) && Math.abs(new Date(ev.date).getTime() - kick) < 36e5 * 6;
     })[0];
   }
@@ -2008,7 +2222,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
     var title = landed ? 'Landed. It pays ' + euro(rec.stake * rec.pays) : lost ? 'Slip lost' : inplay ? 'Live · still alive' : done ? 'Half-time for the slip · still alive' : 'Kick-off soon';
     var failed = lost ? legs.filter(function (l, i) { return states[i].state === 'post' && lp[i].p === 0; })[0] : null;
     panel.innerHTML = '<div class="livehead"><div><span class="eyebrow"><span class="pulse"></span>' + (LIVE.demo ? 'Simulated matchday · ' : '') + esc(rec.name) + ' · ' + euro(rec.stake) + '</span><h3 class="display" style="margin-top:6px">' + title + '</h3>' +
-      (failed ? '<p class="fine" style="margin-top:4px">' + esc(failed.home) + ' – ' + esc(failed.away) + ' ' + states[legs.indexOf(failed)].h + '–' + states[legs.indexOf(failed)].a + ': ' + esc(failed.label.toLowerCase()) + ' did not come in.</p>' : '') + '</div></div>' +
+      (failed ? '<p class="fine" style="margin-top:4px">' + esc(failed.home) + ' – ' + esc(failed.away) + ' ' + states[legs.indexOf(failed)].h + '–' + states[legs.indexOf(failed)].a + ': ' + esc(lcPick(failed.label)) + ' did not come in.</p>' : '') + '</div></div>' +
       '<div class="livekv"><div><small>Chance it lands now</small><b>' + (lost ? '0%' : landed ? '100%' : chance >= 0.01 ? (chance * 100).toFixed(1) + '%' : '1 in ' + Math.round(1 / chance).toLocaleString('en-GB')) + '</b></div><div><small>Legs won so far</small><b>' + lp.filter(function (x, i) { return states[i].state === 'post' && x.p === 1; }).length + ' of ' + legs.length + '</b></div><div><small>Pays if it lands</small><b>' + euro(rec.stake * rec.pays) + '</b></div></div>' +
       '<div class="lrows">' + legs.map(function (l, i) {
         var st = states[i], x = lp[i], cls = st.state === 'pre' || st.state === 'unknown' ? '' : x.now ? ' win' : ' lose', key = rec.id + ':' + i, sc = st.state === 'pre' || st.state === 'unknown' ? '–' : st.h + '–' + st.a, flash = LIVE.lastScores[key] && LIVE.lastScores[key] !== sc;
@@ -2040,7 +2254,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
 
   /* ---------- 5. richer match preview ---------- */
   function miniTable(m) {
-    var tab = T && T.tables && T.tables[m.lg]; if (!tab || !tab.length || (!m.th && !m.ta)) return '';
+    var tab = T && T.tables && T.tables[m.lg]; if (!tab || !tab.length || (!m.th && !m.ta) || groupOf(m.lg) === 'national') return '';
     var mine = [m.th, m.ta].filter(Boolean).map(function (t) { return String(t.id); }), keep = {};
     tab.forEach(function (r, i) { if (mine.indexOf(String(r.id)) > -1) for (var j = Math.max(0, i - 1); j <= Math.min(tab.length - 1, i + 1); j++) keep[j] = 1; });
     if (tab.length) keep[0] = 1;
@@ -2128,7 +2342,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
     svg += '<text x="' + x1 + '" y="' + (H - 1) + '" text-anchor="end">promised %</text><text x="' + x0 + '" y="' + (y0 - 2) + '">happened %</text></g>';
     $('#calChart').innerHTML = svg;
     var outside = bins.filter(function (b) { return Math.abs(b.act - b.prom) > 2 * Math.sqrt(b.prom * (1 - b.prom) / b.n); }).length;
-    $('#calNote').textContent = A.legs.length + ' legs graded' + (A.example ? ' (example)' : '') + '. Each dot is a group of legs: across is what Scudi promised, up is how often they won; the bar is the range chance alone allows. ' + (outside ? outside + ' group' + (outside > 1 ? 's sit' : ' sits') + ' outside its range: worth a look once there are more legs.' : 'Every group sits within its range.');
+    $('#calNote').innerHTML = '<span>' + A.legs.length + ' legs graded' + (A.example ? ' (example)' : '') + '.</span> <span>Each dot is a group of legs: across is what Scudi promised, up is how often they won; the bar is the range chance alone allows.</span> <span>' + (outside ? outside + ' group' + (outside > 1 ? 's sit' : ' sits') + ' outside its range: worth a look once there are more legs.' : 'Every group sits within its range.') + '</span>';
     /* money against luck */
     var sl = A.slips.filter(function (s) { return s.stake; }), cum = 0, exp = 0, v = 0, pts = [];
     var staked = 0;
@@ -2145,7 +2359,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
       g += '<text x="' + x1 + '" y="' + (H - 12) + '" text-anchor="end">' + pts.length + ' slips</text></g>';
       $('#moneyChart').innerHTML = g;
       var last = pts[pts.length - 1], z = last.sd ? (last.me - last.exp) / last.sd : 0; if (last.me <= low(last, 2) + 1e-9 && last.me > last.floor + 1e-9) z = -2.01;
-      $('#moneyNote').textContent = (A.placed ? 'Your placed slips' : A.example ? 'Example slips at €5' : 'Paper slips at €5 each') + ': ' + (last.me < 0 ? 'down ' : 'up ') + euro(Math.abs(last.me)) + ', against an expected ' + (last.exp < 0 ? '−' : '+') + euro(Math.abs(last.exp)) + '. Gold is you, the dashed line is the average, the bands are where chance alone puts you two times in three and nineteen times in twenty. ' + (Math.abs(z) <= 2 ? 'You are inside the bands.' : z > 2 ? 'You are above the bands: luck, most likely.' : 'You are below the bands: check the calibration.');
+      $('#moneyNote').innerHTML = '<span>' + (A.placed ? 'Your placed slips' : A.example ? 'Example slips at €5' : 'Paper slips at €5 each') + ': ' + (last.me < 0 ? 'down ' : 'up ') + euro(Math.abs(last.me)) + ', against an expected ' + (last.exp < 0 ? '−' : '+') + euro(Math.abs(last.exp)) + '.</span> <span>Gold is you, the dashed line is the average, the bands are where chance alone puts you two times in three and nineteen times in twenty.</span> <span>' + (Math.abs(z) <= 2 ? 'You are inside the bands.' : z > 2 ? 'You are above the bands: luck, most likely.' : 'You are below the bands: check the calibration.') + '</span>';
     } else { $('#moneyChart').innerHTML = ''; $('#moneyNote').textContent = 'No slips yet.'; }
     /* leaks */
     var groups = {}; A.legs.forEach(function (l) { [['pick', l.label || PICK_NAMES[l.code] || l.code], ['league', l.lg]].forEach(function (k) { if (!k[1]) return; var gk = k[0] + ':' + k[1], gg = groups[gk] = groups[gk] || { name: k[1], kind: k[0], n: 0, lost: 0, exp: 0, v: 0 }; gg.n++; gg.lost += l.won ? 0 : 1; gg.exp += 1 - l.p; gg.v += l.p * (1 - l.p); }); });

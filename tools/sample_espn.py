@@ -17,7 +17,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from tools.teams import LINEUP, LOGO, LOGO_DARK, SITE, SLUGS, TRANSFERS, WEB, build, find_team, replay_fetch
+from tools.teams import FULL, LINEUP, LOGO, LOGO_DARK, SITE, SLUGS, TRANSFERS, WEB, build, find_team, replay_fetch
 
 REGISTRY = json.loads((Path(__file__).resolve().parents[1] / "data" / "espn_teams.json").read_text())["competitions"]
 
@@ -150,7 +150,7 @@ def main():
     feed = json.loads(Path("tests/feed_week_sample.json").read_text())
     rec = make(feed)
     print(f"{len(rec)} synthetic responses")
-    teams, players, budget = build(replay_fetch(rec), list(SLUGS), {}, {}, datetime(2026, 10, 8, 9, 0, tzinfo=timezone.utc))
+    teams, players, budget = build(replay_fetch(rec), FULL, {}, {}, datetime(2026, 10, 8, 9, 0, tzinfo=timezone.utc))
     teams["source"] = "example data: real teams, crests and colours; invented squads, results and transfers, in ESPN's shapes"
     players["source"] = teams["source"]
     Path("data/teams.json").write_text(json.dumps(teams, separators=(",", ":"), ensure_ascii=False))

@@ -1,12 +1,16 @@
-"""Grade every slip the weekly job built, from final scores, and keep the running record.
+"""Grade every slip the price job built, from final scores, and keep the running record.
 
-    ODDS_API_KEY=... python3 -m tools.grade --week data/week.json --record data/record.json
+    python3 -m tools.grade --week data/week.json --record data/record.json      # ESPN first; the odds feed only if needed
     python3 -m tools.grade --week ... --scores-file tests/scores_sample.json --now 2026-10-13T12:00:00Z   (replay)
 
-Scores come from the same feed's scores endpoint (2 credits per competition per call, results up to 3 days back),
-so the grading run must happen within three days of the last match. A slip is graded only when every leg's
-match has a final score; a slip with a postponed match stays open. The record keeps, for every graded slip, the
-chance Scudi promised and whether it landed, so expected and actual hits can be compared honestly over time.
+Scores come from ESPN's public scoreboards first (free, no key: one request per competition covering the week's dates),
+matched to the odds feed's matches by kickoff time and team names. Only matches ESPN cannot settle (a competition it
+does not cover, a name it spells too differently) are asked of the odds feed's scores endpoint, 2 credits per
+competition, results up to 3 days back (decision 74). Bets settle on 90 minutes: a match that went to extra time is
+settled on its first two periods when ESPN lists them, and left open otherwise.
+A slip is graded only when every leg's match has a final score; a slip with a postponed match stays open. The record
+keeps, for every graded slip, the chance Scudi promised and whether it landed, so expected and actual hits can be
+compared honestly over time. Slips of a week that a later full pull replaced ride along in week["pending"].
 """
 
 from __future__ import annotations
@@ -17,15 +21,20 @@ import os
 import sys
 import urllib.parse
 import urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scudi_slips import settles
+from scudi_slips.comps import BY_NAME
 from scudi_slips.feed import SPORT_KEYS
+from tools.teams import ALIASES, SITE, live_fetch, norm
 from tools.weekly import closing
 
 API = "https://api.the-odds-api.com/v4/sports/{key}/scores"
+NATIONAL_ALIASES = {"czech republic": "czechia", "turkey": "turkiye", "ireland": "republic of ireland", "republic ireland": "republic of ireland",
+                    "bosnia and herzegovina": "bosnia herzegovina", "korea republic": "south korea", "usa": "united states", "cote d ivoire": "ivory coast",
+                    "macedonia": "north macedonia", "holland": "netherlands", "swiss": "switzerland"}
 
 
 def fetch_scores(comps: list[str], api_key: str, days_from: int = 3) -> dict[str, dict]:
@@ -39,6 +48,100 @@ def fetch_scores(comps: list[str], api_key: str, days_from: int = 3) -> dict[str
     return scores
 
 
+def _key(name: str) -> str:
+    k = norm(name).replace(" and ", " ")
+    return NATIONAL_ALIASES.get(k) or ALIASES.get(k) or k
+
+
+def same_team(a: str, b: str) -> int:
+    """2 = the same name after normalising, 1 = one contains the other (4+ letters), 0 = different."""
+    x, y = _key(a), _key(b)
+    if x == y:
+        return 2
+    return 1 if min(len(x), len(y)) >= 4 and (x in y or y in x) else 0
+
+
+def _espn_score(c: dict):
+    sc = c.get("score")
+    if isinstance(sc, dict):
+        sc = sc.get("value", sc.get("displayValue"))
+    try:
+        return int(float(sc))
+    except (TypeError, ValueError):
+        return None
+
+
+def espn_final(ev: dict) -> tuple[int, int] | None:
+    """(home, away) after 90 minutes, or None if the match is not finished or its 90-minute score cannot be told."""
+    comp = (ev.get("competitions") or [{}])[0]
+    st = (comp.get("status") or ev.get("status") or {}).get("type") or {}
+    if not st.get("completed"):
+        return None
+    sides = {c.get("homeAway"): c for c in comp.get("competitors", [])}
+    if "home" not in sides or "away" not in sides:
+        return None
+    name = str(st.get("name", "")).upper()
+    if "AET" in name or "PEN" in name or "EXTRA" in name:
+        ls = [[_espn_score({"score": x.get("value", x.get("displayValue"))}) for x in (sides[k].get("linescores") or [])[:2]] for k in ("home", "away")]
+        if all(len(v) == 2 and None not in v for v in ls):
+            return sum(ls[0]), sum(ls[1])
+        return None
+    h, a = _espn_score(sides["home"]), _espn_score(sides["away"])
+    return (h, a) if h is not None and a is not None else None
+
+
+def _team_name(c: dict) -> str:
+    t = c.get("team") or {}
+    return t.get("displayName") or t.get("shortDisplayName") or t.get("name") or ""
+
+
+def espn_finals(fetch, matches: list[dict], slugs: dict[str, str | None]) -> tuple[dict[str, tuple[int, int]], list[str]]:
+    """Final scores from ESPN's scoreboards for the given matches: {match id: (home, away)}, plus notes."""
+    finals, notes = {}, []
+    by_comp: dict[str, list[dict]] = {}
+    for m in matches:
+        by_comp.setdefault(m["competition"], []).append(m)
+    for comp, ms in by_comp.items():
+        slug = slugs.get(comp)
+        if not slug:
+            notes.append(f"{comp}: no ESPN league, left to the odds feed")
+            continue
+        kicks = [datetime.fromisoformat(m["kickoff"]) for m in ms]
+        lo, hi = min(kicks) - timedelta(days=1), max(kicks) + timedelta(days=1)
+        url = f"{SITE.format(slug=slug)}/scoreboard?dates={lo:%Y%m%d}-{hi:%Y%m%d}&limit=300"
+        board = None
+        for u in (url, url.replace("https://site.web.api.espn.com/", "https://site.api.espn.com/", 1)):
+            try:
+                board = fetch(u)
+                break
+            except Exception as e:  # ESPN failing only means the odds feed is asked instead
+                notes.append(f"{comp}: ESPN scoreboard failed ({e})")
+        if board is None:
+            continue
+        events = board.get("events", []) if isinstance(board, dict) else []
+        for m in ms:
+            ko = datetime.fromisoformat(m["kickoff"])
+            best, best_score = None, 0
+            for ev in events:
+                try:
+                    t = datetime.fromisoformat(str(ev.get("date", "")).replace("Z", "+00:00"))
+                except ValueError:
+                    continue
+                if abs((t - ko).total_seconds()) > 3 * 3600:
+                    continue
+                sides = {c.get("homeAway"): _team_name(c) for c in (ev.get("competitions") or [{}])[0].get("competitors", [])}
+                sh, sa = same_team(m["home"], sides.get("home", "")), same_team(m["away"], sides.get("away", ""))
+                score = sh + sa if sh and sa else (1 if (sh == 2 or sa == 2) and abs((t - ko).total_seconds()) <= 600 else 0)
+                if score > best_score:
+                    best, best_score = ev, score
+            if best is None:
+                continue
+            fs = espn_final(best)
+            if fs is not None:
+                finals[m["id"]] = fs
+    return finals, notes
+
+
 def final_score(ev: dict) -> tuple[int, int] | None:
     if not ev.get("completed"):
         return None
@@ -50,7 +153,7 @@ def final_score(ev: dict) -> tuple[int, int] | None:
 
 def grade(week: dict, scores: dict[str, dict], record: dict, now: datetime, history: dict | None = None) -> dict:
     done = {s["key"] for s in record.get("slips", [])}
-    finals = {mid: final_score(ev) for mid, ev in scores.items()}
+    finals = {mid: (tuple(ev) if isinstance(ev, (tuple, list)) else final_score(ev)) for mid, ev in scores.items()}
     comp_of = {m["id"]: m["competition"] for m in week.get("matches", [])}
     names = {m["id"]: f'{m["home"]} v {m["away"]}' for m in week.get("matches", [])}
     for slip in week.get("slips", []):
@@ -89,30 +192,59 @@ def grade(week: dict, scores: dict[str, dict], record: dict, now: datetime, hist
     return record
 
 
-def main(argv=None):
+def weeks_of(week: dict) -> list[dict]:
+    """The current week plus the ungraded weeks a later full pull replaced."""
+    return [week] + [{"built_at": p["built_at"], "matches": p.get("matches", []), "slips": p.get("slips", [])} for p in week.get("pending", [])]
+
+
+def main(argv=None, fetch=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--week", default="data/week.json")
     ap.add_argument("--record", default="data/record.json")
-    ap.add_argument("--scores-file")
+    ap.add_argument("--scores-file", help="replay odds-feed scores instead of any network call")
     ap.add_argument("--history", default="data/history.json")
+    ap.add_argument("--no-espn", action="store_true", help="skip ESPN and use the odds feed's scores only")
     ap.add_argument("--now")
     a = ap.parse_args(argv)
     now = datetime.fromisoformat(a.now.replace("Z", "+00:00")) if a.now else datetime.now(timezone.utc)
     week = json.loads(Path(a.week).read_text())
-    comps = sorted({m["competition"] for m in week["matches"]})
-    if a.scores_file:
-        scores = {ev["id"]: ev for ev in json.loads(Path(a.scores_file).read_text())}
-    else:
-        key = os.environ.get("ODDS_API_KEY")
-        if not key:
-            sys.exit("ODDS_API_KEY is not set")
-        scores = fetch_scores(comps, key)
     rec_path = Path(a.record)
     record = json.loads(rec_path.read_text()) if rec_path.exists() else {}
     hist = json.loads(Path(a.history).read_text()) if Path(a.history).exists() else {}
-    record = grade(week, scores, record, now, hist)
+    done = {s["key"] for s in record.get("slips", [])}
+    wanted: dict[str, dict] = {}
+    for w in weeks_of(week):
+        ids = {p["match"] for s in w["slips"] if f'{w["built_at"]}|{s["name"]}|{s["target"]}' not in done for p in s["picks"]}
+        wanted.update({m["id"]: m for m in w["matches"] if m["id"] in ids and datetime.fromisoformat(m["kickoff"]) < now})
+    scores: dict = {}
+    if a.scores_file:
+        scores = {ev["id"]: ev for ev in json.loads(Path(a.scores_file).read_text())}
+    elif wanted:
+        slugs = {c["name"]: c.get("espn") for c in week.get("competitions", [])}
+        slugs.update({n: c.espn for n, c in BY_NAME.items()})
+        if not a.no_espn:
+            finals, notes = espn_finals(fetch or live_fetch(pause=0.3), list(wanted.values()), slugs)
+            scores.update(finals)
+            for n in notes:
+                print("  " + n)
+            print(f"ESPN settled {len(finals)} of {len(wanted)} finished matches")
+        left = sorted({m["competition"] for mid, m in wanted.items() if mid not in scores and m["competition"] in SPORT_KEYS})
+        key = os.environ.get("ODDS_API_KEY")
+        if left and key:
+            try:
+                got = fetch_scores(left, key)
+                scores.update({mid: ev for mid, ev in got.items() if mid in wanted and mid not in scores})
+                print(f"odds feed asked for {', '.join(left)} ({2 * len(left)} credits)")
+            except Exception as e:  # the record simply waits for the next run
+                print(f"odds feed scores failed: {e}")
+        elif left:
+            print(f"not settled and no odds key to ask: {', '.join(left)}")
+    for w in weeks_of(week):
+        record = grade(w, scores, record, now, hist)
+    if "summary" not in record:
+        record = grade({"built_at": "", "matches": [], "slips": []}, {}, record, now)
     rec_path.parent.mkdir(parents=True, exist_ok=True)
-    rec_path.write_text(json.dumps(record, indent=1))
+    rec_path.write_text(json.dumps(record, indent=1, ensure_ascii=False))
     print(record["summary"])
 
 
