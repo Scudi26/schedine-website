@@ -1,0 +1,38 @@
+{
+ "Serie A": [
+  {"id": "ev1", "sport_key": "soccer_italy_serie_a", "commence_time": "2026-10-10T13:00:00Z", "home_team": "Genoa", "away_team": "Fiorentina",
+   "bookmakers": [
+    {"key": "pinnacle", "title": "Pinnacle", "last_update": "2026-10-09T09:00:00Z", "markets": [
+      {"key": "h2h", "outcomes": [{"name": "Genoa", "price": 2.62}, {"name": "Fiorentina", "price": 2.80}, {"name": "Draw", "price": 3.30}]},
+      {"key": "totals", "outcomes": [{"name": "Over", "price": 2.02, "point": 2.5}, {"name": "Under", "price": 1.88, "point": 2.5}]}]},
+    {"key": "betfair_ex_eu", "title": "Betfair", "last_update": "2026-10-09T09:05:00Z", "markets": [
+      {"key": "h2h", "outcomes": [{"name": "Genoa", "price": 2.66}, {"name": "Fiorentina", "price": 2.84}, {"name": "Draw", "price": 3.35}]}]},
+    {"key": "unibet_eu", "title": "Unibet", "last_update": "2026-10-09T08:50:00Z", "markets": [
+      {"key": "h2h", "outcomes": [{"name": "Genoa", "price": 2.50}, {"name": "Fiorentina", "price": 2.70}, {"name": "Draw", "price": 3.20}]},
+      {"key": "totals", "outcomes": [{"name": "Over", "price": 1.95, "point": 2.5}, {"name": "Under", "price": 1.80, "point": 2.5}]}]},
+    {"key": "williamhill", "title": "William Hill", "last_update": "2026-10-09T08:40:00Z", "markets": [
+      {"key": "h2h", "outcomes": [{"name": "Genoa", "price": 2.55}, {"name": "Fiorentina", "price": 2.75}, {"name": "Draw", "price": 3.10}]},
+      {"key": "totals", "outcomes": [{"name": "Over", "price": 1.91, "point": 2.5}, {"name": "Under", "price": 1.83, "point": 2.5}]}]},
+    {"key": "stale_book", "title": "Stale", "last_update": "2026-10-01T08:40:00Z", "markets": [
+      {"key": "h2h", "outcomes": [{"name": "Genoa", "price": 1.50}, {"name": "Fiorentina", "price": 5.00}, {"name": "Draw", "price": 6.00}]}]}
+   ]},
+  {"id": "ev2", "sport_key": "soccer_italy_serie_a", "commence_time": "2026-10-10T16:00:00Z", "home_team": "Inter", "away_team": "Parma",
+   "bookmakers": [
+    {"key": "pinnacle", "title": "Pinnacle", "last_update": "2026-10-09T09:00:00Z", "markets": [
+      {"key": "h2h", "outcomes": [{"name": "Inter", "price": 1.32}, {"name": "Parma", "price": 9.50}, {"name": "Draw", "price": 5.40}]}]},
+    {"key": "unibet_eu", "title": "Unibet", "last_update": "2026-10-09T08:50:00Z", "markets": [
+      {"key": "h2h", "outcomes": [{"name": "Inter", "price": 1.28}, {"name": "Parma", "price": 9.00}, {"name": "Draw", "price": 5.00}]}]}
+   ]},
+  {"id": "ev3", "sport_key": "soccer_italy_serie_a", "commence_time": "2026-10-08T18:45:00Z", "home_team": "Started FC", "away_team": "Gone",
+   "bookmakers": [{"key": "pinnacle", "title": "Pinnacle", "last_update": "2026-10-08T18:00:00Z", "markets": [
+      {"key": "h2h", "outcomes": [{"name": "Started FC", "price": 2.0}, {"name": "Gone", "price": 3.6}, {"name": "Draw", "price": 3.4}]}]}]},
+  {"id": "ev4", "sport_key": "soccer_italy_serie_a", "commence_time": "2026-10-10T18:45:00Z", "home_team": "Lonely", "away_team": "Book",
+   "bookmakers": [{"key": "unibet_eu", "title": "Unibet", "last_update": "2026-10-09T09:00:00Z", "markets": [
+      {"key": "h2h", "outcomes": [{"name": "Lonely", "price": 2.0}, {"name": "Book", "price": 3.6}, {"name": "Draw", "price": 3.4}]}]}]},
+  {"id": "ev5", "sport_key": "soccer_italy_serie_a", "commence_time": "2026-10-20T18:45:00Z", "home_team": "Next", "away_team": "Week",
+   "bookmakers": [{"key": "pinnacle", "title": "Pinnacle", "last_update": "2026-10-09T09:00:00Z", "markets": [
+      {"key": "h2h", "outcomes": [{"name": "Next", "price": 2.0}, {"name": "Week", "price": 3.6}, {"name": "Draw", "price": 3.4}]}]},
+      {"key": "unibet_eu", "title": "Unibet", "last_update": "2026-10-09T09:00:00Z", "markets": [
+      {"key": "h2h", "outcomes": [{"name": "Next", "price": 2.0}, {"name": "Week", "price": 3.6}, {"name": "Draw", "price": 3.4}]}]}]}
+ ]
+}

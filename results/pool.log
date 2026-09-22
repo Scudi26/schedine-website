@@ -1,0 +1,22 @@
+95180 matches priced
+Belgian Pro League 5049 worst gap 2.5 | home win [0.665, 0.673, 1566] | over 2.5 [0.594, 0.591, 2193]
+Bundesliga 5814 worst gap 3.1 | home win [0.662, 0.651, 1565] | over 2.5 [0.62, 0.622, 3212]
+2. Bundesliga 5807 worst gap 2.1 | home win [0.622, 0.617, 1197] | over 2.5 [0.591, 0.593, 1731]
+Premier League 7219 worst gap 1.2 | home win [0.687, 0.699, 2008] | over 2.5 [0.613, 0.602, 2135]
+Championship 10485 worst gap 2.0 | home win [0.615, 0.619, 1778] | over 2.5 [0.578, 0.558, 904]
+Ligue 1 7038 worst gap 2.1 | home win [0.647, 0.628, 1721] | over 2.5 [0.622, 0.643, 903]
+Ligue 2 7072 worst gap 1.2 | home win [0.608, 0.616, 1036] | over 2.5 None
+Serie A 7114 worst gap 3.4 | home win [0.672, 0.677, 2117] | over 2.5 [0.606, 0.6, 1789]
+Serie B 8039 worst gap 2.3 | home win [0.613, 0.611, 1365] | over 2.5 None
+Eredivisie 5704 worst gap 2.3 | home win [0.684, 0.667, 1846] | over 2.5 [0.623, 0.611, 4393]
+Primeira Liga 5010 worst gap 4.9 | home win [0.7, 0.726, 1134] | over 2.5 [0.609, 0.601, 739]
+La Liga 6837 worst gap 3.5 | home win [0.661, 0.679, 1809] | over 2.5 [0.64, 0.644, 1668]
+La Liga 2 8253 worst gap 2.1 | home win [0.608, 0.629, 1287] | over 2.5 None
+Süper Lig 5739 worst gap 2.5 | home win [0.662, 0.664, 1427] | over 2.5 [0.601, 0.614, 1558]
+562 weekends compared
+{"pool": "top 5", "legs": 10, "target": 25, "weekends": 562, "predicted_1_in": 33.3, "expected_hits": 16.9, "actual_hits": 24, "avg_pool_size": 45.0, "predicted_return_snai": 0.933, "actual_return_snai": 1.327, "league_mix": {"E0": 0.398, "I1": 0.167, "D1": 0.165, "SP1": 0.151, "F1": 0.119}}
+{"pool": "top 5 + second divisions", "legs": 10, "target": 25, "weekends": 562, "predicted_1_in": 32.7, "expected_hits": 17.2, "actual_hits": 24, "avg_pool_size": 92.1, "predicted_return_snai": 0.95, "actual_return_snai": 1.327, "league_mix": {"E0": 0.31, "E1": 0.135, "I1": 0.134, "D1": 0.13, "SP1": 0.122, "F1": 0.092, "D2": 0.031, "I2": 0.019, "SP2": 0.014, "F2": 0.013}}
+{"pool": "top 5 + second divisions + NL/PT/BE/TR", "legs": 10, "target": 25, "weekends": 562, "predicted_1_in": 32.1, "expected_hits": 17.5, "actual_hits": 23, "avg_pool_size": 121.7, "predicted_return_snai": 0.969, "actual_return_snai": 1.271, "league_mix": {"E0": 0.263, "E1": 0.113, "I1": 0.112, "D1": 0.104, "SP1": 0.097, "N1": 0.075, "F1": 0.073, "P1": 0.045, "B1": 0.039, "T1": 0.034, "D2": 0.021, "I2": 0.01, "SP2": 0.009, "F2": 0.007}}
+{"pool": "top 5", "legs": 10, "target": 50, "weekends": 562, "predicted_1_in": 65.1, "expected_hits": 8.6, "actual_hits": 10, "avg_pool_size": 45.0, "predicted_return_snai": 0.956, "actual_return_snai": 1.107, "league_mix": {"E0": 0.415, "I1": 0.165, "D1": 0.16, "SP1": 0.146, "F1": 0.113}}
+{"pool": "top 5 + second divisions", "legs": 10, "target": 50, "weekends": 562, "predicted_1_in": 64.1, "expected_hits": 8.8, "actual_hits": 7, "avg_pool_size": 92.1, "predicted_return_snai": 0.97, "actual_return_snai": 0.774, "league_mix": {"E0": 0.341, "E1": 0.137, "I1": 0.13, "D1": 0.128, "SP1": 0.117, "F1": 0.084, "D2": 0.026, "SP2": 0.013, "I2": 0.012, "F2": 0.011}}
+{"pool": "top 5 + second divisions + NL/PT/BE/TR", "legs": 10, "target": 50, "weekends": 562, "predicted_1_in": 63.6, "expected_hits": 8.8, "actual_hits": 12, "avg_pool_size": 121.7, "predicted_return_snai": 0.977, "actual_return_snai": 1.328, "league_mix": {"E0": 0.341, "E1": 0.119, "D1": 0.115, "I1": 0.114, "SP1": 0.1, "F1": 0.068, "N1": 0.043, "P1": 0.023, "B1": 0.021, "T1": 0.018, "D2": 0.017, "F2": 0.008, "SP2": 0.007, "I2": 0.007}}

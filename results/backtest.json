@@ -1,0 +1,1019 @@
+{
+ "matches": 34128,
+ "seasons": [
+  2005,
+  2023
+ ],
+ "fit_error_p99": 2.248463124826528e-07,
+ "calibration": {
+  "1": {
+   "matches": 34128,
+   "predicted": 0.454,
+   "actual": 0.4538,
+   "band_n": 9228,
+   "band_predicted": 0.6666,
+   "band_actual": 0.6686,
+   "band_flat_return": 0.9777,
+   "buckets": [
+    {
+     "from": 0.5,
+     "n": 2946,
+     "predicted": 0.523,
+     "actual": 0.515
+    },
+    {
+     "from": 0.55,
+     "n": 2616,
+     "predicted": 0.574,
+     "actual": 0.58
+    },
+    {
+     "from": 0.6,
+     "n": 1914,
+     "predicted": 0.625,
+     "actual": 0.618
+    },
+    {
+     "from": 0.65,
+     "n": 1685,
+     "predicted": 0.677,
+     "actual": 0.688
+    },
+    {
+     "from": 0.7,
+     "n": 1186,
+     "predicted": 0.725,
+     "actual": 0.723
+    },
+    {
+     "from": 0.75,
+     "n": 965,
+     "predicted": 0.772,
+     "actual": 0.772
+    },
+    {
+     "from": 0.8,
+     "n": 862,
+     "predicted": 0.823,
+     "actual": 0.82
+    },
+    {
+     "from": 0.85,
+     "n": 428,
+     "predicted": 0.873,
+     "actual": 0.871
+    }
+   ]
+  },
+  "X": {
+   "matches": 34128,
+   "predicted": 0.2528,
+   "actual": 0.2564,
+   "band_n": 9,
+   "band_predicted": 0.6149,
+   "band_actual": 0.7778,
+   "band_flat_return": 1.1867,
+   "buckets": []
+  },
+  "2": {
+   "matches": 34128,
+   "predicted": 0.2932,
+   "actual": 0.2898,
+   "band_n": 3077,
+   "band_predicted": 0.6511,
+   "band_actual": 0.651,
+   "band_flat_return": 0.9744,
+   "buckets": [
+    {
+     "from": 0.5,
+     "n": 1067,
+     "predicted": 0.523,
+     "actual": 0.537
+    },
+    {
+     "from": 0.55,
+     "n": 981,
+     "predicted": 0.573,
+     "actual": 0.555
+    },
+    {
+     "from": 0.6,
+     "n": 791,
+     "predicted": 0.624,
+     "actual": 0.65
+    },
+    {
+     "from": 0.65,
+     "n": 524,
+     "predicted": 0.676,
+     "actual": 0.679
+    },
+    {
+     "from": 0.7,
+     "n": 365,
+     "predicted": 0.724,
+     "actual": 0.688
+    },
+    {
+     "from": 0.75,
+     "n": 231,
+     "predicted": 0.768,
+     "actual": 0.814
+    },
+    {
+     "from": 0.8,
+     "n": 185,
+     "predicted": 0.821,
+     "actual": 0.811
+    }
+   ]
+  },
+  "1X": {
+   "matches": 34128,
+   "predicted": 0.7068,
+   "actual": 0.7102,
+   "band_n": 21734,
+   "band_predicted": 0.7195,
+   "band_actual": 0.7264,
+   "band_flat_return": 0.9546,
+   "buckets": [
+    {
+     "from": 0.5,
+     "n": 1427,
+     "predicted": 0.529,
+     "actual": 0.515
+    },
+    {
+     "from": 0.55,
+     "n": 1832,
+     "predicted": 0.576,
+     "actual": 0.57
+    },
+    {
+     "from": 0.6,
+     "n": 2554,
+     "predicted": 0.624,
+     "actual": 0.622
+    },
+    {
+     "from": 0.65,
+     "n": 4084,
+     "predicted": 0.677,
+     "actual": 0.692
+    },
+    {
+     "from": 0.7,
+     "n": 4784,
+     "predicted": 0.726,
+     "actual": 0.735
+    },
+    {
+     "from": 0.75,
+     "n": 4762,
+     "predicted": 0.775,
+     "actual": 0.788
+    },
+    {
+     "from": 0.8,
+     "n": 3718,
+     "predicted": 0.825,
+     "actual": 0.823
+    },
+    {
+     "from": 0.85,
+     "n": 3385,
+     "predicted": 0.874,
+     "actual": 0.874
+    }
+   ]
+  },
+  "X2": {
+   "matches": 34128,
+   "predicted": 0.546,
+   "actual": 0.5462,
+   "band_n": 15530,
+   "band_predicted": 0.6678,
+   "band_actual": 0.6691,
+   "band_flat_return": 0.9452,
+   "buckets": [
+    {
+     "from": 0.5,
+     "n": 4060,
+     "predicted": 0.528,
+     "actual": 0.529
+    },
+    {
+     "from": 0.55,
+     "n": 3811,
+     "predicted": 0.576,
+     "actual": 0.575
+    },
+    {
+     "from": 0.6,
+     "n": 3821,
+     "predicted": 0.621,
+     "actual": 0.613
+    },
+    {
+     "from": 0.65,
+     "n": 2713,
+     "predicted": 0.674,
+     "actual": 0.695
+    },
+    {
+     "from": 0.7,
+     "n": 2188,
+     "predicted": 0.724,
+     "actual": 0.735
+    },
+    {
+     "from": 0.75,
+     "n": 1629,
+     "predicted": 0.774,
+     "actual": 0.77
+    },
+    {
+     "from": 0.8,
+     "n": 1368,
+     "predicted": 0.825,
+     "actual": 0.811
+    },
+    {
+     "from": 0.85,
+     "n": 1096,
+     "predicted": 0.873,
+     "actual": 0.863
+    }
+   ]
+  },
+  "12": {
+   "matches": 34128,
+   "predicted": 0.7472,
+   "actual": 0.7436,
+   "band_n": 31956,
+   "band_predicted": 0.7381,
+   "band_actual": 0.7345,
+   "band_flat_return": 0.944,
+   "buckets": [
+    {
+     "from": 0.65,
+     "n": 4089,
+     "predicted": 0.69,
+     "actual": 0.677
+    },
+    {
+     "from": 0.7,
+     "n": 18175,
+     "predicted": 0.723,
+     "actual": 0.718
+    },
+    {
+     "from": 0.75,
+     "n": 6514,
+     "predicted": 0.771,
+     "actual": 0.773
+    },
+    {
+     "from": 0.8,
+     "n": 3124,
+     "predicted": 0.822,
+     "actual": 0.829
+    },
+    {
+     "from": 0.85,
+     "n": 1577,
+     "predicted": 0.872,
+     "actual": 0.87
+    }
+   ]
+  },
+  "O15": {
+   "matches": 34128,
+   "predicted": 0.7553,
+   "actual": 0.7526,
+   "band_n": 31405,
+   "band_predicted": 0.7446,
+   "band_actual": 0.7415,
+   "band_flat_return": 0.9258,
+   "buckets": [
+    {
+     "from": 0.6,
+     "n": 1122,
+     "predicted": 0.634,
+     "actual": 0.64
+    },
+    {
+     "from": 0.65,
+     "n": 5857,
+     "predicted": 0.679,
+     "actual": 0.675
+    },
+    {
+     "from": 0.7,
+     "n": 9826,
+     "predicted": 0.725,
+     "actual": 0.722
+    },
+    {
+     "from": 0.75,
+     "n": 8619,
+     "predicted": 0.774,
+     "actual": 0.773
+    },
+    {
+     "from": 0.8,
+     "n": 5887,
+     "predicted": 0.822,
+     "actual": 0.815
+    },
+    {
+     "from": 0.85,
+     "n": 2158,
+     "predicted": 0.87,
+     "actual": 0.867
+    }
+   ]
+  },
+  "O25": {
+   "matches": 34128,
+   "predicted": 0.5051,
+   "actual": 0.5069,
+   "band_n": 9733,
+   "band_predicted": 0.6194,
+   "band_actual": 0.6193,
+   "band_flat_return": 0.9579,
+   "buckets": [
+    {
+     "from": 0.5,
+     "n": 6256,
+     "predicted": 0.524,
+     "actual": 0.532
+    },
+    {
+     "from": 0.55,
+     "n": 4660,
+     "predicted": 0.573,
+     "actual": 0.564
+    },
+    {
+     "from": 0.6,
+     "n": 2691,
+     "predicted": 0.623,
+     "actual": 0.634
+    },
+    {
+     "from": 0.65,
+     "n": 1303,
+     "predicted": 0.672,
+     "actual": 0.684
+    },
+    {
+     "from": 0.7,
+     "n": 652,
+     "predicted": 0.722,
+     "actual": 0.712
+    },
+    {
+     "from": 0.75,
+     "n": 318,
+     "predicted": 0.774,
+     "actual": 0.792
+    }
+   ]
+  },
+  "U25": {
+   "matches": 34128,
+   "predicted": 0.4949,
+   "actual": 0.4931,
+   "band_n": 10559,
+   "band_predicted": 0.5895,
+   "band_actual": 0.595,
+   "band_flat_return": 0.9602,
+   "buckets": [
+    {
+     "from": 0.5,
+     "n": 7775,
+     "predicted": 0.526,
+     "actual": 0.516
+    },
+    {
+     "from": 0.55,
+     "n": 7185,
+     "predicted": 0.573,
+     "actual": 0.577
+    },
+    {
+     "from": 0.6,
+     "n": 2964,
+     "predicted": 0.619,
+     "actual": 0.626
+    },
+    {
+     "from": 0.65,
+     "n": 384,
+     "predicted": 0.664,
+     "actual": 0.69
+    }
+   ]
+  },
+  "U35": {
+   "matches": 34128,
+   "predicted": 0.7095,
+   "actual": 0.7114,
+   "band_n": 32108,
+   "band_predicted": 0.7217,
+   "band_actual": 0.7237,
+   "band_flat_return": 0.9322,
+   "buckets": [
+    {
+     "from": 0.5,
+     "n": 927,
+     "predicted": 0.528,
+     "actual": 0.537
+    },
+    {
+     "from": 0.55,
+     "n": 1868,
+     "predicted": 0.578,
+     "actual": 0.584
+    },
+    {
+     "from": 0.6,
+     "n": 3519,
+     "predicted": 0.628,
+     "actual": 0.631
+    },
+    {
+     "from": 0.65,
+     "n": 5849,
+     "predicted": 0.676,
+     "actual": 0.68
+    },
+    {
+     "from": 0.7,
+     "n": 7898,
+     "predicted": 0.726,
+     "actual": 0.726
+    },
+    {
+     "from": 0.75,
+     "n": 9410,
+     "predicted": 0.774,
+     "actual": 0.775
+    },
+    {
+     "from": 0.8,
+     "n": 3564,
+     "predicted": 0.817,
+     "actual": 0.82
+    },
+    {
+     "from": 0.85,
+     "n": 171,
+     "predicted": 0.861,
+     "actual": 0.854
+    }
+   ]
+  },
+  "GG": {
+   "matches": 34128,
+   "predicted": 0.5036,
+   "actual": 0.5196,
+   "band_n": 7785,
+   "band_predicted": 0.591,
+   "band_actual": 0.6021,
+   "band_flat_return": 0.9456,
+   "buckets": [
+    {
+     "from": 0.5,
+     "n": 9503,
+     "predicted": 0.523,
+     "actual": 0.535
+    },
+    {
+     "from": 0.55,
+     "n": 5283,
+     "predicted": 0.572,
+     "actual": 0.581
+    },
+    {
+     "from": 0.6,
+     "n": 1993,
+     "predicted": 0.62,
+     "actual": 0.633
+    },
+    {
+     "from": 0.65,
+     "n": 453,
+     "predicted": 0.668,
+     "actual": 0.695
+    }
+   ]
+  },
+  "NG": {
+   "matches": 34128,
+   "predicted": 0.4964,
+   "actual": 0.4804,
+   "band_n": 6386,
+   "band_predicted": 0.5873,
+   "band_actual": 0.5496,
+   "band_flat_return": 0.8643,
+   "buckets": [
+    {
+     "from": 0.5,
+     "n": 10454,
+     "predicted": 0.524,
+     "actual": 0.514
+    },
+    {
+     "from": 0.55,
+     "n": 4659,
+     "predicted": 0.57,
+     "actual": 0.531
+    },
+    {
+     "from": 0.6,
+     "n": 1308,
+     "predicted": 0.62,
+     "actual": 0.594
+    },
+    {
+     "from": 0.65,
+     "n": 335,
+     "predicted": 0.669,
+     "actual": 0.618
+    }
+   ]
+  }
+ },
+ "slips": [
+  {
+   "slip": "Serie A, all 10 matches, full menu",
+   "target": 25,
+   "slips": 623,
+   "expected_hits": 15.4,
+   "actual_hits": 12,
+   "predicted_rate": 0.0248,
+   "actual_rate": 0.0193,
+   "z": -0.89,
+   "avg_odds": 25.26,
+   "predicted_return_no_bonus": 0.626,
+   "actual_return_no_bonus": 0.486,
+   "predicted_return_snai_bonus": 0.77,
+   "actual_return_snai_bonus": 0.598,
+   "actual_return_snai_90pct": [
+    0.348,
+    0.897
+   ],
+   "pick_mix": {
+    "12": 0.379,
+    "1": 0.211,
+    "1X": 0.125,
+    "X2": 0.075,
+    "2": 0.065,
+    "O25": 0.055,
+    "U25": 0.042,
+    "U35": 0.025,
+    "O15": 0.019,
+    "NG": 0.002,
+    "X": 0.001,
+    "GG": 0.0
+   }
+  },
+  {
+   "slip": "Serie A, all 10 matches, full menu",
+   "target": 30,
+   "slips": 623,
+   "expected_hits": 13.0,
+   "actual_hits": 10,
+   "predicted_rate": 0.0209,
+   "actual_rate": 0.0161,
+   "z": -0.85,
+   "avg_odds": 30.28,
+   "predicted_return_no_bonus": 0.634,
+   "actual_return_no_bonus": 0.485,
+   "predicted_return_snai_bonus": 0.78,
+   "actual_return_snai_bonus": 0.597,
+   "actual_return_snai_90pct": [
+    0.298,
+    0.954
+   ],
+   "pick_mix": {
+    "12": 0.339,
+    "1": 0.24,
+    "1X": 0.117,
+    "2": 0.081,
+    "X2": 0.069,
+    "O25": 0.063,
+    "U25": 0.056,
+    "U35": 0.017,
+    "O15": 0.016,
+    "NG": 0.001,
+    "X": 0.001,
+    "GG": 0.001
+   }
+  },
+  {
+   "slip": "Serie A, all 10 matches, full menu",
+   "target": 40,
+   "slips": 623,
+   "expected_hits": 10.0,
+   "actual_hits": 10,
+   "predicted_rate": 0.016,
+   "actual_rate": 0.0161,
+   "z": 0.01,
+   "avg_odds": 40.33,
+   "predicted_return_no_bonus": 0.645,
+   "actual_return_no_bonus": 0.647,
+   "predicted_return_snai_bonus": 0.793,
+   "actual_return_snai_bonus": 0.796,
+   "actual_return_snai_90pct": [
+    0.398,
+    1.194
+   ],
+   "pick_mix": {
+    "1": 0.287,
+    "12": 0.272,
+    "1X": 0.105,
+    "2": 0.099,
+    "U25": 0.081,
+    "O25": 0.067,
+    "X2": 0.063,
+    "U35": 0.012,
+    "O15": 0.011,
+    "X": 0.001,
+    "NG": 0.001,
+    "GG": 0.001
+   }
+  },
+  {
+   "slip": "Serie A, all 10 matches, full menu",
+   "target": 50,
+   "slips": 623,
+   "expected_hits": 8.0,
+   "actual_hits": 11,
+   "predicted_rate": 0.0129,
+   "actual_rate": 0.0177,
+   "z": 1.05,
+   "avg_odds": 50.45,
+   "predicted_return_no_bonus": 0.651,
+   "actual_return_no_bonus": 0.89,
+   "predicted_return_snai_bonus": 0.8,
+   "actual_return_snai_bonus": 1.094,
+   "actual_return_snai_90pct": [
+    0.596,
+    1.69
+   ],
+   "pick_mix": {
+    "1": 0.317,
+    "12": 0.216,
+    "2": 0.112,
+    "U25": 0.103,
+    "1X": 0.098,
+    "O25": 0.072,
+    "X2": 0.062,
+    "U35": 0.01,
+    "O15": 0.007,
+    "X": 0.001,
+    "GG": 0.001,
+    "NG": 0.001
+   }
+  },
+  {
+   "slip": "Serie A, all 10 matches, real-price picks only",
+   "target": 25,
+   "slips": 623,
+   "expected_hits": 3.3,
+   "actual_hits": 3,
+   "predicted_rate": 0.0053,
+   "actual_rate": 0.0048,
+   "z": -0.18,
+   "avg_odds": 139.94,
+   "predicted_return_no_bonus": 0.653,
+   "actual_return_no_bonus": 0.453,
+   "predicted_return_snai_bonus": 0.803,
+   "actual_return_snai_bonus": 0.557,
+   "actual_return_snai_90pct": [
+    0.127,
+    1.159
+   ],
+   "pick_mix": {
+    "U25": 0.433,
+    "1": 0.258,
+    "O25": 0.217,
+    "2": 0.092,
+    "X": 0.001
+   }
+  },
+  {
+   "slip": "Serie A, all 10 matches, real-price picks only",
+   "target": 30,
+   "slips": 623,
+   "expected_hits": 3.3,
+   "actual_hits": 3,
+   "predicted_rate": 0.0053,
+   "actual_rate": 0.0048,
+   "z": -0.18,
+   "avg_odds": 139.94,
+   "predicted_return_no_bonus": 0.653,
+   "actual_return_no_bonus": 0.453,
+   "predicted_return_snai_bonus": 0.803,
+   "actual_return_snai_bonus": 0.557,
+   "actual_return_snai_90pct": [
+    0.127,
+    1.159
+   ],
+   "pick_mix": {
+    "U25": 0.433,
+    "1": 0.258,
+    "O25": 0.217,
+    "2": 0.092,
+    "X": 0.001
+   }
+  },
+  {
+   "slip": "Serie A, all 10 matches, real-price picks only",
+   "target": 40,
+   "slips": 623,
+   "expected_hits": 3.3,
+   "actual_hits": 3,
+   "predicted_rate": 0.0053,
+   "actual_rate": 0.0048,
+   "z": -0.18,
+   "avg_odds": 139.98,
+   "predicted_return_no_bonus": 0.653,
+   "actual_return_no_bonus": 0.453,
+   "predicted_return_snai_bonus": 0.803,
+   "actual_return_snai_bonus": 0.557,
+   "actual_return_snai_90pct": [
+    0.127,
+    1.159
+   ],
+   "pick_mix": {
+    "U25": 0.433,
+    "1": 0.258,
+    "O25": 0.216,
+    "2": 0.092,
+    "X": 0.001
+   }
+  },
+  {
+   "slip": "Serie A, all 10 matches, real-price picks only",
+   "target": 50,
+   "slips": 623,
+   "expected_hits": 3.3,
+   "actual_hits": 3,
+   "predicted_rate": 0.0053,
+   "actual_rate": 0.0048,
+   "z": -0.17,
+   "avg_odds": 140.06,
+   "predicted_return_no_bonus": 0.653,
+   "actual_return_no_bonus": 0.453,
+   "predicted_return_snai_bonus": 0.803,
+   "actual_return_snai_bonus": 0.557,
+   "actual_return_snai_90pct": [
+    0.127,
+    1.159
+   ],
+   "pick_mix": {
+    "U25": 0.433,
+    "1": 0.258,
+    "O25": 0.217,
+    "2": 0.092,
+    "X": 0.001
+   }
+  },
+  {
+   "slip": "Top 5 leagues, best 10, full menu",
+   "target": 25,
+   "slips": 637,
+   "expected_hits": 19.2,
+   "actual_hits": 26,
+   "predicted_rate": 0.0301,
+   "actual_rate": 0.0408,
+   "z": 1.59,
+   "avg_odds": 25.29,
+   "predicted_return_no_bonus": 0.761,
+   "actual_return_no_bonus": 1.032,
+   "predicted_return_snai_bonus": 0.935,
+   "actual_return_snai_bonus": 1.269,
+   "actual_return_snai_90pct": [
+    0.878,
+    1.66
+   ],
+   "pick_mix": {
+    "1": 0.523,
+    "12": 0.171,
+    "2": 0.17,
+    "1X": 0.054,
+    "O25": 0.048,
+    "X2": 0.021,
+    "U25": 0.012,
+    "U35": 0.0,
+    "X": 0.0,
+    "O15": 0.0
+   }
+  },
+  {
+   "slip": "Top 5 leagues, best 10, full menu",
+   "target": 30,
+   "slips": 637,
+   "expected_hits": 16.1,
+   "actual_hits": 21,
+   "predicted_rate": 0.0253,
+   "actual_rate": 0.033,
+   "z": 1.23,
+   "avg_odds": 30.33,
+   "predicted_return_no_bonus": 0.768,
+   "actual_return_no_bonus": 1.0,
+   "predicted_return_snai_bonus": 0.944,
+   "actual_return_snai_bonus": 1.229,
+   "actual_return_snai_90pct": [
+    0.819,
+    1.696
+   ],
+   "pick_mix": {
+    "1": 0.57,
+    "2": 0.188,
+    "12": 0.123,
+    "1X": 0.044,
+    "O25": 0.043,
+    "X2": 0.018,
+    "U25": 0.013,
+    "U35": 0.0,
+    "O15": 0.0,
+    "X": 0.0
+   }
+  },
+  {
+   "slip": "Top 5 leagues, best 10, full menu",
+   "target": 40,
+   "slips": 637,
+   "expected_hits": 12.2,
+   "actual_hits": 9,
+   "predicted_rate": 0.0192,
+   "actual_rate": 0.0141,
+   "z": -0.93,
+   "avg_odds": 40.46,
+   "predicted_return_no_bonus": 0.776,
+   "actual_return_no_bonus": 0.572,
+   "predicted_return_snai_bonus": 0.954,
+   "actual_return_snai_bonus": 0.703,
+   "actual_return_snai_90pct": [
+    0.313,
+    1.094
+   ],
+   "pick_mix": {
+    "1": 0.625,
+    "2": 0.214,
+    "12": 0.072,
+    "1X": 0.034,
+    "O25": 0.028,
+    "X2": 0.016,
+    "U25": 0.011,
+    "U35": 0.0,
+    "X": 0.0
+   }
+  },
+  {
+   "slip": "Top 5 leagues, best 10, full menu",
+   "target": 50,
+   "slips": 637,
+   "expected_hits": 9.8,
+   "actual_hits": 10,
+   "predicted_rate": 0.0154,
+   "actual_rate": 0.0157,
+   "z": 0.06,
+   "avg_odds": 50.6,
+   "predicted_return_no_bonus": 0.779,
+   "actual_return_no_bonus": 0.795,
+   "predicted_return_snai_bonus": 0.957,
+   "actual_return_snai_bonus": 0.977,
+   "actual_return_snai_90pct": [
+    0.489,
+    1.472
+   ],
+   "pick_mix": {
+    "1": 0.654,
+    "2": 0.231,
+    "12": 0.048,
+    "1X": 0.026,
+    "O25": 0.019,
+    "U25": 0.011,
+    "X2": 0.01,
+    "X": 0.0
+   }
+  },
+  {
+   "slip": "Top 5 leagues, best 10, real-price picks only",
+   "target": 25,
+   "slips": 637,
+   "expected_hits": 15.9,
+   "actual_hits": 19,
+   "predicted_rate": 0.025,
+   "actual_rate": 0.0298,
+   "z": 0.78,
+   "avg_odds": 32.58,
+   "predicted_return_no_bonus": 0.753,
+   "actual_return_no_bonus": 0.939,
+   "predicted_return_snai_bonus": 0.925,
+   "actual_return_snai_bonus": 1.155,
+   "actual_return_snai_90pct": [
+    0.739,
+    1.606
+   ],
+   "pick_mix": {
+    "1": 0.552,
+    "O25": 0.165,
+    "2": 0.161,
+    "U25": 0.122,
+    "X": 0.0
+   }
+  },
+  {
+   "slip": "Top 5 leagues, best 10, real-price picks only",
+   "target": 30,
+   "slips": 637,
+   "expected_hits": 14.5,
+   "actual_hits": 19,
+   "predicted_rate": 0.0228,
+   "actual_rate": 0.0298,
+   "z": 1.2,
+   "avg_odds": 34.97,
+   "predicted_return_no_bonus": 0.758,
+   "actual_return_no_bonus": 1.005,
+   "predicted_return_snai_bonus": 0.931,
+   "actual_return_snai_bonus": 1.236,
+   "actual_return_snai_90pct": [
+    0.804,
+    1.73
+   ],
+   "pick_mix": {
+    "1": 0.576,
+    "2": 0.183,
+    "O25": 0.131,
+    "U25": 0.109,
+    "X": 0.0
+   }
+  },
+  {
+   "slip": "Top 5 leagues, best 10, real-price picks only",
+   "target": 40,
+   "slips": 637,
+   "expected_hits": 11.8,
+   "actual_hits": 11,
+   "predicted_rate": 0.0184,
+   "actual_rate": 0.0173,
+   "z": -0.22,
+   "avg_odds": 42.26,
+   "predicted_return_no_bonus": 0.767,
+   "actual_return_no_bonus": 0.739,
+   "predicted_return_snai_bonus": 0.943,
+   "actual_return_snai_bonus": 0.908,
+   "actual_return_snai_90pct": [
+    0.48,
+    1.382
+   ],
+   "pick_mix": {
+    "1": 0.632,
+    "2": 0.215,
+    "U25": 0.078,
+    "O25": 0.075,
+    "X": 0.0
+   }
+  },
+  {
+   "slip": "Top 5 leagues, best 10, real-price picks only",
+   "target": 50,
+   "slips": 637,
+   "expected_hits": 9.6,
+   "actual_hits": 12,
+   "predicted_rate": 0.0151,
+   "actual_rate": 0.0188,
+   "z": 0.77,
+   "avg_odds": 51.31,
+   "predicted_return_no_bonus": 0.773,
+   "actual_return_no_bonus": 0.97,
+   "predicted_return_snai_bonus": 0.95,
+   "actual_return_snai_bonus": 1.193,
+   "actual_return_snai_90pct": [
+    0.685,
+    1.783
+   ],
+   "pick_mix": {
+    "1": 0.67,
+    "2": 0.233,
+    "U25": 0.052,
+    "O25": 0.044,
+    "X": 0.0
+   }
+  }
+ ],
+ "naive_ten_favourites": {
+  "slips": 623,
+  "median_odds": 511.1,
+  "expected_hits": 1.16,
+  "actual_hits": 1,
+  "actual_return": 2.205
+ }
+}

@@ -1,0 +1,209 @@
+{
+ "matches": 3503,
+ "seasons": [
+  2024,
+  2025
+ ],
+ "calibration": {
+  "1": {
+   "band_n": 996,
+   "promised": 0.6659,
+   "happened": 0.6586,
+   "gap_points": 0.73,
+   "limit": 2.5,
+   "pass": true
+  },
+  "12": {
+   "band_n": 3263,
+   "promised": 0.7482,
+   "happened": 0.738,
+   "gap_points": 1.02,
+   "limit": 2.5,
+   "pass": true
+  },
+  "1X": {
+   "band_n": 2187,
+   "promised": 0.7139,
+   "happened": 0.7074,
+   "gap_points": 0.65,
+   "limit": 2.5,
+   "pass": true
+  },
+  "2": {
+   "band_n": 391,
+   "promised": 0.6351,
+   "happened": 0.6522,
+   "gap_points": 1.71,
+   "limit": 4.0,
+   "pass": true
+  },
+  "GG": {
+   "band_n": 1597,
+   "promised": 0.6056,
+   "happened": 0.5924,
+   "gap_points": 1.32,
+   "limit": 2.5,
+   "pass": true
+  },
+  "NG": {
+   "band_n": 382,
+   "promised": 0.5842,
+   "happened": 0.5419,
+   "gap_points": 4.23,
+   "limit": 4.0,
+   "pass": false
+  },
+  "O15": {
+   "band_n": 3011,
+   "promised": 0.7545,
+   "happened": 0.7572,
+   "gap_points": 0.27,
+   "limit": 2.5,
+   "pass": true
+  },
+  "O25": {
+   "band_n": 1539,
+   "promised": 0.6244,
+   "happened": 0.6199,
+   "gap_points": 0.45,
+   "limit": 2.5,
+   "pass": true
+  },
+  "U25": {
+   "band_n": 848,
+   "promised": 0.5967,
+   "happened": 0.5908,
+   "gap_points": 0.59,
+   "limit": 2.5,
+   "pass": true
+  },
+  "U35": {
+   "band_n": 3055,
+   "promised": 0.7024,
+   "happened": 0.7087,
+   "gap_points": 0.63,
+   "limit": 2.5,
+   "pass": true
+  },
+  "X": {
+   "band_n": 0,
+   "promised": null,
+   "happened": null,
+   "pass": "not judged"
+  },
+  "X2": {
+   "band_n": 1726,
+   "promised": 0.6799,
+   "happened": 0.6987,
+   "gap_points": 1.88,
+   "limit": 2.5,
+   "pass": true
+  }
+ },
+ "slips": [
+  {
+   "series": "Top 5 best ten",
+   "legs": 10,
+   "target": 25,
+   "slips": 71,
+   "predicted_1_in": 32.3,
+   "expected_hits": 2.2,
+   "actual_hits": 3,
+   "z": 0.55,
+   "pass": true,
+   "predicted_return_snai": 0.961,
+   "actual_return_snai": 1.312
+  },
+  {
+   "series": "Serie A all ten",
+   "legs": 10,
+   "target": 25,
+   "slips": 66,
+   "predicted_1_in": 37.9,
+   "expected_hits": 1.74,
+   "actual_hits": 0,
+   "z": -1.34,
+   "pass": true,
+   "predicted_return_snai": 0.818,
+   "actual_return_snai": 0.0
+  },
+  {
+   "series": "Top 5 best ten",
+   "legs": 10,
+   "target": 50,
+   "slips": 71,
+   "predicted_1_in": 63.8,
+   "expected_hits": 1.11,
+   "actual_hits": 0,
+   "z": -1.06,
+   "pass": true,
+   "predicted_return_snai": 0.974,
+   "actual_return_snai": 0.0
+  },
+  {
+   "series": "Serie A all ten",
+   "legs": 10,
+   "target": 50,
+   "slips": 66,
+   "predicted_1_in": 72.6,
+   "expected_hits": 0.91,
+   "actual_hits": 1,
+   "z": 0.1,
+   "pass": true,
+   "predicted_return_snai": 0.854,
+   "actual_return_snai": 0.936
+  }
+ ],
+ "rules": [
+  {
+   "series": "Top 5 rules check",
+   "legs": 6,
+   "target": 25,
+   "slips": 71,
+   "predicted_1_in": 29.5,
+   "expected_hits": 2.41,
+   "actual_hits": 1,
+   "z": -0.92,
+   "pass": true,
+   "predicted_return_snai": 0.914,
+   "actual_return_snai": 0.379,
+   "dev_1_in": 29.4,
+   "within_25pct": true
+  },
+  {
+   "series": "Top 5 rules check",
+   "legs": 8,
+   "target": 25,
+   "slips": 71,
+   "predicted_1_in": 30.3,
+   "expected_hits": 2.34,
+   "actual_hits": 1,
+   "z": -0.89,
+   "pass": true,
+   "predicted_return_snai": 0.954,
+   "actual_return_snai": 0.407,
+   "dev_1_in": 30.6,
+   "within_25pct": true
+  },
+  {
+   "series": "Top 5 rules check",
+   "legs": 10,
+   "target": 25,
+   "slips": 71,
+   "predicted_1_in": 32.3,
+   "expected_hits": 2.2,
+   "actual_hits": 3,
+   "z": 0.55,
+   "pass": true,
+   "predicted_return_snai": 0.961,
+   "actual_return_snai": 1.312,
+   "dev_1_in": 33.2,
+   "within_25pct": true
+  }
+ ],
+ "verdict": {
+  "calibration": true,
+  "slips": true,
+  "PASS": true
+ }
+}

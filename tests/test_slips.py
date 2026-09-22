@@ -1,0 +1,462 @@
+import itertools
+import math
+import random
+
+import pytest
+
+from scudi_slips import PICKS, SLIP_MENU, Pick, fit_market, menu, power_devig, score_matrix, settles, snai_bonus, solve
+from scudi_slips.matrix import safe_rho
+
+
+# ---------- devig ----------
+def test_devig_sums_to_one_and_takes_more_from_longshots():
+    prices = [1.50, 4.20, 7.00]
+    fair = power_devig(prices)
+    assert sum(fair) == pytest.approx(1.0, abs=1e-9)
+    cut = [1 / p - f for p, f in zip(prices, fair)]
+    assert all(c > 0 for c in cut)
+    # relative margin removed grows with the price
+    rel = [c / (1 / p) for c, p in zip(cut, prices)]
+    assert rel[0] < rel[1] < rel[2]
+
+
+def test_devig_without_margin_is_plain_normalisation():
+    assert power_devig([2.0, 2.0]) == pytest.approx([0.5, 0.5])
+
+
+@pytest.mark.parametrize("bad", [[1.0, 2.0], [0.5, 3.0], [float("nan"), 2.0], [2.0]])
+def test_devig_rejects_bad_prices(bad):
+    with pytest.raises(ValueError):
+        power_devig(bad)
+
+
+# ---------- score matrix ----------
+def test_matrix_is_a_distribution_and_matches_the_website_numbers():
+    m = score_matrix(1.62, 0.92, -0.06)
+    assert m.sum() == pytest.approx(1.0)
+    assert (m >= 0).all()
+    home = sum(m[h, a] for h in range(10) for a in range(10) if h > a)
+    draw = sum(m[h, a] for h in range(10) for a in range(10) if h == a)
+    assert round(home, 2) == 0.53 and round(draw, 2) == 0.26  # as shown in mockup v1
+
+
+def test_matrix_mirror_symmetry():
+    a, b = score_matrix(1.4, 0.9, -0.05), score_matrix(0.9, 1.4, -0.05)
+    assert a == pytest.approx(b.T)
+
+
+def test_safe_rho_keeps_lopsided_matches_valid():
+    m = score_matrix(3.4, 0.3, -0.5)   # 1 + 3.4 * -0.5 would be negative without clipping
+    assert (m >= 0).all()
+    assert safe_rho(3.4, 0.3, -0.5) == pytest.approx(-0.999 / 3.4)
+    assert safe_rho(2.0, 2.0, 0.9) == pytest.approx(0.999 / 4)
+    assert safe_rho(1.5, 1.1, -0.06) == -0.06
+
+
+@pytest.mark.parametrize("probs", [(0.55, 0.25, 0.20, 0.52), (0.30, 0.29, 0.41, 0.44), (0.78, 0.15, 0.07, 0.66), (0.20, 0.24, 0.56, 0.58)])
+def test_fit_reproduces_the_market(probs):
+    view = fit_market(*probs)
+    assert view.fit_error < 0.004
+    assert 0 < view.p_over15 < 1 and view.p_over15 > view.p_over25
+    assert view.p_under35 > 1 - view.p_over25
+    assert 0 < view.p_btts < view.p_over15
+
+
+def test_fit_rejects_nonsense():
+    with pytest.raises(ValueError):
+        fit_market(0.5, 0.3, 0.3, 0.5)
+
+
+# ---------- picks ----------
+def test_every_pick_settles_correctly_on_every_scoreline():
+    for h, a in itertools.product(range(6), repeat=2):
+        assert settles("1", h, a) == (h > a)
+        assert settles("1X", h, a) == (not settles("2", h, a))
+        assert settles("X2", h, a) == (not settles("1", h, a))
+        assert settles("12", h, a) == (not settles("X", h, a))
+        assert settles("O25", h, a) == (not settles("U25", h, a))
+        assert settles("GG", h, a) == (not settles("NG", h, a))
+        assert settles("O15", h, a) == (h + a >= 2)
+        assert settles("U35", h, a) == (h + a <= 3)
+
+
+def test_complementary_chances_add_up():
+    v = fit_market(0.48, 0.27, 0.25, 0.49)
+    c = {code: t.chance(v) for code, t in PICKS.items()}
+    assert c["1X"] + c["2"] == pytest.approx(1)
+    assert c["O25"] + c["U25"] == pytest.approx(1)
+    assert c["GG"] + c["NG"] == pytest.approx(1)   # the shift moves both by the same amount
+
+
+def test_menu_applies_floor_and_allowed_list():
+    v = fit_market(0.70, 0.18, 0.12, 0.60)
+    offered = {"1": 1.36, "1X": 1.08, "O15": 1.18, "O25": 1.57, "X": 5.0}
+    got = {p.code for p in menu("m1", v, offered, min_odds=1.25)}
+    assert got == {"1", "O25", "X"}
+    assert {p.code for p in menu("m1", v, offered, allowed={"1", "1X"})} == {"1"}
+    with pytest.raises(KeyError):
+        menu("m1", v, {"ZZ": 2.0})
+
+
+def test_both_teams_score_offered_with_shift_but_not_its_opposite():
+    v = fit_market(0.45, 0.27, 0.28, 0.52)
+    offered = {"GG": 1.80, "NG": 1.95, "1": 2.10}
+    got = {p.code: p for p in menu("m1", v, offered)}
+    assert set(got) == {"GG", "1"}
+    assert got["GG"].chance == pytest.approx(v.p_btts + 0.015)
+    assert {p.code for p in menu("m1", v, offered, allowed=set(PICKS))} == {"GG", "NG", "1"}
+    assert "NG" not in SLIP_MENU and "O15" in SLIP_MENU and "GG" in SLIP_MENU
+
+
+# ---------- SNAI bonus ----------
+def test_snai_bonus_table():
+    assert snai_bonus([1.3] * 4) == 0
+    assert snai_bonus([1.3] * 5) == pytest.approx(0.0350, abs=1e-4)
+    assert snai_bonus([1.3] * 9) == pytest.approx(0.1877, abs=1e-4)
+    assert snai_bonus([1.3] * 10) == pytest.approx(0.2293, abs=1e-4)
+    assert snai_bonus([1.3] * 20) == pytest.approx(0.7340, abs=1e-4)
+    assert snai_bonus([1.3] * 30) == pytest.approx(1.4460, abs=2e-4)
+    assert snai_bonus([1.3] * 40) == snai_bonus([1.3] * 30)
+
+
+def test_snai_bonus_ignores_legs_under_the_floor():
+    assert snai_bonus([1.3] * 9 + [1.24]) == pytest.approx(0.1877, abs=1e-4)
+    assert snai_bonus([1.25] * 10) == pytest.approx(0.2293, abs=1e-4)
+
+
+# ---------- solver ----------
+def _random_menus(rng, n):
+    menus = []
+    for i in range(n):
+        opts = []
+        for j in range(rng.randint(3, 6)):
+            chance = rng.uniform(0.25, 0.8)
+            odds = round(max(1.25, (1 / chance) * rng.uniform(0.92, 0.97)), 2)
+            opts.append(Pick(f"m{i}", f"p{j}", chance, odds))
+        menus.append(opts)
+    return menus
+
+
+def _brute(menus, target, legs):
+    best = None
+    n = len(menus)
+    for used in itertools.combinations(range(n), legs):
+        for combo in itertools.product(*[menus[i] for i in used]):
+            odds = math.prod(p.odds for p in combo)
+            if odds >= target:
+                chance = math.prod(p.chance for p in combo)
+                if best is None or chance > best:
+                    best = chance
+    return best
+
+
+@pytest.mark.parametrize("seed", range(12))
+def test_solver_matches_brute_force_and_always_reaches_target(seed):
+    rng = random.Random(seed)
+    n = rng.randint(4, 6)
+    legs = n if seed % 2 == 0 else n - 2
+    menus = _random_menus(rng, n)
+    target = rng.uniform(4, 14)
+    best = _brute(menus, target, legs)
+    slip = solve(menus, target, legs=legs, grid=0.0001)
+    if best is None:
+        assert slip is None
+        return
+    assert slip is not None
+    assert slip.odds >= target
+    assert len(slip.picks) == legs
+    assert len({p.match_id for p in slip.picks}) == legs
+    assert slip.chance <= best * (1 + 1e-12)
+    assert slip.chance >= best * 0.99
+
+
+def test_solver_returns_none_when_target_is_out_of_reach():
+    menus = [[Pick("a", "1", 0.7, 1.3)], [Pick("b", "1", 0.7, 1.3)]]
+    assert solve(menus, 5.0) is None
+
+
+def test_solver_forces_locked_matches_into_a_partial_slip():
+    menus = [[Pick("a", "1", 0.80, 1.20)], [Pick("b", "1", 0.30, 3.00)], [Pick("c", "1", 0.75, 1.30)], [Pick("d", "1", 0.74, 1.31)]]
+    free = solve(menus, 1.5, legs=2)
+    assert {p.match_id for p in free.picks} == {"a", "c"}  # the two likeliest that still reach 1.5
+    locked = solve(menus, 1.5, legs=2, must_use=[False, True, False, False])
+    assert "b" in {p.match_id for p in locked.picks}
+
+
+def test_solver_rejects_bad_input():
+    good = [[Pick("a", "1", 0.5, 1.9)]]
+    with pytest.raises(ValueError):
+        solve(good, 0.9)
+    with pytest.raises(ValueError):
+        solve(good, 2, legs=3)
+    with pytest.raises(ValueError):
+        solve([[Pick("a", "1", 1.2, 1.9)]], 1.5)
+
+
+# ---------- solver with league rules ----------
+def _brute_rules(menus, target, legs, groups, limits, default_max, forced):
+    best = None
+    n = len(menus)
+    for used in itertools.combinations(range(n), legs):
+        if any(f and i not in used for i, f in enumerate(forced)):
+            continue
+        counts = {}
+        for i in used:
+            counts[groups[i]] = counts.get(groups[i], 0) + 1
+        ok = True
+        for g in set(groups):
+            lo, hi = limits.get(g, (0, default_max))
+            c = counts.get(g, 0)
+            if c < lo or (hi is not None and c > hi):
+                ok = False
+        if not ok:
+            continue
+        for combo in itertools.product(*[menus[i] for i in used]):
+            if math.prod(p.odds for p in combo) >= target:
+                chance = math.prod(p.chance for p in combo)
+                if best is None or chance > best:
+                    best = chance
+    return best
+
+
+@pytest.mark.parametrize("seed", range(16))
+def test_solver_with_league_rules_matches_brute_force(seed):
+    rng = random.Random(100 + seed)
+    n = rng.randint(6, 8)
+    legs = rng.randint(3, 5)
+    menus = _random_menus(rng, n)
+    groups = [rng.choice(["ita", "eng", "esp"]) for _ in range(n)]
+    limits = {}
+    if seed % 3 != 2:
+        limits["ita"] = (rng.randint(0, 2), rng.choice([None, 2, 3]))
+    default_max = rng.choice([None, 2, 3]) if seed % 2 else None
+    forced = [False] * n
+    if seed % 4 == 0:
+        forced[rng.randrange(n)] = True
+    target = rng.uniform(4, 12)
+    best = _brute_rules(menus, target, legs, groups, limits, default_max, forced)
+    slip = solve(menus, target, legs=legs, groups=groups, group_limits=limits, default_group_max=default_max, must_use=forced, grid=0.0001)
+    if best is None:
+        assert slip is None
+        return
+    assert slip is not None and slip.odds >= target and len(slip.picks) == legs
+    used = {p.match_id for p in slip.picks}
+    assert len(used) == legs
+    for i, f in enumerate(forced):
+        assert (not f) or f"m{i}" in used
+    counts = {}
+    for p in slip.picks:
+        g = groups[int(p.match_id[1:])]
+        counts[g] = counts.get(g, 0) + 1
+    for g in set(groups):
+        lo, hi = limits.get(g, (0, default_max))
+        assert counts.get(g, 0) >= lo
+        assert hi is None or counts.get(g, 0) <= hi
+    assert slip.chance <= best * (1 + 1e-12)
+    assert slip.chance >= best * 0.995
+
+
+def test_league_minimum_changes_the_slip():
+    # the two safest matches are English; asking for two Italian legs must push them out
+    menus = [[Pick("m0", "1", 0.80, 1.22)], [Pick("m1", "1", 0.78, 1.25)], [Pick("m2", "1", 0.60, 1.60)], [Pick("m3", "1", 0.58, 1.65)]]
+    groups = ["eng", "eng", "ita", "ita"]
+    free = solve(menus, 1.4, legs=2, groups=groups)
+    assert {p.match_id for p in free.picks} == {"m0", "m1"}
+    ruled = solve(menus, 1.4, legs=2, groups=groups, group_limits={"ita": (2, None)})
+    assert {p.match_id for p in ruled.picks} == {"m2", "m3"}
+    assert solve(menus, 1.4, legs=2, groups=groups, group_limits={"ita": (3, None)}) is None
+    capped = solve(menus, 1.4, legs=2, groups=groups, default_group_max=1)
+    assert sorted(groups[int(p.match_id[1:])] for p in capped.picks) == ["eng", "ita"]
+
+
+def test_empty_menu_means_the_match_is_left_out():
+    menus = [[Pick("m0", "1", 0.7, 1.4)], [], [Pick("m2", "1", 0.6, 1.6)]]
+    slip = solve(menus, 2.0, legs=2)
+    assert {p.match_id for p in slip.picks} == {"m0", "m2"}
+    assert solve(menus, 2.0, legs=2, must_use=[False, True, False]) is None
+
+
+def test_refine_pass_never_returns_a_slip_under_the_target():
+    rng = random.Random(5)
+    for _ in range(40):
+        menus = _random_menus(rng, 6)
+        target = rng.uniform(5, 30)
+        for refine in (False, True):
+            slip = solve(menus, target, grid=0.004, refine=refine)   # a coarse grid makes rounding errors large
+            assert slip is None or slip.odds >= target
+        safe, both = solve(menus, target, grid=0.004, refine=False), solve(menus, target, grid=0.004)
+        if safe is not None:
+            assert both is not None and both.chance >= safe.chance
+
+
+# ---------- consensus ----------
+from datetime import datetime, timedelta  # noqa: E402
+
+from scudi_slips.consensus import BookMarket, best_price, consensus  # noqa: E402
+
+
+def test_consensus_weights_sharp_books_more():
+    soft = BookMarket("bet365", [1.80, 3.60, 4.50])
+    sharp = BookMarket("pinnacle", [2.00, 3.50, 3.90])
+    c = consensus([soft, sharp])
+    assert c.books_used == 2 and c.books_dropped == 0
+    assert sum(c.probs) == pytest.approx(1.0)
+    only_soft = consensus([soft]).probs
+    only_sharp = consensus([sharp]).probs
+    # the blend sits between the two, closer to the sharp book (weight 3 vs 1)
+    assert min(only_soft[0], only_sharp[0]) < c.probs[0] < max(only_soft[0], only_sharp[0])
+    assert abs(c.probs[0] - only_sharp[0]) < abs(c.probs[0] - only_soft[0])
+    assert c.sharp_share == pytest.approx(0.75)
+
+
+def test_consensus_drops_stale_and_broken_books():
+    now = datetime(2026, 10, 10, 12, 0)
+    fresh = BookMarket("bet365", [1.80, 3.60, 4.50], updated=now - timedelta(hours=2))
+    stale = BookMarket("bwin", [1.20, 5.00, 9.00], updated=now - timedelta(days=4))
+    broken = BookMarket("x", [1.0, 3.0, 3.0])
+    arb = BookMarket("y", [3.0, 3.0, 3.5])   # margin negative: not a real market
+    c = consensus([fresh, stale, broken, arb], now=now)
+    assert c.books_used == 1 and c.books_dropped == 3
+    assert c.probs == pytest.approx(tuple(power_devig([1.80, 3.60, 4.50])))
+    assert consensus([stale], now=now) is None
+
+
+def test_consensus_rejects_mismatched_outcomes():
+    with pytest.raises(ValueError):
+        consensus([BookMarket("a", [1.9, 1.9]), BookMarket("b", [1.8, 3.5, 4.0])])
+
+
+def test_best_price():
+    assert best_price({"snai": 1.74, "bet365": 1.82, "sisal": 1.78}) == ("bet365", 1.82)
+    assert best_price({}) is None
+
+
+# ---------- feed ----------
+import json  # noqa: E402
+from datetime import timezone  # noqa: E402
+from pathlib import Path  # noqa: E402
+
+from scudi_slips.feed import price_feed  # noqa: E402
+
+
+def _sample():
+    return json.loads((Path(__file__).parent / "feed_sample.json").read_text())
+
+
+def test_feed_prices_good_matches_and_counts_every_guard():
+    now = datetime(2026, 10, 9, 10, 0, tzinfo=timezone.utc)
+    window_end = datetime(2026, 10, 13, 0, 0, tzinfo=timezone.utc)
+    matches, g = price_feed(_sample(), now, window_end)
+    assert [m.home for m in matches] == ["Genoa", "Inter"]
+    assert g.kept == 2 and g.started == 1 and g.outside_window == 1 and g.too_few_books == 1
+    assert g.books_dropped == 1          # the stale book on Genoa
+    genoa, inter = matches
+    assert genoa.books_used == 4 and genoa.sharp_share > 0.5
+    assert genoa.fit_error < 0.001
+    assert set(genoa.chances) == {"1", "X", "2", "1X", "X2", "12", "O15", "O25", "U25", "U35", "GG"}
+    assert abs(genoa.chances["1"] + genoa.chances["X"] + genoa.chances["2"] - 1) < 1e-9
+    # estimates come from ordinary books only (Unibet, William Hill), never from the sharp ones
+    assert genoa.estimate["1"] == pytest.approx((2.50 + 2.55) / 2)
+    assert genoa.estimate["1X"] == pytest.approx(math.floor(1 / (1 / 2.525 + 1 / 3.15) * 100 + 1e-9) / 100)
+    assert genoa.best["1"] == ("betfair_ex_eu", 2.66)
+    # Inter has no totals market: goals picks are withheld, result picks stay
+    assert g.no_totals == 1
+    assert "O25" not in inter.chances and "1" in inter.chances and "1X" in inter.estimate
+
+
+def test_feed_requires_a_sharp_book_when_asked():
+    now = datetime(2026, 10, 9, 10, 0, tzinfo=timezone.utc)
+    sample = _sample()
+    sample["Serie A"][0]["bookmakers"] = [b for b in sample["Serie A"][0]["bookmakers"] if b["key"] not in ("pinnacle", "betfair_ex_eu")]
+    matches, g = price_feed(sample, now, datetime(2026, 10, 13, tzinfo=timezone.utc), need_sharp=True)
+    assert [m.home for m in matches] == ["Inter"] and g.no_sharp == 1
+
+
+def test_feed_drops_a_match_the_matrix_cannot_reproduce():
+    now = datetime(2026, 10, 9, 10, 0, tzinfo=timezone.utc)
+    sample = _sample()
+    ev = sample["Serie A"][0]
+    for b in ev["bookmakers"]:                     # a huge favourite with a tiny over-2.5 chance: no score matrix fits
+        for m in b["markets"]:
+            if m["key"] == "h2h":
+                for o in m["outcomes"]:
+                    o["price"] = {"Genoa": 1.05, "Fiorentina": 30.0, "Draw": 15.0}[o["name"]]
+            if m["key"] == "totals":
+                for o in m["outcomes"]:
+                    o["price"] = 8.0 if o["name"] == "Over" else 1.06
+    matches, g = price_feed(sample, now, datetime(2026, 10, 13, tzinfo=timezone.utc), max_fit_error=0.005)
+    assert g.bad_fit == 1 and all(m.home != "Genoa" for m in matches)
+
+
+# ---------- weekly job + grading, end to end on a synthetic feed ----------
+from tools.grade import grade  # noqa: E402
+from tools.weekly import preset_slips  # noqa: E402
+
+
+def _synthetic_feed(rng, n=10, comp="Serie A", day="2026-10-10"):
+    events = []
+    for i in range(n):
+        ph = rng.uniform(0.3, 0.7)
+        pd_ = rng.uniform(0.2, 0.3)
+        pa = 1 - ph - pd_
+        po = rng.uniform(0.45, 0.6)
+        books = []
+        for bk, margin in (("pinnacle", 0.025), ("unibet_eu", 0.06), ("williamhill", 0.07)):
+            books.append({"key": bk, "last_update": f"{day}T08:00:00Z", "markets": [
+                {"key": "h2h", "outcomes": [{"name": f"H{i}", "price": round(1 / (ph * (1 + margin)), 2)}, {"name": f"A{i}", "price": round(1 / (pa * (1 + margin)), 2)}, {"name": "Draw", "price": round(1 / (pd_ * (1 + margin)), 2)}]},
+                {"key": "totals", "outcomes": [{"name": "Over", "price": round(1 / (po * (1 + margin)), 2), "point": 2.5}, {"name": "Under", "price": round(1 / ((1 - po) * (1 + margin)), 2), "point": 2.5}]}]})
+        events.append({"id": f"{comp[:2]}{i}", "commence_time": f"{day}T{13 + i % 8:02d}:00:00Z", "home_team": f"H{i}", "away_team": f"A{i}", "bookmakers": books})
+    return {comp: events}
+
+
+def test_weekly_presets_and_grading_end_to_end():
+    rng = random.Random(3)
+    now = datetime(2026, 10, 9, 10, 0, tzinfo=timezone.utc)
+    matches, g = price_feed(_synthetic_feed(rng), now, now + timedelta(days=5))
+    assert g.kept == 10 and g.books_dropped == 0
+    slips = preset_slips(matches, now)
+    names = {s["name"] for s in slips}
+    assert "Serie A" in names and "Top 5 leagues" in names
+    for s in slips:
+        assert s["odds"] >= s["target"] and len(s["picks"]) == s["legs"] == 10
+        assert all(p["odds"] >= 1.25 for p in s["picks"])
+        assert 0 < s["chance"] < 0.2
+    week = {"built_at": now.isoformat(), "slips": slips}
+    # scores: home wins 2-0 everywhere -> every '1', '1X', '12', 'O15', 'U35', 'NG'-type leg wins; over 2.5 / under 2.5 split
+    scores = {m.id: {"id": m.id, "completed": True, "home_team": m.home, "away_team": m.away, "scores": [{"name": m.home, "score": "2"}, {"name": m.away, "score": "0"}]} for m in matches}
+    rec = grade(week, scores, {}, now + timedelta(days=4))
+    assert rec["summary"]["graded"] == len(slips)
+    assert abs(rec["summary"]["expected_hits"] - sum(s["chance"] for s in slips)) < 0.01
+    for s in rec["slips"]:
+        assert 0 <= s["legs_won"] <= s["legs"] and s["landed"] == (s["legs_won"] == s["legs"])
+    # an incomplete match keeps its slips open, and grading twice never double-counts
+    scores[matches[0].id]["completed"] = False
+    rec2 = grade(week, scores, json.loads(json.dumps(rec)), now + timedelta(days=4))
+    assert rec2["summary"]["graded"] == rec["summary"]["graded"]
+    fresh = grade(week, scores, {}, now + timedelta(days=4))
+    assert fresh["summary"]["graded"] < len(slips)
+
+
+# ---------- season simulator ----------
+from scudi_slips.season import SeasonOutlook, SlipPlan, simulate  # noqa: E402
+
+
+def test_season_simulator_matches_the_arithmetic():
+    plan = SlipPlan(chance=1 / 33, payout=31.0, stake=5, per_week=1)
+    o = simulate([plan], weeks=38, sims=40000)
+    assert isinstance(o, SeasonOutlook)
+    assert o.slips == 38 and o.staked == 190
+    assert o.expected_hits == pytest.approx(38 / 33)
+    assert o.expected_profit == pytest.approx(38 * (31 * 5 / 33) - 190)
+    # a losing season is the common case at these odds: no hit at all in about (1-1/33)^38 = 31% of seasons
+    assert abs(o.chance_of_zero_hits - (1 - 1 / 33) ** 38) < 0.02
+    assert o.profit_p5 == -190 and o.profit_p95 > 0
+    assert 0 < o.longest_dry_run_p50 <= 38 and o.longest_dry_run_p90 >= o.longest_dry_run_p50
+    assert o.hits_p5 <= o.expected_hits <= o.hits_p95
+
+
+def test_season_simulator_rejects_bad_plans():
+    with pytest.raises(ValueError):
+        simulate([], weeks=10)
+    with pytest.raises(ValueError):
+        simulate([SlipPlan(1.2, 30, 5)], weeks=10)

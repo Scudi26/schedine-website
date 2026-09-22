@@ -1,0 +1,1200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<style>:root{color-scheme:dark;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Scudi Mockup</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Hanken+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Notte: one deliberately dark world */
+@property --spin{syntax:"<angle>";inherits:false;initial-value:0deg}
+:root{
+  color-scheme:dark;
+  --ground:#0B0E1F; --surface:#141833; --raised:#1E2348; --line:#2C3263;
+  --text:#F3EFE2; --muted:#A7ACCB; --faint:#6E74A3;
+  --brand:#E9B949; --brand-ink:#241A00;
+  --sa:#4DA3FF; --t5:#FF9F5A; --ut:#A78BFA; --uw:#F472B6; --my:#E9B949;
+  --good:#46D39A; --bad:#FF7A88;
+  --home:#F3EFE2; --draw:#5C6396; --away:#7CC4F5;
+  --acc:var(--sa);
+}
+*{box-sizing:border-box}
+html{background:var(--ground)}
+body{margin:0;background:var(--ground);color:var(--text);font:400 15px/1.5 "Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+input{font:inherit}
+h1,h2,h3,p{margin:0}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:10px}
+.display{font-family:"Bricolage Grotesque","Hanken Grotesk",system-ui,sans-serif;letter-spacing:-.015em;font-variant-numeric:tabular-nums}
+.num{font-family:"DM Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums;font-weight:400}
+b.num,strong.num{font-weight:500}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)} .fine{font-size:12.5px;color:var(--muted)}
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1;max-width:1180px;margin-inline:auto;padding-inline:20px}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  background:color-mix(in srgb,var(--ground) 78%,transparent);border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px}
+.wordmark{display:flex;align-items:center;gap:9px;font-size:21px;font-weight:700}
+.tags{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.tag{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 11px;border-radius:999px;font-size:12px;font-weight:600;background:var(--raised);color:var(--muted);white-space:nowrap}
+.tag.brand{background:color-mix(in srgb,var(--brand) 16%,var(--surface));color:var(--brand)}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+
+/* hero + slip cards */
+.hero{padding-block:44px 26px;display:flex;flex-direction:column;gap:12px}
+.hero h1{font-size:clamp(40px,7vw,76px);line-height:.98;font-weight:750;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--brand)}
+.hero p{max-width:58ch;color:var(--muted);font-size:17px}
+.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;padding-bottom:26px}
+.scard{position:relative;display:flex;flex-direction:column;gap:14px;padding:18px;border-radius:24px;background:var(--surface);border:1px solid var(--line);
+  transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .25s;isolation:isolate;min-width:0}
+.scard:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--c) 55%,var(--line))}
+.scard::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1.5px;z-index:-1;opacity:0;transition:opacity .4s;
+  background:conic-gradient(from var(--spin),transparent 0 62%,var(--c) 80%,var(--text) 86%,var(--c) 92%,transparent 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spin 4.5s linear infinite}
+.scard[aria-pressed="true"]{background:radial-gradient(130% 100% at 100% 0%,color-mix(in srgb,var(--c) 22%,transparent),transparent 62%),var(--surface);border-color:color-mix(in srgb,var(--c) 45%,var(--line))}
+.scard[aria-pressed="true"]::before{opacity:1}
+.scard-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.scard-name b{display:block;font-size:17px;font-weight:700;line-height:1.2}
+.scard-name span{display:block;font-size:13px;line-height:1.3;color:var(--muted)}
+.pill{flex:none;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;color:var(--c);background:color-mix(in srgb,var(--c) 16%,var(--surface))}
+.scard-big{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.scard-big strong{font-size:40px;line-height:1;font-weight:750}
+.scard-big span{font-size:13px;color:var(--muted)}
+.scard-foot{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.scard-foot b{color:var(--text)}
+.placed{color:var(--good)!important}
+
+/* builder */
+.builder-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.builder-head h2{font-size:clamp(26px,4vw,38px);font-weight:700;line-height:1.05}
+.builder-head h2 span{color:var(--acc)}
+.builder{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(320px,.9fr);gap:20px;align-items:start;padding-bottom:48px}
+.col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:18px}
+.legs{position:relative;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.legs.solving::after{content:"";position:absolute;left:0;right:0;top:-30%;height:30%;pointer-events:none;
+  background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--acc) 26%,transparent),transparent);animation:scan .55s ease-out}
+.leg{display:grid;grid-template-columns:64px minmax(0,1fr) 62px 28px;gap:12px;align-items:center;width:100%;min-height:68px;padding:10px 12px;border-radius:16px;
+  background:var(--ground);border:1px solid var(--line);transition:border-color .2s,transform .2s,background .2s;transform-origin:50% 50%}
+.leg:hover{border-color:color-mix(in srgb,var(--acc) 60%,var(--line));transform:translateX(3px)}
+.leg time{font-size:12.5px;color:var(--muted);line-height:1.25}
+.leg-mid{min-width:0;display:flex;flex-direction:column;gap:5px}
+.leg-match{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.leg-pick{font-weight:700;font-size:15.5px;line-height:1.2}
+.bar{height:6px;border-radius:999px;background:var(--raised);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,color-mix(in srgb,var(--acc) 55%,var(--raised)),var(--acc));transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.leg-odds{text-align:right}
+.leg-odds b{display:block;font-size:17px}
+.leg-odds small{font-size:12px;color:var(--muted)}
+.lock{width:28px;height:28px;display:grid;place-items:center;color:var(--faint)}
+.leg.locked{border-color:color-mix(in srgb,var(--brand) 60%,var(--line))}
+.leg.locked .lock{color:var(--brand)}
+.leg.flip{animation:flip .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*45ms)}
+.legs-note{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px}
+.linkbtn{min-height:44px;display:inline-flex;align-items:center;color:var(--brand);font-weight:600}
+
+
+.targets{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.tgt{min-height:62px;border-radius:16px;border:1px solid var(--line);background:var(--ground);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:all .25s}
+.tgt b{font-size:19px;font-weight:700}
+.tgt small{font-size:12px;color:var(--muted)}
+.tgt[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--brand-ink);box-shadow:0 10px 30px -12px var(--brand)}
+.tgt[aria-pressed="true"] small{color:var(--brand-ink)}
+.slider{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-top:12px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:999px;background:var(--raised)}
+input[type=range]::-moz-range-track{height:6px;border-radius:999px;background:var(--raised)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--brand);margin-top:-9px;border:3px solid var(--ground);box-shadow:0 0 0 1px var(--brand)}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--brand);border:3px solid var(--ground)}
+
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:center}
+.odo{display:inline-flex;align-items:baseline;font-size:54px;line-height:1;font-weight:750;height:1em;overflow:hidden}
+.odo .col{display:inline-block;height:1em;overflow:hidden}
+.odo .col span{display:block;transition:transform .9s cubic-bezier(.2,.85,.2,1)}
+.odo .col span i{display:block;height:1em;font-style:normal}
+.odo .x{font-size:.5em;color:var(--muted);margin-left:3px}
+.dial{position:relative;display:grid;place-items:center}
+.dial svg{width:100%;max-width:190px;height:auto;display:block}
+.dial path{fill:none;stroke-width:11;stroke-linecap:round}
+.dial .track{stroke:var(--raised)} .dial .val{stroke:var(--acc);transition:stroke-dasharray 1s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 8px color-mix(in srgb,var(--acc) 70%,transparent))}
+.dial text{font-family:"DM Mono",monospace;font-size:8px;fill:var(--muted)}
+.dial-read{position:absolute;left:0;right:0;bottom:18px;text-align:center}
+.dial-read strong{display:block;font-size:26px;line-height:1;font-weight:700}
+.dial-read span{font-size:12px;color:var(--muted)}
+.chain svg{width:100%;height:auto;display:block;margin-top:8px}
+.chain .area{fill:color-mix(in srgb,var(--acc) 14%,transparent)}
+.chain .step{fill:none;stroke:var(--acc);stroke-width:2;stroke-linejoin:round;stroke-dasharray:1200;stroke-dashoffset:1200;animation:draw 1.2s ease-out forwards}
+.chain circle{fill:var(--ground);stroke:var(--acc);stroke-width:2;animation:pop .4s ease-out both;animation-delay:calc(var(--i)*70ms + .2s)}
+.chain circle.risk{fill:var(--bad);stroke:var(--bad)}
+.chain text{font-family:"DM Mono",monospace;font-size:9px;fill:var(--muted)}
+.chain .grid{stroke:var(--line);stroke-width:1;stroke-dasharray:2 4}
+.books{display:flex;flex-direction:column;gap:9px;margin-top:10px}
+.book{display:grid;grid-template-columns:78px minmax(0,1fr) 74px;gap:10px;align-items:center;font-size:14px}
+.book .t{height:10px;border-radius:999px;background:var(--raised);position:relative;overflow:hidden}
+.book .t i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:var(--faint);transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.book.best .t i{background:var(--good)} .book.best{font-weight:700} .book.best .num{color:var(--good)}
+.book small{display:block;font-size:11.5px;color:var(--muted);font-weight:400}
+.book .num{text-align:right}
+.stakes{display:flex;gap:8px;flex-wrap:wrap}
+.chip{min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--ground);font-weight:600;font-size:14px}
+.chip[aria-pressed="true"]{background:var(--text);color:var(--ground);border-color:var(--text)}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.kv div{background:var(--ground);border-radius:14px;padding:10px 12px}
+.kv small{display:block;font-size:12px;color:var(--muted)}
+.kv span{font-size:19px;font-weight:700}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{min-height:50px;border-radius:15px;display:grid;place-items:center;font-weight:700;text-align:center;padding:0 16px;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--brand);color:var(--brand-ink);box-shadow:0 14px 34px -14px var(--brand)}
+.btn.ghost{border:1px solid var(--line);background:var(--ground)}
+
+/* season + how */
+.lower{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;padding-bottom:64px}
+.lower h2{font-size:24px;font-weight:700;margin-bottom:12px}
+.track{display:flex;gap:6px;flex-wrap:wrap;margin-block:14px}
+.track i{width:22px;height:22px;border-radius:7px;background:var(--raised);border:1px solid var(--line)}
+.track i.next{border:1.5px dashed var(--brand);background:transparent}
+.how{display:flex;flex-direction:column;gap:14px;counter-reset:s}
+.how div{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.how div::before{counter-increment:s;content:counter(s);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-family:"DM Mono",monospace;background:var(--raised);color:var(--brand)}
+.how b{display:block}
+
+/* match drawer */
+.scrim{position:fixed;inset:0;z-index:40;background:rgba(3,4,14,.6);backdrop-filter:blur(3px);opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s}
+.scrim.on{opacity:1;visibility:visible;transition-delay:0s}
+.drawer{position:fixed;z-index:41;top:0;right:0;bottom:0;width:min(460px,100%);background:var(--surface);border-left:1px solid var(--line);
+  padding:calc(env(safe-area-inset-top,0px) + 18px) 18px calc(env(safe-area-inset-bottom,0px) + 22px);overflow-y:auto;display:flex;flex-direction:column;gap:18px;
+  transform:translateX(104%);visibility:hidden;transition:transform .5s cubic-bezier(.2,.85,.2,1),visibility 0s .5s}
+.drawer.on{transform:none;visibility:visible;transition-delay:0s}
+.drawer-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.iconbtn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--ground);border:1px solid var(--line)}
+.teams{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;text-align:center}
+.teams b{font-size:20px;font-weight:700;line-height:1.15}
+.teams span{font-size:13px;color:var(--muted)}
+.pbar{display:flex;height:14px;gap:3px;border-radius:999px;overflow:hidden}
+.pbar i{display:block;height:100%;border-radius:4px;transition:flex-basis .8s cubic-bezier(.2,.8,.2,1)}
+.pbar .h{background:var(--home)} .pbar .d{background:var(--draw)} .pbar .a{background:var(--away)}
+.p3{display:grid;grid-template-columns:repeat(3,1fr);margin-bottom:8px}
+.p3 div:nth-child(2){text-align:center}.p3 div:nth-child(3){text-align:right}
+.p3 strong{display:block;font-size:30px;line-height:1;font-weight:750}
+.p3 small{font-size:12px;color:var(--muted)}
+.heatwrap{display:grid;grid-template-columns:minmax(0,190px) 1fr;gap:16px;align-items:center}
+.heat{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+.heat i{aspect-ratio:1;border-radius:6px;background:color-mix(in srgb,var(--acc) calc(var(--a)*100%),var(--raised));animation:pop .4s ease-out both;animation-delay:calc(var(--i)*14ms)}
+.tops{display:flex;flex-direction:column;gap:6px}
+.tops span{display:flex;justify-content:space-between;gap:10px;font-size:14px;background:var(--ground);border-radius:10px;padding:6px 10px}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opt{display:grid;grid-template-columns:minmax(0,1fr) 54px 50px;gap:10px;align-items:center;min-height:52px;padding:8px 12px;border-radius:14px;background:var(--ground);border:1px solid var(--line);width:100%;transition:border-color .2s}
+.opt:hover{border-color:var(--acc)}
+.opt .bar{margin-top:5px}
+.opt b{font-size:14.5px}
+.opt .num{text-align:right;font-size:14px}
+.opt small{display:block;text-align:right;font-size:11.5px;color:var(--muted)}
+.opt[aria-pressed="true"]{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 9%,var(--ground))}
+.grp{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-top:8px}
+.toast{position:fixed;z-index:60;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);transform:translate(-50%,20px);max-width:min(520px,calc(100% - 32px));
+  background:var(--text);color:var(--ground);font-weight:600;font-size:14px;border-radius:14px;padding:12px 16px;opacity:0;visibility:hidden;transition:transform .3s,opacity .3s,visibility 0s .3s}
+.toast.on{transform:translate(-50%,0);opacity:1;visibility:visible;transition-delay:0s}
+
+.legs-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.legsrow{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;margin-top:14px}
+.legbtns{display:flex;gap:6px;flex-wrap:wrap}
+.legbtns button{min-width:44px;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--ground);text-align:center;font-weight:600}
+.legbtns button[aria-pressed="true"]{background:var(--text);color:var(--ground);border-color:var(--text)}
+.switch{display:flex;align-items:center;gap:12px;min-height:44px;margin-top:8px;cursor:pointer;font-size:14px}
+.switch input{appearance:none;-webkit-appearance:none;flex:none;width:46px;height:28px;border-radius:999px;background:var(--raised);border:1px solid var(--line);position:relative;transition:background .25s;cursor:pointer;margin:0}
+.switch input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--muted);transition:transform .25s cubic-bezier(.2,.8,.2,1),background .25s}
+.switch input:checked{background:color-mix(in srgb,var(--brand) 35%,var(--raised));border-color:var(--brand)}
+.switch input:checked::after{transform:translateX(18px);background:var(--brand)}
+.src{display:block;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+.src.ok{color:var(--good)}
+.ladder{display:flex;align-items:flex-end;gap:8px;height:96px;margin-top:12px}
+.ladder div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;height:100%;font-size:12px;color:var(--muted)}
+.ladder i{display:block;width:100%;border-radius:8px 8px 3px 3px;background:var(--raised);transition:height .7s cubic-bezier(.2,.8,.2,1),background .3s}
+.ladder .on i{background:var(--brand)} .ladder .on{color:var(--brand);font-weight:700}
+.evidence{padding-bottom:48px}
+.evgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.evgrid .panel{display:flex;flex-direction:column;gap:12px}
+.evgrid h3{font-size:20px;font-weight:700;line-height:1.15;text-wrap:balance}
+.pairs{display:flex;flex-direction:column;gap:10px}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;font-size:13.5px}
+.pair .bars{grid-column:1 / -1;display:flex;flex-direction:column;gap:3px}
+.pair .bars i{display:block;height:7px;border-radius:999px;background:var(--faint)}
+.pair .bars i.b{background:var(--acc)}
+.pair b{font-weight:600}
+.key{display:flex;gap:14px;font-size:12px;color:var(--muted)}
+.key i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--faint)}
+.key i.b{background:var(--acc)}
+.form{display:flex;flex-direction:column;gap:8px}
+.frow{display:grid;grid-template-columns:minmax(0,1fr) 96px;gap:10px;align-items:center;background:var(--ground);border:1px solid var(--line);border-radius:14px;padding:8px 12px}
+.frow small{display:block;color:var(--muted);font-size:12px}
+.frow b{font-size:14.5px}
+.frow input{width:100%;min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--text);text-align:right;padding:0 10px;font-family:"DM Mono",monospace;font-size:16px}
+.frow input:focus{outline:2px solid var(--brand);outline-offset:1px}
+
+.rulesbox{margin-bottom:34px}
+.rules-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.rules-head h2{font-size:24px;font-weight:700;line-height:1.1}
+.rules-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 22px}
+.rgroup{display:flex;flex-direction:column;gap:9px;min-width:0}
+.rgroup.wide{grid-column:1 / -1}
+.rgroup.two{grid-column:span 2}
+.chipwrap{display:flex;flex-wrap:wrap;gap:8px}
+.chipwrap .chip small{font-weight:500;color:var(--muted);margin-left:6px}
+.chipwrap .chip[aria-pressed="true"] small{color:var(--ground)}
+.chipwrap.small .chip{min-height:38px;padding:0 13px;font-size:13px;font-weight:500}
+.chip:disabled{opacity:.35;cursor:not-allowed}
+.chip.x::after{content:"×";margin-left:8px;color:var(--bad);font-weight:700}
+.lrule{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px;min-height:44px}
+.stepper{display:inline-flex;align-items:center;gap:4px;background:var(--ground);border:1px solid var(--line);border-radius:12px;padding:2px}
+.stepper button{width:40px;height:40px;border-radius:10px;text-align:center;font-size:20px;font-weight:600;color:var(--brand)}
+.stepper button:hover{background:var(--raised)}
+.stepper b{min-width:38px;text-align:center;font-size:15px}
+.stepper.big b{font-size:20px;min-width:46px}
+select{min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--ground);color:var(--text);padding:0 12px;font:inherit;font-size:14px;max-width:100%}
+.legsrow{grid-template-columns:1fr auto}
+.explorer{display:flex;align-items:flex-end;gap:5px;height:92px;margin-top:12px}
+.explorer button{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;font-size:11px;color:var(--muted);text-align:center}
+.explorer i{display:block;width:100%;border-radius:6px 6px 2px 2px;background:var(--raised);min-height:3px;transition:height .6s cubic-bezier(.2,.8,.2,1),background .3s}
+.explorer button:hover i{background:var(--faint)}
+.explorer button[aria-pressed="true"] i{background:var(--acc)}
+.explorer button[aria-pressed="true"]{color:var(--text);font-weight:700}
+.explorer .none i{background:repeating-linear-gradient(135deg,var(--raised) 0 4px,transparent 4px 8px)}
+.explorer em{font-style:normal;font-size:10px;line-height:1}
+.evgrid .widepanel{grid-column:1 / -1}
+.tablewrap{overflow-x:auto}
+.rt{border-collapse:collapse;width:100%;min-width:520px;font-size:13.5px}
+.rt th,.rt td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+.rt th{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.rt th:first-child,.rt td:first-child{text-align:left}
+.rt td b{font-family:"DM Mono",monospace;font-weight:500}
+.rt td.bestcell{color:var(--good)}
+.rt td small{color:var(--muted);font-size:12px;margin-left:6px}
+
+.sim .simctl{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px}
+.sim .kv{grid-template-columns:repeat(2,1fr)}
+.sim .kv span{font-size:17px}
+.track{min-height:22px}
+.track i.hit{background:var(--good);border-color:var(--good)}
+
+@keyframes spin{to{--spin:360deg}}
+@keyframes scan{to{top:110%}}
+@keyframes flip{0%{opacity:0;transform:perspective(700px) rotateX(-75deg) translateY(-6px)}100%{opacity:1;transform:none}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.chain circle{transform-box:fill-box;transform-origin:center}
+
+@media (max-width:960px){
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cards .scard:last-child{grid-column:1 / -1}
+  .rules{grid-template-columns:minmax(0,1fr)}
+  .rgroup.two{grid-column:auto}
+  .builder{display:flex;flex-direction:column;gap:14px}
+  .col{display:contents}
+  .o1{order:1}.o2{order:2}.o3{order:3}.o4{order:4}.o5{order:5}.o6{order:6}
+  .lower{grid-template-columns:minmax(0,1fr)}
+  .evgrid{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:520px){
+  .wrap{padding-inline:16px}
+  .hero{padding-block:28px 20px}
+  .scard{padding:14px;border-radius:20px;gap:10px}
+  .scard-big strong{font-size:30px}
+  .scard-foot{flex-direction:column;gap:2px}
+  .leg{grid-template-columns:48px minmax(0,1fr) 52px 22px;gap:9px;padding:10px}
+  .odo{font-size:44px}
+  .readout{grid-template-columns:1fr}
+  .heatwrap{grid-template-columns:minmax(0,150px) 1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.chain .step{stroke-dashoffset:0}}
+</style>
+
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<header class="top">
+  <div class="wrap">
+    <div class="wordmark display">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l9 3v6c0 5.5-3.8 9.6-9 11-5.2-1.4-9-5.5-9-11V5z" fill="var(--brand)"/><path d="M12 2v20c5.2-1.4 9-5.5 9-11V5z" fill="rgba(0,0,0,.22)"/><circle cx="12" cy="11" r="3.4" fill="none" stroke="var(--brand-ink)" stroke-width="1.6"/></svg>
+      Scudi
+    </div>
+    <div class="tags"><span class="tag brand"><span class="dot"></span>Paper mode</span><span class="tag" id="srcTag">Loading…</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="eyebrow" id="weekTag">Matchweek</span>
+    <h1 class="display">Your rules. <em>The best</em> slip they allow.</h1>
+    <p>Choose the leagues, the number of matches and the kinds of pick you accept. Scudi searches every combination and keeps the one with the highest chance of landing on your multiplier, tuned to SNAI's accumulator bonus.</p>
+  </section>
+
+  <section class="cards" id="cards" aria-label="This week's slips"></section>
+
+  <section class="panel rulesbox" aria-labelledby="rTitle">
+    <div class="rules-head"><div><span class="eyebrow">Your rules</span><h2 class="display" id="rTitle">What may go on this slip</h2></div>
+      <div class="rules-actions"><span class="fine" id="poolLine"></span><button class="chip" id="resetRules">Reset this slip</button></div></div>
+    <div class="rules">
+      <div class="rgroup two"><span class="eyebrow">Competitions</span><div class="chipwrap" id="rComps" role="group" aria-label="Competitions"></div></div>
+      <div class="rgroup"><span class="eyebrow">Days</span><div class="chipwrap" id="rDays" role="group" aria-label="Days"></div></div>
+      <div class="rgroup wide"><span class="eyebrow">Picks you accept</span><div class="chipwrap" id="rPresets" role="group" aria-label="Pick presets"></div><div class="chipwrap small" id="rPicks" role="group" aria-label="Pick types"></div></div>
+      <div class="rgroup"><span class="eyebrow">Every leg at least this likely</span><div class="slider"><input type="range" id="rMinP" min="45" max="80" step="5" value="45" aria-label="Minimum chance per leg"><b class="num" id="rMinPV">any</b></div></div>
+      <div class="rgroup"><span class="eyebrow">No leg priced above</span><div class="slider"><input type="range" id="rMaxO" min="1.4" max="4.1" step="0.1" value="4.1" aria-label="Maximum price per leg"><b class="num" id="rMaxOV">any</b></div></div>
+      <div class="rgroup"><span class="eyebrow">League rules</span>
+        <div class="lrule"><span>At least</span><span class="stepper"><button data-step="minN" data-d="-1" aria-label="Fewer">−</button><b class="num" id="rMinN">0</b><button data-step="minN" data-d="1" aria-label="More">+</button></span><span>from</span><select id="rMinLg" aria-label="League for the minimum"></select></div>
+        <div class="lrule"><span>At most</span><span class="stepper"><button data-step="perLg" data-d="-1" aria-label="Fewer">−</button><b class="num" id="rPerLg">any</b><button data-step="perLg" data-d="1" aria-label="More">+</button></span><span>per league</span></div>
+      </div>
+      <div class="rgroup wide" id="rOutBox" hidden><span class="eyebrow">Left out by you</span><div class="chipwrap small" id="rOut"></div></div>
+      <p class="fine" style="grid-column:1 / -1" id="kickLine"></p>
+    </div>
+  </section>
+
+  <section aria-labelledby="bTitle">
+    <div class="builder-head">
+      <div><span class="eyebrow" id="bWindow"></span><h2 class="display" id="bTitle"></h2></div>
+      <span class="fine" id="bNote"></span>
+    </div>
+    <div class="builder">
+      <div class="col">
+      <div class="panel o3">
+        <div class="legs-head"><span class="eyebrow" id="legsCount"></span><button class="chip" id="snaiBtn">Enter SNAI prices</button></div>
+        <div class="legs" id="legs"></div>
+        <div class="legs-note"><span class="fine">Tap a leg to see the match and swap the pick. A swapped pick is locked and the rest of the slip rebuilds around it.</span><button class="linkbtn" id="unlockAll" hidden>Unlock all picks</button></div>
+      </div>
+        <div class="panel o6">
+          <span class="eyebrow">Stake</span>
+          <div class="stakes" id="stakes" style="margin-top:10px"></div>
+          <div class="kv">
+            <div><small>Pays if it lands</small><span class="display" id="payout">–</span></div>
+            <div><small>Average return per slip</small><span class="display" id="evBack">–</span></div>
+          </div>
+          <p class="fine" style="margin-top:10px" id="evLine"></p>
+          <div class="row2" style="margin-top:14px"><button class="btn ghost" id="copyBtn">Copy slip</button><button class="btn primary" id="placeBtn">Mark as placed</button></div>
+        </div>
+      </div>
+
+      <aside class="col">
+        <div class="panel o1">
+          <span class="eyebrow">Target multiplier</span>
+          <div class="targets" id="targets"></div>
+          <div class="slider"><input type="range" id="tSlider" min="20" max="60" step="1" value="25" aria-label="Target multiplier"><b class="num" id="tSliderV">25x</b></div>
+          <div class="legsrow"><span class="eyebrow">Matches on the slip</span><span class="stepper big"><button data-step="legs" data-d="-1" aria-label="One match fewer">−</button><b class="num" id="legsN">10</b><button data-step="legs" data-d="1" aria-label="One match more">+</button></span></div>
+          <div class="explorer" id="explorer" role="group" aria-label="Chance of landing by number of matches"></div>
+          <p class="fine" id="explorerNote">Chance of landing for each number of matches under your rules. Tap a bar to use it.</p>
+          <label class="switch" for="bonusIn"><input type="checkbox" id="bonusIn"><span>Count SNAI's bonus toward the target</span></label>
+        </div>
+        <div class="panel o2">
+          <div class="readout">
+            <div><span class="eyebrow">Combined odds</span><div><span class="odo display" id="odo" aria-live="polite"></span></div><p class="fine" id="payLine" style="margin-top:6px"></p></div>
+            <div class="dial" role="img" id="dialBox" aria-label="Chance that every leg wins">
+              <svg viewBox="0 0 140 96"><path class="track" d="M14 76 A56 56 0 0 1 126 76"/><path class="val" id="dialVal" d="M14 76 A56 56 0 0 1 126 76" stroke-dasharray="0 176"/><text x="14" y="94" text-anchor="middle">0</text><text x="126" y="94" text-anchor="middle">5%</text></svg>
+              <div class="dial-read"><strong class="display" id="hitPct">–</strong><span id="hitIn">–</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel chain o4">
+          <span class="eyebrow">How the chance shrinks, leg by leg</span>
+          <svg id="chain" viewBox="0 0 340 150" role="img" aria-label="Cumulative chance after each leg"></svg>
+          <p class="fine" id="riskLine"></p>
+        </div>
+        <div class="panel o5">
+          <span class="eyebrow">SNAI accumulator bonus</span>
+          <div class="ladder" id="ladder" role="img" aria-label="SNAI bonus by number of legs"></div>
+          <p class="fine" id="snaiLine" style="margin-top:10px"></p>
+          <p class="fine" style="margin-top:6px">Bonus rule as reported by betting comparison sites in September 2026: +3.5% compounded for each leg from the fifth, every leg priced 1.25 or more, no antepost. Check it on snai.it before the first real slip.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="evidence" aria-labelledby="evTitle">
+    <div class="builder-head"><div><span class="eyebrow">34,128 matches · five leagues · 2005-06 to 2023-24</span><h2 class="display" id="evTitle">Tested on 19 seasons</h2></div>
+      <span class="fine">Real results and real Bet365 prices. No free file holds SNAI's past prices.</span></div>
+    <div class="evgrid">
+      <div class="panel">
+        <h3 class="display">When Scudi says 70%, is it 70%?</h3>
+        <p class="fine">Picks in the range slips use (55% to 85%): what was promised, what happened.</p>
+        <div class="pairs" id="evCal"></div>
+        <p class="fine">"Both teams score" needed a +1.5 point correction (fitted on 2005-17, checked on 2017-24): it is back on the menu. "Not both score" stayed 2-4 points too kind after the correction and remains out.</p>
+      </div>
+      <div class="panel">
+        <h3 class="display">Did past slips land as often as predicted?</h3>
+        <p class="fine">Every past round rebuilt by the same optimiser, then settled on the real scores.</p>
+        <div class="pairs" id="evHits"></div>
+        <p class="fine">Every gap is within what chance alone produces (none beyond 1.6 standard deviations).</p>
+      </div>
+      <div class="panel">
+        <h3 class="display">How many legs?</h3>
+        <p class="fine">Serie A at 25x: chance of landing by number of legs, and the average return per €1 with SNAI's bonus.</p>
+        <div class="pairs" id="evLegs"></div>
+        <p class="fine">Using all ten matches costs about ten cents per euro against the best six or seven. The top 5 slip chooses its ten from about 45 matches, so it does much better: 1 in 33 and €0.94. At SNAI's own prices these returns will be lower if its margins are wider than Bet365's.</p>
+      </div>
+      <div class="panel">
+        <h3 class="display">The exam it had to pass</h3>
+        <p class="fine">Pass marks written down first, then run once on two seasons never used in development (2024-25 and 2025-26, 3,503 matches).</p>
+        <div class="pairs" id="evExam"></div>
+        <p class="fine" id="evExamNote"></p>
+      </div>
+      <div class="panel">
+        <h3 class="display">A wider pool helps a little</h3>
+        <p class="fine">Same 562 weekends, best ten at 25x, chance of landing and return per €1 with the bonus:</p>
+        <div class="pairs" id="evPool"></div>
+        <p class="fine">Bet365's chances are as honest in Serie B, the Championship and the other second divisions (worst gap 2.3 points in the slip band). The gain is small because the top-5 weekend already offers 45 matches; the wider pool matters most on thin weekends.</p>
+      </div>
+      <div class="panel widepanel">
+        <h3 class="display">What your rules cost</h3>
+        <p class="fine">Top 5 leagues at 25x on 637 past weekends: chance of landing and average return per €1 (SNAI bonus included), by number of matches and by the picks allowed.</p>
+        <div class="tablewrap"><table class="rt" id="evRules"></table></div>
+        <p class="fine" id="evRulesNote"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lower">
+    <div class="panel">
+      <h2 class="display">Season so far <span class="tag" style="vertical-align:middle" id="recTag">example record</span></h2>
+      <p class="fine">Every slip Scudi builds is graded from the final scores, placed or not, so luck and method can be told apart. Below is what the record will look like.</p>
+      <div class="kv" style="grid-template-columns:repeat(4,1fr);margin-top:0">
+        <div><small>Graded</small><span class="display" id="recGraded">–</span></div>
+        <div><small>Expected hits</small><span class="display" id="recExp">–</span></div>
+        <div><small>Landed</small><span class="display" id="recHits">–</span></div>
+        <div><small>Placed · back</small><span class="display" id="recMoney">–</span></div>
+      </div>
+      <div class="pairs" id="recBy" style="margin-top:12px"></div>
+      <div class="track" id="recTrack" aria-hidden="true"></div>
+      <p class="fine" id="recNote"></p>
+      <div class="kv"><div><small>This month's budget</small><span class="display" id="budget">€15 of €100</span></div><div><small>Riskiest habit</small><span class="display" style="font-size:15px">chasing a dry run</span></div></div>
+    </div>
+    <div class="panel sim">
+      <h2 class="display">A whole season, simulated</h2>
+      <p class="fine">Your four slips at their current settings and stakes, played every week. 20,000 simulated seasons give the honest range, including the dry runs.</p>
+      <div class="simctl">
+        <label class="stepper"><button data-step="weeks" data-d="-2" aria-label="Fewer weeks">−</button><b class="num" id="simWeeks">38</b><button data-step="weeks" data-d="2" aria-label="More weeks">+</button></label><span class="fine">weeks</span>
+        <div class="chipwrap small" id="simSlips"></div>
+      </div>
+      <button class="btn primary" id="simRun" style="width:100%;margin-top:12px">Simulate the season</button>
+      <div class="kv" id="simOut" hidden>
+        <div><small>Staked over the season</small><span class="display" id="simStaked">–</span></div>
+        <div><small>Hits: expected · 90% range</small><span class="display" id="simHits">–</span></div>
+        <div><small>Longest dry run: typical · bad</small><span class="display" id="simDry">–</span></div>
+        <div><small>Chance of no hit at all</small><span class="display" id="simZero">–</span></div>
+        <div><small>Season result: 90% range</small><span class="display" id="simRange">–</span></div>
+        <div><small>Chance of a losing season</small><span class="display" id="simLoss">–</span></div>
+      </div>
+      <p class="fine" id="simNote" style="margin-top:10px"></p>
+    </div>
+    <div class="panel">
+      <h2 class="display">How Scudi builds a slip</h2>
+      <div class="how">
+        <div><p><b>Reads the sharpest prices</b><span class="muted">Over ten seasons the market's own probabilities beat our model every year, so every chance on this page comes from them.</span></p></div>
+        <div><p><b>Searches every combination</b><span class="muted">Result, double chance and goals picks for every match: it keeps the one set with the highest chance that still reaches your multiplier.</span></p></div>
+        <div><p><b>Checks it against SNAI</b><span class="muted">You type the prices SNAI shows for the legs. Scudi recomputes the odds, the bonus and what the slip really costs, and swaps a leg if the target is missed.</span></p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle" inert></aside>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ===== Scudi slip maths (shared by the page and the tests) ===== */
+var Scudi = (function () {
+  /* Dixon–Coles score matrix from two expected-goals numbers */
+  function matrix(lh, la) {
+    var N = 10, rho = -0.06, f = [1], i, h, a;
+    for (i = 1; i < N; i++) f[i] = f[i - 1] * i;
+    var m = [], tot = 0;
+    for (h = 0; h < N; h++) { m[h] = [];
+      for (a = 0; a < N; a++) {
+        var t = 1;
+        if (h === 0 && a === 0) t = 1 - lh * la * rho; else if (h === 0 && a === 1) t = 1 + lh * rho;
+        else if (h === 1 && a === 0) t = 1 + la * rho; else if (h === 1 && a === 1) t = 1 - rho;
+        m[h][a] = Math.exp(-lh) * Math.pow(lh, h) / f[h] * Math.exp(-la) * Math.pow(la, a) / f[a] * t;
+        tot += m[h][a];
+      } }
+    var o = { home: 0, draw: 0, away: 0, o15: 0, o25: 0, u35: 0, btts: 0, grid: [], scores: [] };
+    for (i = 0; i < 5; i++) o.grid[i] = [0, 0, 0, 0, 0];
+    for (h = 0; h < N; h++) for (a = 0; a < N; a++) {
+      var p = m[h][a] / tot;
+      if (h > a) o.home += p; else if (h === a) o.draw += p; else o.away += p;
+      if (h + a >= 2) o.o15 += p;
+      if (h + a >= 3) o.o25 += p;
+      if (h + a <= 3) o.u35 += p;
+      if (h >= 1 && a >= 1) o.btts += p;
+      o.grid[Math.min(h, 4)][Math.min(a, 4)] += p;
+      if (h < 5 && a < 5) o.scores.push({ h: h, a: a, p: p });
+    }
+    o.scores.sort(function (x, y) { return y.p - x.p; });
+    return o;
+  }
+
+  /* Every pick the builder may use for one match: fair chance + an example bookmaker price */
+  var MARKETS = [
+    { id: '1',   group: 'Result',        base: 0.050, p: function (c) { return c.home; },            label: function (m) { return m.home + ' win'; } },
+    { id: 'X',   group: 'Result',        base: 0.050, p: function (c) { return c.draw; },            label: function () { return 'Draw'; } },
+    { id: '2',   group: 'Result',        base: 0.050, p: function (c) { return c.away; },            label: function (m) { return m.away + ' win'; } },
+    { id: '1X',  group: 'Double chance', base: 0.062, p: function (c) { return c.home + c.draw; },   label: function (m) { return m.home + ' or draw'; } },
+    { id: 'X2',  group: 'Double chance', base: 0.062, p: function (c) { return c.away + c.draw; },   label: function (m) { return m.away + ' or draw'; } },
+    { id: '12',  group: 'Double chance', base: 0.062, p: function (c) { return c.home + c.away; },   label: function () { return 'No draw'; } },
+    { id: 'O15', group: 'Goals',         base: 0.058, p: function (c) { return c.o15; },             label: function () { return 'Over 1.5 goals'; } },
+    { id: 'O25', group: 'Goals',         base: 0.058, p: function (c) { return c.o25; },             label: function () { return 'Over 2.5 goals'; } },
+    { id: 'U25', group: 'Goals',         base: 0.058, p: function (c) { return 1 - c.o25; },         label: function () { return 'Under 2.5 goals'; } },
+    { id: 'U35', group: 'Goals',         base: 0.058, p: function (c) { return c.u35; },             label: function () { return 'Under 3.5 goals'; } },
+    { id: 'GG',  group: 'Both score',    base: 0.066, p: function (c) { return Math.min(0.99, c.btts + 0.015); }, label: function () { return 'Both teams score'; } }
+  ];  /* "both teams score" carries a +1.5 point shift fitted on 2005-17 and checked on 2017-24 and 2024-26; "not both" stays out (still ~2-4 points too kind) */
+  function price(p, base, factor) {           /* margin grows a little on longer prices, as it does at real books */
+    var m = (base + 0.02 * Math.max(0, Math.log(1 / p) - 0.3)) * (factor || 1);
+    return Math.max(1.01, Math.round(100 / (p * (1 + m))) / 100);
+  }
+  var SNAI_FLOOR = 1.25;
+  /* haircut: once some real prices are typed in, every remaining estimate is scaled by how far SNAI sat from
+     the estimates so far. Without it the optimiser would run away from real prices towards rosier guesses. */
+  function candidates(match, minLegOdds, actual, haircut) {
+    var c = match.calc || (match.calc = matrix(match.lh, match.la)), out = [], mine = (actual || {})[match.id] || {}, h = haircut || {};
+    MARKETS.forEach(function (mk) {
+      var k = typeof h === 'number' ? h : (h[mk.id] || h.all || 1);
+      var pre = match.pre, p, base;
+      if (pre) { if (pre.chances[mk.id] === undefined || pre.estimate[mk.id] === undefined) return; p = pre.chances[mk.id]; base = pre.estimate[mk.id]; }
+      else { p = mk.p(c); base = price(p, mk.base, 1); }
+      var checked = mine[mk.id] !== undefined, o = checked ? mine[mk.id] : Math.max(1.01, Math.floor(base * k * 100 + 1e-9) / 100);
+      if (o >= (checked ? SNAI_FLOOR : minLegOdds)) out.push({ id: mk.id, group: mk.group, label: mk.label(match), p: p, odds: o, cost: o * p - 1, checked: checked });
+    });
+    return out;
+  }
+  /* the picks a match may contribute under the user's rules; a locked pick overrides the rules */
+  function menuFor(match, opts) {
+    if ((opts.excluded || {})[match.id]) return [];
+    var lock = (opts.locks || {})[match.id], list = candidates(match, opts.minLegOdds || SNAI_FLOOR, opts.actual, opts.haircut);
+    if (lock) return list.filter(function (c) { return c.id === lock; });
+    return list.filter(function (c) {
+      return (!opts.allowed || opts.allowed[c.id]) && (!opts.minChance || c.p >= opts.minChance) && (!opts.maxOdds || c.odds <= opts.maxOdds);
+    });
+  }
+  /* SNAI accumulator bonus: +3.5% compounded for every leg from the fifth, legs priced 1.25 or more, up to 30 legs */
+  /* How far SNAI sits from the estimates, learned from every price typed in: one ratio per pick type once that
+     type has 3 or more observations, otherwise the overall ratio. `memory` is an earlier weeks' list of ratios. */
+  function median(xs) { xs = xs.slice().sort(function (a, b) { return a - b; }); var n = xs.length; return n % 2 ? xs[(n - 1) / 2] : (xs[n / 2 - 1] + xs[n / 2]) / 2; }
+  function ratiosFrom(matches, actual) {
+    var out = [];
+    matches.forEach(function (m) { var mine = (actual || {})[m.id]; if (!mine) return;
+      candidates(m, 1.01).forEach(function (c) { if (mine[c.id] !== undefined) out.push({ id: c.id, r: mine[c.id] / c.odds }); }); });
+    return out;
+  }
+  function haircutFrom(matches, actual, memory) {
+    var obs = (memory || []).concat(ratiosFrom(matches, actual)), by = {}, h = {};
+    if (!obs.length) return { all: 1, n: 0 };
+    obs.forEach(function (o) { (by[o.id] = by[o.id] || []).push(o.r); });
+    var clamp = function (x) { return Math.max(0.85, Math.min(1.05, x)); };
+    h.all = clamp(median(obs.map(function (o) { return o.r; })));
+    Object.keys(by).forEach(function (id) { if (by[id].length >= 3) h[id] = clamp(median(by[id])); });
+    h.n = obs.length;
+    return h;
+  }
+  function snaiBonus(n) { return n >= 5 ? Math.pow(1.035, Math.min(n, 30) - 4) - 1 : 0; }
+
+  /* ---------- the optimiser ----------
+     One pick per used match, exactly `legs` legs, maximise the chance that every leg wins, subject to
+     combined odds >= target and to league rules ("at least 5 from Serie A", "at most 2 per league").
+     Dynamic programme on a grid of log-odds, two passes: rounded DOWN (a slip found always reaches the target),
+     then rounded to NEAREST (kept only if its exact odds reach the target and its chance is higher). */
+  var NEG = -1e18;
+  function step(src, list, K, W, B, D, nearest, rowsReady) {
+    var best = new Float64Array((K + 1) * W).fill(NEG), ch = new Int8Array((K + 1) * W).fill(-1), pv = new Int32Array((K + 1) * W);
+    for (var j = 0; j < list.length; j++) {
+      var st = Math.log(list[j].odds) / D, w = Math.min(B, nearest ? Math.round(st) : Math.floor(st + 1e-9)), lv = Math.log(list[j].p);
+      for (var k = 0; k < K && k <= rowsReady; k++) {
+        var off = k * W, to = (k + 1) * W;
+        for (var b = 0; b < W; b++) {
+          var v = src[off + b]; if (v === NEG) continue;
+          var nb = b + w >= B ? B : b + w, nv = v + lv;
+          if (nv > best[to + nb]) { best[to + nb] = nv; ch[to + nb] = j; pv[to + nb] = b; }
+        }
+      }
+    }
+    return { best: best, ch: ch, pv: pv };
+  }
+  function solveOnce(matches, menus, target, opts, nearest) {
+    var K = opts.legs || matches.length, n = matches.length, D = opts.grid || 0.001, B = Math.ceil(Math.log(target) / D), W = B + 1, size = (K + 1) * W;
+    var mustAll = K >= n, locks = opts.locks || {}, limits = opts.groupLimits || {}, order = [], seg = {}, i, j, k, b;
+    matches.forEach(function (m, idx) { var g = m.lg; if (!seg[g]) { seg[g] = []; order.push(g); } seg[g].push(idx); });
+    var cur = new Float64Array(size).fill(NEG), trail = [], done = 0; cur[0] = 0;
+    for (var gi = 0; gi < order.length; gi++) {
+      var g = order[gi], members = seg[g], lim = limits[g] || [0, opts.groupMax || null];
+      var hi = Math.min(lim[1] == null ? K : lim[1], members.length, K), lo = Math.max(0, lim[0] || 0);
+      if (lo > hi) return null;
+      if (lo === 0 && hi >= Math.min(members.length, K)) {                 /* no rule bites */
+        for (i = 0; i < members.length; i++) {
+          var idx = members[i], forced = mustAll || !!locks[matches[idx].id], s1 = step(cur, menus[idx], K, W, B, D, nearest, done), nxt = new Float64Array(size), chx = new Int8Array(size).fill(-1);
+          for (b = 0; b < size; b++) { var base = forced ? NEG : cur[b]; if (s1.best[b] > base) { nxt[b] = s1.best[b]; chx[b] = s1.ch[b]; } else nxt[b] = base; }
+          trail.push({ kind: 0, idx: idx, ch: chx, pv: s1.pv }); cur = nxt; done++;
+        }
+        continue;
+      }
+      var layers = [cur];                                                   /* a rule bites: layer j = legs this league has used */
+      for (j = 1; j <= hi; j++) layers.push(new Float64Array(size).fill(NEG));
+      for (i = 0; i < members.length; i++) {
+        var id2 = members[i], f2 = mustAll || !!locks[matches[id2].id], steps = [], fresh = [f2 ? new Float64Array(size).fill(NEG) : layers[0]];
+        var chs = new Int8Array((hi + 1) * size).fill(-1), pvs = new Int32Array((hi + 1) * size);
+        for (j = 0; j < hi; j++) steps.push(step(layers[j], menus[id2], K, W, B, D, nearest, done));
+        for (j = 0; j < hi; j++) {
+          var t = new Float64Array(size), o = (j + 1) * size;
+          for (b = 0; b < size; b++) { var bs = f2 ? NEG : layers[j + 1][b]; if (steps[j].best[b] > bs) { t[b] = steps[j].best[b]; chs[o + b] = steps[j].ch[b]; pvs[o + b] = steps[j].pv[b]; } else t[b] = bs; }
+          fresh.push(t);
+        }
+        layers = fresh; trail.push({ kind: 1, idx: id2, ch: chs, pv: pvs, size: size }); done++;
+      }
+      var merged = new Float64Array(size).fill(NEG), js = new Int8Array(size);
+      for (j = lo; j <= hi; j++) for (b = 0; b < size; b++) if (layers[j][b] > merged[b]) { merged[b] = layers[j][b]; js[b] = j; }
+      cur = merged; trail.push({ kind: 2, js: js });
+    }
+    if (cur[K * W + B] === NEG) return null;
+    var picks = []; k = K; b = B; j = 0;
+    for (i = trail.length - 1; i >= 0; i--) {
+      var t2 = trail[i], at = k * W + b, c;
+      if (t2.kind === 2) j = t2.js[at];
+      else if (t2.kind === 0) { c = t2.ch[at]; if (c >= 0) { picks.push({ match: matches[t2.idx], pick: menus[t2.idx][c] }); b = t2.pv[at]; k--; } }
+      else { c = t2.ch[j * t2.size + at]; if (c >= 0) { picks.push({ match: matches[t2.idx], pick: menus[t2.idx][c] }); b = t2.pv[j * t2.size + at]; k--; j--; } }
+    }
+    var prob = 1, odds = 1;
+    picks.forEach(function (x) { prob *= x.pick.p; odds *= x.pick.odds; });
+    return { picks: picks, prob: prob, odds: odds };
+  }
+  function solve(matches, target, opts) {
+    opts = opts || {};
+    var menus = matches.map(function (m) { return menuFor(m, opts); });
+    var usable = menus.filter(function (l) { return l.length; }).length, legs = opts.legs || matches.length;
+    if (legs > usable || legs < 1) return null;
+    var best = solveOnce(matches, menus, target, opts, false);
+    if (opts.refine !== false) {
+      var alt = solveOnce(matches, menus, target, opts, true);
+      if (alt && alt.odds >= target && (!best || alt.prob > best.prob)) best = alt;
+    }
+    return best;
+  }
+
+  return { matrix: matrix, candidates: candidates, menuFor: menuFor, solve: solve, MARKETS: MARKETS, snaiBonus: snaiBonus, haircutFrom: haircutFrom, ratiosFrom: ratiosFrom, price: price, SNAI_FLOOR: SNAI_FLOOR };
+})();
+if (typeof module !== 'undefined') module.exports = Scudi;
+
+(function () {
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var MIN_LEG = 1.27;   /* a little above the 1.25 most bonuses require, so a leg still qualifies at a stingier book */
+
+  /* ---------- fixtures ----------
+     Live: data/week.json written by the weekly job (real matches, consensus chances, ordinary-book price estimates).
+     Fallback (no data file, e.g. the preview): the example fixtures below — Serie A giornata 6 and Champions League
+     matchday 2 are the real fixture lists, the other leagues and every price are examples. */
+  var n = 0;
+  function mk(lg, t, ord, home, away, lh, la) { return { id: 'm' + (n++), lg: lg, t: t, ord: ord, home: home, away: away, lh: lh, la: la }; }
+  var SA = [
+    mk('Serie A', 'Sat 15:00', 115, 'Genoa', 'Fiorentina', 1.15, 1.20), mk('Serie A', 'Sat 18:00', 118, 'Inter', 'Parma', 2.35, 0.65),
+    mk('Serie A', 'Sat 20:45', 120, 'Napoli', 'Frosinone', 2.20, 0.70), mk('Serie A', 'Sun 12:30', 212, 'Como', 'Roma', 1.35, 1.25),
+    mk('Serie A', 'Sun 15:00', 215, 'Lazio', 'Monza', 1.85, 0.80), mk('Serie A', 'Sun 15:00', 216, 'Lecce', 'Bologna', 1.00, 1.30),
+    mk('Serie A', 'Sun 18:00', 218, 'Sassuolo', 'Milan', 1.05, 1.75), mk('Serie A', 'Sun 20:45', 220, 'Cagliari', 'Juventus', 0.85, 1.60),
+    mk('Serie A', 'Mon 18:30', 318, 'Atalanta', 'Venezia', 2.10, 0.80), mk('Serie A', 'Mon 20:45', 320, 'Torino', 'Udinese', 1.25, 1.05)];
+  var OTHERS = [
+    mk('Premier League', 'Sat 13:30', 113, 'Liverpool', 'Brentford', 2.30, 0.85), mk('Premier League', 'Sat 16:00', 116, 'Man City', 'Fulham', 2.40, 0.80),
+    mk('Premier League', 'Sat 16:00', 116, 'Chelsea', 'Crystal Palace', 1.80, 1.00), mk('Premier League', 'Sat 18:30', 118, 'Tottenham', 'Brighton', 1.60, 1.35),
+    mk('Premier League', 'Sun 15:00', 215, 'Newcastle', 'Bournemouth', 1.75, 1.10), mk('Premier League', 'Sun 17:30', 217, 'Aston Villa', 'Everton', 1.65, 0.95),
+    mk('La Liga', 'Sat 16:15', 116, 'Real Madrid', 'Getafe', 2.30, 0.60), mk('La Liga', 'Sat 21:00', 121, 'Barcelona', 'Osasuna', 2.50, 0.75),
+    mk('La Liga', 'Sun 14:00', 214, 'Atlético', 'Celta', 1.85, 0.85), mk('La Liga', 'Sun 16:15', 216, 'Athletic', 'Valencia', 1.60, 0.85),
+    mk('La Liga', 'Sun 18:30', 218, 'Betis', 'Sevilla', 1.45, 1.10), mk('La Liga', 'Sun 21:00', 221, 'Real Sociedad', 'Villarreal', 1.30, 1.25),
+    mk('Bundesliga', 'Sat 15:30', 115, 'Bayern', 'Mainz', 2.90, 0.80), mk('Bundesliga', 'Sat 15:30', 115, 'Dortmund', 'Werder', 2.10, 1.10),
+    mk('Bundesliga', 'Sat 15:30', 115, 'Leverkusen', 'Freiburg', 1.95, 1.00), mk('Bundesliga', 'Sat 18:30', 118, 'Leipzig', 'Wolfsburg', 1.90, 1.00),
+    mk('Bundesliga', 'Sun 15:30', 215, 'Stuttgart', 'Gladbach', 1.95, 1.15), mk('Bundesliga', 'Sun 17:30', 217, 'Frankfurt', 'Union Berlin', 1.75, 1.00),
+    mk('Ligue 1', 'Sat 17:00', 117, 'PSG', 'Nantes', 2.70, 0.65), mk('Ligue 1', 'Sat 21:05', 121, 'Marseille', 'Toulouse', 1.95, 0.95),
+    mk('Ligue 1', 'Sun 15:00', 215, 'Monaco', 'Brest', 1.90, 1.00), mk('Ligue 1', 'Sun 17:15', 217, 'Lille', 'Rennes', 1.50, 1.05),
+    mk('Ligue 1', 'Sun 17:15', 217, 'Lyon', 'Strasbourg', 1.70, 1.15), mk('Ligue 1', 'Sun 20:45', 220, 'Lens', 'Nice', 1.45, 1.05)];
+  var UT = [
+    mk('Champions League', 'Tue 18:45', 418, 'Lens', 'Sporting CP', 1.30, 1.25), mk('Champions League', 'Tue 18:45', 418, 'Sabah', 'Slavia Praha', 0.95, 1.55),
+    mk('Champions League', 'Tue 21:00', 421, 'Arsenal', 'Lille', 2.20, 0.75), mk('Champions League', 'Tue 21:00', 421, 'Atlético', 'Man United', 1.55, 1.10),
+    mk('Champions League', 'Tue 21:00', 421, 'Inter', 'Club Brugge', 2.05, 0.80), mk('Champions League', 'Tue 21:00', 421, 'Galatasaray', 'Barcelona', 1.20, 1.90),
+    mk('Champions League', 'Tue 21:00', 421, 'Leipzig', 'PSV', 1.75, 1.25), mk('Champions League', 'Tue 21:00', 421, 'Viking', 'Bayern', 0.80, 2.60),
+    mk('Champions League', 'Tue 21:00', 421, 'Villarreal', 'Napoli', 1.35, 1.30)];
+  var UW = [
+    mk('Champions League', 'Wed 18:45', 518, 'Feyenoord', 'Como', 1.50, 1.15), mk('Champions League', 'Wed 18:45', 518, 'LASK', 'Liverpool', 0.75, 2.40),
+    mk('Champions League', 'Wed 21:00', 521, 'Roma', 'Real Madrid', 1.20, 1.70), mk('Champions League', 'Wed 21:00', 521, 'Aston Villa', 'Fenerbahçe', 1.80, 0.95),
+    mk('Champions League', 'Wed 21:00', 521, 'Shakhtar', 'AEK Athens', 1.55, 1.00), mk('Champions League', 'Wed 21:00', 521, 'Bodø/Glimt', 'Dortmund', 1.45, 1.55),
+    mk('Champions League', 'Wed 21:00', 521, 'Man City', 'PSG', 1.70, 1.45), mk('Champions League', 'Wed 21:00', 521, 'Betis', 'Porto', 1.40, 1.15),
+    mk('Champions League', 'Wed 21:00', 521, 'Slovan Bratislava', 'Stuttgart', 0.90, 1.85)];
+
+  var EXAMPLE = SA.concat(OTHERS, UT, UW), DAYNUM = { Sat: 10, Sun: 11, Mon: 12, Tue: 13, Wed: 14 };
+  EXAMPLE.forEach(function (m) { m.day = m.t.slice(0, 3); m.kick = new Date('2026-10-' + DAYNUM[m.day] + 'T' + m.t.slice(4) + ':00+02:00'); });
+  var ROME = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Rome', weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false });
+  var ROME_DAY = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Rome', weekday: 'short', day: 'numeric', month: 'short' });
+  /* turn one match of data/week.json into what the page works with */
+  function fromWeek(m) {
+    var kick = new Date(m.kickoff), parts = {}; ROME.formatToParts(kick).forEach(function (x) { parts[x.type] = x.value; });
+    var day = parts.weekday, t = day + ' ' + parts.hour + ':' + parts.minute;
+    return { id: m.id, lg: m.competition, t: t, day: day, kick: kick, ord: kick.getTime(), home: m.home, away: m.away,
+      lh: m.lh || 1.3, la: m.la || 1.1, pre: { chances: m.chances, estimate: m.estimate }, books: m.books_used, sharp: m.sharp_share, best: m.best || {} };
+  }
+  function loadData() {
+    return fetch('data/week.json', { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (w) {
+        var live = (w.matches || []).map(fromWeek).filter(function (m) { return m.lh > 0 && m.la > 0; });
+        if (!live.length) throw new Error('empty week');
+        return { matches: live, built: new Date(w.built_at), guard: w.guard || {}, credits: w.credits || {}, live: true };
+      })
+      .catch(function () { return { matches: EXAMPLE, built: null, guard: {}, credits: {}, live: false }; });
+  }
+  function loadRecord() {
+    return fetch('data/record.json', { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (rec) { return rec && rec.slips && rec.slips.length ? rec : null; }).catch(function () { return null; });
+  }
+  Promise.all([loadData(), loadRecord()]).then(function (res) { boot(res[0], res[1]); });
+  function boot(DATA, LIVE_RECORD) {
+  var ALL = DATA.matches, NOW = new Date();   /* a match that has kicked off is never offered */
+  /* ---------- the week's matches and the five slips ---------- */
+  var ORDER = ['Serie A', 'Premier League', 'La Liga', 'Bundesliga', 'Ligue 1', 'Champions League', 'Serie B', 'Championship', 'La Liga 2', '2. Bundesliga', 'Ligue 2', 'Eredivisie', 'Primeira Liga', 'Belgian Pro League', 'Süper Lig'];
+  var TOP5 = ['Serie A', 'Premier League', 'La Liga', 'Bundesliga', 'Ligue 1'];
+  var COMPS = ORDER.filter(function (g) { return ALL.some(function (m) { return m.lg === g; }); });
+  ALL.forEach(function (m) { if (COMPS.indexOf(m.lg) < 0) COMPS.push(m.lg); });
+  var DAYS = []; ALL.slice().sort(function (a, b) { return a.ord - b.ord; }).forEach(function (m) { if (DAYS.indexOf(m.day) < 0) DAYS.push(m.day); });
+  var UCL_DAYS = []; ALL.filter(function (m) { return m.lg === 'Champions League'; }).sort(function (a, b) { return a.ord - b.ord; }).forEach(function (m) { if (UCL_DAYS.indexOf(m.day) < 0) UCL_DAYS.push(m.day); });
+  function span(list) { if (!list.length) return ''; var ks = list.map(function (m) { return m.kick; }).sort(function (a, b) { return a - b; }); return ROME.format(ks[0]).replace(',', '') + ' to ' + ROME.format(ks[ks.length - 1]).replace(',', ''); }
+  var top5Pool = ALL.filter(function (m) { return TOP5.indexOf(m.lg) > -1; }), saPool = ALL.filter(function (m) { return m.lg === 'Serie A'; });
+  var uclA = ALL.filter(function (m) { return m.lg === 'Champions League' && m.day === UCL_DAYS[0]; }), uclB = ALL.filter(function (m) { return m.lg === 'Champions League' && m.day === UCL_DAYS[1]; });
+  var PICK_IDS = Scudi.MARKETS.map(function (m) { return m.id; });
+  var PICK_NAMES = { '1': 'Home win', 'X': 'Draw', '2': 'Away win', '1X': 'Home or draw', 'X2': 'Away or draw', '12': 'No draw', 'O15': 'Over 1.5', 'O25': 'Over 2.5', 'U25': 'Under 2.5', 'U35': 'Under 3.5', 'GG': 'Both score' };
+  /* SNAI price ratios remembered from earlier weeks (a per-viewer convenience; the real site keeps them in its data file) */
+  var MEMORY = []; try { MEMORY = JSON.parse(localStorage.getItem('scudi-snai-ratios') || '[]'); } catch (e) { MEMORY = []; }
+  function remember(ratios) { MEMORY = MEMORY.concat(ratios).slice(-400); try { localStorage.setItem('scudi-snai-ratios', JSON.stringify(MEMORY)); } catch (e) {} }
+  var PRESETS = [
+    { id: 'wins', label: 'Only wins', ids: ['1', '2'] },
+    { id: 'results', label: 'Only results', ids: ['1', 'X', '2'] },
+    { id: 'rdc', label: 'Results + double chance', ids: ['1', 'X', '2', '1X', 'X2', '12'] },
+    { id: 'goals', label: 'Only goals', ids: ['O15', 'O25', 'U25', 'U35'] },
+    { id: 'all', label: 'Everything', ids: PICK_IDS }];
+  function setOf(ids) { var o = {}; ids.forEach(function (i) { o[i] = 1; }); return o; }
+  var DAYNAME = { Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday', Sun: 'Sunday' };
+  var SLIPS = [
+    { id: 'sa', name: 'Serie A', sub: DATA.live ? saPool.length + ' matches this round' : 'Giornata 6', c: '--sa', window: span(saPool), def: { comps: ['Serie A'], legs: Math.min(10, saPool.length) } },
+    { id: 't5', name: 'Top 5 leagues', sub: 'Best of ' + top5Pool.length + ' matches', c: '--t5', window: span(top5Pool), def: { comps: TOP5.filter(function (g) { return COMPS.indexOf(g) > -1; }), legs: Math.min(10, top5Pool.length) } },
+    { id: 'ut', name: 'Champions League', sub: (DAYNAME[UCL_DAYS[0]] || 'First') + ' night', c: '--ut', window: span(uclA), def: { comps: ['Champions League'], days: [UCL_DAYS[0]], legs: Math.min(9, uclA.length) } },
+    { id: 'uw', name: 'Champions League', sub: (DAYNAME[UCL_DAYS[1]] || 'Second') + ' night', c: '--uw', window: span(uclB), def: { comps: ['Champions League'], days: [UCL_DAYS[1]], legs: Math.min(9, uclB.length) } },
+    { id: 'my', name: 'Your rules', sub: 'Build your own', c: '--my', window: span(ALL), def: { comps: COMPS.slice(), legs: Math.min(8, ALL.length), allowed: ['1', 'X', '2'] } }]
+    .filter(function (s) { return s.def.legs >= 2 && (s.id === 'my' || s.def.comps.every(function (g) { return COMPS.indexOf(g) > -1; })); });
+  function fresh(s) {
+    s.cfg = { comps: s.def.comps.slice(), days: (s.def.days || DAYS).slice(), legs: s.def.legs, target: 25, bonusIn: false, allowed: setOf(s.def.allowed || PICK_IDS),
+      minChance: 0, maxOdds: 0, minN: 0, minLg: 'Serie A', perLg: 0, excluded: {}, locks: {}, actual: {} };
+    s.frontier = {}; s.curve = {}; s.prev = {}; s.key = null;
+  }
+  SLIPS.forEach(function (s) { fresh(s); s.stake = 5; s.placed = false; });
+  /* header: what the page is showing and where it came from */
+  (function () {
+    var g = DATA.guard, dropped = (g.started || 0) + (g.outside_window || 0) + (g.too_few_books || 0) + (g.no_sharp || 0) + (g.bad_fit || 0);
+    $('#srcTag').textContent = DATA.live ? 'Prices pulled ' + ROME_DAY.format(DATA.built) + ' ' + ROME.format(DATA.built).slice(-5) + ' · ' + ALL.length + ' matches' + (dropped ? ' · ' + dropped + ' held back by guards' : '') : 'Example prices';
+    $('#weekTag').textContent = DATA.live ? 'Matchweek · ' + ROME_DAY.format(ALL.reduce(function (a, m) { return m.kick < a ? m.kick : a; }, ALL[0].kick)) + ' – ' + ROME_DAY.format(ALL.reduce(function (a, m) { return m.kick > a ? m.kick : a; }, ALL[0].kick)) : 'Matchweek · 10–14 October 2026 · example';
+  })();
+  var TARGETS = [25, 30, 40, 50], STAKES = [2, 5, 10];
+  var active = SLIPS[0], monthUsed = 15;
+
+  function poolOf(s) { var c = s.cfg; return ALL.filter(function (m) { return c.comps.indexOf(m.lg) > -1 && c.days.indexOf(m.day) > -1 && m.kick > NOW; }); }
+  function startedOf(s) { var c = s.cfg; return ALL.filter(function (m) { return c.comps.indexOf(m.lg) > -1 && c.days.indexOf(m.day) > -1 && m.kick <= NOW; }).length; }
+  function optsOf(s, legs, quick) {
+    var c = s.cfg, pool = poolOf(s), lim = {};
+    if (c.minN > 0) lim[c.minLg] = [c.minN, c.perLg ? Math.max(c.perLg, c.minN) : null];   /* the named league's minimum wins over the general cap */
+    return { pool: pool, legs: legs, minLegOdds: MIN_LEG, locks: c.locks, actual: c.actual, haircut: Scudi.haircutFrom([], {}, MEMORY), allowed: c.allowed,
+      minChance: c.minChance, maxOdds: c.maxOdds, excluded: c.excluded, groupLimits: lim, groupMax: c.perLg || null, refine: !quick,
+      grid: quick ? (pool.length > 12 ? 0.004 : 0.002) : (pool.length > 24 ? 0.002 : pool.length > 12 ? 0.001 : 0.0005) };
+  }
+  function run(s, target, legs, quick) {
+    legs = legs || s.cfg.legs;
+    var o = optsOf(s, legs, quick), raw = s.cfg.bonusIn ? target / (1 + Scudi.snaiBonus(legs)) : target;
+    var r = Scudi.solve(o.pool, raw, o);
+    if (r) {
+      r.picks.sort(function (a, b) { return a.match.ord - b.match.ord; });
+      r.bonus = Scudi.snaiBonus(r.picks.filter(function (x) { return x.pick.odds >= Scudi.SNAI_FLOOR; }).length);
+      r.pays = r.odds * (1 + r.bonus);
+      r.checked = r.picks.filter(function (x) { return x.pick.checked; }).length;
+    }
+    return r;
+  }
+  function usable(s) { var o = optsOf(s, 1, true); return o.pool.filter(function (m) { return Scudi.menuFor(m, o).length; }).length; }
+  function solveActive() { active.result = run(active, active.cfg.target); }
+  var euro = function (x) { return '€' + (x >= 100 ? Math.round(x).toLocaleString('en-GB') : x.toFixed(2)); };
+  var pct = function (x) { return (x * 100).toFixed(1) + '%'; };
+  function describe(s) {
+    var c = s.cfg, n = Object.keys(c.allowed).length, p = PRESETS.filter(function (x) { return x.ids.length === n && x.ids.every(function (i) { return c.allowed[i]; }); })[0], bits = [];
+    bits.push(c.legs + ' matches');
+    bits.push(c.comps.length === COMPS.length ? 'every competition' : c.comps.length === 5 && c.comps.indexOf('Champions League') < 0 ? 'top 5 leagues' : c.comps.join(', '));
+    bits.push(p ? p.label.toLowerCase() : n + ' pick types');
+    if (c.minChance) bits.push('each leg ' + Math.round(c.minChance * 100) + '%+');
+    if (c.maxOdds) bits.push('no leg above ' + c.maxOdds.toFixed(2));
+    if (c.minN) bits.push('at least ' + c.minN + ' from ' + c.minLg);
+    if (c.perLg) bits.push('at most ' + c.perLg + ' per league');
+    return bits.join(' · ');
+  }
+
+  /* ---------- odometer ---------- */
+  function odo(el, str) {
+    var chars = str.split('');
+    if (el.dataset.len !== String(chars.length)) {
+      el.dataset.len = chars.length;
+      el.innerHTML = chars.map(function (ch) {
+        return /\d/.test(ch) ? '<span class="col"><span>' + [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (d) { return '<i>' + d + '</i>'; }).join('') + '</span></span>' : '<span>' + ch + '</span>';
+      }).join('') + '<span class="x">x</span>';
+    }
+    var cols = $$('.col > span', el), k = 0;
+    requestAnimationFrame(function () { chars.forEach(function (ch) { if (/\d/.test(ch)) { cols[k].style.transform = 'translateY(-' + (+ch) + 'em)'; k++; } }); });
+    el.setAttribute('aria-label', str + ' times the stake');
+  }
+
+  /* ---------- slip cards ---------- */
+  function renderCards() {
+    $('#cards').innerHTML = SLIPS.map(function (s) {
+      var r = s.result === undefined ? (s.result = run(s, s.cfg.target)) : s.result;
+      return '<button class="scard" data-slip="' + s.id + '" aria-pressed="' + (s === active) + '" style="--c:var(' + s.c + ')">' +
+        '<div class="scard-top"><div class="scard-name"><b>' + s.name + '</b><span>' + s.sub + '</span></div><span class="pill">' + s.cfg.legs + ' legs</span></div>' +
+        (r ? '<div class="scard-big"><strong class="display">1 in ' + Math.round(1 / r.prob) + '</strong><span>to land</span></div>' +
+             '<div class="scard-foot"><span>Pays <b class="num">' + r.pays.toFixed(1) + 'x</b></span><span class="' + (s.placed ? 'placed' : '') + '">' + (s.placed ? 'Placed · ' + euro(s.stake) : 'Not placed') + '</span></div>'
+           : '<div class="scard-big"><span>No slip fits these rules</span></div><div class="scard-foot"><span>Loosen a rule</span></div>') + '</button>';
+    }).join('');
+  }
+  $('#cards').onclick = function (e) {
+    var b = e.target.closest('[data-slip]'); if (!b) return;
+    active = SLIPS.filter(function (s) { return s.id === b.dataset.slip; })[0];
+    document.documentElement.style.setProperty('--acc', 'var(' + active.c + ')');
+    active.prev = {}; renderCards(); renderRules(); renderBuilder(true); renderEvidence();
+    if (window.innerWidth < 960) $('#rTitle').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+  };
+
+  /* ---------- your rules ---------- */
+  function renderRules() {
+    var s = active, c = s.cfg, pool = poolOf(s), byComp = {}, byDay = {};
+    ALL.forEach(function (m) { byComp[m.lg] = (byComp[m.lg] || 0) + 1; if (c.comps.indexOf(m.lg) > -1) byDay[m.day] = (byDay[m.day] || 0) + 1; });
+    $('#rComps').innerHTML = COMPS.map(function (g) { return '<button class="chip" data-comp="' + g + '" aria-pressed="' + (c.comps.indexOf(g) > -1) + '">' + g + '<small>' + byComp[g] + '</small></button>'; }).join('');
+    $('#rDays').innerHTML = DAYS.map(function (d) { return '<button class="chip" data-day="' + d + '" aria-pressed="' + (c.days.indexOf(d) > -1 && !!byDay[d]) + '"' + (byDay[d] ? '' : ' disabled') + '>' + d + '<small>' + (byDay[d] || 0) + '</small></button>'; }).join('');
+    var n = Object.keys(c.allowed).length;
+    $('#rPresets').innerHTML = PRESETS.map(function (p) { var on = p.ids.length === n && p.ids.every(function (i) { return c.allowed[i]; }); return '<button class="chip" data-preset="' + p.id + '" aria-pressed="' + on + '">' + p.label + '</button>'; }).join('');
+    $('#rPicks').innerHTML = PICK_IDS.map(function (i) { return '<button class="chip" data-pickid="' + i + '" aria-pressed="' + (!!c.allowed[i]) + '">' + PICK_NAMES[i] + '</button>'; }).join('');
+    $('#rMinP').value = c.minChance ? Math.round(c.minChance * 100) : 45; $('#rMinPV').textContent = c.minChance ? Math.round(c.minChance * 100) + '%' : 'any';
+    $('#rMaxO').value = c.maxOdds || 4.1; $('#rMaxOV').textContent = c.maxOdds ? c.maxOdds.toFixed(2) : 'any';
+    $('#rMinN').textContent = c.minN; $('#rPerLg').textContent = c.perLg || 'any';
+    $('#rMinLg').innerHTML = c.comps.map(function (g) { return '<option' + (g === c.minLg ? ' selected' : '') + '>' + g + '</option>'; }).join('');
+    var out = Object.keys(c.excluded);
+    $('#rOutBox').hidden = !out.length;
+    $('#rOut').innerHTML = out.map(function (id) { var m = ALL.filter(function (x) { return x.id === id; })[0]; return '<button class="chip x" data-back="' + id + '">' + m.home + ' – ' + m.away + '</button>'; }).join('');
+    $('#poolLine').textContent = usable(s) + ' of ' + pool.length + ' matches can be used under these rules';
+    var started = startedOf(s), h = Scudi.haircutFrom([], {}, MEMORY);
+    $('#kickLine').textContent = (started ? started + ' match' + (started > 1 ? 'es have' : ' has') + ' already kicked off and ' + (started > 1 ? 'are' : 'is') + ' skipped. ' : 'Matches that have kicked off are skipped automatically. ') +
+      (h.n ? 'SNAI prices remembered: ' + h.n + ' · estimates scaled by ' + Math.round((1 - h.all) * 100) + '%' + (Object.keys(h).filter(function (k) { return k !== 'all' && k !== 'n'; }).length ? ', with a separate figure for ' + Object.keys(h).filter(function (k) { return k !== 'all' && k !== 'n'; }).map(function (k) { return PICK_NAMES[k].toLowerCase(); }).join(', ') : '') + '.' : 'No SNAI prices remembered yet.');
+  }
+  function changed(msg) { active.frontier = {}; active.curve = {}; active.key = null; solveActive(); renderRules(); renderBuilder(false); renderCards(); if (msg) toast(msg); }
+  $('#rComps').onclick = function (e) { var b = e.target.closest('[data-comp]'); if (!b) return; var c = active.cfg, i = c.comps.indexOf(b.dataset.comp);
+    if (i > -1) { if (c.comps.length === 1) { toast('Keep at least one competition.'); return; } c.comps.splice(i, 1); } else c.comps.push(b.dataset.comp);
+    c.comps.sort(function (x, y) { return COMPS.indexOf(x) - COMPS.indexOf(y); }); if (c.comps.indexOf(c.minLg) < 0) { c.minLg = c.comps[0]; c.minN = 0; }
+    clampLegs(); changed(); };
+  $('#rDays').onclick = function (e) { var b = e.target.closest('[data-day]'); if (!b || b.disabled) return; var c = active.cfg, i = c.days.indexOf(b.dataset.day);
+    if (i > -1) { if (c.days.length === 1) { toast('Keep at least one day.'); return; } c.days.splice(i, 1); } else c.days.push(b.dataset.day);
+    if (!poolOf(active).length) { c.days.push(b.dataset.day); toast('No matches would be left.'); return; } clampLegs(); changed(); };
+  $('#rPresets').onclick = function (e) { var b = e.target.closest('[data-preset]'); if (!b) return; active.cfg.allowed = setOf(PRESETS.filter(function (p) { return p.id === b.dataset.preset; })[0].ids); changed(); };
+  $('#rPicks').onclick = function (e) { var b = e.target.closest('[data-pickid]'); if (!b) return; var a = active.cfg.allowed, id = b.dataset.pickid;
+    if (a[id]) { if (Object.keys(a).length === 1) { toast('Keep at least one kind of pick.'); return; } delete a[id]; } else a[id] = 1; changed(); };
+  $('#rMinP').oninput = function () { var v = +this.value; active.cfg.minChance = v <= 45 ? 0 : v / 100; $('#rMinPV').textContent = v <= 45 ? 'any' : v + '%'; clearTimeout(this.t); this.t = setTimeout(function () { changed(); }, 140); };
+  $('#rMaxO').oninput = function () { var v = +this.value; active.cfg.maxOdds = v >= 4.1 ? 0 : v; $('#rMaxOV').textContent = v >= 4.1 ? 'any' : v.toFixed(2); clearTimeout(this.t); this.t = setTimeout(function () { changed(); }, 140); };
+  $('#rMinLg').onchange = function () { active.cfg.minLg = this.value; changed(); };
+  $('#rOut').onclick = function (e) { var b = e.target.closest('[data-back]'); if (b) { delete active.cfg.excluded[b.dataset.back]; changed('Back in play.'); } };
+  $('#resetRules').onclick = function () { fresh(active); changed('Rules reset for this slip.'); };
+  function clampLegs() { var c = active.cfg, max = Math.max(2, Math.min(15, poolOf(active).length)); if (c.legs > max) c.legs = max; if (c.minN > c.legs) c.minN = c.legs; if (c.perLg && c.perLg * c.comps.length < c.legs) c.perLg = 0; }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-step]'); if (!b) return; var c = active.cfg, d = +b.dataset.d, k = b.dataset.step;
+    if (k === 'legs') { var max = Math.min(15, poolOf(active).length); c.legs = Math.max(2, Math.min(max, c.legs + d)); clampLegs(); }
+    if (k === 'minN') c.minN = Math.max(0, Math.min(c.legs, c.minN + d));
+    if (k === 'perLg') { var v = (c.perLg || 0) + d; c.perLg = v <= 0 ? 0 : Math.min(c.legs, v); }
+    if (k === 'weeks') { SIM.weeks = Math.max(4, Math.min(52, SIM.weeks + d)); $('#simWeeks').textContent = SIM.weeks; return; }
+    changed();
+  });
+
+  /* ---------- builder ---------- */
+  var LOCK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+  var CHEV = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
+  function renderBuilder(freshList) {
+    var s = active, c = s.cfg, r = s.result, legs = $('#legs'), i = 0, multi = c.comps.length > 1;
+    $('#bWindow').textContent = s.window;
+    $('#bTitle').innerHTML = s.name + ' <span>' + c.target + 'x</span>';
+    $('#bNote').textContent = describe(s);
+    renderTargets();
+    $('#unlockAll').hidden = Object.keys(c.locks).length === 0;
+    $('#snaiBtn').disabled = !r;
+    if (!r) {
+      legs.innerHTML = '<p class="muted" style="padding:20px">No slip fits these rules at ' + c.target + 'x. Fewer matches, a looser rule or a lower target will find one. The bars on the right show which numbers of matches work.</p>';
+      $('#legsCount').textContent = 'no slip'; clearSide(); return;
+    }
+    $('#legsCount').textContent = r.picks.length + ' legs · ' + (r.checked ? r.checked + ' checked at SNAI' : 'prices are estimates');
+    legs.innerHTML = r.picks.map(function (x) {
+      var moved = freshList || s.prev[x.match.id] !== x.pick.id, locked = !!c.locks[x.match.id];
+      return '<button class="leg' + (moved ? ' flip' : '') + (locked ? ' locked' : '') + '" data-m="' + x.match.id + '" style="--i:' + (moved ? i++ : 0) + '">' +
+        '<time>' + x.match.t.replace(' ', '<br>') + '</time>' +
+        '<span class="leg-mid"><span class="leg-match">' + x.match.home + ' – ' + x.match.away + (multi ? ' · ' + x.match.lg : '') + '</span><span class="leg-pick">' + x.pick.label + '</span><span class="bar"><i style="width:' + (x.pick.p * 100).toFixed(1) + '%"></i></span></span>' +
+        '<span class="leg-odds"><b class="num">' + x.pick.odds.toFixed(2) + '</b><small class="num">' + Math.round(x.pick.p * 100) + '%</small><span class="src' + (x.pick.checked ? ' ok' : '') + '">' + (x.pick.checked ? 'SNAI' : 'est.') + '</span></span>' +
+        '<span class="lock">' + (locked ? LOCK : CHEV) + '</span></button>';
+    }).join('');
+    s.prev = {}; r.picks.forEach(function (x) { s.prev[x.match.id] = x.pick.id; });
+    if (!reduced) { legs.classList.remove('solving'); void legs.offsetWidth; legs.classList.add('solving'); }
+    renderSide();
+  }
+  function clearSide() {
+    odo($('#odo'), '0.00'); $('#hitPct').textContent = '–'; $('#hitIn').textContent = 'no slip'; $('#dialVal').setAttribute('stroke-dasharray', '0 176');
+    $('#payLine').textContent = ''; $('#chain').innerHTML = ''; $('#riskLine').textContent = ''; $('#ladder').innerHTML = ''; $('#snaiLine').textContent = '';
+    $('#payout').textContent = '–'; $('#evBack').textContent = '–'; $('#evLine').textContent = '';
+  }
+  /* the four targets and the chance for every number of matches are filled in one solve at a time, so the page stays responsive */
+  function renderTargets() {
+    var s = active, c = s.cfg, key = JSON.stringify(c), pool = poolOf(s), maxL = Math.min(15, pool.length), n, best = 0;
+    if (s.key !== key) { s.key = key; s.frontier = {}; s.curve = {}; }
+    if (s.frontier[c.target] === undefined) s.frontier[c.target] = s.result ? s.result.prob : 0;   /* the shown slip and its button always agree */
+    if (s.curve[c.legs] === undefined) s.curve[c.legs] = s.result ? s.result.prob : 0;
+    $('#targets').innerHTML = TARGETS.map(function (t) {
+      var f = s.frontier[t];
+      return '<button class="tgt" data-t="' + t + '" aria-pressed="' + (t === c.target) + '"><b class="display">' + t + 'x</b><small>' + (f ? '1 in ' + Math.round(1 / f) : f === 0 ? 'no slip' : '…') + '</small></button>';
+    }).join('');
+    $('#tSlider').value = c.target; $('#tSliderV').textContent = c.target + 'x';
+    $('#legsN').textContent = c.legs; $('#bonusIn').checked = c.bonusIn;
+    for (n = 2; n <= maxL; n++) if (s.curve[n] > best) best = s.curve[n];
+    var bars = '';
+    for (n = 2; n <= maxL; n++) {
+      var v = s.curve[n], h = v ? Math.max(6, v / best * 62) : 3;
+      bars += '<button data-legs="' + n + '" class="' + (v === 0 ? 'none' : '') + '" aria-pressed="' + (n === c.legs) + '" aria-label="' + n + ' matches' + (v ? ': 1 in ' + Math.round(1 / v) : v === 0 ? ': no slip' : '') + '"><em class="num">' + (v ? Math.round(1 / v) : v === 0 ? '×' : '·') + '</em><i style="height:' + h.toFixed(0) + 'px"></i><span>' + n + '</span></button>';
+    }
+    $('#explorer').innerHTML = bars;
+    $('#explorerNote').textContent = 'The small number is "1 in N" to land at ' + c.target + 'x with that many matches under your rules. × means no slip fits. Tap a bar to use it.';
+    var todoT = TARGETS.filter(function (t) { return s.frontier[t] === undefined; }), todoL = [];
+    for (n = 2; n <= maxL; n++) if (s.curve[n] === undefined) todoL.push(n);
+    if (!todoT.length && !todoL.length) return;
+    setTimeout(function () {
+      if (s.key !== key || s !== active) return;
+      if (todoT.length) { var t = todoT[0], r = run(s, t, c.legs, true); s.frontier[t] = r ? r.prob : 0; }
+      else { var L = todoL[0], r2 = L === c.legs && s.result ? s.result : run(s, c.target, L, true); s.curve[L] = r2 ? r2.prob : 0; }
+      renderTargets();
+    }, 20);
+  }
+  function renderSide() {
+    var s = active, c = s.cfg, r = s.result, L = 175.9;
+    odo($('#odo'), r.odds.toFixed(2));
+    $('#hitPct').textContent = pct(r.prob);
+    $('#hitIn').textContent = 'about 1 in ' + Math.round(1 / r.prob);
+    $('#dialVal').setAttribute('stroke-dasharray', (Math.min(1, r.prob / 0.05) * L).toFixed(1) + ' ' + L);
+    $('#dialBox').setAttribute('aria-label', 'Chance that every leg wins: ' + pct(r.prob));
+    $('#payLine').textContent = r.bonus ? 'Pays ' + r.pays.toFixed(1) + 'x with SNAI\'s +' + pct(r.bonus) + ' bonus' : 'No SNAI bonus under five legs';
+    var W = 340, H = 150, x0 = 30, x1 = W - 14, y0 = 14, y1 = H - 26, nL = r.picks.length, cum = 1, pts = [], worst = 0, wi = 0;
+    var X = function (i) { return x0 + (x1 - x0) * i / nL; }, Y = function (v) { return y0 + (y1 - y0) * (1 - v); };
+    var path = 'M' + x0 + ' ' + Y(1), dots = '', labels = '';
+    r.picks.forEach(function (x, i) {
+      if (1 - x.pick.p > worst) { worst = 1 - x.pick.p; wi = i; }
+      cum *= x.pick.p; path += ' H' + X(i + 1).toFixed(1) + ' V' + Y(cum).toFixed(1); pts.push([X(i + 1), Y(cum)]);
+      labels += '<text x="' + X(i + 0.5).toFixed(1) + '" y="' + (H - 8) + '" text-anchor="middle">' + (i + 1) + '</text>';
+    });
+    pts.forEach(function (p, i) { dots += '<circle class="' + (i === wi ? 'risk' : '') + '" style="--i:' + (i + 1) + '" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="3.5"/>'; });
+    $('#chain').innerHTML = [1, 0.5, 0].map(function (v) { return '<line class="grid" x1="' + x0 + '" x2="' + x1 + '" y1="' + Y(v) + '" y2="' + Y(v) + '"/><text x="' + (x0 - 5) + '" y="' + (Y(v) + 3) + '" text-anchor="end">' + v * 100 + '%</text>'; }).join('') +
+      '<path class="area" d="' + path + ' V' + Y(0) + ' H' + x0 + ' Z"/><path class="step" d="' + path + '"/>' + dots + labels;
+    var w = r.picks[wi];
+    $('#riskLine').innerHTML = 'Riskiest leg: <b>' + w.match.home + ' – ' + w.match.away + '</b>, ' + w.pick.label.toLowerCase() + ' (' + Math.round(w.pick.p * 100) + '%). It is the red dot.';
+    var lad = '', hiL = Math.max(10, nL), top = Scudi.snaiBonus(hiL), n;
+    for (n = 5; n <= hiL; n++) lad += '<div class="' + (n === nL ? 'on' : '') + '"><span class="num">+' + (Scudi.snaiBonus(n) * 100).toFixed(hiL > 11 ? 0 : 1) + '%</span><i style="height:' + (12 + Scudi.snaiBonus(n) / top * 52).toFixed(0) + 'px"></i><span>' + n + '</span></div>';
+    $('#ladder').innerHTML = lad;
+    var under = r.picks.filter(function (x) { return x.pick.odds < Scudi.SNAI_FLOOR; }).length;
+    $('#snaiLine').textContent = nL < 5 ? 'SNAI\'s bonus starts at five legs. This slip has ' + nL + '.' : under ? under + ' leg' + (under > 1 ? 's are' : ' is') + ' under 1.25 and will not count for the bonus.' : 'All ' + nL + ' legs are at 1.25 or more, so the full +' + pct(r.bonus) + ' applies. ' + (r.checked === nL ? 'Every price is SNAI\'s own.' : (nL - r.checked) + ' prices are still estimates.');
+    var payout = s.stake * r.pays, back = r.prob * payout;
+    $('#stakes').innerHTML = STAKES.map(function (v) { return '<button class="chip" data-stake="' + v + '" aria-pressed="' + (v === s.stake) + '">€' + v + '</button>'; }).join('');
+    $('#payout').textContent = euro(payout);
+    $('#evBack').textContent = euro(back);
+    $('#evLine').textContent = 'Played many times, a ' + euro(s.stake) + ' slip like this returns ' + euro(back) + ' on average: the bookmaker keeps about ' + Math.round((1 - back / s.stake) * 100) + '%.' + (r.bonus ? ' Without the bonus it would keep about ' + Math.round((1 - r.prob * r.odds) * 100) + '%.' : '') + (r.checked === nL ? '' : ' This becomes exact once SNAI\'s prices are entered.');
+    $('#placeBtn').textContent = s.placed ? 'Placed · undo' : 'Mark as placed';
+    $('#budget').textContent = '€' + monthUsed + ' of €100';
+  }
+  $('#targets').onclick = function (e) { var b = e.target.closest('[data-t]'); if (b) { active.cfg.target = +b.dataset.t; changed(); } };
+  $('#explorer').onclick = function (e) { var b = e.target.closest('[data-legs]'); if (b) { active.cfg.legs = +b.dataset.legs; clampLegs(); changed(); } };
+  $('#bonusIn').onchange = function () { active.cfg.bonusIn = this.checked; changed(this.checked ? 'The target now counts SNAI\'s bonus, so the slip can be a little safer.' : 'The target is back to the plain combined odds.'); };
+  var sliderTimer;
+  $('#tSlider').oninput = function () { var v = +this.value; $('#tSliderV').textContent = v + 'x'; clearTimeout(sliderTimer); sliderTimer = setTimeout(function () { active.cfg.target = v; changed(); }, 160); };
+  $('#stakes').onclick = function (e) { var b = e.target.closest('[data-stake]'); if (!b) return; if (active.placed) monthUsed += (+b.dataset.stake) - active.stake; active.stake = +b.dataset.stake; renderSide(); renderCards(); };
+  $('#unlockAll').onclick = function () { active.cfg.locks = {}; changed('All picks unlocked. Scudi chose again.'); };
+  $('#placeBtn').onclick = function () { var s = active; if (!s.result) return; s.placed = !s.placed; monthUsed += s.placed ? s.stake : -s.stake; renderSide(); renderCards(); toast(s.placed ? 'Marked as placed at SNAI. It will be graded when the last match ends.' : 'Removed from placed slips.'); };
+  $('#copyBtn').onclick = function () {
+    var s = active; if (!s.result) return;
+    var txt = 'Scudi · ' + s.name + ' · ' + s.result.odds.toFixed(2) + 'x\n' + s.result.picks.map(function (x, i) { return (i + 1) + '. ' + x.match.home + ' – ' + x.match.away + ': ' + x.pick.label + ' @ ' + x.pick.odds.toFixed(2); }).join('\n');
+    var no = function () { toast('Copying is blocked in this preview. It will work on the real site.'); };
+    try { navigator.clipboard.writeText(txt).then(function () { toast('Slip copied. Keep it next to SNAI while you enter the picks.'); }, no); } catch (err) { no(); }
+  };
+
+  /* ---------- drawers ---------- */
+  var lastFocus = null;
+  function openDrawer(html) {
+    var d = $('#drawer'); d.innerHTML = html; lastFocus = document.activeElement;
+    d.inert = false; d.classList.add('on'); d.scrollTop = 0; $('#scrim').classList.add('on');
+    $('#dClose').onclick = closeDrawer; setTimeout(function () { $('#dClose').focus({ preventScroll: true }); }, 60);
+    return d;
+  }
+  function closeDrawer() { var d = $('#drawer'); d.classList.remove('on'); d.inert = true; $('#scrim').classList.remove('on'); if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true }); }
+  var CLOSE = '<button class="iconbtn" id="dClose" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
+
+  function openMatch(id) {
+    var s = active, cfg = s.cfg, m = ALL.filter(function (x) { return x.id === id; })[0], c = m.calc || (m.calc = Scudi.matrix(m.lh, m.la));
+    var cur = s.prev[id], o = optsOf(s, cfg.legs, true), list = Scudi.candidates(m, MIN_LEG, cfg.actual, o.haircut), max = 0, i = 0, heat = '', groups = {};
+    c.grid.forEach(function (row) { row.forEach(function (p) { if (p > max) max = p; }); });
+    c.grid.forEach(function (row) { row.forEach(function (p) { heat += '<i style="--a:' + (0.05 + p / max * 0.95).toFixed(3) + ';--i:' + (i++) + '"></i>'; }); });
+    list.forEach(function (x) { (groups[x.group] = groups[x.group] || []).push(x); });
+    var opts = Object.keys(groups).map(function (g) {
+      return '<span class="grp">' + g + '</span>' + groups[g].sort(function (a, b) { return b.p - a.p; }).map(function (x) {
+        var outside = !cfg.allowed[x.id] || (cfg.minChance && x.p < cfg.minChance) || (cfg.maxOdds && x.odds > cfg.maxOdds);
+        return '<button class="opt" data-pick="' + x.id + '" aria-pressed="' + (x.id === cur) + '"><span><b>' + x.label + (outside ? ' <span class="src">outside your rules</span>' : '') + '</b><span class="bar"><i style="width:' + (x.p * 100).toFixed(1) + '%"></i></span></span><span class="num">' + Math.round(x.p * 100) + '%</span><span class="num">' + x.odds.toFixed(2) + '<small>' + (x.cost * 100).toFixed(1) + '%</small></span></button>';
+      }).join('');
+    }).join('');
+    var d = openDrawer('<div class="drawer-top"><span class="tag" style="color:var(--acc)"><span class="dot"></span>' + m.lg + ' · ' + m.t + '</span>' + CLOSE + '</div>' +
+      '<div class="teams"><b class="display" id="dTitle">' + m.home + '</b><span>v</span><b class="display">' + m.away + '</b></div>' +
+      '<div><div class="p3"><div><strong class="display">' + Math.round(c.home * 100) + '%</strong><small>' + m.home + '</small></div><div><strong class="display">' + Math.round(c.draw * 100) + '%</strong><small>Draw</small></div><div><strong class="display">' + Math.round(c.away * 100) + '%</strong><small>' + m.away + '</small></div></div>' +
+      '<div class="pbar"><i class="h" style="flex:0 0 ' + (c.home * 100).toFixed(1) + '%"></i><i class="d" style="flex:1 1 0"></i><i class="a" style="flex:0 0 ' + (c.away * 100).toFixed(1) + '%"></i></div><p class="fine" style="margin-top:8px">' + (m.books ? 'Consensus of ' + m.books + ' bookmakers, margin removed' + (m.sharp ? ', ' + Math.round(m.sharp * 100) + '% of the weight from Pinnacle and Betfair' : '') + '.' : 'The market\'s view, bookmaker margin removed.') + '</p></div>' +
+      '<div><span class="eyebrow">Likely scores</span><div class="heatwrap" style="margin-top:10px"><div class="heat" role="img" aria-label="Score grid">' + heat + '</div><div class="tops">' + c.scores.slice(0, 4).map(function (x) { return '<span><b class="display">' + x.h + '–' + x.a + '</b><span class="num muted">' + (x.p * 100).toFixed(1) + '%</span></span>'; }).join('') + '</div></div><p class="fine" style="margin-top:8px">Grid: ' + m.home + ' goals down (0 to 4+), ' + m.away + ' goals across. Brighter is likelier.</p></div>' +
+      '<div><span class="eyebrow">Picks for this match</span><p class="fine" style="margin-block:6px 4px">Chance, price, and what the bookmaker\'s margin costs you on that pick. Choose one to lock it, even outside your rules; the rest of the slip rebuilds to stay on target.</p><div class="opts">' + opts + '</div></div>' +
+      '<div class="row2">' + (cfg.locks[id] ? '<button class="btn ghost" id="dUnlock">Let Scudi choose</button>' : '<span></span>') + '<button class="btn ghost" id="dOut">Leave this match out</button></div>');
+    if ($('#dUnlock')) $('#dUnlock').onclick = function () { delete cfg.locks[id]; closeDrawer(); changed(); };
+    $('#dOut').onclick = function () { delete cfg.locks[id]; cfg.excluded[id] = true; closeDrawer(); changed(m.home + ' – ' + m.away + ' is left out. Undo it in your rules.'); };
+    $$('.opt', d).forEach(function (b) { b.onclick = function () {
+      var before = cfg.locks[id]; cfg.locks[id] = b.dataset.pick;
+      var r = run(s, cfg.target);
+      if (!r) { if (before) cfg.locks[id] = before; else delete cfg.locks[id]; toast('With that pick no slip reaches ' + cfg.target + 'x under your rules.'); return; }
+      closeDrawer(); changed('Locked. The other legs were rebuilt to stay at ' + cfg.target + 'x.');
+    }; });
+  }
+
+  /* type the prices SNAI really shows for the current legs; the slip is then re-solved with them */
+  function openPrices() {
+    var s = active, cfg = s.cfg, r = s.result; if (!r) return;
+    var d = openDrawer('<div class="drawer-top"><span class="tag" style="color:var(--acc)"><span class="dot"></span>' + s.name + ' · ' + r.picks.length + ' legs</span>' + CLOSE + '</div>' +
+      '<div><h2 class="display" id="dTitle" style="font-size:26px">SNAI\'s prices</h2><p class="fine" style="margin-top:6px">Open each pick on SNAI and type the price you see. Scudi then recomputes the odds, the bonus and the true cost. If the slip falls short of the target it swaps a leg and asks you to check the new one.</p></div>' +
+      '<div class="form">' + r.picks.map(function (x, i) {
+        return '<label class="frow" for="px' + i + '"><span><b>' + x.pick.label + '</b><small>' + x.match.home + ' – ' + x.match.away + ' · ' + (x.pick.checked ? 'entered' : 'estimate ' + x.pick.odds.toFixed(2)) + '</small></span>' +
+          '<input id="px' + i + '" inputmode="decimal" type="number" min="1.01" step="0.01" value="' + x.pick.odds.toFixed(2) + '" data-m="' + x.match.id + '" data-p="' + x.pick.id + '"></label>';
+      }).join('') + '</div><div class="row2"><button class="btn ghost" id="pxClear">Back to estimates</button><button class="btn primary" id="pxApply">Apply prices</button></div>');
+    $('#pxClear').onclick = function () { cfg.actual = {}; closeDrawer(); changed('Back to estimated prices.'); };
+    $('#pxApply').onclick = function () {
+      var bad = false, typed = {};
+      $$('input', d).forEach(function (inp) { var v = parseFloat(inp.value); if (!(v > 1)) bad = true; else (typed[inp.dataset.m] = typed[inp.dataset.m] || {})[inp.dataset.p] = Math.round(v * 100) / 100; });
+      if (bad) { toast('Every price must be a number above 1.00.'); return; }
+      Object.keys(typed).forEach(function (mid) { cfg.actual[mid] = Object.assign(cfg.actual[mid] || {}, typed[mid]); });
+      remember(Scudi.ratiosFrom(poolOf(s), typed));
+      closeDrawer(); changed();
+      var r2 = s.result; if (!r2) { toast('At SNAI\'s prices no slip reaches ' + cfg.target + 'x under your rules.'); return; }
+      var left = r2.picks.length - r2.checked, cut = Math.round((1 - Scudi.haircutFrom([], {}, MEMORY).all) * 100);
+      toast(!left ? 'All prices are SNAI\'s. ' + r2.odds.toFixed(2) + 'x, pays ' + r2.pays.toFixed(1) + 'x with the bonus.' : (cut > 0 ? 'SNAI is about ' + cut + '% below the estimates. ' : '') + 'Scudi changed ' + left + ' leg' + (left === 1 ? '' : 's') + ' to stay on target. Check ' + (left === 1 ? 'its price' : 'their prices') + ' on SNAI too.');
+    };
+  }
+  $('#snaiBtn').onclick = openPrices;
+  $('#legs').onclick = function (e) { var b = e.target.closest('[data-m]'); if (b) openMatch(b.dataset.m); };
+  $('#scrim').onclick = closeDrawer;
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeDrawer(); });
+  var toastTimer;
+  function toast(msg) { var t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove('on'); }, 3600); }
+
+  /* ---------- the season record (format of site/data/record.json; example values here) ---------- */
+  var RECORD = LIVE_RECORD ? { live: true, slips: LIVE_RECORD.slips.map(function (s) { return { name: s.name, chance: s.chance, landed: s.landed, placed: false, stake: 0, payout: s.odds * (1 + s.bonus) * 5 }; }) } : { slips: [
+    { name: 'Serie A', chance: 0.024, landed: false, placed: true, stake: 5 }, { name: 'Top 5 leagues', chance: 0.031, landed: false, placed: true, stake: 5 },
+    { name: 'Champions League Tue', chance: 0.026, landed: false, placed: false, stake: 5 }, { name: 'Champions League Wed', chance: 0.027, landed: false, placed: false, stake: 5 },
+    { name: 'Serie A', chance: 0.023, landed: false, placed: true, stake: 5 }, { name: 'Top 5 leagues', chance: 0.030, landed: true, payout: 155.2, placed: true, stake: 5 },
+    { name: 'Serie A', chance: 0.025, landed: false, placed: true, stake: 5 }, { name: 'Top 5 leagues', chance: 0.031, landed: false, placed: true, stake: 5 }] };
+  function renderRecord() {
+    var g = RECORD.slips, exp = g.reduce(function (a, x) { return a + x.chance; }, 0), hits = g.filter(function (x) { return x.landed; }).length;
+    var staked = g.filter(function (x) { return x.placed; }).reduce(function (a, x) { return a + x.stake; }, 0), back = g.filter(function (x) { return x.placed && x.landed; }).reduce(function (a, x) { return a + x.payout; }, 0);
+    $('#recGraded').textContent = g.length; $('#recExp').textContent = exp.toFixed(2); $('#recHits').textContent = hits; $('#recMoney').textContent = RECORD.live ? 'see SNAI' : euro(staked) + ' · ' + euro(back);
+    $('#recTag').textContent = RECORD.live ? 'live record' : 'example record';
+    var by = {}; g.forEach(function (x) { var b = by[x.name] = by[x.name] || { n: 0, e: 0, h: 0 }; b.n++; b.e += x.chance; b.h += x.landed ? 1 : 0; });
+    $('#recBy').innerHTML = Object.keys(by).map(function (k) { return '<div class="pair"><b>' + k + '</b><span class="num muted">' + by[k].n + ' graded · expected ' + by[k].e.toFixed(2) + ' · landed ' + by[k].h + '</span></div>'; }).join('');
+    $('#recTrack').innerHTML = g.map(function (x) { return '<i class="' + (x.landed ? 'hit' : '') + '"></i>'; }).join('') + '<i class="next"></i>';
+    var sd = Math.sqrt(g.reduce(function (a, x) { return a + x.chance * (1 - x.chance); }, 0));
+    $('#recNote').textContent = 'Expected ' + exp.toFixed(2) + ' hits so far, landed ' + hits + ': ' + (Math.abs(hits - exp) <= 2 * sd ? 'within what chance alone produces.' : 'further from expectation than chance alone usually produces; worth a look at the data.') + ' One hit this early is luck, not proof, and a long dry run is not proof of a fault either.';
+  }
+  var SIM = { weeks: 38, on: { sa: true, t5: true, ut: true, uw: true }, perWeek: { sa: 1, t5: 1, ut: 0.35, uw: 0.35, my: 1 } };
+  function renderSimControls() {
+    $('#simSlips').innerHTML = SLIPS.map(function (s) { return '<button class="chip" data-sim="' + s.id + '" aria-pressed="' + (!!SIM.on[s.id]) + '">' + s.name + (s.id === 'ut' || s.id === 'uw' ? ' ' + s.sub.split(' ')[0] : '') + ' · ' + euro(s.stake) + '</button>'; }).join('');
+    $('#simWeeks').textContent = SIM.weeks;
+  }
+  $('#simSlips').onclick = function (e) { var b = e.target.closest('[data-sim]'); if (b) { SIM.on[b.dataset.sim] = !SIM.on[b.dataset.sim]; renderSimControls(); } };
+  $('#simRun').onclick = function () {
+    var plans = SLIPS.filter(function (s) { return SIM.on[s.id] && s.result; }).map(function (s) { return { p: s.result.prob, pay: s.result.pays, stake: s.stake, n: Math.round(SIM.perWeek[s.id] * SIM.weeks) }; });
+    if (!plans.length) { toast('Pick at least one slip that has a result.'); return; }
+    var sims = 20000, chances = [], pays = [], stakes = [];
+    plans.forEach(function (pl) { for (var i = 0; i < pl.n; i++) { chances.push(pl.p); pays.push(pl.pay); stakes.push(pl.stake); } });
+    var n = chances.length, total = stakes.reduce(function (a, b) { return a + b; }, 0), profit = new Float64Array(sims), hits = new Int16Array(sims), dry = new Int16Array(sims), run = new Int16Array(sims);
+    for (var j = 0; j < n; j++) for (var k = 0; k < sims; k++) { if (Math.random() < chances[j]) { profit[k] += pays[j] * stakes[j]; hits[k]++; run[k] = 0; } else { run[k]++; if (run[k] > dry[k]) dry[k] = run[k]; } }
+    var pct = function (arr, q) { var a = Array.prototype.slice.call(arr).sort(function (x, y) { return x - y; }); return a[Math.min(a.length - 1, Math.floor(q * a.length))]; };
+    var loss = 0, zero = 0; for (k = 0; k < sims; k++) { profit[k] -= total; if (profit[k] < 0) loss++; if (!hits[k]) zero++; }
+    var expHits = chances.reduce(function (a, b) { return a + b; }, 0), expProfit = chances.reduce(function (a, c, i) { return a + c * pays[i] * stakes[i]; }, 0) - total;
+    $('#simOut').hidden = false;
+    $('#simStaked').textContent = euro(total) + ' · ' + n + ' slips';
+    $('#simHits').textContent = expHits.toFixed(1) + ' · ' + pct(hits, 0.05) + ' to ' + pct(hits, 0.95);
+    $('#simDry').textContent = pct(dry, 0.5) + ' · ' + pct(dry, 0.9) + ' slips';
+    $('#simZero').textContent = Math.round(zero / sims * 100) + '%';
+    $('#simRange').textContent = (pct(profit, 0.05) < 0 ? '−' : '+') + euro(Math.abs(pct(profit, 0.05))) + ' to +' + euro(Math.max(0, pct(profit, 0.95)));
+    $('#simLoss').textContent = Math.round(loss / sims * 100) + '%';
+    $('#simNote').textContent = 'On average this season loses ' + euro(Math.abs(expProfit)) + ' (' + Math.round(-expProfit / total * 100) + '% of stakes). The typical season is worse than the average because the rare hits carry it. Prices are estimates; SNAI\'s own prices will move these numbers.';
+  };
+
+  /* ---------- evidence from the backtests (fixed numbers from tools/backtest.py, variants.py, rules.py, pool.py, exam.py) ---------- */
+  function renderEvidence() {
+    var pair = function (label, right, a, b, max) { return '<div class="pair"><b>' + label + '</b><span class="num muted">' + right + '</span><div class="bars"><i style="width:' + (a / max * 100).toFixed(1) + '%"></i><i class="b" style="width:' + (b / max * 100).toFixed(1) + '%"></i></div></div>'; };
+    var key = function (a, b) { return '<div class="key"><span><i></i>' + a + '</span><span><i class="b"></i>' + b + '</span></div>'; };
+    $('#evCal').innerHTML = key('promised', 'happened') + [['Home win', 66.7, 66.9], ['Home or draw', 72.0, 72.6], ['No draw', 73.8, 73.5], ['Over 1.5 goals', 74.5, 74.2], ['Under 3.5 goals', 72.2, 72.4], ['Over 2.5 goals', 61.9, 61.9]]
+      .map(function (x) { return pair(x[0], x[1].toFixed(1) + '% → ' + x[2].toFixed(1) + '%', x[1], x[2], 100); }).join('');
+    $('#evHits').innerHTML = key('expected to land', 'landed') + [['Serie A, all ten, 25x · 623 rounds', 15.4, 12], ['Serie A, all ten, 50x · 623 rounds', 8.0, 11], ['Top 5, best ten, 25x · 637 weekends', 19.2, 26], ['Top 5, best ten, 50x · 637 weekends', 9.8, 10]]
+      .map(function (x) { return pair(x[0], x[1].toFixed(1) + ' → ' + x[2], x[1], x[2], 30); }).join('');
+    $('#evLegs').innerHTML = [[5, 30.4, 0.855], [6, 31.2, 0.864], [7, 32.6, 0.855], [8, 34.7, 0.834], [9, 37.2, 0.805], [10, 40.4, 0.770]]
+      .map(function (x) { return '<div class="pair"><b>' + x[0] + ' legs</b><span class="num muted">1 in ' + Math.round(x[1]) + ' · €' + x[2].toFixed(2) + '</span><div class="bars"><i class="b" style="width:' + (100 / x[1] / 3.5 * 100).toFixed(1) + '%"></i></div></div>'; }).join('');
+    var T = { 5: [[29.1, 0.896], [29.1, 0.896], [29.1, 0.896]], 6: [[29.4, 0.917], [29.4, 0.917], [29.4, 0.917]], 8: [[31.5, 0.945], [30.6, 0.945], [30.6, 0.946]], 10: [[50.1, 0.953], [33.4, 0.931], [33.2, 0.935]], 12: [[135.2, 0.962], [38.6, 0.865], [38.3, 0.871]] };
+    $('#evRules').innerHTML = '<tr><th>Matches</th><th>Only results</th><th>Results + double chance</th><th>Everything</th></tr>' + [5, 6, 8, 10, 12].map(function (n) {
+      var low = Math.min.apply(null, T[n].map(function (x) { return x[0]; }));
+      return '<tr><td><b>' + n + '</b></td>' + T[n].map(function (x) { return '<td class="' + (x[0] === low ? 'bestcell' : '') + '"><b>1 in ' + Math.round(x[0]) + '</b><small>€' + x[1].toFixed(2) + '</small></td>'; }).join('') + '</tr>';
+    }).join('');
+    $('#evExam').innerHTML = [['Home win 66.6% → 65.9%', 'pass'], ['Home or draw 71.4% → 70.7%', 'pass'], ['Over 1.5 goals 75.5% → 75.7%', 'pass'], ['Both teams score 60.6% → 59.2%', 'pass'], ['Away or draw 68.0% → 69.9%', 'pass'], ['Top 5, 25x: 2.2 expected · 3 landed', 'pass'], ['Serie A, 25x: 1.7 expected · 0 landed', 'pass'], ['Not both score 58.4% → 54.2%', 'kept out']]
+      .map(function (x) { return '<div class="pair"><b>' + x[0] + '</b><span class="' + (x[1] === 'pass' ? 'placed' : 'muted') + '">' + x[1] + '</span></div>'; }).join('');
+    $('#evExamNote').textContent = 'Verdict: PASS. Every offered pick type within 2 points of its promise (worst 1.9). The slip series are thin (two seasons ≈ 70 slips each, 1–2 expected hits), so calibration is the strong test here; the live record continues it.';
+    $('#evPool').innerHTML = [['Top 5 (45 matches)', 33.3, 0.93], ['+ second divisions (92)', 32.7, 0.95], ['+ NL, PT, BE, TR (122)', 32.1, 0.97]]
+      .map(function (x) { return '<div class="pair"><b>' + x[0] + '</b><span class="num muted">1 in ' + x[1] + ' · €' + x[2].toFixed(2) + '</span><div class="bars"><i class="b" style="width:' + (100 / x[1] / 3.5 * 100).toFixed(1) + '%"></i></div></div>'; }).join('');
+    $('#evRulesNote').textContent = 'With only results, more than eight matches overshoot the target (ten legs come out near 48x), so the chance collapses. Asking for at least five Serie A legs out of ten costs little: 1 in 35 and €0.90 instead of 1 in 33 and €0.94. "At most two per league" gives 1 in 34 and €0.92, but could only be built on 77% of weekends. Bet365 prices; SNAI\'s may be less generous.';
+  }
+
+  /* ---------- night sky ---------- */
+  (function sky() {
+    var cv = $('#sky'), ctx = cv.getContext('2d'), stars = [], W, H, dpr = Math.min(2, window.devicePixelRatio || 1), raf;
+    function size() { W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr; }
+    function seed() { stars = []; for (var i = 0; i < 90; i++) stars.push({ x: Math.random(), y: Math.random(), r: Math.random() * 1.3 + 0.3, s: Math.random() * 0.00006 + 0.00002, tw: Math.random() * 6.28, gold: Math.random() < 0.12 }); }
+    function frame(t) {
+      ctx.clearRect(0, 0, W, H);
+      var g = ctx.createRadialGradient(W * 0.82, H * 0.02, 0, W * 0.82, H * 0.02, Math.max(W, H) * 0.7);
+      g.addColorStop(0, 'rgba(77,163,255,.13)'); g.addColorStop(0.5, 'rgba(120,90,220,.05)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      stars.forEach(function (s) {
+        s.x -= s.s * 16; if (s.x < -0.02) s.x = 1.02;
+        var a = 0.35 + 0.35 * Math.sin(t / 900 + s.tw);
+        ctx.beginPath(); ctx.arc(s.x * W, s.y * H, s.r * dpr, 0, 6.283);
+        ctx.fillStyle = s.gold ? 'rgba(233,185,73,' + a + ')' : 'rgba(200,210,255,' + a * 0.8 + ')'; ctx.fill();
+      });
+      if (!reduced) raf = requestAnimationFrame(frame);
+    }
+    size(); seed(); frame(0);
+    addEventListener('resize', function () { size(); if (reduced) frame(0); });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) cancelAnimationFrame(raf); else if (!reduced) raf = requestAnimationFrame(frame); });
+  })();
+
+  /* ---------- boot ---------- */
+  solveActive(); renderCards(); renderRules(); renderBuilder(true); renderEvidence(); renderRecord(); renderSimControls();
+  }   /* end boot */
+})();
+
+</script>
+
+</body>
+</html>

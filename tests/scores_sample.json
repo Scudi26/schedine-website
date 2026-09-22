@@ -1,0 +1,5 @@
+[
+ {"id": "ev1", "sport_key": "soccer_italy_serie_a", "commence_time": "2026-10-10T13:00:00Z", "completed": true, "home_team": "Genoa", "away_team": "Fiorentina",
+  "scores": [{"name": "Genoa", "score": "1"}, {"name": "Fiorentina", "score": "1"}], "last_update": "2026-10-10T15:00:00Z"},
+ {"id": "ev2", "sport_key": "soccer_italy_serie_a", "commence_time": "2026-10-10T16:00:00Z", "completed": false, "home_team": "Inter", "away_team": "Parma", "scores": null, "last_update": null}
+]
