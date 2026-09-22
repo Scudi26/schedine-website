@@ -1,0 +1,942 @@
+{
+"note": "ESPN team ids, names, abbreviations and colours for the six competitions, read from ESPN's public teams lists on 2026-09-22. Logos: https://a.espncdn.com/i/teamlogos/soccer/500/{id}.png and .../500-dark/{id}.png. Used by tools/sample_espn.py; tools/teams.py refreshes the real thing.",
+"read_at": "2026-09-22",
+"competitions": {
+"Serie A": [
+{
+"id": 103,
+"name": "AC Milan",
+"short": "Milan",
+"abbr": "MIL",
+"color": "e4002b"
+},
+{
+"id": 104,
+"name": "AS Roma",
+"short": "AS Roma",
+"abbr": "ROMA",
+"color": "990a2c"
+},
+{
+"id": 105,
+"name": "Atalanta",
+"short": "Atalanta",
+"abbr": "ATA",
+"color": "1157bf"
+},
+{
+"id": 107,
+"name": "Bologna",
+"short": "Bologna",
+"abbr": "BOL",
+"color": "04043d"
+},
+{
+"id": 2925,
+"name": "Cagliari",
+"short": "Cagliari",
+"abbr": "CAG",
+"color": "282846"
+},
+{
+"id": 2572,
+"name": "Como",
+"short": "Como",
+"abbr": "COMO",
+"color": "4169e1"
+},
+{
+"id": 109,
+"name": "Fiorentina",
+"short": "Fiorentina",
+"abbr": "FIO",
+"color": "4c1d84"
+},
+{
+"id": 4057,
+"name": "Frosinone",
+"short": "Frosinone",
+"abbr": "FRO",
+"color": "facf08"
+},
+{
+"id": 3263,
+"name": "Genoa",
+"short": "Genoa",
+"abbr": "GEN",
+"color": "08305d"
+},
+{
+"id": 110,
+"name": "Internazionale",
+"short": "Inter Milan",
+"abbr": "INT",
+"color": "00239c"
+},
+{
+"id": 111,
+"name": "Juventus",
+"short": "Juventus",
+"abbr": "JUV",
+"color": "000000"
+},
+{
+"id": 112,
+"name": "Lazio",
+"short": "Lazio",
+"abbr": "LAZ",
+"color": "74bde7"
+},
+{
+"id": 113,
+"name": "Lecce",
+"short": "Lecce",
+"abbr": "LEC",
+"color": "fced0b"
+},
+{
+"id": 4007,
+"name": "Monza",
+"short": "Monza",
+"abbr": "MON",
+"color": "c8142f"
+},
+{
+"id": 114,
+"name": "Napoli",
+"short": "Napoli",
+"abbr": "NAP",
+"color": "0677d2"
+},
+{
+"id": 115,
+"name": "Parma",
+"short": "Parma",
+"abbr": "PAR",
+"color": "19161d"
+},
+{
+"id": 3997,
+"name": "Sassuolo",
+"short": "Sassuolo",
+"abbr": "SAS",
+"color": "0fa653"
+},
+{
+"id": 239,
+"name": "Torino",
+"short": "Torino",
+"abbr": "TOR",
+"color": "9f0000"
+},
+{
+"id": 118,
+"name": "Udinese",
+"short": "Udinese",
+"abbr": "UDI",
+"color": "19161d"
+},
+{
+"id": 17530,
+"name": "Venezia",
+"short": "Venezia",
+"abbr": "VEN",
+"color": "000000"
+}
+],
+"Premier League": [
+{
+"id": 349,
+"name": "AFC Bournemouth",
+"short": "Bournemouth",
+"abbr": "BOU",
+"color": "f42727"
+},
+{
+"id": 359,
+"name": "Arsenal",
+"short": "Arsenal",
+"abbr": "ARS",
+"color": "e20520"
+},
+{
+"id": 362,
+"name": "Aston Villa",
+"short": "Aston Villa",
+"abbr": "AVL",
+"color": "660e36"
+},
+{
+"id": 337,
+"name": "Brentford",
+"short": "Brentford",
+"abbr": "BRE",
+"color": "f42727"
+},
+{
+"id": 331,
+"name": "Brighton & Hove Albion",
+"short": "Brighton",
+"abbr": "BHA",
+"color": "0606fa"
+},
+{
+"id": 363,
+"name": "Chelsea",
+"short": "Chelsea",
+"abbr": "CHE",
+"color": "144992"
+},
+{
+"id": 388,
+"name": "Coventry City",
+"short": "Coventry",
+"abbr": "COV",
+"color": "87cced"
+},
+{
+"id": 384,
+"name": "Crystal Palace",
+"short": "C Palace",
+"abbr": "CRY",
+"color": "0202fb"
+},
+{
+"id": 368,
+"name": "Everton",
+"short": "Everton",
+"abbr": "EVE",
+"color": "0606fa"
+},
+{
+"id": 370,
+"name": "Fulham",
+"short": "Fulham",
+"abbr": "FUL",
+"color": "ffffff"
+},
+{
+"id": 306,
+"name": "Hull City",
+"short": "Hull",
+"abbr": "HUL",
+"color": "f28800"
+},
+{
+"id": 373,
+"name": "Ipswich Town",
+"short": "Ipswich",
+"abbr": "IPS",
+"color": "0000fa"
+},
+{
+"id": 357,
+"name": "Leeds United",
+"short": "Leeds",
+"abbr": "LEE",
+"color": "ffffff"
+},
+{
+"id": 364,
+"name": "Liverpool",
+"short": "Liverpool",
+"abbr": "LIV",
+"color": "d11317"
+},
+{
+"id": 382,
+"name": "Manchester City",
+"short": "Man City",
+"abbr": "MNC",
+"color": "99c5ea"
+},
+{
+"id": 360,
+"name": "Manchester United",
+"short": "Man United",
+"abbr": "MAN",
+"color": "da020e"
+},
+{
+"id": 361,
+"name": "Newcastle United",
+"short": "Newcastle",
+"abbr": "NEW",
+"color": "000000"
+},
+{
+"id": 393,
+"name": "Nottingham Forest",
+"short": "Nottm Forest",
+"abbr": "NFO",
+"color": "c8102e"
+},
+{
+"id": 366,
+"name": "Sunderland",
+"short": "Sunderland",
+"abbr": "SUN",
+"color": "eb172b"
+},
+{
+"id": 367,
+"name": "Tottenham Hotspur",
+"short": "Spurs",
+"abbr": "TOT",
+"color": "ffffff"
+}
+],
+"La Liga": [
+{
+"id": 96,
+"name": "Alavés",
+"short": "Alavés",
+"abbr": "ALA",
+"color": "0000ff"
+},
+{
+"id": 93,
+"name": "Athletic Club",
+"short": "Athletic",
+"abbr": "ATH",
+"color": "c8142f"
+},
+{
+"id": 1068,
+"name": "Atlético Madrid",
+"short": "Atlético",
+"abbr": "ATM",
+"color": "ca3624"
+},
+{
+"id": 83,
+"name": "Barcelona",
+"short": "Barcelona",
+"abbr": "BAR",
+"color": "990000"
+},
+{
+"id": 85,
+"name": "Celta Vigo",
+"short": "Celta Vigo",
+"abbr": "CEL",
+"color": "6cace4"
+},
+{
+"id": 90,
+"name": "Deportivo La Coruña",
+"short": "Deportivo",
+"abbr": "DEP",
+"color": "3366cc"
+},
+{
+"id": 3751,
+"name": "Elche",
+"short": "Elche",
+"abbr": "ELC",
+"color": "ffffff"
+},
+{
+"id": 88,
+"name": "Espanyol",
+"short": "Espanyol",
+"abbr": "ESP",
+"color": "3366cc"
+},
+{
+"id": 2922,
+"name": "Getafe",
+"short": "Getafe",
+"abbr": "GET",
+"color": "0000ff"
+},
+{
+"id": 1538,
+"name": "Levante",
+"short": "Levante",
+"abbr": "LEV",
+"color": "c8142f"
+},
+{
+"id": 99,
+"name": "Málaga",
+"short": "Málaga",
+"abbr": "MCF",
+"color": "b9e8f0"
+},
+{
+"id": 97,
+"name": "Osasuna",
+"short": "Osasuna",
+"abbr": "OSA",
+"color": "cd0000"
+},
+{
+"id": 87,
+"name": "Racing Santander",
+"short": "Racing",
+"abbr": "RAC",
+"color": "3b6c1a"
+},
+{
+"id": 101,
+"name": "Rayo Vallecano",
+"short": "Rayo",
+"abbr": "RAY",
+"color": "ffffff"
+},
+{
+"id": 244,
+"name": "Real Betis",
+"short": "Betis",
+"abbr": "BET",
+"color": "288a00"
+},
+{
+"id": 86,
+"name": "Real Madrid",
+"short": "Real Madrid",
+"abbr": "RMA",
+"color": "ffffff"
+},
+{
+"id": 89,
+"name": "Real Sociedad",
+"short": "Real Sociedad",
+"abbr": "RSO",
+"color": "3366cc"
+},
+{
+"id": 243,
+"name": "Sevilla",
+"short": "Sevilla",
+"abbr": "SEV",
+"color": "ffffff"
+},
+{
+"id": 94,
+"name": "Valencia",
+"short": "Valencia",
+"abbr": "VAL",
+"color": "ffffff"
+},
+{
+"id": 102,
+"name": "Villarreal",
+"short": "Villarreal",
+"abbr": "VIL",
+"color": "ffff00"
+}
+],
+"Bundesliga": [
+{
+"id": 598,
+"name": "1. FC Union Berlin",
+"short": "Union Berlin",
+"abbr": "FCU",
+"color": "da0308"
+},
+{
+"id": 131,
+"name": "Bayer Leverkusen",
+"short": "Leverkusen",
+"abbr": "B04",
+"color": "da0308"
+},
+{
+"id": 132,
+"name": "Bayern Munich",
+"short": "Bayern",
+"abbr": "MUN",
+"color": "dc052d"
+},
+{
+"id": 124,
+"name": "Borussia Dortmund",
+"short": "Dortmund",
+"abbr": "DOR",
+"color": "ffee00"
+},
+{
+"id": 268,
+"name": "Borussia Mönchengladbach",
+"short": "Gladbach",
+"abbr": "BMG",
+"color": "ffffff"
+},
+{
+"id": 125,
+"name": "Eintracht Frankfurt",
+"short": "Frankfurt",
+"abbr": "SGE",
+"color": "ffffff"
+},
+{
+"id": 3841,
+"name": "FC Augsburg",
+"short": "Augsburg",
+"abbr": "FCA",
+"color": "ffffff"
+},
+{
+"id": 122,
+"name": "FC Cologne",
+"short": "Cologne",
+"abbr": "KOE",
+"color": "ffffff"
+},
+{
+"id": 127,
+"name": "Hamburg SV",
+"short": "Hamburg",
+"abbr": "HSV",
+"color": "1a26af"
+},
+{
+"id": 2950,
+"name": "Mainz",
+"short": "Mainz",
+"abbr": "M05",
+"color": "da0308"
+},
+{
+"id": 11420,
+"name": "RB Leipzig",
+"short": "RB Leipzig",
+"abbr": "RBL",
+"color": "ffffff"
+},
+{
+"id": 126,
+"name": "SC Freiburg",
+"short": "Freiburg",
+"abbr": "SCF",
+"color": "da0308"
+},
+{
+"id": 3307,
+"name": "SC Paderborn 07",
+"short": "Paderborn",
+"abbr": "SCP",
+"color": "0000dd"
+},
+{
+"id": 10388,
+"name": "SV Elversberg",
+"short": "Elversberg",
+"abbr": "ELV",
+"color": "000000"
+},
+{
+"id": 133,
+"name": "Schalke 04",
+"short": "Schalke",
+"abbr": "S04",
+"color": "0000dd"
+},
+{
+"id": 7911,
+"name": "TSG Hoffenheim",
+"short": "Hoffenheim",
+"abbr": "TSG",
+"color": "003399"
+},
+{
+"id": 134,
+"name": "VfB Stuttgart",
+"short": "Stuttgart",
+"abbr": "VFB",
+"color": "ffffff"
+},
+{
+"id": 137,
+"name": "Werder Bremen",
+"short": "Bremen",
+"abbr": "SVW",
+"color": "03915c"
+}
+],
+"Ligue 1": [
+{
+"id": 172,
+"name": "AJ Auxerre",
+"short": "Auxerre",
+"abbr": "AUX",
+"color": "ffffff"
+},
+{
+"id": 174,
+"name": "AS Monaco",
+"short": "Monaco",
+"abbr": "MON",
+"color": "e91514"
+},
+{
+"id": 7868,
+"name": "Angers",
+"short": "Angers",
+"abbr": "ANG",
+"color": "1a1a1a"
+},
+{
+"id": 6997,
+"name": "Brest",
+"short": "Brest",
+"abbr": "BRE",
+"color": "ef2f24"
+},
+{
+"id": 3236,
+"name": "Le Havre AC",
+"short": "Le Havre AC",
+"abbr": "HAC",
+"color": "011f68"
+},
+{
+"id": 2697,
+"name": "Le Mans",
+"short": "Le Mans",
+"abbr": "MNS",
+"color": "d62b11"
+},
+{
+"id": 175,
+"name": "Lens",
+"short": "Lens",
+"abbr": "RCL",
+"color": "e91514"
+},
+{
+"id": 166,
+"name": "Lille",
+"short": "Lille",
+"abbr": "LILL",
+"color": "c2051b"
+},
+{
+"id": 273,
+"name": "Lorient",
+"short": "Lorient",
+"abbr": "LOR",
+"color": "f46100"
+},
+{
+"id": 167,
+"name": "Lyon",
+"short": "Lyon",
+"abbr": "LYON",
+"color": "ffffff"
+},
+{
+"id": 176,
+"name": "Marseille",
+"short": "Marseille",
+"abbr": "OLM",
+"color": "ffffff"
+},
+{
+"id": 2502,
+"name": "Nice",
+"short": "Nice",
+"abbr": "NICE",
+"color": "ef2f24"
+},
+{
+"id": 6851,
+"name": "Paris FC",
+"short": "Paris FC",
+"abbr": "PAR",
+"color": "000000"
+},
+{
+"id": 160,
+"name": "Paris Saint-Germain",
+"short": "PSG",
+"abbr": "PSG",
+"color": "011f68"
+},
+{
+"id": 169,
+"name": "Stade Rennais",
+"short": "Rennes",
+"abbr": "REN",
+"color": "ef2f24"
+},
+{
+"id": 180,
+"name": "Strasbourg",
+"short": "Strasbourg",
+"abbr": "STR",
+"color": "0000bf"
+},
+{
+"id": 179,
+"name": "Toulouse",
+"short": "Toulouse",
+"abbr": "TOU",
+"color": "560080"
+},
+{
+"id": 170,
+"name": "Troyes",
+"short": "Troyes",
+"abbr": "TRY",
+"color": "0000bf"
+}
+],
+"Champions League": [
+{
+"id": 887,
+"name": "AEK Athens",
+"short": "AEK Athens",
+"abbr": "AEK",
+"color": "ffff00"
+},
+{
+"id": 104,
+"name": "AS Roma",
+"short": "AS Roma",
+"abbr": "ROMA",
+"color": "990a2c"
+},
+{
+"id": 359,
+"name": "Arsenal",
+"short": "Arsenal",
+"abbr": "ARS",
+"color": "e20520"
+},
+{
+"id": 362,
+"name": "Aston Villa",
+"short": "Aston Villa",
+"abbr": "AVL",
+"color": "660e36"
+},
+{
+"id": 1068,
+"name": "Atlético Madrid",
+"short": "Atlético",
+"abbr": "ATM",
+"color": "ca3624"
+},
+{
+"id": 83,
+"name": "Barcelona",
+"short": "Barcelona",
+"abbr": "BAR",
+"color": "990000"
+},
+{
+"id": 132,
+"name": "Bayern Munich",
+"short": "Bayern",
+"abbr": "MUN",
+"color": "dc052d"
+},
+{
+"id": 2980,
+"name": "Bodo/Glimt",
+"short": "Bodo/Glimt",
+"abbr": "BODO",
+"color": "fcee33"
+},
+{
+"id": 124,
+"name": "Borussia Dortmund",
+"short": "Dortmund",
+"abbr": "DOR",
+"color": "ffee00"
+},
+{
+"id": 570,
+"name": "Club Brugge",
+"short": "Club Brugge",
+"abbr": "BRU",
+"color": "0081ff"
+},
+{
+"id": 2572,
+"name": "Como",
+"short": "Como",
+"abbr": "COMO",
+"color": "4169e1"
+},
+{
+"id": 437,
+"name": "FC Porto",
+"short": "FC Porto",
+"abbr": "FCP",
+"color": "0000dd"
+},
+{
+"id": 436,
+"name": "Fenerbahce",
+"short": "Fenerbahce",
+"abbr": "FEN",
+"color": "ffff00"
+},
+{
+"id": 142,
+"name": "Feyenoord Rotterdam",
+"short": "Feyenoord",
+"abbr": "FEY",
+"color": "ef2f24"
+},
+{
+"id": 432,
+"name": "Galatasaray",
+"short": "Galatasaray",
+"abbr": "GAL",
+"color": "aa0031"
+},
+{
+"id": 110,
+"name": "Internazionale",
+"short": "Inter Milan",
+"abbr": "INT",
+"color": "00239c"
+},
+{
+"id": 4411,
+"name": "LASK Linz",
+"short": "LASK Linz",
+"abbr": "LAS",
+"color": "ffffff"
+},
+{
+"id": 175,
+"name": "Lens",
+"short": "Lens",
+"abbr": "RCL",
+"color": "e91514"
+},
+{
+"id": 166,
+"name": "Lille",
+"short": "Lille",
+"abbr": "LILL",
+"color": "c2051b"
+},
+{
+"id": 364,
+"name": "Liverpool",
+"short": "Liverpool",
+"abbr": "LIV",
+"color": "d11317"
+},
+{
+"id": 382,
+"name": "Manchester City",
+"short": "Man City",
+"abbr": "MNC",
+"color": "99c5ea"
+},
+{
+"id": 360,
+"name": "Manchester United",
+"short": "Man United",
+"abbr": "MAN",
+"color": "da020e"
+},
+{
+"id": 114,
+"name": "Napoli",
+"short": "Napoli",
+"abbr": "NAP",
+"color": "0677d2"
+},
+{
+"id": 148,
+"name": "PSV Eindhoven",
+"short": "PSV",
+"abbr": "PSV",
+"color": "ef2f24"
+},
+{
+"id": 160,
+"name": "Paris Saint-Germain",
+"short": "PSG",
+"abbr": "PSG",
+"color": "011f68"
+},
+{
+"id": 11420,
+"name": "RB Leipzig",
+"short": "RB Leipzig",
+"abbr": "RBL",
+"color": "ffffff"
+},
+{
+"id": 244,
+"name": "Real Betis",
+"short": "Betis",
+"abbr": "BET",
+"color": "288a00"
+},
+{
+"id": 86,
+"name": "Real Madrid",
+"short": "Real Madrid",
+"abbr": "RMA",
+"color": "ffffff"
+},
+{
+"id": 21922,
+"name": "Sabah FK",
+"short": "Sabah",
+"abbr": "SAB",
+"color": "000000"
+},
+{
+"id": 493,
+"name": "Shakhtar Donetsk",
+"short": "Shakhtar",
+"abbr": "SHK",
+"color": "ff5900"
+},
+{
+"id": 494,
+"name": "Slavia Prague",
+"short": "Slavia Prague",
+"abbr": "SLP",
+"color": "dc1f26"
+},
+{
+"id": 521,
+"name": "Slovan Bratislava",
+"short": "S Bratislava",
+"abbr": "SLB",
+"color": "81c0ff"
+},
+{
+"id": 2250,
+"name": "Sporting CP",
+"short": "Sporting",
+"abbr": "SCP",
+"color": "008127"
+},
+{
+"id": 134,
+"name": "VfB Stuttgart",
+"short": "Stuttgart",
+"abbr": "VFB",
+"color": "ffffff"
+},
+{
+"id": 510,
+"name": "Viking FK",
+"short": "Viking FK",
+"abbr": "VIK",
+"color": "000080"
+},
+{
+"id": 102,
+"name": "Villarreal",
+"short": "Villarreal",
+"abbr": "VIL",
+"color": "ffff00"
+}
+]
+}
+}

@@ -7,7 +7,7 @@
 <style>:root{color-scheme:dark;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
-<title>Scudi Mockup</title>
+<title>Scudi</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Hanken+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
 <style>
 /* Notte: one deliberately dark world */
@@ -42,8 +42,9 @@ b.num,strong.num{font-weight:500}
   background:color-mix(in srgb,var(--ground) 78%,transparent);border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent)}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px}
 .wordmark{display:flex;align-items:center;gap:9px;font-size:21px;font-weight:700}
-.tags{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.tag{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 11px;border-radius:999px;font-size:12px;font-weight:600;background:var(--raised);color:var(--muted);white-space:nowrap}
+.tags{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;flex:1;min-width:0}
+.tag{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 11px;border-radius:999px;font-size:12px;font-weight:600;background:var(--raised);color:var(--muted);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tag > span:not(.dot){overflow:hidden;text-overflow:ellipsis}
 .tag.brand{background:color-mix(in srgb,var(--brand) 16%,var(--surface));color:var(--brand)}
 .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
 
@@ -87,7 +88,8 @@ b.num,strong.num{font-weight:500}
 .leg:hover{border-color:color-mix(in srgb,var(--acc) 60%,var(--line));transform:translateX(3px)}
 .leg time{font-size:12.5px;color:var(--muted);line-height:1.25}
 .leg-mid{min-width:0;display:flex;flex-direction:column;gap:5px}
-.leg-match{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.leg-match{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:5px}
+.leg-match .crest{vertical-align:middle}
 .leg-pick{font-weight:700;font-size:15.5px;line-height:1.2}
 .bar{height:6px;border-radius:999px;background:var(--raised);overflow:hidden}
 .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,color-mix(in srgb,var(--acc) 55%,var(--raised)),var(--acc));transition:width .8s cubic-bezier(.2,.8,.2,1)}
@@ -102,10 +104,22 @@ b.num,strong.num{font-weight:500}
 .linkbtn{min-height:44px;display:inline-flex;align-items:center;color:var(--brand);font-weight:600}
 
 
-.targets{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
-.tgt{min-height:62px;border-radius:16px;border:1px solid var(--line);background:var(--ground);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:all .25s}
-.tgt b{font-size:19px;font-weight:700}
-.tgt small{font-size:12px;color:var(--muted)}
+.targets{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:12px}
+.tgt{min-height:56px;border-radius:14px;border:1px solid var(--line);background:var(--ground);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:all .25s;padding:4px 2px;min-width:0}
+.tgt b{font-size:15px;font-weight:700;letter-spacing:-.02em}
+.tgt small{font-size:10.5px;color:var(--muted);white-space:nowrap}
+.tbig{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-top:8px}
+.tbig b{font-size:46px;line-height:1;font-weight:750;color:var(--brand);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.tbig b.bump{animation:bump .35s cubic-bezier(.2,.8,.2,1)}
+.tslider{position:relative;margin-top:6px;padding-bottom:18px}
+.ticks{position:absolute;left:12px;right:12px;bottom:0;height:16px;pointer-events:none}
+.ticks span{position:absolute;transform:translateX(-50%);font-size:10.5px;color:var(--faint);font-family:"DM Mono",monospace;white-space:nowrap}
+.ticks span::before{content:"";position:absolute;left:50%;top:-8px;width:1px;height:5px;background:var(--line)}
+.explorer.dense{gap:2px}
+.explorer.dense em{visibility:hidden}
+.explorer.dense button[aria-pressed="true"] em,.explorer.dense button:hover em{visibility:visible}
+.explorer.dense span{font-size:9px}
+.explorer.dense button:nth-child(even):not([aria-pressed="true"]) span{visibility:hidden}
 .tgt[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--brand-ink);box-shadow:0 10px 30px -12px var(--brand)}
 .tgt[aria-pressed="true"] small{color:var(--brand-ink)}
 .slider{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-top:12px}
@@ -176,9 +190,117 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 .drawer.on{transform:none;visibility:visible;transition-delay:0s}
 .drawer-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .iconbtn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--ground);border:1px solid var(--line)}
-.teams{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;text-align:center}
-.teams b{font-size:20px;font-weight:700;line-height:1.15}
+.teams{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:start;text-align:center}
+.teams b{font-size:19px;font-weight:700;line-height:1.15}
 .teams span{font-size:13px;color:var(--muted)}
+.tside{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;border-radius:18px;padding:8px 4px;transition:background .25s,transform .25s}
+.tside[data-team]:hover{background:var(--ground);transform:translateY(-2px)}
+.tside b{display:block;width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.crest{position:relative;width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--c) 70%,#fff 10%),color-mix(in srgb,var(--c) 55%,var(--ground)));
+  box-shadow:0 8px 22px -10px var(--c),inset 0 0 0 1.5px color-mix(in srgb,#fff 25%,transparent);font:700 15px/1 "Bricolage Grotesque",sans-serif;letter-spacing:.02em;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4);flex:none;overflow:hidden}
+.crest img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:6px;background:var(--surface)}
+.crest.lg{width:72px;height:72px;font-size:20px;border-radius:24px}
+.crest.sm{width:30px;height:30px;font-size:10px}
+.crest.sm img{padding:3px}
+.crest.xs{width:22px;height:22px;font-size:8px}
+.crest.xs img{padding:2px}
+.form{display:flex;gap:3px}
+.formrow{display:flex;gap:3px;justify-content:center}
+.formrow i{width:16px;height:16px;border-radius:5px;display:grid;place-items:center;font-style:normal;font-size:9.5px;font-weight:700;color:var(--ground);background:var(--faint)}
+.formrow i.W{background:var(--good)} .formrow i.L{background:var(--bad)} .formrow i.D{background:var(--muted)}
+.pitchwrap{position:relative;border-radius:18px;overflow:hidden;border:1px solid color-mix(in srgb,#2c9a4b 50%,var(--line));box-shadow:0 20px 40px -24px #1f8a45;background:#134d2a}
+.pitch{display:block;width:100%;height:auto}
+.pitch .grass{fill:url(#stripes)}
+.pitch .lines{fill:none;stroke:rgba(255,255,255,.62);stroke-width:.45}
+.pitch .sheen{fill:url(#sheen);animation:sheen 7s ease-in-out infinite alternate;mix-blend-mode:screen}
+.pitch .pl{cursor:pointer;transform-box:fill-box;transform-origin:center;animation:pop .55s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*40ms)}
+.pitch .pl circle{stroke:rgba(255,255,255,.85);stroke-width:.5;transition:r .2s,filter .2s}
+.pitch .pl:hover circle,.pitch .pl:focus-visible circle{filter:drop-shadow(0 0 3px #fff)}
+.pitch .pl text{fill:#fff;font-family:"DM Mono",monospace;font-size:2.2px;text-anchor:middle;pointer-events:none}
+.pitch .pl .nm{font-family:"Hanken Grotesk",sans-serif;font-size:2.35px;font-weight:600;paint-order:stroke;stroke:rgba(0,0,0,.55);stroke-width:.6px}
+.pitch .fmt{fill:rgba(255,255,255,.8);font:600 3px "Hanken Grotesk",sans-serif;letter-spacing:.06em}
+.pitchnote{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);margin-top:8px}
+.corner{position:absolute;top:8px;animation:pop .5s cubic-bezier(.2,.8,.2,1) both .3s}
+.corner.l{left:8px} .corner.r{right:8px}
+.corner .crest{box-shadow:0 6px 16px -6px rgba(0,0,0,.6),inset 0 0 0 1.5px rgba(255,255,255,.35)}
+.pile{display:flex;align-items:center;margin-top:-4px}
+.pile span{display:inline-flex;margin-left:-7px;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.pile span:first-child{margin-left:0}
+.pile .crest{box-shadow:0 0 0 2px var(--surface)}
+.scard:hover .pile span{transform:translateX(calc(var(--i)*3px))}
+.pile em{font-style:normal;font-size:11px;color:var(--muted);margin-left:6px;font-family:"DM Mono",monospace}
+.res .who{display:inline-flex;align-items:center;gap:7px;min-width:0}
+.p3 small .crest{vertical-align:middle}
+.frow small .crest{vertical-align:middle;margin-right:1px}
+.chip .crest{vertical-align:middle}
+.vs2{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;font-size:13px}
+.vs2 .l{text-align:right;font-weight:700;font-family:"DM Mono",monospace}
+.vs2 .r{font-weight:700;font-family:"DM Mono",monospace}
+.vs2 .m{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:center;min-width:88px}
+.duel{display:flex;height:9px;gap:2px;border-radius:999px;overflow:hidden;grid-column:1 / -1;margin:-2px 0 6px}
+.duel i{display:block;height:100%;transition:flex-basis .8s cubic-bezier(.2,.8,.2,1)}
+.duel .l{background:var(--home)} .duel .r{background:var(--away)}
+.tagsrow{display:flex;flex-wrap:wrap;gap:6px}
+.stag{font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:999px;background:color-mix(in srgb,var(--acc) 14%,var(--ground));color:var(--text);border:1px solid color-mix(in srgb,var(--acc) 30%,var(--line))}
+.stag.h{--acc:var(--home)} .stag.a{--acc:var(--away)}
+.styles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.styles > div{display:flex;flex-direction:column;gap:6px}
+.styles .eyebrow{font-size:11px}
+.dview{animation:rise .45s cubic-bezier(.2,.8,.2,1) both;display:flex;flex-direction:column;gap:18px}
+.drawer > *{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+.drawer > :nth-child(2){animation-delay:40ms}.drawer > :nth-child(3){animation-delay:80ms}.drawer > :nth-child(4){animation-delay:120ms}.drawer > :nth-child(5){animation-delay:160ms}.drawer > :nth-child(6){animation-delay:200ms}.drawer > :nth-child(7){animation-delay:240ms}.drawer > :nth-child(8){animation-delay:280ms}
+.back{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:14px;color:var(--muted);min-height:44px}
+.back:hover{color:var(--text)}
+.phead{display:grid;grid-template-columns:72px 1fr;gap:14px;align-items:center}
+.avatar{width:72px;height:72px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 70%,#fff 8%),color-mix(in srgb,var(--c) 45%,var(--ground)));font:750 24px "Bricolage Grotesque",sans-serif;color:#fff;overflow:hidden;position:relative;box-shadow:0 14px 30px -16px var(--c)}
+.avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.phead h2{font-size:24px;line-height:1.05;font-weight:750}
+.phead .sub{display:flex;flex-wrap:wrap;gap:6px 10px;font-size:13px;color:var(--muted);margin-top:4px;align-items:center}
+.phead .sub img{width:18px;height:12px;object-fit:cover;border-radius:2px;vertical-align:middle}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.facts div{background:var(--ground);border-radius:12px;padding:8px 6px;text-align:center;min-width:0}
+.facts small{display:block;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.facts b{font-size:17px;font-weight:700;font-family:"DM Mono",monospace}
+.facts b.long{font-size:12.5px}
+.tl{display:flex;flex-direction:column;gap:0;position:relative;padding-left:4px}
+.tl .ev{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.tl .ev:last-child{border-bottom:0}
+.tl .move{display:flex;align-items:center;gap:8px;min-width:0}
+.tl .move span{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1 1 0;min-width:0}
+.tl .move svg{flex:none;color:var(--faint)}
+.tl time{font-size:12px;color:var(--muted);font-family:"DM Mono",monospace;min-width:54px}
+.tl .fee{text-align:right}
+.tl .fee b{display:block;font-size:14px;font-family:"DM Mono",monospace;font-weight:500}
+.tl .fee small{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.tl .fee.paid b{color:var(--brand)}
+.squad{display:flex;flex-direction:column;gap:4px}
+.squad .grp{margin-top:6px}
+.prow{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;min-height:44px;padding:4px 10px;border-radius:12px;width:100%;transition:background .2s}
+.prow:hover{background:var(--ground)}
+.prow .no{font-family:"DM Mono",monospace;font-size:13px;color:var(--muted);text-align:right}
+.prow b{font-weight:600;font-size:14px}
+.prow small{font-size:12px;color:var(--muted);margin-left:8px}
+.prow .st{font-family:"DM Mono",monospace;font-size:12px;color:var(--muted);white-space:nowrap}
+.prow.inj b::after{content:"injured";font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--bad);margin-left:8px}
+.mini{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:center}
+.mini svg{width:120px;height:auto;border-radius:10px;background:#134d2a}
+.res{display:flex;flex-direction:column;gap:5px}
+.res div{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;font-size:13.5px;background:var(--ground);border-radius:10px;padding:6px 10px}
+.res time{font-size:12px;color:var(--muted);font-family:"DM Mono",monospace}
+.res .sc{font-family:"DM Mono",monospace;font-weight:500}
+.res i{width:8px;height:8px;border-radius:50%;background:var(--faint)}
+.res i.W{background:var(--good)} .res i.L{background:var(--bad)}
+.fhist{display:flex;gap:6px;flex-wrap:wrap}
+.fhist span{font-size:12px;padding:4px 9px;border-radius:999px;background:var(--ground);border:1px solid var(--line);font-family:"DM Mono",monospace}
+.fhist span b{color:var(--brand);font-weight:500;margin-left:5px}
+.lg.tsrc{display:block;font-size:11.5px;color:var(--faint)}
+.scard{--mx:50%;--my:50%}
+.scard::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .35s;background:radial-gradient(220px circle at var(--mx) var(--my),color-mix(in srgb,var(--c) 18%,transparent),transparent 60%)}
+.scard:hover::after{opacity:1}
+.chip,.tgt,.leg,.opt,.prow{-webkit-tap-highlight-color:transparent}
+.chip:active,.tgt:active,.leg:active,.opt:active{transform:scale(.97)}
+.builder.swap .panel{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+.builder.swap .o2{animation-delay:50ms}.builder.swap .o3{animation-delay:90ms}.builder.swap .o4{animation-delay:130ms}.builder.swap .o5{animation-delay:170ms}.builder.swap .o6{animation-delay:210ms}
 .pbar{display:flex;height:14px;gap:3px;border-radius:999px;overflow:hidden}
 .pbar i{display:block;height:100%;border-radius:4px;transition:flex-basis .8s cubic-bezier(.2,.8,.2,1)}
 .pbar .h{background:var(--home)} .pbar .d{background:var(--draw)} .pbar .a{background:var(--away)}
@@ -291,6 +413,9 @@ select{min-height:44px;border-radius:12px;border:1px solid var(--line);backgroun
 @keyframes flip{0%{opacity:0;transform:perspective(700px) rotateX(-75deg) translateY(-6px)}100%{opacity:1;transform:none}}
 @keyframes draw{to{stroke-dashoffset:0}}
 @keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes sheen{from{transform:translateX(-30%)}to{transform:translateX(30%)}}
 .chain circle{transform-box:fill-box;transform-origin:center}
 
 @media (max-width:960px){
@@ -314,6 +439,8 @@ select{min-height:44px;border-radius:12px;border:1px solid var(--line);backgroun
   .odo{font-size:44px}
   .readout{grid-template-columns:1fr}
   .heatwrap{grid-template-columns:minmax(0,150px) 1fr}
+  .targets{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .facts{grid-template-columns:repeat(2,1fr)}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.chain .step{stroke-dashoffset:0}}
 </style>
@@ -326,7 +453,7 @@ select{min-height:44px;border-radius:12px;border:1px solid var(--line);backgroun
       <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l9 3v6c0 5.5-3.8 9.6-9 11-5.2-1.4-9-5.5-9-11V5z" fill="var(--brand)"/><path d="M12 2v20c5.2-1.4 9-5.5 9-11V5z" fill="rgba(0,0,0,.22)"/><circle cx="12" cy="11" r="3.4" fill="none" stroke="var(--brand-ink)" stroke-width="1.6"/></svg>
       Scudi
     </div>
-    <div class="tags"><span class="tag brand"><span class="dot"></span>Paper mode</span><span class="tag" id="srcTag">Loading…</span></div>
+    <div class="tags"><span class="tag brand"><span class="dot"></span>Paper mode</span><span class="tag" id="srcTag">Loading…</span><span class="tag" id="teamTag" hidden></span></div>
   </div>
 </header>
 
@@ -384,8 +511,9 @@ select{min-height:44px;border-radius:12px;border:1px solid var(--line);backgroun
       <aside class="col">
         <div class="panel o1">
           <span class="eyebrow">Target multiplier</span>
+          <div class="tbig"><b class="display" id="tBig">25x</b><span class="fine" id="tBigNote"></span></div>
+          <div class="tslider"><input type="range" id="tSlider" min="0" max="23" step="1" value="4" aria-label="Target multiplier, 5x to 1000x"><div class="ticks" id="tTicks" aria-hidden="true"></div></div>
           <div class="targets" id="targets"></div>
-          <div class="slider"><input type="range" id="tSlider" min="20" max="60" step="1" value="25" aria-label="Target multiplier"><b class="num" id="tSliderV">25x</b></div>
           <div class="legsrow"><span class="eyebrow">Matches on the slip</span><span class="stepper big"><button data-step="legs" data-d="-1" aria-label="One match fewer">−</button><b class="num" id="legsN">10</b><button data-step="legs" data-d="1" aria-label="One match more">+</button></span></div>
           <div class="explorer" id="explorer" role="group" aria-label="Chance of landing by number of matches"></div>
           <p class="fine" id="explorerNote">Chance of landing for each number of matches under your rules. Tap a bar to use it.</p>
@@ -560,7 +688,7 @@ var Scudi = (function () {
   /* haircut: once some real prices are typed in, every remaining estimate is scaled by how far SNAI sat from
      the estimates so far. Without it the optimiser would run away from real prices towards rosier guesses. */
   function candidates(match, minLegOdds, actual, haircut) {
-    var c = match.calc || (match.calc = matrix(match.lh, match.la)), out = [], mine = (actual || {})[match.id] || {}, h = haircut || {};
+    var c = match.calc || (match.calc = matrix(match.lh, match.la)), out = [], mine = Object.assign({}, match.snai || {}, (actual || {})[match.id] || {}), h = haircut || {};
     MARKETS.forEach(function (mk) {
       var k = typeof h === 'number' ? h : (h[mk.id] || h.all || 1);
       var pre = match.pre, p, base;
@@ -754,7 +882,73 @@ if (typeof module !== 'undefined') module.exports = Scudi;
     return fetch('data/record.json', { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (rec) { return rec && rec.slips && rec.slips.length ? rec : null; }).catch(function () { return null; });
   }
-  Promise.all([loadData(), loadRecord()]).then(function (res) { boot(res[0], res[1]); });
+  var ROME_ISO = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Rome', year: 'numeric', month: '2-digit', day: '2-digit' });
+  function norm(name) { return String(name).toLowerCase().replace(/\b(fc|ac|ssc|us|as|ss|cf|sc|calcio|club|de|cd|ud|rcd)\b/g, '').replace(/[^a-z]/g, ''); }
+  function matchKey(m) { return ROME_ISO.format(m.kick) + ' ' + norm(m.home) + ' ' + norm(m.away); }
+  function keyOf(raw) { var parts = raw.split(' '); return parts[0] + ' ' + norm(parts.slice(1, -1).join(' ')) + ' ' + norm(parts[parts.length - 1]); }
+  /* SNAI prices: data/snai.json (typed from the site, committed) plus anything typed in this browser earlier */
+  function loadSnai() {
+    var typed = {}; try { typed = JSON.parse(localStorage.getItem('scudi-snai-typed') || '{}'); } catch (e) { typed = {}; }
+    return fetch('data/snai.json', { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (f) { var out = {}; Object.keys(f.prices || {}).forEach(function (k) { out[keyOf(k)] = f.prices[k]; }); return { file: out, typed: typed, readAt: f.read_at }; })
+      .catch(function () { return { file: {}, typed: typed, readAt: null }; });
+  }
+  function attachSnai(matches, snai) {
+    var n = 0;
+    matches.forEach(function (m) {
+      var k = matchKey(m), got = Object.assign({}, snai.file[k] || {}, snai.typed[k] || {});
+      /* a two-word key like "genoa fiorentina" may be stored under longer feed names: fall back to a containment match */
+      if (!Object.keys(got).length) { Object.keys(snai.file).forEach(function (fk) { var a = fk.split(' '); if (a[0] === k.split(' ')[0] && (norm(m.home).indexOf(a[1]) > -1 || a[1].indexOf(norm(m.home)) > -1) && (norm(m.away).indexOf(a[2]) > -1 || a[2].indexOf(norm(m.away)) > -1)) got = Object.assign({}, snai.file[fk]); }); }
+      if (Object.keys(got).length) { m.snai = got; m.key = k; n++; }
+    });
+    return n;
+  }
+  /* ---------- team and player data: data/teams.json + data/players.json written by tools/teams.py (ESPN public API) ---------- */
+  var CLUB_WORDS = /\b(fc|ac|as|ss|us|cf|sc|afc|ssc|club|calcio|de|1909|1913|cfc|bc|fk|sv|vfb|vfl|tsg|sk|rc|og|ol|sco|sd|ud|ca|cd|rcd)\b/g;
+  function tkey(name) { return String(name || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(CLUB_WORDS, ' ').replace(/\s+/g, ' ').trim(); }
+  /* the odds feed's short names against ESPN's display names */
+  var ALIASES = { 'inter': 'internazionale', 'inter milan': 'internazionale', 'milan': 'ac milan', 'man city': 'manchester city', 'man united': 'manchester united', 'man utd': 'manchester united',
+    'psg': 'paris saint germain', 'bayern': 'bayern munich', 'atletico': 'atletico madrid', 'athletic': 'athletic club', 'athletic bilbao': 'athletic club', 'betis': 'real betis', 'celta': 'celta vigo',
+    'gladbach': 'borussia monchengladbach', 'dortmund': 'borussia dortmund', 'leverkusen': 'bayer leverkusen', 'leipzig': 'rb leipzig', 'frankfurt': 'eintracht frankfurt', 'werder': 'werder bremen',
+    'shakhtar': 'shakhtar donetsk', 'bodo glimt': 'bodo glimt', 'tottenham': 'tottenham hotspur', 'spurs': 'tottenham hotspur', 'brighton': 'brighton hove albion', 'wolves': 'wolverhampton wanderers',
+    'newcastle': 'newcastle united', 'west ham': 'west ham united', 'forest': 'nottingham forest', 'sporting': 'sporting cp', 'sporting lisbon': 'sporting cp', 'porto': 'fc porto', 'psv': 'psv eindhoven',
+    'juve': 'juventus', 'verona': 'hellas verona', 'hellas verona': 'hellas verona', 'atalanta': 'atalanta', 'roma': 'roma', 'lazio': 'lazio', 'napoli': 'napoli', 'fenerbahce': 'fenerbahce', 'galatasaray': 'galatasaray' };
+  function loadTeams() {
+    return fetch('data/teams.json', { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (f) {
+        var byKey = {}, list = Object.keys(f.teams || {}).map(function (k) { return f.teams[k]; });
+        list.forEach(function (t) { (t.keys || [t.key]).forEach(function (k) { if (k && !byKey[k]) byKey[k] = t; }); if (t.key) byKey[t.key] = t; });
+        return { list: list, byKey: byKey, built: f.built_at ? new Date(f.built_at) : null, example: /example/i.test(f.source || ''), source: f.source || '' };
+      })
+      .catch(function () { return null; });
+  }
+  function findTeam(T, name) {
+    if (!T) return null;
+    var k = tkey(name), cands = [k, ALIASES[k]].filter(Boolean), i, c, t;
+    for (i = 0; i < cands.length; i++) if (T.byKey[cands[i]]) return T.byKey[cands[i]];
+    for (i = 0; i < cands.length; i++) { c = cands[i]; if (c.length < 4) continue;
+      t = T.list.filter(function (x) { return (x.keys || []).some(function (xk) { return xk.length >= 4 && (xk.indexOf(c) > -1 || c.indexOf(xk) > -1); }); });
+      if (t.length === 1) return t[0];
+    }
+    return null;
+  }
+  function attachTeams(matches, T) {
+    var n = 0;
+    matches.forEach(function (m) { m.th = findTeam(T, m.home); m.ta = findTeam(T, m.away); if (m.th || m.ta) n++; });
+    return n;
+  }
+  var PLAYERS = null, playersPromise = null;
+  function loadPlayers() {
+    if (PLAYERS) return Promise.resolve(PLAYERS);
+    if (!playersPromise) playersPromise = fetch('data/players.json', { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (f) { PLAYERS = f.players || {}; return PLAYERS; }).catch(function () { PLAYERS = {}; return PLAYERS; });
+    return playersPromise;
+  }
+  Promise.all([loadData(), loadRecord(), loadSnai(), loadTeams()]).then(function (res) {
+    res[0].snaiMatches = attachSnai(res[0].matches, res[2]); res[0].snaiReadAt = res[2].readAt;
+    res[0].teams = res[3]; res[0].teamMatches = attachTeams(res[0].matches, res[3]);
+    boot(res[0], res[1]);
+  });
   function boot(DATA, LIVE_RECORD) {
   var ALL = DATA.matches, NOW = new Date();   /* a match that has kicked off is never offered */
   /* ---------- the week's matches and the five slips ---------- */
@@ -771,6 +965,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   var PICK_NAMES = { '1': 'Home win', 'X': 'Draw', '2': 'Away win', '1X': 'Home or draw', 'X2': 'Away or draw', '12': 'No draw', 'O15': 'Over 1.5', 'O25': 'Over 2.5', 'U25': 'Under 2.5', 'U35': 'Under 3.5', 'GG': 'Both score' };
   /* SNAI price ratios remembered from earlier weeks (a per-viewer convenience; the real site keeps them in its data file) */
   var MEMORY = []; try { MEMORY = JSON.parse(localStorage.getItem('scudi-snai-ratios') || '[]'); } catch (e) { MEMORY = []; }
+  if (!MEMORY.length) ALL.forEach(function (m) { if (m.snai) MEMORY = MEMORY.concat(Scudi.ratiosFrom([m], (function () { var o = {}; o[m.id] = m.snai; return o; })())); });
   function remember(ratios) { MEMORY = MEMORY.concat(ratios).slice(-400); try { localStorage.setItem('scudi-snai-ratios', JSON.stringify(MEMORY)); } catch (e) {} }
   var PRESETS = [
     { id: 'wins', label: 'Only wins', ids: ['1', '2'] },
@@ -796,24 +991,29 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   /* header: what the page is showing and where it came from */
   (function () {
     var g = DATA.guard, dropped = (g.started || 0) + (g.outside_window || 0) + (g.too_few_books || 0) + (g.no_sharp || 0) + (g.bad_fit || 0);
-    $('#srcTag').textContent = DATA.live ? 'Prices pulled ' + ROME_DAY.format(DATA.built) + ' ' + ROME.format(DATA.built).slice(-5) + ' · ' + ALL.length + ' matches' + (dropped ? ' · ' + dropped + ' held back by guards' : '') : 'Example prices';
+    $('#srcTag').textContent = (DATA.live ? 'Prices pulled ' + ROME_DAY.format(DATA.built) + ' ' + ROME.format(DATA.built).slice(-5) + ' · ' + ALL.length + ' matches' + (dropped ? ' · ' + dropped + ' held back by guards' : '') : 'Example prices') + (DATA.snaiMatches ? ' · SNAI prices for ' + DATA.snaiMatches : '');
+    if (DATA.teams) { var tt = $('#teamTag'); tt.hidden = false; tt.textContent = DATA.teams.example ? 'Team data · example' : 'Team data ' + (DATA.teams.built ? ROME_DAY.format(DATA.teams.built) : '') + ' · ' + DATA.teamMatches + ' of ' + ALL.length + ' matches'; }
     $('#weekTag').textContent = DATA.live ? 'Matchweek · ' + ROME_DAY.format(ALL.reduce(function (a, m) { return m.kick < a ? m.kick : a; }, ALL[0].kick)) + ' – ' + ROME_DAY.format(ALL.reduce(function (a, m) { return m.kick > a ? m.kick : a; }, ALL[0].kick)) : 'Matchweek · 10–14 October 2026 · example';
   })();
-  var TARGETS = [25, 30, 40, 50], STAKES = [2, 5, 10];
+  /* the target ladder: 5x to 50x by 5, to 100x by 10, to 1000x by 100; seven quick picks carry a "1 in N" */
+  var LADDER = [], QUICK = [10, 25, 50, 100, 250, 500, 1000], STAKES = [2, 5, 10], MAX_LEGS = 25;
+  (function () { var t; for (t = 5; t <= 50; t += 5) LADDER.push(t); for (t = 60; t <= 100; t += 10) LADDER.push(t); for (t = 200; t <= 1000; t += 100) LADDER.push(t); })();
+  function ladderIndex(t) { var best = 0, i; for (i = 0; i < LADDER.length; i++) if (Math.abs(LADDER[i] - t) < Math.abs(LADDER[best] - t)) best = i; return best; }
+  $('#tTicks').innerHTML = [5, 25, 50, 100, 500, 1000].map(function (t) { return '<span style="left:' + (ladderIndex(t) / (LADDER.length - 1) * 100).toFixed(2) + '%">' + t + 'x</span>'; }).join('');
   var active = SLIPS[0], monthUsed = 15;
 
   function poolOf(s) { var c = s.cfg; return ALL.filter(function (m) { return c.comps.indexOf(m.lg) > -1 && c.days.indexOf(m.day) > -1 && m.kick > NOW; }); }
   function startedOf(s) { var c = s.cfg; return ALL.filter(function (m) { return c.comps.indexOf(m.lg) > -1 && c.days.indexOf(m.day) > -1 && m.kick <= NOW; }).length; }
-  function optsOf(s, legs, quick) {
-    var c = s.cfg, pool = poolOf(s), lim = {};
+  function optsOf(s, legs, quick, target) {
+    var c = s.cfg, pool = poolOf(s), lim = {}, scale = Math.max(1, Math.log(target || c.target || 25) / Math.log(50));
     if (c.minN > 0) lim[c.minLg] = [c.minN, c.perLg ? Math.max(c.perLg, c.minN) : null];   /* the named league's minimum wins over the general cap */
     return { pool: pool, legs: legs, minLegOdds: MIN_LEG, locks: c.locks, actual: c.actual, haircut: Scudi.haircutFrom([], {}, MEMORY), allowed: c.allowed,
       minChance: c.minChance, maxOdds: c.maxOdds, excluded: c.excluded, groupLimits: lim, groupMax: c.perLg || null, refine: !quick,
-      grid: quick ? (pool.length > 12 ? 0.004 : 0.002) : (pool.length > 24 ? 0.002 : pool.length > 12 ? 0.001 : 0.0005) };
+      grid: (quick ? (pool.length > 12 ? 0.004 : 0.002) : (pool.length > 24 ? 0.002 : pool.length > 12 ? 0.001 : 0.0005)) * scale };
   }
   function run(s, target, legs, quick) {
     legs = legs || s.cfg.legs;
-    var o = optsOf(s, legs, quick), raw = s.cfg.bonusIn ? target / (1 + Scudi.snaiBonus(legs)) : target;
+    var o = optsOf(s, legs, quick, target), raw = s.cfg.bonusIn ? target / (1 + Scudi.snaiBonus(legs)) : target;
     var r = Scudi.solve(o.pool, raw, o);
     if (r) {
       r.picks.sort(function (a, b) { return a.match.ord - b.match.ord; });
@@ -854,21 +1054,29 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   }
 
   /* ---------- slip cards ---------- */
+  function pile(r) {
+    var ts = []; r.picks.forEach(function (x) { if (x.match.th) ts.push([x.match.th, x.match.home]); if (x.match.ta) ts.push([x.match.ta, x.match.away]); });
+    if (!ts.length) return '';
+    var show = ts.slice(0, 8);
+    return '<div class="pile" aria-hidden="true">' + show.map(function (t, i) { return '<span style="--i:' + i + '">' + crest(t[0], 'xs', t[1]) + '</span>'; }).join('') + (ts.length > show.length ? '<em>+' + (ts.length - show.length) + '</em>' : '') + '</div>';
+  }
   function renderCards() {
     $('#cards').innerHTML = SLIPS.map(function (s) {
       var r = s.result === undefined ? (s.result = run(s, s.cfg.target)) : s.result;
       return '<button class="scard" data-slip="' + s.id + '" aria-pressed="' + (s === active) + '" style="--c:var(' + s.c + ')">' +
         '<div class="scard-top"><div class="scard-name"><b>' + s.name + '</b><span>' + s.sub + '</span></div><span class="pill">' + s.cfg.legs + ' legs</span></div>' +
-        (r ? '<div class="scard-big"><strong class="display">1 in ' + Math.round(1 / r.prob) + '</strong><span>to land</span></div>' +
+        (r ? '<div class="scard-big"><strong class="display">1 in ' + Math.round(1 / r.prob).toLocaleString('en-GB') + '</strong><span>to land</span></div>' + pile(r) +
              '<div class="scard-foot"><span>Pays <b class="num">' + r.pays.toFixed(1) + 'x</b></span><span class="' + (s.placed ? 'placed' : '') + '">' + (s.placed ? 'Placed · ' + euro(s.stake) : 'Not placed') + '</span></div>'
            : '<div class="scard-big"><span>No slip fits these rules</span></div><div class="scard-foot"><span>Loosen a rule</span></div>') + '</button>';
     }).join('');
   }
+  $('#cards').onpointermove = function (e) { var b = e.target.closest('.scard'); if (!b) return; var r = b.getBoundingClientRect(); b.style.setProperty('--mx', (e.clientX - r.left) + 'px'); b.style.setProperty('--my', (e.clientY - r.top) + 'px'); };
   $('#cards').onclick = function (e) {
     var b = e.target.closest('[data-slip]'); if (!b) return;
     active = SLIPS.filter(function (s) { return s.id === b.dataset.slip; })[0];
     document.documentElement.style.setProperty('--acc', 'var(' + active.c + ')');
     active.prev = {}; renderCards(); renderRules(); renderBuilder(true); renderEvidence();
+    if (!reduced) { var bl = $('.builder'); bl.classList.remove('swap'); void bl.offsetWidth; bl.classList.add('swap'); }
     if (window.innerWidth < 960) $('#rTitle').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
   };
 
@@ -887,7 +1095,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
     $('#rMinLg').innerHTML = c.comps.map(function (g) { return '<option' + (g === c.minLg ? ' selected' : '') + '>' + g + '</option>'; }).join('');
     var out = Object.keys(c.excluded);
     $('#rOutBox').hidden = !out.length;
-    $('#rOut').innerHTML = out.map(function (id) { var m = ALL.filter(function (x) { return x.id === id; })[0]; return '<button class="chip x" data-back="' + id + '">' + m.home + ' – ' + m.away + '</button>'; }).join('');
+    $('#rOut').innerHTML = out.map(function (id) { var m = ALL.filter(function (x) { return x.id === id; })[0]; return '<button class="chip x" data-back="' + id + '">' + (m.th || m.ta ? crest(m.th, 'xs', m.home) + crest(m.ta, 'xs', m.away) + ' ' : '') + m.home + ' – ' + m.away + '</button>'; }).join('');
     $('#poolLine').textContent = usable(s) + ' of ' + pool.length + ' matches can be used under these rules';
     var started = startedOf(s), h = Scudi.haircutFrom([], {}, MEMORY);
     $('#kickLine').textContent = (started ? started + ' match' + (started > 1 ? 'es have' : ' has') + ' already kicked off and ' + (started > 1 ? 'are' : 'is') + ' skipped. ' : 'Matches that have kicked off are skipped automatically. ') +
@@ -909,10 +1117,10 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   $('#rMinLg').onchange = function () { active.cfg.minLg = this.value; changed(); };
   $('#rOut').onclick = function (e) { var b = e.target.closest('[data-back]'); if (b) { delete active.cfg.excluded[b.dataset.back]; changed('Back in play.'); } };
   $('#resetRules').onclick = function () { fresh(active); changed('Rules reset for this slip.'); };
-  function clampLegs() { var c = active.cfg, max = Math.max(2, Math.min(15, poolOf(active).length)); if (c.legs > max) c.legs = max; if (c.minN > c.legs) c.minN = c.legs; if (c.perLg && c.perLg * c.comps.length < c.legs) c.perLg = 0; }
+  function clampLegs() { var c = active.cfg, max = Math.max(2, Math.min(MAX_LEGS, poolOf(active).length)); if (c.legs > max) c.legs = max; if (c.minN > c.legs) c.minN = c.legs; if (c.perLg && c.perLg * c.comps.length < c.legs) c.perLg = 0; }
   document.addEventListener('click', function (e) {
     var b = e.target.closest('[data-step]'); if (!b) return; var c = active.cfg, d = +b.dataset.d, k = b.dataset.step;
-    if (k === 'legs') { var max = Math.min(15, poolOf(active).length); c.legs = Math.max(2, Math.min(max, c.legs + d)); clampLegs(); }
+    if (k === 'legs') { var max = Math.min(MAX_LEGS, poolOf(active).length); c.legs = Math.max(2, Math.min(max, c.legs + d)); clampLegs(); }
     if (k === 'minN') c.minN = Math.max(0, Math.min(c.legs, c.minN + d));
     if (k === 'perLg') { var v = (c.perLg || 0) + d; c.perLg = v <= 0 ? 0 : Math.min(c.legs, v); }
     if (k === 'weeks') { SIM.weeks = Math.max(4, Math.min(52, SIM.weeks + d)); $('#simWeeks').textContent = SIM.weeks; return; }
@@ -939,7 +1147,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
       var moved = freshList || s.prev[x.match.id] !== x.pick.id, locked = !!c.locks[x.match.id];
       return '<button class="leg' + (moved ? ' flip' : '') + (locked ? ' locked' : '') + '" data-m="' + x.match.id + '" style="--i:' + (moved ? i++ : 0) + '">' +
         '<time>' + x.match.t.replace(' ', '<br>') + '</time>' +
-        '<span class="leg-mid"><span class="leg-match">' + x.match.home + ' – ' + x.match.away + (multi ? ' · ' + x.match.lg : '') + '</span><span class="leg-pick">' + x.pick.label + '</span><span class="bar"><i style="width:' + (x.pick.p * 100).toFixed(1) + '%"></i></span></span>' +
+        '<span class="leg-mid"><span class="leg-match">' + (x.match.th || x.match.ta ? crest(x.match.th, 'xs', x.match.home) + crest(x.match.ta, 'xs', x.match.away) : '') + '<span>' + x.match.home + ' – ' + x.match.away + (multi ? ' · ' + x.match.lg : '') + '</span></span><span class="leg-pick">' + x.pick.label + '</span><span class="bar"><i style="width:' + (x.pick.p * 100).toFixed(1) + '%"></i></span></span>' +
         '<span class="leg-odds"><b class="num">' + x.pick.odds.toFixed(2) + '</b><small class="num">' + Math.round(x.pick.p * 100) + '%</small><span class="src' + (x.pick.checked ? ' ok' : '') + '">' + (x.pick.checked ? 'SNAI' : 'est.') + '</span></span>' +
         '<span class="lock">' + (locked ? LOCK : CHEV) + '</span></button>';
     }).join('');
@@ -954,16 +1162,19 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   }
   /* the four targets and the chance for every number of matches are filled in one solve at a time, so the page stays responsive */
   function renderTargets() {
-    var s = active, c = s.cfg, key = JSON.stringify(c), pool = poolOf(s), maxL = Math.min(15, pool.length), n, best = 0;
+    var s = active, c = s.cfg, key = JSON.stringify(c), pool = poolOf(s), maxL = Math.min(MAX_LEGS, pool.length), n, best = 0;
     if (s.key !== key) { s.key = key; s.frontier = {}; s.curve = {}; }
     if (s.frontier[c.target] === undefined) s.frontier[c.target] = s.result ? s.result.prob : 0;   /* the shown slip and its button always agree */
     if (s.curve[c.legs] === undefined) s.curve[c.legs] = s.result ? s.result.prob : 0;
-    $('#targets').innerHTML = TARGETS.map(function (t) {
+    $('#targets').innerHTML = QUICK.map(function (t) {
       var f = s.frontier[t];
-      return '<button class="tgt" data-t="' + t + '" aria-pressed="' + (t === c.target) + '"><b class="display">' + t + 'x</b><small>' + (f ? '1 in ' + Math.round(1 / f) : f === 0 ? 'no slip' : '…') + '</small></button>';
+      return '<button class="tgt" data-t="' + t + '" aria-pressed="' + (t === c.target) + '"><b class="display">' + t + 'x</b><small>' + (f ? '1 in ' + Math.round(1 / f).toLocaleString('en-GB') : f === 0 ? 'no slip' : '…') + '</small></button>';
     }).join('');
-    $('#tSlider').value = c.target; $('#tSliderV').textContent = c.target + 'x';
+    $('#tSlider').value = ladderIndex(c.target);
+    if ($('#tBig').textContent !== c.target + 'x') { $('#tBig').textContent = c.target + 'x'; if (!reduced) { $('#tBig').classList.remove('bump'); void $('#tBig').offsetWidth; $('#tBig').classList.add('bump'); } }
+    $('#tBigNote').textContent = s.result ? '1 in ' + Math.round(1 / s.result.prob).toLocaleString('en-GB') + ' with ' + c.legs + ' matches' : 'no slip fits at this target';
     $('#legsN').textContent = c.legs; $('#bonusIn').checked = c.bonusIn;
+    $('#explorer').classList.toggle('dense', maxL - 1 > 16);
     for (n = 2; n <= maxL; n++) if (s.curve[n] > best) best = s.curve[n];
     var bars = '';
     for (n = 2; n <= maxL; n++) {
@@ -972,7 +1183,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
     }
     $('#explorer').innerHTML = bars;
     $('#explorerNote').textContent = 'The small number is "1 in N" to land at ' + c.target + 'x with that many matches under your rules. × means no slip fits. Tap a bar to use it.';
-    var todoT = TARGETS.filter(function (t) { return s.frontier[t] === undefined; }), todoL = [];
+    var todoT = QUICK.filter(function (t) { return s.frontier[t] === undefined; }), todoL = [];
     for (n = 2; n <= maxL; n++) if (s.curve[n] === undefined) todoL.push(n);
     if (!todoT.length && !todoL.length) return;
     setTimeout(function () {
@@ -985,7 +1196,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   function renderSide() {
     var s = active, c = s.cfg, r = s.result, L = 175.9;
     odo($('#odo'), r.odds.toFixed(2));
-    $('#hitPct').textContent = pct(r.prob);
+    $('#hitPct').textContent = r.prob < 0.01 ? (r.prob * 100).toFixed(2) + '%' : pct(r.prob);
     $('#hitIn').textContent = 'about 1 in ' + Math.round(1 / r.prob);
     $('#dialVal').setAttribute('stroke-dasharray', (Math.min(1, r.prob / 0.05) * L).toFixed(1) + ' ' + L);
     $('#dialBox').setAttribute('aria-label', 'Chance that every leg wins: ' + pct(r.prob));
@@ -1020,7 +1231,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   $('#explorer').onclick = function (e) { var b = e.target.closest('[data-legs]'); if (b) { active.cfg.legs = +b.dataset.legs; clampLegs(); changed(); } };
   $('#bonusIn').onchange = function () { active.cfg.bonusIn = this.checked; changed(this.checked ? 'The target now counts SNAI\'s bonus, so the slip can be a little safer.' : 'The target is back to the plain combined odds.'); };
   var sliderTimer;
-  $('#tSlider').oninput = function () { var v = +this.value; $('#tSliderV').textContent = v + 'x'; clearTimeout(sliderTimer); sliderTimer = setTimeout(function () { active.cfg.target = v; changed(); }, 160); };
+  $('#tSlider').oninput = function () { var v = LADDER[+this.value]; $('#tBig').textContent = v + 'x'; $('#tBigNote').textContent = 'searching…'; clearTimeout(sliderTimer); sliderTimer = setTimeout(function () { active.cfg.target = v; changed(); }, 180); };
   $('#stakes').onclick = function (e) { var b = e.target.closest('[data-stake]'); if (!b) return; if (active.placed) monthUsed += (+b.dataset.stake) - active.stake; active.stake = +b.dataset.stake; renderSide(); renderCards(); };
   $('#unlockAll').onclick = function () { active.cfg.locks = {}; changed('All picks unlocked. Scudi chose again.'); };
   $('#placeBtn').onclick = function () { var s = active; if (!s.result) return; s.placed = !s.placed; monthUsed += s.placed ? s.stake : -s.stake; renderSide(); renderCards(); toast(s.placed ? 'Marked as placed at SNAI. It will be graded when the last match ends.' : 'Removed from placed slips.'); };
@@ -1042,6 +1253,112 @@ if (typeof module !== 'undefined') module.exports = Scudi;
   function closeDrawer() { var d = $('#drawer'); d.classList.remove('on'); d.inert = true; $('#scrim').classList.remove('on'); if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true }); }
   var CLOSE = '<button class="iconbtn" id="dClose" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
 
+  /* ---------- crests, the pitch, team and player views (data/teams.json + data/players.json from tools/teams.py) ---------- */
+  var T = DATA.teams;
+  function esc(x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  document.addEventListener('error', function (e) {
+    var el = e.target; if (!el || el.tagName !== 'IMG' || !el.closest('.crest,.avatar,.sub')) return;
+    if (el.dataset.alt) { el.src = el.dataset.alt; delete el.dataset.alt; } else el.remove();   /* dark crest missing → the default crest → the monogram */
+  }, true);
+  function crest(t, size, name) {
+    var col = '#' + ((t && t.color && t.color.length === 6 && t.color !== 'ffffff') ? t.color : '3a4a7a'), txt = t ? (t.abbr || t.short || '').slice(0, 3).toUpperCase() : String(name || '?').replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase();
+    var src = t && (t.logo_dark || t.logo), alt = t && t.logo_dark && t.logo && t.logo !== t.logo_dark ? t.logo : '';
+    return '<span class="crest' + (size ? ' ' + size : '') + '" style="--c:' + col + '" aria-hidden="true">' + esc(txt) + (src ? '<img src="' + esc(src) + '"' + (alt ? ' data-alt="' + esc(alt) + '"' : '') + ' alt="" loading="lazy">' : '') + '</span>';
+  }
+  function teamById(id) { return T && id != null ? T.list.filter(function (x) { return String(x.id) === String(id); })[0] : null; }
+  function formRow(t) { return t && t.form ? '<span class="formrow" aria-label="Last results ' + t.form + '">' + t.form.split('').map(function (r) { return '<i class="' + r + '">' + r + '</i>'; }).join('') + '</span>' : ''; }
+  function byId(t) { var o = {}; ((t && t.players) || []).forEach(function (p) { o[p.id] = p; }); return o; }
+  /* where each slot of a formation stands on one half of the pitch (105 x 68 metres; the goalkeeper is slot 1) */
+  function slots(formation, n) {
+    var rows = String(formation || '').split('-').map(Number).filter(function (r) { return r > 0; }), sum = rows.reduce(function (a, b) { return a + b; }, 0);
+    if (!rows.length || sum !== n - 1) rows = n - 1 === 10 ? [4, 3, 3] : [Math.ceil((n - 1) / 2), Math.floor((n - 1) / 2)];
+    var out = [{ x: 5.5, y: 34 }], xs = rows.map(function (_, i) { return rows.length === 1 ? 30 : 15 + i * (46.5 - 15) / (rows.length - 1); });
+    rows.forEach(function (cnt, ri) { var gap = cnt >= 5 ? 11.5 : cnt === 4 ? 14 : cnt === 3 ? 17 : cnt === 2 ? 20 : 0; for (var j = 0; j < cnt; j++) out.push({ x: xs[ri], y: 34 + (j - (cnt - 1) / 2) * gap }); });
+    return out;
+  }
+  /* the eleven to draw: the last lineup ESPN recorded, otherwise a likely eleven from the squad by position */
+  function eleven(t) {
+    if (!t || !t.players || !t.players.length) return { xi: [], formation: null, real: false };
+    var ids = byId(t), xi = [];
+    if (t.last && t.last.xi && t.last.xi.length >= 7) {
+      t.last.xi.forEach(function (e, i) { var pl = ids[e.id] || { id: e.id, name: 'No. ' + (e.jersey || '?'), short: '#' + (e.jersey || '?'), jersey: e.jersey, pos: '' }; xi.push({ p: pl, slot: e.slot || i + 1 }); });
+      return { xi: xi, formation: t.last.formation, real: true, date: t.last.date };
+    }
+    var by = { G: [], D: [], M: [], F: [] };
+    t.players.slice().sort(function (a, b) { return ((b.stats || {}).appearances || 0) - ((a.stats || {}).appearances || 0); }).forEach(function (p) { if (by[p.pos]) by[p.pos].push(p); });
+    var want = { G: 1, D: 4, M: 3, F: 3 }, slot = 1;
+    ['G', 'D', 'M', 'F'].forEach(function (k) { by[k].slice(0, want[k]).forEach(function (p) { xi.push({ p: p, slot: slot++ }); }); });
+    return { xi: xi, formation: '4-3-3', real: false };
+  }
+  function pitch(m) {
+    var H = eleven(m.th), A = eleven(m.ta), n = 0;
+    var side = function (E, t, mirror, col) {
+      var pos = slots(E.formation, Math.max(11, E.xi.length)), used = {}, out = '';
+      E.xi.forEach(function (e) { var k = e.slot >= 1 && e.slot <= pos.length && !used[e.slot] ? e.slot : null; if (!k) { for (k = 1; used[k]; k++); } used[k] = 1; var pt = pos[k - 1] || { x: 30, y: 34 };
+        var x = mirror ? 105 - pt.x : pt.x, y = pt.y, nm = (e.p.short || e.p.name || '').replace(/^.\. /, '');
+        out += '<g class="pl" tabindex="0" role="button" data-team="' + t.id + '" data-pid="' + e.p.id + '" style="--i:' + (n++) + '" aria-label="' + esc(e.p.name) + '"><circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="2.7" fill="' + col + '"/>' +
+          '<text x="' + x.toFixed(1) + '" y="' + (y + 0.8).toFixed(1) + '">' + esc(e.p.jersey || '') + '</text><text class="nm" x="' + x.toFixed(1) + '" y="' + (y + 5.4).toFixed(1) + '">' + esc(nm.length > 12 ? nm.slice(0, 11) + '…' : nm) + '</text></g>'; });
+      return out;
+    };
+    var hc = '#' + ((m.th && m.th.color) || '4da3ff'), ac = '#' + ((m.ta && m.ta.color) || 'f472b6');
+    if (hc.toLowerCase() === ac.toLowerCase()) ac = '#f3efe2';
+    var svg = '<svg class="pitch" viewBox="0 0 105 68" role="img" aria-label="Likely line-ups on the pitch"><defs>' +
+      '<pattern id="stripes" width="10.5" height="68" patternUnits="userSpaceOnUse"><rect width="5.25" height="68" fill="#1b6d3b"/><rect x="5.25" width="5.25" height="68" fill="#186636"/></pattern>' +
+      '<linearGradient id="sheen" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".09"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>' +
+      '<rect class="grass" width="105" height="68"/><rect class="sheen" x="-40" width="70" height="68"/>' +
+      '<g class="lines"><rect x="1" y="1" width="103" height="66"/><line x1="52.5" y1="1" x2="52.5" y2="67"/><circle cx="52.5" cy="34" r="9.15"/>' +
+      '<rect x="1" y="13.85" width="16.5" height="40.3"/><rect x="87.5" y="13.85" width="16.5" height="40.3"/><rect x="1" y="24.85" width="5.5" height="18.3"/><rect x="98.5" y="24.85" width="5.5" height="18.3"/>' +
+      '<path d="M17.5 26.6 A9.15 9.15 0 0 1 17.5 41.4"/><path d="M87.5 26.6 A9.15 9.15 0 0 0 87.5 41.4"/></g>' +
+      '<circle cx="52.5" cy="34" r=".6" fill="rgba(255,255,255,.7)"/><circle cx="12" cy="34" r=".6" fill="rgba(255,255,255,.7)"/><circle cx="93" cy="34" r=".6" fill="rgba(255,255,255,.7)"/>' +
+      (H.xi.length ? '<text class="fmt" x="3" y="65">' + esc(H.formation || '') + '</text>' : '') + (A.xi.length ? '<text class="fmt" x="102" y="65" text-anchor="end">' + esc(A.formation || '') + '</text>' : '') +
+      side(H, m.th || {}, false, hc) + side(A, m.ta || {}, true, ac) + '</svg>';
+    var note = function (E, t) { return !t ? 'no team data' : !E.xi.length ? 'no squad yet' : E.real ? 'last line-up' + (E.date ? ', ' + ROME_DAY.format(new Date(E.date)) : '') : 'likely eleven from the squad'; };
+    return '<div class="pitchwrap">' + svg + (m.th ? '<span class="corner l">' + crest(m.th, 'sm', m.home) + '</span>' : '') + (m.ta ? '<span class="corner r">' + crest(m.ta, 'sm', m.away) + '</span>' : '') + '</div><div class="pitchnote"><span>' + esc(m.home) + ': ' + note(H, m.th) + '</span><span>' + esc(m.away) + ': ' + note(A, m.ta) + '</span></div>';
+  }
+  var MED = null;
+  function medians() {
+    if (MED || !T) return MED || {};
+    var ok = T.list.filter(function (t) { return t.avg && t.avg.matches >= 3; }), med = function (f) { var xs = ok.map(f).filter(function (v) { return v != null; }).sort(function (a, b) { return a - b; }); return xs.length ? xs[Math.floor(xs.length / 2)] : null; };
+    MED = { shots: med(function (t) { return t.avg.shots; }), duels: med(function (t) { return (t.avg.tackles || 0) + (t.avg.interceptions || 0); }), pass: med(function (t) { return t.avg.pass_pct; }) };
+    return MED;
+  }
+  function styleTags(t) {
+    if (!t || !t.avg || !t.avg.matches) return [];
+    var a = t.avg, md = medians(), tags = [];
+    if (a.possession >= 55) tags.push('Keeps the ball'); else if (a.possession <= 45) tags.push('Direct, on the counter');
+    if (a.pass_pct != null && md.pass != null && a.pass_pct >= md.pass + 4) tags.push('Patient build-up');
+    if (a.shots != null && md.shots != null) { if (a.shots >= md.shots + 2.5) tags.push('Shoots a lot'); else if (a.shots <= md.shots - 2.5) tags.push('Few shots'); }
+    if (md.duels != null && (a.tackles || 0) + (a.interceptions || 0) >= md.duels + 3) tags.push('Presses, wins the ball back');
+    if (a.goals_against != null) { if (a.goals_against <= 0.8) tags.push('Tight at the back'); else if (a.goals_against >= 1.8) tags.push('Leaky'); }
+    if (a.goals_for >= 2) tags.push('Free-scoring');
+    if (/^3-/.test(t.formation || '')) tags.push('Back three'); else if (/^5-/.test(t.formation || '')) tags.push('Back five');
+    return tags.slice(0, 4);
+  }
+  function duel(label, hv, av, unit, fmt) {
+    var f = fmt || function (v) { return v == null ? '–' : (Math.round(v * 10) / 10) + (unit || ''); }, tot = (hv || 0) + (av || 0);
+    return '<div class="vs2"><span class="l">' + f(hv) + '</span><span class="m">' + label + '</span><span class="r">' + f(av) + '</span>' +
+      (hv != null && av != null && tot > 0 ? '<div class="duel"><i class="l" style="flex:0 0 ' + (hv / tot * 100).toFixed(1) + '%"></i><i class="r" style="flex:1 1 0"></i></div>' : '') + '</div>';
+  }
+  function styleStrip(m) {
+    var h = m.th, a = m.ta, ha = (h && h.avg) || {}, aa = (a && a.avg) || {};
+    if (!ha.matches && !aa.matches) return '';
+    var rows = duel('possession', ha.possession, aa.possession, '%') + duel('shots a game', ha.shots, aa.shots) + duel('on target', ha.shots_on, aa.shots_on) + duel('passes completed', ha.pass_pct, aa.pass_pct, '%') +
+      duel('tackles + interceptions', ha.tackles != null ? (ha.tackles || 0) + (ha.interceptions || 0) : null, aa.tackles != null ? (aa.tackles || 0) + (aa.interceptions || 0) : null) +
+      duel('goals for a game', ha.goals_for, aa.goals_for, '', function (v) { return v == null ? '–' : v.toFixed(2); }) + duel('goals against a game', ha.goals_against, aa.goals_against, '', function (v) { return v == null ? '–' : v.toFixed(2); });
+    var tags = '<div class="styles"><div><span class="eyebrow">' + esc(m.home) + '</span><div class="tagsrow">' + (styleTags(h).map(function (x) { return '<span class="stag h">' + x + '</span>'; }).join('') || '<span class="fine">not enough matches</span>') + '</div></div>' +
+      '<div><span class="eyebrow">' + esc(m.away) + '</span><div class="tagsrow">' + (styleTags(a).map(function (x) { return '<span class="stag a">' + x + '</span>'; }).join('') || '<span class="fine">not enough matches</span>') + '</div></div></div>';
+    return '<div><span class="eyebrow">How they play · season averages</span><div style="margin-top:10px">' + rows + '</div>' + tags + '<p class="fine" style="margin-top:8px">' + (ha.matches || 0) + ' and ' + (aa.matches || 0) + ' matches this season, all competitions the site follows. Tags compare with the median of the ' + (T ? T.list.length : 0) + ' teams on file.' + (T && T.example ? ' Example data.' : '') + '</p></div>';
+  }
+  function teamHead(m) {
+    var side = function (t, name, cls) { return '<' + (t ? 'button' : 'div') + ' class="tside"' + (t ? ' data-team="' + t.id + '"' : '') + '>' + crest(t, '', name) + '<b class="display">' + esc(name) + '</b>' + (t ? formRow(t) + (t.avg && t.avg.record ? '<span class="num">' + t.avg.record + '</span>' : '') : '<span class="fine">no team data</span>') + '</' + (t ? 'button' : 'div') + '>'; };
+    return '<div class="teams">' + side(m.th, m.home) + '<span>v</span>' + side(m.ta, m.away) + '</div>';
+  }
+  function wireTeamBits(d, m) {
+    $$('[data-team]', d).forEach(function (b) { b.onclick = function () { var t = T && T.list.filter(function (x) { return String(x.id) === b.dataset.team; })[0]; if (t) openTeam(t, function () { openMatch(m.id); }); }; });
+    $$('.pl', d).forEach(function (g) { var go = function () { var t = T && T.list.filter(function (x) { return String(x.id) === g.dataset.team; })[0]; if (!t) return; var pl = byId(t)[g.dataset.pid]; if (pl) openPlayer(t, pl, function () { openMatch(m.id); }); };
+      g.onclick = go; g.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } }; });
+  }
+
   function openMatch(id) {
     var s = active, cfg = s.cfg, m = ALL.filter(function (x) { return x.id === id; })[0], c = m.calc || (m.calc = Scudi.matrix(m.lh, m.la));
     var cur = s.prev[id], o = optsOf(s, cfg.legs, true), list = Scudi.candidates(m, MIN_LEG, cfg.actual, o.haircut), max = 0, i = 0, heat = '', groups = {};
@@ -1054,11 +1371,13 @@ if (typeof module !== 'undefined') module.exports = Scudi;
         return '<button class="opt" data-pick="' + x.id + '" aria-pressed="' + (x.id === cur) + '"><span><b>' + x.label + (outside ? ' <span class="src">outside your rules</span>' : '') + '</b><span class="bar"><i style="width:' + (x.p * 100).toFixed(1) + '%"></i></span></span><span class="num">' + Math.round(x.p * 100) + '%</span><span class="num">' + x.odds.toFixed(2) + '<small>' + (x.cost * 100).toFixed(1) + '%</small></span></button>';
       }).join('');
     }).join('');
+    var hasTeams = !!(m.th || m.ta);
     var d = openDrawer('<div class="drawer-top"><span class="tag" style="color:var(--acc)"><span class="dot"></span>' + m.lg + ' · ' + m.t + '</span>' + CLOSE + '</div>' +
-      '<div class="teams"><b class="display" id="dTitle">' + m.home + '</b><span>v</span><b class="display">' + m.away + '</b></div>' +
-      '<div><div class="p3"><div><strong class="display">' + Math.round(c.home * 100) + '%</strong><small>' + m.home + '</small></div><div><strong class="display">' + Math.round(c.draw * 100) + '%</strong><small>Draw</small></div><div><strong class="display">' + Math.round(c.away * 100) + '%</strong><small>' + m.away + '</small></div></div>' +
+      '<h2 class="display" id="dTitle" hidden>' + esc(m.home) + ' v ' + esc(m.away) + '</h2>' + teamHead(m) +
+      (hasTeams ? '<div>' + pitch(m) + '</div>' + styleStrip(m) : '<p class="fine">No team data for this match yet. The team-data job (Thursday mornings, or "team data" under Actions) fills the pitch, the squads and the transfer histories.</p>') +
+      '<div><span class="eyebrow">The market\'s view</span><div class="p3" style="margin-top:10px"><div><strong class="display">' + Math.round(c.home * 100) + '%</strong><small>' + (m.th ? crest(m.th, 'xs', m.home) + ' ' : '') + esc(m.home) + '</small></div><div><strong class="display">' + Math.round(c.draw * 100) + '%</strong><small>Draw</small></div><div><strong class="display">' + Math.round(c.away * 100) + '%</strong><small>' + esc(m.away) + (m.ta ? ' ' + crest(m.ta, 'xs', m.away) : '') + '</small></div></div>' +
       '<div class="pbar"><i class="h" style="flex:0 0 ' + (c.home * 100).toFixed(1) + '%"></i><i class="d" style="flex:1 1 0"></i><i class="a" style="flex:0 0 ' + (c.away * 100).toFixed(1) + '%"></i></div><p class="fine" style="margin-top:8px">' + (m.books ? 'Consensus of ' + m.books + ' bookmakers, margin removed' + (m.sharp ? ', ' + Math.round(m.sharp * 100) + '% of the weight from Pinnacle and Betfair' : '') + '.' : 'The market\'s view, bookmaker margin removed.') + '</p></div>' +
-      '<div><span class="eyebrow">Likely scores</span><div class="heatwrap" style="margin-top:10px"><div class="heat" role="img" aria-label="Score grid">' + heat + '</div><div class="tops">' + c.scores.slice(0, 4).map(function (x) { return '<span><b class="display">' + x.h + '–' + x.a + '</b><span class="num muted">' + (x.p * 100).toFixed(1) + '%</span></span>'; }).join('') + '</div></div><p class="fine" style="margin-top:8px">Grid: ' + m.home + ' goals down (0 to 4+), ' + m.away + ' goals across. Brighter is likelier.</p></div>' +
+      '<div><span class="eyebrow">Likely scores</span><div class="heatwrap" style="margin-top:10px"><div class="heat" role="img" aria-label="Score grid">' + heat + '</div><div class="tops">' + c.scores.slice(0, 4).map(function (x) { return '<span><b class="display">' + x.h + '–' + x.a + '</b><span class="num muted">' + (x.p * 100).toFixed(1) + '%</span></span>'; }).join('') + '</div></div><p class="fine" style="margin-top:8px">Grid: ' + esc(m.home) + ' goals down (0 to 4+), ' + esc(m.away) + ' goals across. Brighter is likelier.</p></div>' +
       '<div><span class="eyebrow">Picks for this match</span><p class="fine" style="margin-block:6px 4px">Chance, price, and what the bookmaker\'s margin costs you on that pick. Choose one to lock it, even outside your rules; the rest of the slip rebuilds to stay on target.</p><div class="opts">' + opts + '</div></div>' +
       '<div class="row2">' + (cfg.locks[id] ? '<button class="btn ghost" id="dUnlock">Let Scudi choose</button>' : '<span></span>') + '<button class="btn ghost" id="dOut">Leave this match out</button></div>');
     if ($('#dUnlock')) $('#dUnlock').onclick = function () { delete cfg.locks[id]; closeDrawer(); changed(); };
@@ -1069,6 +1388,69 @@ if (typeof module !== 'undefined') module.exports = Scudi;
       if (!r) { if (before) cfg.locks[id] = before; else delete cfg.locks[id]; toast('With that pick no slip reaches ' + cfg.target + 'x under your rules.'); return; }
       closeDrawer(); changed('Locked. The other legs were rebuilt to stay at ' + cfg.target + 'x.');
     }; });
+    wireTeamBits(d, m);
+  }
+  var BACK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
+  var ARROW = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  var POSNAME = { G: 'Goalkeepers', D: 'Defenders', M: 'Midfielders', F: 'Forwards' };
+  function squadList(t) {
+    var by = {}; (t.players || []).forEach(function (p) { (by[p.pos] = by[p.pos] || []).push(p); });
+    return '<div class="squad">' + ['G', 'D', 'M', 'F'].concat(Object.keys(by).filter(function (k) { return 'GDMF'.indexOf(k) < 0; })).filter(function (k) { return by[k]; }).map(function (k) {
+      return '<span class="grp">' + (POSNAME[k] || k) + '</span>' + by[k].sort(function (a, b) { return (+a.jersey || 99) - (+b.jersey || 99); }).map(function (p) {
+        var st = p.stats || {}, bits = [];
+        if (st.appearances != null) bits.push(st.appearances + ' app');
+        if (st.totalGoals) bits.push(st.totalGoals + ' g');
+        if (st.goalAssists) bits.push(st.goalAssists + ' a');
+        return '<button class="prow' + (p.injured ? ' inj' : '') + '" data-pid="' + p.id + '"><span class="no">' + esc(p.jersey || '') + '</span><span><b>' + esc(p.name) + '</b>' + (p.age ? '<small>' + p.age + '</small>' : '') + '</span><span class="st">' + bits.join(' · ') + '</span></button>';
+      }).join('');
+    }).join('') + '</div>';
+  }
+  function openTeam(t, back) {
+    var a = t.avg || {}, forms = Object.keys(t.formations || {}).sort(function (x, y) { return t.formations[y] - t.formations[x]; });
+    var d = openDrawer('<div class="drawer-top"><button class="back" id="dBack">' + BACK + ' Back</button>' + CLOSE + '</div>' +
+      '<div class="dview"><div class="phead">' + crest(t, 'lg', t.name) + '<div><h2 class="display" id="dTitle">' + esc(t.name) + '</h2><div class="sub">' + (t.comps || []).map(esc).join(' · ') + (a.record ? ' · <b class="num">' + a.record + '</b>' : '') + '</div>' + formRow(t) + '</div></div>' +
+      (a.matches ? '<div class="facts"><div><small>possession</small><b>' + (a.possession != null ? a.possession + '%' : '–') + '</b></div><div><small>shots / game</small><b>' + (a.shots != null ? a.shots : '–') + '</b></div><div><small>goals for</small><b>' + (a.goals_for != null ? a.goals_for.toFixed(2) : '–') + '</b></div><div><small>against</small><b>' + (a.goals_against != null ? a.goals_against.toFixed(2) : '–') + '</b></div></div>' : '<p class="fine">No finished matches on file yet.</p>') +
+      '<div><span class="eyebrow">Style</span><div class="tagsrow" style="margin-top:8px">' + (styleTags(t).map(function (x) { return '<span class="stag">' + x + '</span>'; }).join('') || '<span class="fine">not enough matches</span>') + '</div>' +
+      (forms.length ? '<div class="fhist" style="margin-top:10px">' + forms.map(function (f) { return '<span>' + esc(f) + '<b>×' + t.formations[f] + '</b></span>'; }).join('') + '</div>' : '') + '</div>' +
+      (t.results && t.results.length ? '<div><span class="eyebrow">Last results</span><div class="res" style="margin-top:8px">' + t.results.slice().reverse().map(function (r) { var w = r.gf > r.ga ? 'W' : r.gf === r.ga ? 'D' : 'L', vs = teamById(r.vs_id); return '<div><i class="' + w + '"></i><span class="who">' + crest(vs, 'xs', r.vs) + (r.home ? 'v ' : 'at ') + esc(r.vs) + '</span><span class="sc">' + r.gf + '–' + r.ga + '</span><time>' + esc(r.date.slice(5)) + '</time></div>'; }).join('') + '</div></div>' : '') +
+      '<div><span class="eyebrow">Squad</span>' + squadList(t) + '</div>' +
+      '<p class="fine">' + (T && T.example ? 'Example data in ESPN\'s shapes. ' : '') + 'Source: ESPN public data via the team-data job' + (T && T.built ? ', ' + ROME_DAY.format(T.built) : '') + '.</p></div>');
+    $('#dBack').onclick = back;
+    $$('.prow', d).forEach(function (b) { b.onclick = function () { var pl = byId(t)[b.dataset.pid]; if (pl) openPlayer(t, pl, function () { openTeam(t, back); }); }; });
+  }
+  function miniPitch(t, p) {
+    var E = eleven(t), e = E.xi.filter(function (x) { return String(x.p.id) === String(p.id); })[0];
+    if (!e) return '';
+    var pos = slots(E.formation, Math.max(11, E.xi.length)), pt = pos[e.slot - 1] || pos[0];
+    return '<div class="mini"><svg viewBox="0 0 52.5 68" aria-hidden="true"><rect width="52.5" height="68" fill="#1b6d3b"/><g fill="none" stroke="rgba(255,255,255,.55)" stroke-width=".5"><rect x="1" y="1" width="51.5" height="66"/><rect x="1" y="13.85" width="16.5" height="40.3"/><rect x="1" y="24.85" width="5.5" height="18.3"/><path d="M52.5 24.85 A9.15 9.15 0 0 0 52.5 43.15"/></g>' +
+      pos.map(function (q, i) { return i === e.slot - 1 ? '' : '<circle cx="' + q.x + '" cy="' + q.y + '" r="1.6" fill="rgba(255,255,255,.35)"/>'; }).join('') +
+      '<circle cx="' + pt.x + '" cy="' + pt.y + '" r="3.2" fill="#' + (t.color || '4da3ff') + '" stroke="#fff" stroke-width=".7"><animate attributeName="r" values="3.2;3.8;3.2" dur="1.6s" repeatCount="indefinite"/></circle></svg>' +
+      '<div><b>' + (E.real ? 'Slot in the last line-up' : 'Likely slot') + '</b><p class="fine">' + esc(E.formation || '') + (E.real && E.date ? ' on ' + ROME_DAY.format(new Date(E.date)) : '') + '. Attacking left to right. No free source publishes heatmaps or preferred foot, so Scudi does not invent them.</p></div></div>';
+  }
+  function feeCell(x) {
+    var paid = x.amount > 0, label = paid ? (x.fee || ('€' + (x.amount / 1e6).toFixed(1) + 'M')) : (x.fee || x.type || '–');
+    return '<span class="fee' + (paid ? ' paid' : '') + '"><b>' + esc(label) + '</b><small>' + esc(paid ? (x.type || 'transfer') : '') + '</small></span>';
+  }
+  function openPlayer(t, p, back) {
+    var st = p.stats || {}, col = '#' + (t.color || '3a4a7a'), init = (p.name || '?').split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2).toUpperCase();
+    var facts = [['height', p.height_cm ? p.height_cm + ' cm' : '–'], ['weight', p.weight_kg ? p.weight_kg + ' kg' : '–'], ['apps', st.appearances != null ? st.appearances : '–'], ['goals', st.totalGoals != null ? st.totalGoals : '–'], ['assists', st.goalAssists != null ? st.goalAssists : '–'], ['yellows', st.yellowCards != null ? st.yellowCards : '–'], ['saves', st.saves != null ? st.saves : null], ['born', p.dob || '–']].filter(function (f) { return f[1] !== null; }).slice(0, 8);
+    var d = openDrawer('<div class="drawer-top"><button class="back" id="dBack">' + BACK + ' Back</button>' + CLOSE + '</div>' +
+      '<div class="dview"><div class="phead"><span class="avatar" style="--c:' + col + '">' + esc(init) + (p.photo ? '<img src="' + esc(p.photo) + '" alt="">' : '') + '</span><div><h2 class="display" id="dTitle">' + esc(p.name) + '</h2>' +
+      '<div class="sub">' + (p.jersey ? '<b class="num">#' + esc(p.jersey) + '</b>' : '') + '<span>' + esc(p.posName || p.pos || '') + '</span>' + (p.age ? '<span>' + p.age + ' years</span>' : '') + (p.nat ? '<span>' + (p.flag ? '<img src="' + esc(p.flag) + '" alt=""> ' : '') + esc(p.nat) + '</span>' : '') + (p.injured ? '<span style="color:var(--bad);font-weight:700">injured</span>' : '') + '</div>' +
+      '<div class="sub" style="margin-top:6px">' + crest(t, 'xs', t.name) + ' <span>' + esc(t.name) + '</span></div></div></div>' +
+      '<div class="facts">' + facts.map(function (f) { return '<div><small>' + f[0] + '</small><b' + (String(f[1]).length > 6 ? ' class="long"' : '') + '>' + esc(f[1]) + '</b></div>'; }).join('') + '</div>' +
+      miniPitch(t, p) +
+      '<div><span class="eyebrow">Transfer history</span><div class="tl" id="tl" style="margin-top:6px"><p class="fine">Loading…</p></div></div></div>');
+    $('#dBack').onclick = back;
+    loadPlayers().then(function (P) {
+      var rec = P[String(p.id)], tl = $('#tl'); if (!tl) return;
+      if (!rec) { tl.innerHTML = '<p class="fine">No transfer history on file yet (the team-data job fetches new players each Thursday).</p>'; return; }
+      var xs = (rec.transfers || []).slice().sort(function (a, b) { return (b.date || '').localeCompare(a.date || ''); });
+      tl.innerHTML = xs.length ? xs.map(function (x, i) {
+        var from = teamById(x.from.id) || { logo: x.from.logo, logo_dark: x.from.logo_dark, abbr: x.from.name, color: '3a4a7a' }, to = teamById(x.to.id) || { logo: x.to.logo, logo_dark: x.to.logo_dark, abbr: x.to.name, color: '3a4a7a' };
+        return '<div class="ev" style="animation-delay:' + (i * 50) + 'ms"><time>' + esc((x.date || '').slice(0, 7)) + '</time><span class="move">' + crest(from, 'sm', x.from.name) + '<span>' + esc(x.from.name) + '</span>' + ARROW + crest(to, 'sm', x.to.name) + '<span>' + esc(x.to.name) + '</span></span>' + feeCell(x) + '</div>';
+      }).join('') + '<p class="fine" style="margin-top:8px">Fees as ESPN lists them; "undisclosed" means the clubs never published one.</p>' : '<p class="fine">No recorded transfers: with this club since youth level, or ESPN has no record.</p>';
+    });
   }
 
   /* type the prices SNAI really shows for the current legs; the slip is then re-solved with them */
@@ -1077,7 +1459,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
     var d = openDrawer('<div class="drawer-top"><span class="tag" style="color:var(--acc)"><span class="dot"></span>' + s.name + ' · ' + r.picks.length + ' legs</span>' + CLOSE + '</div>' +
       '<div><h2 class="display" id="dTitle" style="font-size:26px">SNAI\'s prices</h2><p class="fine" style="margin-top:6px">Open each pick on SNAI and type the price you see. Scudi then recomputes the odds, the bonus and the true cost. If the slip falls short of the target it swaps a leg and asks you to check the new one.</p></div>' +
       '<div class="form">' + r.picks.map(function (x, i) {
-        return '<label class="frow" for="px' + i + '"><span><b>' + x.pick.label + '</b><small>' + x.match.home + ' – ' + x.match.away + ' · ' + (x.pick.checked ? 'entered' : 'estimate ' + x.pick.odds.toFixed(2)) + '</small></span>' +
+        return '<label class="frow" for="px' + i + '"><span><b>' + x.pick.label + '</b><small>' + (x.match.th || x.match.ta ? crest(x.match.th, 'xs', x.match.home) + crest(x.match.ta, 'xs', x.match.away) + ' ' : '') + x.match.home + ' – ' + x.match.away + ' · ' + (x.pick.checked ? 'entered' : 'estimate ' + x.pick.odds.toFixed(2)) + '</small></span>' +
           '<input id="px' + i + '" inputmode="decimal" type="number" min="1.01" step="0.01" value="' + x.pick.odds.toFixed(2) + '" data-m="' + x.match.id + '" data-p="' + x.pick.id + '"></label>';
       }).join('') + '</div><div class="row2"><button class="btn ghost" id="pxClear">Back to estimates</button><button class="btn primary" id="pxApply">Apply prices</button></div>');
     $('#pxClear').onclick = function () { cfg.actual = {}; closeDrawer(); changed('Back to estimated prices.'); };
@@ -1087,6 +1469,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
       if (bad) { toast('Every price must be a number above 1.00.'); return; }
       Object.keys(typed).forEach(function (mid) { cfg.actual[mid] = Object.assign(cfg.actual[mid] || {}, typed[mid]); });
       remember(Scudi.ratiosFrom(poolOf(s), typed));
+      try { var keep = JSON.parse(localStorage.getItem('scudi-snai-typed') || '{}'); Object.keys(typed).forEach(function (mid) { var m = ALL.filter(function (x) { return x.id === mid; })[0]; if (m) { var k = matchKey(m); keep[k] = Object.assign(keep[k] || {}, typed[mid]); m.snai = Object.assign(m.snai || {}, typed[mid]); } }); localStorage.setItem('scudi-snai-typed', JSON.stringify(keep)); } catch (e) {}
       closeDrawer(); changed();
       var r2 = s.result; if (!r2) { toast('At SNAI\'s prices no slip reaches ' + cfg.target + 'x under your rules.'); return; }
       var left = r2.picks.length - r2.checked, cut = Math.round((1 - Scudi.haircutFrom([], {}, MEMORY).all) * 100);

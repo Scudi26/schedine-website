@@ -460,3 +460,83 @@ def test_season_simulator_rejects_bad_plans():
         simulate([], weeks=10)
     with pytest.raises(ValueError):
         simulate([SlipPlan(1.2, 30, 5)], weeks=10)
+
+
+# ---------- team data job (tools/teams.py) on synthetic ESPN-shaped responses ----------
+def _espn_sample():
+    import json
+    from pathlib import Path
+
+    from tools.sample_espn import make
+
+    feed = json.loads(Path(__file__).with_name("feed_week_sample.json").read_text())
+    return feed, make(feed, seed=3)
+
+
+def test_teams_job_builds_squads_lineups_and_averages_and_is_incremental():
+    from datetime import datetime, timezone
+
+    from tools.teams import SLUGS, build, replay_fetch
+
+    feed, rec = _espn_sample()
+    now = datetime(2026, 10, 8, 9, 0, tzinfo=timezone.utc)
+    teams, players, budget = build(replay_fetch(rec), list(SLUGS), {}, {}, now)
+    names = {n for evs in feed.values() for e in evs for n in (e["home_team"], e["away_team"])}
+    from tools.sample_espn import REGISTRY
+    from tools.teams import find_team
+    everyone = [t for rows in REGISTRY.values() for t in rows]
+    distinct = {(find_team(n, everyone) or {"id": n})["id"] for n in names}   # "Man City" and "Manchester City" are one club
+    assert len(teams["teams"]) == len(distinct)
+    for t in teams["teams"].values():
+        assert len(t["players"]) == 23 and t["avg"]["matches"] == 5 * len(t["comps"]) and 0 < t["avg"]["possession"] < 100
+        assert len(t["last"]["xi"]) == 11 and t["last"]["xi"][0]["slot"] == 1 and t["formation"] in t["formations"]
+        assert len(t["form"]) == 5 and set(t["form"]) <= set("WDL")
+        assert t["key"] and t["logo"]
+    assert len(players["players"]) == len(distinct) * 23
+    assert budget.failed == 0
+    # second run: nothing refetched except the lists, rosters and schedules
+    teams2, players2, budget2 = build(replay_fetch(rec), list(SLUGS), teams, players, now)
+    assert budget2.calls < budget.calls / 3
+    for k, t in teams2["teams"].items():
+        assert t["avg"] == teams["teams"][k]["avg"] and t["last"] == teams["teams"][k]["last"]
+    assert players2["players"] == players["players"]
+
+
+def test_teams_job_survives_a_failing_endpoint_and_a_request_cap():
+    from datetime import datetime, timezone
+
+    from tools.teams import build, replay_fetch
+
+    _feed, rec = _espn_sample()
+    broken = {u: v for u, v in rec.items() if "/summary?" not in u}   # every match summary fails
+    teams, _players, budget = build(replay_fetch(broken), ["Serie A"], {}, {}, datetime(2026, 10, 8, tzinfo=timezone.utc), transfers=False)
+    assert budget.failed > 0 and len(teams["teams"]) == 20
+    assert all(t["avg"]["matches"] == 0 and t["players"] for t in teams["teams"].values())
+    teams, _players, budget = build(replay_fetch(rec), ["Serie A"], {}, {}, datetime(2026, 10, 8, tzinfo=timezone.utc), max_calls=30)
+    assert budget.calls == 30 and len(teams["teams"]) == 20
+
+
+def test_team_name_key_drops_accents_and_club_words():
+    from tools.teams import norm
+
+    assert norm("FC Internazionale Milano") == "internazionale milano"
+    assert norm("Bayern München") == "bayern munchen"
+    assert norm("Paris Saint-Germain") == norm("Paris Saint Germain") == "paris saint germain"
+    assert norm("AS Roma") == "roma" and norm("SSC Napoli") == "napoli"
+
+
+def test_every_sample_week_team_resolves_to_a_real_espn_team():
+    import json
+    from pathlib import Path
+
+    from tools.teams import find_team
+
+    reg = json.loads((Path(__file__).parents[1] / "data" / "espn_teams.json").read_text())["competitions"]
+    everyone = [t for rows in reg.values() for t in rows]
+    feed = json.loads(Path(__file__).with_name("feed_week_sample.json").read_text())
+    missing = sorted({n for evs in feed.values() for e in evs for n in (e["home_team"], e["away_team"]) if find_team(n, everyone) is None})
+    assert missing == ["Nantes", "Wolfsburg"]   # not in the 2026-27 top flights; the sample feed's fixture lists outside Serie A and the CL are invented
+    assert find_team("Inter", everyone)["id"] == 110 and find_team("Inter Milan", everyone)["id"] == 110 and find_team("Milan", everyone)["id"] == 103
+    assert find_team("Paris Saint Germain", everyone)["id"] == 160 and find_team("Bodo/Glimt", everyone)["id"] == 2980
+    assert find_team("Athletic Bilbao", everyone)["id"] == 93 and find_team("Man City", everyone)["id"] == 382
+    assert find_team("Nowhere United", everyone) is None
