@@ -1,0 +1,22 @@
+name: team data
+on:
+  schedule:
+    - cron: "0 7 * * 4"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  teams:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: fetch team and player data (ESPN public API, no key)
+        run: python3 tools/teams.py --max-calls 6000
+      - name: commit the data
+        run: |
+          git config user.name scudi-bot && git config user.email bot@scudi.local
+          git add data/teams.json data/players.json && git commit -m "teams $(date -u +%F)" || echo "nothing new"
+          git pull --rebase && git push
