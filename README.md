@@ -63,11 +63,27 @@ Not available from any free source, so not shown: heatmaps, preferred foot, mark
    If the run fails at the "commit" step, go to **Settings → Actions → General → Workflow permissions** and choose
    "Read and write permissions".
 
+## On the phone, like an app (decision 76)
+
+The site has five screens: **Slips** (the builder), **Matches** (every priced match of the week plus the fixtures still
+to price), **Live** (placed slips, followed on match day), **Record** (graded record, "Is it working?", season simulator)
+and **Method** (this week's data, credits, tests). On a phone they sit in a tab bar at the bottom. To install it: open the
+site in Safari (iPhone) → Share → "Add to Home Screen", or in Chrome (Android) → menu → "Install app". It then opens full
+screen with the Scudi icon. `sw.js` keeps a copy for when there is no connection but always asks the network first, so a
+new upload or a new price pull shows straight away. `manifest.webmanifest` and `icons/` (made by `tools/make_icons.py`)
+describe the app.
+
+Crests: clubs the team-data job has not covered yet get their crest from ESPN's public team list, read by the browser
+(one request per league, kept a week). National teams show their flag (drawn in the page).
+
+Example data never passes for real prices: the jobs discard a stored week that is a replay or is dated in the future,
+and grading never looks at one (decision 76).
+
 ## Running the engine on a computer
 
 ```
 pip install numpy scipy pandas pytest ruff
-pytest -q            # 87 tests
+pytest -q            # 88 tests
 python3 -m tools.weekly --from-file tests/feed_week_sample.json --now 2026-10-09T09:00:00Z   # no key needed
 ODDS_API_KEY=... python3 -m tools.weekly                                                       # the real thing
 python3 tools/snai.py    # SNAI's margins and the slips at SNAI's typed prices -> results/snai_<date>.json

@@ -1012,3 +1012,30 @@ def test_a_priced_match_the_next_pull_does_not_cover_keeps_its_prices(tmp_path):
     assert {m["id"] for m in tue["matches"]} == {m["id"] for m in fri["matches"]}          # kept, not dropped
     assert all(m["priced_at"].startswith("2026-10-09") for m in tue["matches"])            # with the day their prices are from
     assert next(p for p in fake.calls if p[0].endswith("/odds"))[1]["commenceTimeTo"] == "2026-10-16T06:00:00Z"   # and no credit spent on them
+
+
+def test_example_prices_in_the_stored_week_are_cleaned_out_and_never_graded(tmp_path):
+    """The live incident of 22 September: a real week that had kept 52 matches priced 'on 9 October' (the repository's
+    sample file) and carried 16 sample slips as pending."""
+    from tools.grade import weeks_of
+    from tools.weekly import main, sanitize
+
+    real = datetime(2026, 9, 22, 16, 45, tzinfo=timezone.utc)
+    week = {"built_at": real.isoformat(), "matches": [
+        {"id": "nl1", "competition": "Nations League", "kickoff": "2026-09-25T18:45:00+00:00", "home": "Italy", "away": "Belgium", "priced_at": real.isoformat(), "chances": {}, "estimate": {}},
+        {"id": "sa1", "competition": "Serie A", "kickoff": "2026-10-10T13:00:00+00:00", "home": "Genoa", "away": "Fiorentina", "priced_at": "2026-10-09T09:00:00+00:00", "chances": {}, "estimate": {}}],
+        "slips": [], "fixtures": [], "competitions": [],
+        "pending": [{"built_at": "2026-10-09T09:00:00+00:00", "slips": [{"name": "Serie A", "target": 25, "picks": [{"match": "sa1"}]}], "matches": []}]}
+    clean, notes = sanitize(week, datetime(2026, 9, 23, 9, 0, tzinfo=timezone.utc))
+    assert [m["id"] for m in clean["matches"]] == ["nl1"] and clean["pending"] == [] and len(notes) == 2
+    assert sanitize({"built_at": "2026-10-09T09:00:00+00:00", "matches": [{"id": "x"}]}, datetime(2026, 9, 23, tzinfo=timezone.utc))[0] == {}
+    assert sanitize({"built_at": "2026-09-01T09:00:00+00:00", "example": True}, datetime(2026, 9, 23, tzinfo=timezone.utc))[0] == {}
+    # the morning run with nothing due still rewrites the file without them
+    out, hist = tmp_path / "week.json", tmp_path / "history.json"
+    out.write_text(json.dumps(week))
+    assert main(["--out", str(out), "--history", str(hist), "--mode", "late", "--now", "2026-09-23T09:00:00Z"], get=_FakeFeed({}, {})) == 0
+    stored = json.loads(out.read_text())
+    assert [m["id"] for m in stored["matches"]] == ["nl1"] and stored["pending"] == []
+    # and grading never looks at a week built after the grading time, nor at a replay
+    assert [w["built_at"] for w in weeks_of(week, datetime(2026, 9, 25, tzinfo=timezone.utc))] == [real.isoformat()]
+    assert weeks_of(dict(week, example=True), datetime(2026, 12, 1, tzinfo=timezone.utc)) == []

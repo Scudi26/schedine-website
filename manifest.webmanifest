@@ -1,0 +1,16 @@
+{
+  "name": "Scudi",
+  "short_name": "Scudi",
+  "description": "The slip with the best chance of landing on your multiplier.",
+  "start_url": "./#slips",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B0E1F",
+  "theme_color": "#0B0E1F",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

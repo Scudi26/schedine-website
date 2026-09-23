@@ -284,13 +284,40 @@ def preset_slips(matches, now: datetime) -> list[dict]:
     return out
 
 
+def sanitize(old: dict, now: datetime, replay: bool = False) -> tuple[dict, list[str]]:
+    """Nothing invented may pass for real prices. A stored week that is a replay ("example") or is stamped after `now` can
+    only be example or test data (an old upload once carried the repository's sample file, dated 9 October 2026, and
+    its matches were then kept as if priced; decision 76): it is discarded. Matches priced "in the future" and
+    pending slips built "in the future" are dropped the same way, so they are never shown or graded."""
+    def future(ts):
+        if not ts:
+            return False
+        try:
+            return datetime.fromisoformat(str(ts).replace("Z", "+00:00")) > now + timedelta(minutes=5)
+        except ValueError:
+            return True
+    if not old:
+        return old, []
+    if (old.get("example") and not replay) or future(old.get("built_at")):
+        return {}, ["the stored week was example data (a replay or dated in the future): discarded"]
+    notes = []
+    matches = [m for m in old.get("matches", []) if not future(m.get("priced_at"))]
+    if len(matches) != len(old.get("matches", [])):
+        notes.append(f"{len(old['matches']) - len(matches)} matches carried example prices (priced in the future): dropped")
+    pending = [p for p in old.get("pending", []) if not future(p.get("built_at")) and (replay or not p.get("example"))]
+    if len(pending) != len(old.get("pending", [])):
+        notes.append(f"{len(old['pending']) - len(pending)} pending weeks were example data: dropped")
+    return dict(old, matches=matches, pending=pending), notes
+
+
 def carry_pending(old: dict, now: datetime, keep_days: float = 10.0) -> list[dict]:
     """The slips of the week being replaced, with the matches they use, so the grading job can still grade them if a
     full pull comes before it (a manual run, an empty week refilled midweek). Graded ones are skipped there by key."""
     out = [p for p in old.get("pending", []) if datetime.fromisoformat(p["built_at"]) >= now - timedelta(days=keep_days)]
     if old.get("slips") and old.get("built_at"):
         used = {p["match"] for s in old["slips"] for p in s["picks"]}
-        out.append({"built_at": old["built_at"], "slips": old["slips"], "matches": [m for m in old.get("matches", []) if m["id"] in used]})
+        out.append({"built_at": old["built_at"], "slips": old["slips"], "matches": [m for m in old.get("matches", []) if m["id"] in used],
+                    **({"example": True} if old.get("example") else {})})
     return out
 
 
@@ -371,7 +398,9 @@ def main(argv=None, get=None):
     a = ap.parse_args(argv)
     now = datetime.fromisoformat(a.now.replace("Z", "+00:00")) if a.now else datetime.now(timezone.utc)
     out, hist_path = Path(a.out), Path(a.history)
-    old = json.loads(out.read_text()) if out.exists() else {}
+    old, cleaned = sanitize(json.loads(out.read_text()) if out.exists() else {}, now, replay=bool(a.from_file))
+    for n in cleaned:
+        print("  cleaned: " + n)
     mode = a.mode
     if mode == "auto":
         mode = "full" if now.weekday() in (1, 4) or not old.get("matches") else "late"
@@ -383,13 +412,19 @@ def main(argv=None, get=None):
             if not key:
                 sys.exit("ODDS_API_KEY is not set (keep it in a GitHub secret or a password manager, never in the code)")
             get = live_get(key)
-    notes = []
+    notes = list(cleaned)
     if mode == "late":
         due = comps_due(old, now, a.late_hours)
         if a.comps:
             due = [c for c in due if c in a.comps]
         if not due:
             print(f"late pull: no big-league or national-team kickoff in the next {a.late_hours:g} hours, nothing fetched, no credit spent")
+            if cleaned:   # still write the cleaned file, so example prices leave the site today
+                data = dict(old, notes=(old.get("notes") or []) + cleaned)
+                data["competitions"] = comp_info(sort_names({m["competition"] for m in data.get("matches", [])} | {f["competition"] for f in data.get("fixtures", [])}),
+                                                 None, old.get("competitions"))
+                out.write_text(json.dumps(data, indent=1, ensure_ascii=False))
+                print(f"  wrote the cleaned week -> {out}")
             return 0
         known = {c["name"]: c for c in old.get("competitions", [])}
         comps = [BY_NAME[n] if n in BY_NAME else Comp(n, known[n]["odds"], known[n].get("espn"), "national", known[n].get("country", ""))
@@ -438,6 +473,8 @@ def main(argv=None, get=None):
                 "credits": meta, "guard": guard.__dict__, "competitions": comp_info(names, extra, old.get("competitions")),
                 "pulled": got["pulled"], "skipped": got["skipped"], "notes": notes, "matches": all_matches, "slips": slips,
                 "fixtures": fx, "pending": carry_pending(old, now)}
+        if a.from_file:
+            data["example"] = True   # a replayed feed is never real prices
         note = f"{guard.kept} matches priced ({len(kept)} kept from the last pull), {len(fx)} more fixtures listed, {len(slips)} preset slips built"
     if mode == "late":
         data["fixtures"] = [f for f in old.get("fixtures", []) if datetime.fromisoformat(f["kickoff"]) > now]

@@ -192,9 +192,16 @@ def grade(week: dict, scores: dict[str, dict], record: dict, now: datetime, hist
     return record
 
 
-def weeks_of(week: dict) -> list[dict]:
-    """The current week plus the ungraded weeks a later full pull replaced."""
-    return [week] + [{"built_at": p["built_at"], "matches": p.get("matches", []), "slips": p.get("slips", [])} for p in week.get("pending", [])]
+def weeks_of(week: dict, now: datetime | None = None) -> list[dict]:
+    """The current week plus the ungraded weeks a later full pull replaced. Example data (a replay, or a week built after
+    `now`) is never graded (decision 76)."""
+    out = [week] + [{"built_at": p["built_at"], "matches": p.get("matches", []), "slips": p.get("slips", []), "example": p.get("example")}
+                    for p in week.get("pending", [])]
+    def real(w):
+        if week.get("example") or w.get("example") or not w.get("built_at"):
+            return False
+        return now is None or datetime.fromisoformat(w["built_at"].replace("Z", "+00:00")) <= now
+    return [w for w in out if real(w)]
 
 
 def main(argv=None, fetch=None):
@@ -213,7 +220,7 @@ def main(argv=None, fetch=None):
     hist = json.loads(Path(a.history).read_text()) if Path(a.history).exists() else {}
     done = {s["key"] for s in record.get("slips", [])}
     wanted: dict[str, dict] = {}
-    for w in weeks_of(week):
+    for w in weeks_of(week, now):
         ids = {p["match"] for s in w["slips"] if f'{w["built_at"]}|{s["name"]}|{s["target"]}' not in done for p in s["picks"]}
         wanted.update({m["id"]: m for m in w["matches"] if m["id"] in ids and datetime.fromisoformat(m["kickoff"]) < now})
     scores: dict = {}
@@ -239,7 +246,7 @@ def main(argv=None, fetch=None):
                 print(f"odds feed scores failed: {e}")
         elif left:
             print(f"not settled and no odds key to ask: {', '.join(left)}")
-    for w in weeks_of(week):
+    for w in weeks_of(week, now):
         record = grade(w, scores, record, now, hist)
     if "summary" not in record:
         record = grade({"built_at": "", "matches": [], "slips": []}, {}, record, now)
