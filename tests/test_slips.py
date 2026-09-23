@@ -353,7 +353,7 @@ def test_feed_prices_good_matches_and_counts_every_guard():
     genoa, inter = matches
     assert genoa.books_used == 4 and genoa.sharp_share > 0.5
     assert genoa.fit_error < 0.001
-    assert set(genoa.chances) == {"1", "X", "2", "1X", "X2", "12", "O15", "O25", "U25", "U35", "GG"}
+    assert set(genoa.chances) == set(SLIP_MENU)                  # every offered pick type, new markets included (decision 78)
     assert abs(genoa.chances["1"] + genoa.chances["X"] + genoa.chances["2"] - 1) < 1e-9
     # estimates come from ordinary books only (Unibet, William Hill), never from the sharp ones
     assert genoa.estimate["1"] == pytest.approx((2.50 + 2.55) / 2)
@@ -1039,3 +1039,171 @@ def test_example_prices_in_the_stored_week_are_cleaned_out_and_never_graded(tmp_
     # and grading never looks at a week built after the grading time, nor at a replay
     assert [w["built_at"] for w in weeks_of(week, datetime(2026, 9, 25, tzinfo=timezone.utc))] == [real.isoformat()]
     assert weeks_of(dict(week, example=True), datetime(2026, 12, 1, tzinfo=timezone.utc)) == []
+
+
+def test_team_data_job_needs_no_numpy_and_stops_in_time(tmp_path):
+    """Incident 2026-09-23: the team data job runs on a bare Python (no numpy or scipy) and failed at import because
+    tools/teams.py loaded the whole scudi_slips package. It must import without them, and a run stops and saves before
+    the GitHub job's timeout."""
+    import subprocess
+    import sys
+    import time as _time
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    block = ("import sys, importlib.abc\n"
+             "class Block(importlib.abc.MetaPathFinder):\n"
+             "    def find_spec(self, name, path, target=None):\n"
+             "        if name.split('.')[0] in ('numpy', 'scipy'):\n"
+             "            raise ModuleNotFoundError(name)\n"
+             "sys.meta_path.insert(0, Block())\n"
+             f"sys.argv = ['teams.py', '--help']\n"
+             f"import runpy; runpy.run_path({str(root / 'tools' / 'teams.py')!r}, run_name='__main__')\n")
+    r = subprocess.run([sys.executable, "-c", block], capture_output=True, text=True, cwd=tmp_path)
+    assert r.returncode == 0, r.stderr
+    assert "--max-minutes" in r.stdout
+
+    from tools.teams import Budget
+    b = Budget(10**6, max_minutes=0.0005)
+    assert not b.spent()
+    _time.sleep(0.05)
+    assert b.spent()
+    assert not Budget(5).spent() and Budget(0).spent()
+
+
+# ---------- decision 78: new markets, first-half model, sharp view, book spread, half-time grading ----------
+from scudi_slips.matrix import HALF_RHO, HALF_SHARE, view_from  # noqa: E402
+from scudi_slips.picks import CLASSIC_MENU, CORR, FULL_TIME_MENU, MASKS, NOT_OFFERED  # noqa: E402
+
+
+def test_new_pick_types_settle_as_named():
+    cases = {  # code: [(h, a, won)]
+        "MG1-3": [(0, 0, False), (1, 0, True), (2, 1, True), (2, 2, False)], "MG2-4": [(1, 0, False), (1, 1, True), (3, 1, True), (3, 2, False)],
+        "HO05": [(0, 3, False), (1, 0, True)], "HU15": [(1, 4, True), (2, 0, False)], "AU25": [(0, 2, True), (0, 3, False)],
+        "HMG1-2": [(0, 1, False), (2, 5, True), (3, 0, False)], "1+O15": [(1, 0, False), (2, 0, True), (1, 1, False)],
+        "X2+U35": [(1, 1, True), (0, 4, False), (2, 1, False)], "GG+O25": [(1, 1, False), (2, 1, True)], "12+MG2-4": [(2, 0, True), (1, 1, False), (5, 0, False)],
+        "1H-1": [(2, 0, True), (1, 0, False)], "2H-1": [(1, 0, False), (1, 1, True)], "1H+1": [(0, 0, True), (0, 1, False)],
+        "2H+1": [(0, 2, True), (0, 1, False)], "2H-2": [(2, 0, False), (1, 0, True), (0, 3, True)], "1H+2": [(0, 1, True), (0, 2, False)],
+    }
+    for code, rows in cases.items():
+        for h, a, won in rows:
+            assert settles(code, h, a) is won, (code, h, a)
+    assert settles("1TO05", 0, 0, 0, 0) is False and settles("1TO05", 3, 2, 1, 0) is True
+    assert settles("1TX", 2, 0, 0, 0) is True and settles("1TX2", 2, 0, 1, 0) is False
+    with pytest.raises(ValueError):
+        settles("1TU15", 1, 1)                          # a first-half pick needs the half-time score
+
+
+def test_menus_offer_only_checked_types():
+    assert CLASSIC_MENU <= SLIP_MENU and not (SLIP_MENU & NOT_OFFERED) and "NG" in NOT_OFFERED
+    assert all(not PICKS[c].half for c in FULL_TIME_MENU) and {"1TO05", "1TU15"} <= SLIP_MENU - FULL_TIME_MENU
+    assert all(c in CORR for c in SLIP_MENU - CLASSIC_MENU)     # every new offered type carries its fitted correction
+    assert len(SLIP_MENU) == 83
+
+
+def test_new_chances_are_consistent_with_the_matrix():
+    for probs in [(0.5, 0.27, 0.23, 0.52), (0.72, 0.18, 0.10, 0.60), (0.20, 0.30, 0.50, 0.40), (0.34, 0.33, 0.33, 0.45)]:
+        v = fit_market(*probs)
+        ch = {c: PICKS[c].chance(v) for c in PICKS}
+        assert all(0 < p < 1 for p in ch.values())
+        for c, pt in PICKS.items():   # every mask agrees with its settle rule
+            assert all(MASKS[c][h, a] == bool(pt.wins(h, a)) for h in range(6) for a in range(6))
+            if pt.parts:
+                assert ch[c] <= min(ch[x] for x in pt.parts) + 1e-12
+        assert ch["MG1-3"] < ch["MG1-4"] < ch["MG1-5"] < ch["MG1-6"]
+        assert abs(ch["HO05"] - float(v.matrix[1:, :].sum())) < 0.02        # a light correction only
+        half = score_matrix(v.lh * HALF_SHARE, v.la * HALF_SHARE, HALF_RHO)
+        assert abs(float(half[0, 0]) - (1 - float(half.sum()) + float(half[0, 0]))) < 1 and abs(half.sum() - 1) < 1e-9
+        assert ch["1TO05"] < ch["O15"] and ch["1TU15"] > ch["U25"] - 0.3
+
+
+def test_view_from_rebuilds_the_same_matrix():
+    v = fit_market(0.48, 0.27, 0.25, 0.51)
+    w = view_from(v.lh, v.la, v.rho)
+    assert abs(w.p_home - 0.48) < 1e-4 and abs(w.p_over25 - 0.51) < 1e-4
+    assert all(abs(PICKS[c].chance(v) - PICKS[c].chance(w)) < 2e-4 for c in SLIP_MENU)
+
+
+def test_feed_carries_sharp_view_spread_and_new_estimates():
+    from scudi_slips.feed import ASSUMED_MARGIN, assumed_price
+    now = datetime(2026, 10, 9, 10, 0, tzinfo=timezone.utc)
+    matches, _ = price_feed(_sample(), now, datetime(2026, 10, 13, 0, 0, tzinfo=timezone.utc))
+    genoa, inter = matches
+    assert set(genoa.sharp) == {"1", "X", "2", "O25"} and abs(sum(genoa.sharp[k] for k in "1X2") - 1) < 1e-9
+    assert set(genoa.spread) >= {"1", "X", "2", "1X", "X2", "12", "O25", "U25"} and all(0 <= x < 0.2 for x in genoa.spread.values())
+    for code in ("MG1-3", "1X+U35", "1H-1", "HO05", "1TU15"):
+        assert genoa.estimate[code] == assumed_price(genoa.chances[code], PICKS[code].group)
+        assert genoa.estimate[code] * genoa.chances[code] < 1 / (1 + ASSUMED_MARGIN[PICKS[code].group]) + 0.01
+    assert set(inter.chances) == {"1", "X", "2", "1X", "X2", "12"}   # no totals: only the result picks
+    assert -0.3 <= genoa.rho <= 0.2
+
+
+def test_weekly_snapshot_keeps_the_matrix_and_the_sharp_view():
+    from tools.grade import closing_chance
+    from tools.weekly import add_snapshots, match_record
+    now = datetime(2026, 10, 9, 10, 0, tzinfo=timezone.utc)
+    matches, _ = price_feed(_sample(), now, datetime(2026, 10, 13, 0, 0, tzinfo=timezone.utc))
+    rec = match_record(matches[0])
+    assert "rho" in rec and rec["sharp"] and rec["spread"]
+    hist = add_snapshots({}, [rec], now)
+    snap = hist[rec["id"]]["snaps"][0]
+    assert snap["x"] == [rec["lh"], rec["la"], rec["rho"]] and snap["s"] == rec["sharp"]
+    assert closing_chance(snap, "1") == snap["p"]["1"]
+    assert abs(closing_chance(snap, "MG1-3") - rec["chances"]["MG1-3"]) < 2e-3
+
+
+def _espn_event(goals, final=(2, 1), home_id="10", away_id="20"):
+    return {"competitions": [{"status": {"type": {"completed": True, "name": "STATUS_FULL_TIME"}},
+                              "competitors": [{"homeAway": "home", "team": {"id": home_id}, "score": str(final[0])},
+                                              {"homeAway": "away", "team": {"id": away_id}, "score": str(final[1])}],
+                              "details": [{"scoringPlay": True, "team": {"id": t}, "clock": {"displayValue": c}, "ownGoal": og} for t, c, og in goals]}]}
+
+
+def test_half_time_score_from_espn_goal_minutes():
+    from tools.grade import espn_final, espn_half
+    ev = _espn_event([("10", "14'", False), ("20", "45'+3'", False), ("10", "46'", False)])
+    assert espn_final(ev) == (2, 1) and espn_half(ev, (2, 1)) == (1, 1)            # 45'+3' is still the first half
+    og = _espn_event([("10", "20'", True), ("10", "70'", False)], final=(1, 1))    # an own goal credited to the scorer's club
+    assert espn_half(og, (1, 1)) == (0, 1)
+    assert espn_half(_espn_event([("10", "20'", False)], final=(2, 0)), (2, 0)) is None   # goals missing: not guessed
+    assert espn_half(_espn_event([], final=(0, 0)), (0, 0)) == (0, 0)
+
+
+def test_first_half_legs_wait_for_the_half_time_score():
+    week = {"built_at": "2026-10-09T10:00:00+00:00", "matches": [{"id": "m1", "competition": "Serie A", "home": "A", "away": "B"}],
+            "slips": [{"name": "t", "target": 2, "legs": 1, "chance": 0.7, "odds": 1.4, "bonus": 0, "picks": [{"match": "m1", "code": "1TO05", "chance": 0.7, "odds": 1.4}]}]}
+    now = datetime(2026, 10, 12, tzinfo=timezone.utc)
+    assert grade(week, {"m1": (2, 0)}, {}, now).get("slips", []) == []            # final known, half-time not: waits
+    rec = grade(week, {"m1": (2, 0, 1, 0)}, {}, now)
+    assert rec["slips"][0]["landed"] is True and rec["slips"][0]["leg_results"][0]["half"] == "1-0"
+
+
+def test_lab_data_rows_are_compact_and_complete():
+    import pandas as pd
+
+    from tools.lab_data import EPOCH, build
+    df = pd.DataFrame([
+        {"Division": "I1", "date": pd.Timestamp("2024-09-01"), "season": 2024, "HomeTeam": "Inter", "AwayTeam": "Milan", "FTHome": 2, "FTAway": 1,
+         "HTHome": 1, "HTAway": 1, "OddHome": 1.8, "OddDraw": 3.6, "OddAway": 4.5, "Over25": 1.7, "Under25": 2.1, "lh": 1.61, "la": 1.02, "rho": -0.05, "fit_err": 0.0},
+        {"Division": "I1", "date": pd.Timestamp("2026-09-01"), "season": 2026, "HomeTeam": "Roma", "AwayTeam": "Lazio", "FTHome": 0, "FTAway": 0,
+         "HTHome": 0, "HTAway": 0, "OddHome": 2.2, "OddDraw": 3.2, "OddAway": 3.4, "Over25": 2.0, "Under25": 1.8, "lh": 1.2, "la": 1.0, "rho": -0.05, "fit_err": 0.0},
+        {"Division": "E0", "date": pd.Timestamp("2025-01-11"), "season": 2024, "HomeTeam": "Arsenal", "AwayTeam": "Spurs", "FTHome": 3, "FTAway": 0,
+         "HTHome": None, "HTAway": None, "OddHome": 1.5, "OddDraw": 4.4, "OddAway": 6.5, "Over25": 1.6, "Under25": 2.3, "lh": 2.0, "la": 0.8, "rho": -0.04, "fit_err": 0.0}])
+    out = build(df)
+    assert out["seasons"] == ["2023-24", "2024-25", "2025-26"] and len(out["matches"]) == 2       # 2026-27 stays sealed
+    inter = out["matches"][0]
+    assert inter[0] == (pd.Timestamp("2024-09-01").date() - EPOCH).days and out["comps"][inter[1]] == "Serie A"
+    assert out["teams"][inter[2]] == "Inter" and inter[4:8] == [2, 1, 1, 1] and inter[8:11] == [1610, 1020, -50] and inter[11] == 180
+    assert out["matches"][1][6:8] == [-1, -1] and len(inter) == len(out["fields"])                 # no half-time score: -1
+
+
+def test_page_engine_in_node():
+    """The page's own slip maths (index.html), checked in Node: exact optimiser against brute force for every objective,
+    the trade-off, prudence and signals weights, learned corrections, first-half settlement and the SNAI reader."""
+    import shutil
+    import subprocess
+    node = shutil.which("node")
+    if not node:
+        pytest.skip("node is not installed")
+    r = subprocess.run([node, "tests/js/engine.test.js"], capture_output=True, text=True, timeout=300)
+    assert r.returncode == 0, r.stdout + r.stderr

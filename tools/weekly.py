@@ -40,9 +40,10 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from scudi_slips import SLIP_MENU, Pick, snai_bonus, solve
+from scudi_slips import Pick, snai_bonus, solve
 from scudi_slips.comps import ALWAYS, BY_NAME, COMPETITIONS, Comp, discovered, ordered
 from scudi_slips.feed import price_feed
+from scudi_slips.picks import CLASSIC_MENU, FULL_TIME_MENU, NEW_FLOOR
 
 HOST = "https://api.the-odds-api.com/v4/sports"
 CORE = [c.name for c in COMPETITIONS if c.group == "core"]
@@ -272,7 +273,8 @@ def preset_slips(matches, now: datetime) -> list[dict]:
     for name, pool, legs in presets:
         if min(legs, len(pool)) < 5:
             continue
-        menus = [[Pick(m.id, c, m.chances[c], m.estimate[c]) for c in m.estimate if c in SLIP_MENU and c in m.chances and m.estimate[c] >= MIN_ODDS] for m in pool]
+        menus = [[Pick(m.id, c, m.chances[c], m.estimate[c]) for c in m.estimate if c in FULL_TIME_MENU and c in m.chances and m.estimate[c] >= MIN_ODDS
+                   and (c in CLASSIC_MENU or m.chances[c] >= NEW_FLOOR)] for m in pool]
         for t in TARGETS:
             # the number of legs is free, as on the site: the likeliest slip that reaches the target (decision 75)
             slip = solve(menus, t, grid=0.001 if len(pool) <= 12 else 0.002, auto_legs=True)
@@ -323,9 +325,10 @@ def carry_pending(old: dict, now: datetime, keep_days: float = 10.0) -> list[dic
 
 def match_record(m) -> dict:
     return {"id": m.id, "competition": m.competition, "kickoff": m.kickoff.isoformat(), "home": m.home, "away": m.away,
-            "chances": {k: round(v, 5) for k, v in m.chances.items()}, "estimate": m.estimate,
+            "chances": {k: round(v, 4) for k, v in m.chances.items()}, "estimate": m.estimate,
             "best": {k: [b, p] for k, (b, p) in m.best.items()}, "books_used": m.books_used, "sharp_share": round(m.sharp_share, 3),
-            "lh": round(m.lh, 4), "la": round(m.la, 4)}
+            "lh": round(m.lh, 4), "la": round(m.la, 4), "rho": round(m.rho, 4),
+            "sharp": {k: round(v, 4) for k, v in (m.sharp or {}).items()}, "spread": {k: round(v, 4) for k, v in (m.spread or {}).items()}}
 
 
 HISTORY_CODES = ("1", "X", "2", "1X", "X2", "12", "O15", "O25", "U25", "U35", "GG")
@@ -340,6 +343,10 @@ def add_snapshots(history: dict, matches: list[dict], now: datetime, keep_days: 
         h["kickoff"] = m["kickoff"]
         snap = {"t": now.isoformat(), "p": {k: round(v, 4) for k, v in m["chances"].items() if k in HISTORY_CODES},
                 "o": {k: v for k, v in m["estimate"].items() if k in HISTORY_CODES}}
+        if m.get("lh"):   # the matrix itself, so the site can rebuild any pick's chance at every pull (decision 78)
+            snap["x"] = [m["lh"], m["la"], m.get("rho", -0.06)]
+        if m.get("sharp"):  # the sharp books alone: the market-signal view
+            snap["s"] = m["sharp"]
         if h["snaps"] and h["snaps"][-1]["t"] == snap["t"]:
             h["snaps"][-1] = snap
         else:

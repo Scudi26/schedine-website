@@ -20,6 +20,7 @@ as little as possible to the margin: pick the cheapest legs, land just above the
 | `data/snai.json` | SNAI's prices, typed by hand (or pasted into the site) | before each matchweek |
 | `.github/workflows/teams.yml` → `tools/teams.py` | GitHub Actions | Thursday 07:00 UTC, or by hand |
 | `data/teams.json`, `data/players.json` | crests, squads, line-ups, season averages, transfers (ESPN public API) | written by the team job, read by the site |
+| `lab/seasons.json` | three past seasons (2023-24 → 2025-26, 17 leagues): scores, half-time scores, Bet365 prices and each match's fitted score matrix, for the Lab | built once by `tools/lab_data.py`, uploaded with the site |
 
 Prices come from The Odds API (free plan, 500 credits a month). The key lives only in the repository secret
 `ODDS_API_KEY`. Competitions (decision 74, `scudi_slips/comps.py`): the big five leagues and the Champions League;
@@ -36,7 +37,9 @@ from the feed's free events list, with the day its prices will arrive (the site'
 national-team competitions are always pulled; the others only while the credits left cover about 7 a day to the monthly
 reset. A typical month is about 400-430 credits; each pull records what it spent and skipped in `data/week.json`, and
 the site shows the credits left. SNAI is not in any feed: its prices are typed by hand, either into the site (remembered in the browser) or into `data/snai.json` (key = date, home, away; codes 1 X 2 1X X2 12 O25 U25
-GG NG, plus O15 U35 when read). The site shows feed chances at SNAI's prices wherever the two meet.
+GG NG, plus O15 U35 when read). Pasted into the site, SNAI's other tabs are read too, one at a time, from their column
+headers (Multigol, Combo, Handicap, 1° tempo, U/O casa and ospite); every price pasted teaches the site SNAI's real margin
+on that kind of pick. The site shows feed chances at SNAI's prices wherever the two meet.
 
 Team and player data come from ESPN's public site API through `tools/teams.py` (full depth for the big leagues and the
 Champions League; crests, squads, results, form and tables for everything else): no key, no published limits, but
@@ -65,9 +68,12 @@ Not available from any free source, so not shown: heatmaps, preferred foot, mark
 
 ## On the phone, like an app (decision 76)
 
-The site has five screens: **Slips** (the builder), **Matches** (every priced match of the week plus the fixtures still
-to price), **Live** (placed slips, followed on match day), **Record** (graded record, "Is it working?", season simulator)
-and **Method** (this week's data, credits, tests). On a phone they sit in a tab bar at the bottom. To install it: open the
+The site has six screens (decision 78): **Today** (next kick-off with a countdown, slips in play, credits, three
+recommended slips at 5x, 25x and 100x with no match in common), **Slips** (the builder), **Matches** (every priced match
+of the week plus the fixtures still to price), **Live** (placed slips, followed on match day), **Record** (graded record,
+"Is it working?", what Scudi has learned, season simulator) and **Lab** (your rules on three past seasons, plus this
+week's data, credits and tests). On a phone they sit in a tab bar at the bottom. Light, dark or automatic with the phone:
+the switch in the header. To install it: open the
 site in Safari (iPhone) → Share → "Add to Home Screen", or in Chrome (Android) → menu → "Install app". It then opens full
 screen with the Scudi icon. `sw.js` keeps a copy for when there is no connection but always asks the network first, so a
 new upload or a new price pull shows straight away. `manifest.webmanifest` and `icons/` (made by `tools/make_icons.py`)
@@ -83,17 +89,20 @@ and grading never looks at one (decision 76).
 
 ```
 pip install numpy scipy pandas pytest ruff
-pytest -q            # 88 tests
+pytest -q            # 99 tests (they also run tests/js/engine.test.js with node)
 python3 -m tools.weekly --from-file tests/feed_week_sample.json --now 2026-10-09T09:00:00Z   # no key needed
 ODDS_API_KEY=... python3 -m tools.weekly                                                       # the real thing
 python3 tools/snai.py    # SNAI's margins and the slips at SNAI's typed prices -> results/snai_<date>.json
 python3 tools/teams.py   # team and player data from ESPN -> data/teams.json, data/players.json (incremental)
 python3 tools/sample_espn.py   # example team data (invented) in the same shapes, for the site without the job
+python3 tools/markets.py all   # the new markets' calibration check (needs data/Matches.csv) -> results/markets.json
+python3 tools/lab_data.py      # the Lab's seasons (needs data/Matches.csv) -> lab/seasons.json
 ```
 
 The backtests (`tools/backtest.py`, `variants.py`, `rules.py`, `pool.py`, `btts.py`, `exam.py`) need the free
 file `huggingface.co/datasets/xgabora/club-football-match-data` saved as `data/Matches.csv` (45 MB, not
-committed). Their results are in `results/`. The go-live exam and its pre-registration are in `docs/strategy/`.
+committed). Their results are in `results/`. The go-live exam, the new markets' check and their pre-registrations
+are in `docs/strategy/`.
 
 ## Layout
 
@@ -110,6 +119,14 @@ committed). Their results are in `results/`. The go-live exam and its pre-regist
   the player card adds percentiles against his position; "Is it working?" charts calibration, money against the
   range chance allows, leaks by pick type and league, timing against the pre-kickoff price and near misses.
   Placed slips live in the browser: "Back up my slips" / "Restore" moves them between devices.
+- Site features (decision 78): more pick types from the same score matrix (multigol, team goals, combos, handicap,
+  first half; only the 72 types that passed the check of `docs/strategy/2026-09-23-new-markets.md`, from 30% up, at
+  estimated SNAI prices until pasted); "Aim for" from the highest chance to the best average return, with the
+  trade-off chart for every multiplier; the budget split over 2-5 slips with no match in common, compared with the
+  single slip and the sistema; "How Scudi judges chances": prudent (penalise picks the books disagree on), learn from
+  the record (per pick type and competition, only for systematic errors), market signals (price movement between pulls,
+  Pinnacle and Betfair first, and starters out) with "play now or wait"; the slip as a ticket image to share; team
+  colours and the two teams side by side; confetti when a slip lands and a buzz at a goal in the live tracker.
 - `scudi_slips/sistema.py` — the exact sistema maths the site mirrors (tests compare the two).
 - `index.html` — the site; it reads `data/week.json`, `data/record.json`, `data/snai.json`, `data/teams.json` and
   `data/players.json` and falls back to example fixtures. Target multiplier from 1.5x to 1000x (by 0.5 to 5, by 5 to

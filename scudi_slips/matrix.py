@@ -4,11 +4,16 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
+from functools import cached_property
 
 import numpy as np
 from scipy.optimize import least_squares
 
 MAX_GOALS = 10  # scorelines 0..9 for each side; the mass beyond is negligible and renormalised
+# First half: a second Dixon–Coles matrix with 0.434 of each side's full-time expected goals and a low-score correction
+# of -0.040 (maximum likelihood on the half-time scores of 71,589 matches, 2005-06 to 2016-17; tools/markets.py).
+HALF_SHARE = 0.434
+HALF_RHO = -0.040
 _FACT = np.array([math.factorial(i) for i in range(MAX_GOALS)], dtype=float)
 _K = np.arange(MAX_GOALS)
 _H, _A = np.meshgrid(_K, _K, indexing="ij")
@@ -64,6 +69,11 @@ class MarketView:
     def p_btts(self) -> float:
         return float(self.matrix[1:, 1:].sum())
 
+    @cached_property
+    def half(self) -> np.ndarray:
+        """The first-half score matrix (see HALF_SHARE)."""
+        return score_matrix(self.lh * HALF_SHARE, self.la * HALF_SHARE, HALF_RHO)
+
 
 def _summary(m: np.ndarray) -> np.ndarray:
     return np.array([m[_HOME].sum(), m[_DRAW].sum(), m[_AWAY].sum(), m[_TOTAL >= 3].sum()])
@@ -87,3 +97,10 @@ def fit_market(p_home: float, p_draw: float, p_away: float, p_over25: float) -> 
     m = score_matrix(lh, la, rho)
     return MarketView(p_home, p_draw, p_away, p_over25, lh, la, safe_rho(lh, la, rho), m,
                       float(np.abs(_summary(m) - target).max()))
+
+
+def view_from(lh: float, la: float, rho: float = -0.06) -> MarketView:
+    """A market view rebuilt from a stored matrix (expected goals and low-score correction), e.g. a price-history snapshot."""
+    m = score_matrix(lh, la, rho)
+    ph, pd_, pa, po = (float(x) for x in _summary(m))
+    return MarketView(ph, pd_, pa, po, lh, la, safe_rho(lh, la, rho), m, 0.0)

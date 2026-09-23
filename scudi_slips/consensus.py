@@ -76,6 +76,26 @@ def consensus(markets: Iterable[BookMarket], now: datetime | None = None, max_ag
     return Consensus(probs, len(good), dropped, sharp)
 
 
+def spread(markets: Iterable[BookMarket], now: datetime | None = None, max_age_hours: float = 48.0, min_books: int = 3,
+           derive=None) -> tuple[float, ...] | None:
+    """How much the usable books disagree: the standard deviation, across books, of each outcome's fair chance (each book
+    de-vigged on its own), then of whatever `derive(fair)` adds (e.g. double-chance sums). None with fewer than
+    `min_books` usable books. Feeds the site's prudent mode (decision 78)."""
+    max_age = timedelta(hours=max_age_hours)
+    fair = [power_devig(m.prices) for m in markets if usable(m, now, max_age)]
+    if len(fair) < min_books:
+        return None
+    if derive is not None:
+        fair = [list(f) + list(derive(f)) for f in fair]
+    n = len(fair[0])
+    out = []
+    for i in range(n):
+        xs = [f[i] for f in fair]
+        mu = sum(xs) / len(xs)
+        out.append((sum((x - mu) ** 2 for x in xs) / len(xs)) ** 0.5)
+    return tuple(out)
+
+
 def best_price(offers: Mapping[str, float]) -> tuple[str, float] | None:
     """The highest price on one outcome across books (for the 'what would it pay elsewhere' view)."""
     if not offers:

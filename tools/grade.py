@@ -28,6 +28,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scudi_slips import settles
 from scudi_slips.comps import BY_NAME
 from scudi_slips.feed import SPORT_KEYS
+from scudi_slips.matrix import view_from
+from scudi_slips.picks import PICKS
 from tools.teams import ALIASES, SITE, live_fetch, norm
 from tools.weekly import closing
 
@@ -69,6 +71,43 @@ def _espn_score(c: dict):
         return int(float(sc))
     except (TypeError, ValueError):
         return None
+
+
+def _minute(display: str) -> int | None:
+    """ESPN's clock text ("14'", "45'+3'") -> the minute before any stoppage time (45 for "45'+3'")."""
+    try:
+        return int(str(display).split("'")[0].split("+")[0])
+    except ValueError:
+        return None
+
+
+def espn_half(ev: dict, final: tuple[int, int] | None) -> tuple[int, int] | None:
+    """The half-time score from the goals ESPN lists (scoring plays with their minute; first-half stoppage time counts as
+    the first half). Used only when the goals it lists add up to the final score; own goals are tried both ways, since
+    ESPN may credit them to either side. None when it cannot be told."""
+    comp = (ev.get("competitions") or [{}])[0]
+    sides = {str((c.get("team") or {}).get("id")): c.get("homeAway") for c in comp.get("competitors", [])}
+    goals = [d for d in comp.get("details") or [] if d.get("scoringPlay")]
+    if final is None or not sides:
+        return None
+    if not goals:
+        return (0, 0) if final == (0, 0) else None
+    for flip in (False, True):
+        tot, half, ok = {"home": 0, "away": 0}, {"home": 0, "away": 0}, True
+        for d in goals:
+            side = sides.get(str((d.get("team") or {}).get("id")))
+            minute = _minute((d.get("clock") or {}).get("displayValue", ""))
+            if side is None or minute is None:
+                ok = False
+                break
+            if flip and d.get("ownGoal"):
+                side = "away" if side == "home" else "home"
+            tot[side] += 1
+            if minute <= 45:
+                half[side] += 1
+        if ok and (tot["home"], tot["away"]) == tuple(final):
+            return half["home"], half["away"]
+    return None
 
 
 def espn_final(ev: dict) -> tuple[int, int] | None:
@@ -138,8 +177,20 @@ def espn_finals(fetch, matches: list[dict], slugs: dict[str, str | None]) -> tup
                 continue
             fs = espn_final(best)
             if fs is not None:
-                finals[m["id"]] = fs
+                ht = espn_half(best, fs)
+                finals[m["id"]] = fs + ht if ht is not None else fs
     return finals, notes
+
+
+def closing_chance(snap: dict, code: str) -> float | None:
+    """A pick's chance in a price-history snapshot: stored directly for the classic picks, rebuilt from the snapshot's
+    matrix for the others (decision 78)."""
+    if code in snap.get("p", {}):
+        return snap["p"][code]
+    x = snap.get("x")
+    if x and code in PICKS:
+        return round(PICKS[code].chance(view_from(*x)), 4)
+    return None
 
 
 def final_score(ev: dict) -> tuple[int, int] | None:
@@ -163,16 +214,19 @@ def grade(week: dict, scores: dict[str, dict], record: dict, now: datetime, hist
         legs = []
         for p in slip["picks"]:
             fs = finals.get(p["match"])
-            if fs is None:
-                legs = None
+            if fs is None or (p["code"] in PICKS and PICKS[p["code"]].half and len(fs) < 4):
+                legs = None   # not finished yet, or a first-half pick whose half-time score is not known yet
                 break
-            won = settles(p["code"], fs[0], fs[1])
+            won = settles(p["code"], *fs)
             leg = {"match": p["match"], "name": names.get(p["match"]), "competition": comp_of.get(p["match"]), "code": p["code"],
                    "chance": round(p["chance"], 4), "odds": p["odds"], "won": won, "score": f"{fs[0]}-{fs[1]}"}
+            if len(fs) >= 4:
+                leg["half"] = f"{fs[2]}-{fs[3]}"
             close = closing(history or {}, p["match"])
-            if close and p["code"] in close.get("p", {}):
-                leg["close_chance"] = close["p"][p["code"]]
-                leg["clv"] = round(p["odds"] * close["p"][p["code"]] - 1, 4)   # >0: the price taken beat the last pre-kickoff view
+            cc = closing_chance(close, p["code"]) if close else None
+            if cc is not None:
+                leg["close_chance"] = cc
+                leg["clv"] = round(p["odds"] * cc - 1, 4)   # >0: the price taken beat the last pre-kickoff view
             legs.append(leg)
         if legs is None:
             continue

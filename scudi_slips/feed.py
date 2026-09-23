@@ -20,7 +20,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from .comps import COMPETITIONS
-from .consensus import SHARP_WEIGHTS, BookMarket, consensus, usable
+from .consensus import SHARP_WEIGHTS, BookMarket, consensus, spread, usable
 from .matrix import fit_market
 from .picks import PICKS, SLIP_MENU
 
@@ -56,6 +56,20 @@ class PricedMatch:
     fit_error: float
     lh: float = 0.0     # fitted expected goals, so the site can draw the score grid
     la: float = 0.0
+    rho: float = -0.06  # the matrix's low-score correction, so the site can rebuild the same matrix
+    sharp: dict[str, float] = field(default_factory=dict)    # fair chances from the sharp books alone (Pinnacle, Betfair, Matchbook)
+    spread: dict[str, float] = field(default_factory=dict)   # disagreement between books: sd of each outcome's fair chance
+
+
+# A typical SNAI-like margin for the markets no free feed prices (decision 78, ASSUMED): the estimate is the fair price
+# shaved by this margin plus a little more on long prices; the site then learns SNAI's real margins from pasted pages.
+ASSUMED_MARGIN = {"multigol": 0.09, "team goals": 0.085, "combo": 0.11, "handicap": 0.085, "first half": 0.085}
+RESULT_ONLY = {"1", "X", "2", "1X", "X2", "12"}
+
+
+def assumed_price(p: float, group: str) -> float:
+    m = ASSUMED_MARGIN[group] + 0.02 * max(0.0, math.log(1 / p) - 0.3)
+    return max(1.01, _floor2(1 / (p * (1 + m))))
 
 
 def _parse_time(s: str) -> datetime:
@@ -142,13 +156,29 @@ def price_event(ev: dict[str, Any], competition: str, now: datetime, window_end:
         for code, extra in (("O15", 0.01), ("U35", 0.01), ("GG", 0.015)):
             if code in chances:
                 est[code] = max(1.01, _floor2(1 / (chances[code] * (1 + margin + extra))))
-    else:
-        for code in ("O15", "O25", "U25", "U35", "GG"):
-            chances.pop(code, None)
+        for code, p in chances.items():
+            if code not in est and PICKS[code].group in ASSUMED_MARGIN and 0 < p < 1:
+                est[code] = assumed_price(p, PICKS[code].group)
+    else:   # no totals line: only the result picks can be trusted (every goals-based chance would rest on a guess)
+        chances = {code: p for code, p in chances.items() if code in RESULT_ONLY}
+    sharp: dict[str, float] = {}
+    s1 = consensus([m for m in h2h if m.book in SHARP_WEIGHTS], now=now, max_age_hours=max_age_hours)
+    if s1 is not None:
+        sharp.update({"1": s1.probs[0], "X": s1.probs[1], "2": s1.probs[2]})
+    s2 = consensus([m for m in tot if m.book in SHARP_WEIGHTS], now=now, max_age_hours=max_age_hours) if have_totals else None
+    if s2 is not None:
+        sharp["O25"] = s2.probs[0]
+    spr: dict[str, float] = {}
+    d1 = spread(h2h, now=now, max_age_hours=max_age_hours, derive=lambda f: (f[0] + f[1], f[1] + f[2], f[0] + f[2]))
+    if d1 is not None:
+        spr.update(dict(zip(("1", "X", "2", "1X", "X2", "12"), d1)))
+    d2 = spread(tot, now=now, max_age_hours=max_age_hours) if have_totals else None
+    if d2 is not None:
+        spr["O25"] = spr["U25"] = d2[0]
     best = {code: max(qs.items(), key=lambda kv: kv[1]) for code, qs in quotes.items() if qs}
     g.kept += 1
     return PricedMatch(ev["id"], competition, kickoff, home, away, chances, est, best, c1.books_used, c1.sharp_share,
-                       view.fit_error, view.lh, view.la)
+                       view.fit_error, view.lh, view.la, view.rho, sharp, spr)
 
 
 def _default_over(p123: tuple[float, ...]) -> float:
