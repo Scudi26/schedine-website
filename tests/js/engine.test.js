@@ -7,6 +7,10 @@ const a = html.indexOf('/* ===== Scudi slip maths'), b = html.indexOf("if (typeo
 const ctx = { module: {}, console };
 vm.runInNewContext(html.slice(a, b) + '\nthis.Scudi = Scudi;', ctx);
 const S = ctx.Scudi;
+/* the screenshot reader's pure part (grid, columns, prices), read out of index.html the same way */
+const sa = html.indexOf('/* ===== ShotReader'), sb = html.indexOf('/* ===== end ShotReader');
+const sctx = { console }; vm.runInNewContext(html.slice(sa, sb) + '\nthis.ShotReader = ShotReader;', sctx);
+const SR = sctx.ShotReader;
 let failures = 0, checks = 0;
 function ok(cond, msg) { checks++; if (!cond) { failures++; console.error('FAIL: ' + msg); } }
 function rng(seed) { let h = seed >>> 0; return () => { h ^= h << 13; h >>>= 0; h ^= h >>> 17; h ^= h << 5; h >>>= 0; return (h % 1000003) / 1000003; }; }
@@ -137,6 +141,51 @@ ok(mgBar[0].prices['MG1-3'] === 1.55 && !mgBar[0].main, 'multigol tab under a ta
 const wk2 = [{ id: 'g', home: 'Genoa', away: 'Fiorentina', ref: { lh: 1.3, la: 1.2, rho: -0.06 } }];
 const bad = S.parseSnai('U/O CASA\nU 2,5 O 2,5\nGenoa - Fiorentina 1,72 2,05', wk2);
 ok(bad[0].odd.indexOf('HU25') > -1 && !bad[0].prices.HU25, 'an implausible price is left out');
+
+/* 10. SNAI's list page as it really is (Nations League, 24-25 Sep 2026): national teams in Italian, the 2.5 selector
+   between the columns, padlocked prices that print nothing, the goals-total column and the "+641" link after */
+const nat = [
+  { id: 'a', home: 'Andorra', away: 'Malta', names: [['Andorra'], ['Malta']] },
+  { id: 'l', home: 'Liechtenstein', away: 'Lithuania', names: [['Liechtenstein'], ['Lithuania', 'Lituania']] },
+  { id: 'p', home: 'Portugal', away: 'Wales', names: [['Portugal', 'Portogallo'], ['Wales', 'Galles']] },
+  { id: 'g', home: 'Georgia', away: 'Northern Ireland', names: [['Georgia'], ['Northern Ireland', 'Irlanda del Nord', 'irlanda nord']] }];
+const natText = 'UEFA Nations League\n1\tX\t2\t1X\tX2\t12\tU\tO\tGG\tNG\n' +
+  '24/09\n17:00\nAndorra\nMalta\n3.50\t2.70\t2.35\t1.50\t1.25\t1.40\t2.5\t1.30\t3.10\t2.30\t1.52\t0\t5.00\t+\t+641\n' +
+  '24/09\n19:45\nLiechtenstein\nLituania\n11.00\t4.25\t1.30\t3.00\t1.15\t2.5\t1.70\t2.00\t2.40\t1.45\t0\t9.00\t+\t+645\n' +
+  '24/09\n19:45\nPortogallo\nGalles\n1.20\t6.50\t15.00\t4.25\t1.10\t2.5\t2.40\t1.52\t2.10\t1.65\t0\t16.00\t+\t+2545\n' +
+  '25/09\n17:00\nGeorgia\nIrlanda Del Nord\n1.80\t3.60\t4.25\t1.18\t1.90\t1.25\t1.5\t3.40\t1.30\t1.90\t1.80\t0\t9.00\t+\t+1824';
+const nr = S.parseSnai(natText, nat), byId = {}; nr.forEach(r => { byId[r.match.id] = r.prices; });
+ok(nr.length === 4 && byId.a.U25 === 1.3 && byId.a.O25 === 3.1 && byId.a.NG === 1.52, 'national list page read');
+ok(byId.l['1X'] === 3 && byId.l['12'] === 1.15 && byId.l.X2 === undefined && byId.l.U25 === 1.7, 'a padlocked X2 is left empty, the rest stays in place');
+ok(byId.p['1X'] === undefined && byId.p.X2 === 4.25 && byId.p['12'] === 1.1 && byId.p.GG === 2.1, 'a padlocked 1X is left empty, the rest stays in place');
+ok(byId.g.O15 === 1.3 && byId.g.U25 === undefined && byId.g.O25 === undefined && byId.g.GG === 1.9, 'the selector on 1.5 reads over 1.5, not over 2.5');
+
+/* 11. the screenshot reader: words with their positions (as the recogniser returns them) → rows, columns, prices */
+ok(SR.priceOf('270') === 2.7 && SR.priceOf('1500') === 15 && SR.priceOf('2.35') === 2.35 && SR.priceOf('1,O7') === 1.07 && SR.priceOf('25') === null && SR.lineOf('25') === '2' && SR.lineOf('1.5') === '1', 'screenshot prices and goals line');
+const shotRows = [
+  ['Andorra', 'Malta', ['3.50', '2.70', '2.35', '1.50', '1.25', '1.40', '25', '1.30', '3.10', '2.30', '1.52', '0', '5.00']],
+  ['Liechtenstein', 'Lituania', ['1100', '4.25', '1.30', '3.00', null, '1.15', '25', '1.70', '2.00', '2.40', '1.45', '0', '9.00']],
+  ['Portogallo', 'Galles', ['1.20', '6.50', '15.00', null, '4.25', '1.10', '25', '2.40', '1.52', '2.10', '1.65', '0', '16.00']],
+  ['Georgia', 'Irlanda Del Nord', ['1.80', '3.60', '4.25', '1.18', '1.90', '1.25', '15', '3.40', '1.30', '1.90', '1.80', '0', '9.00']]];
+const W = (text, x, y) => ({ text, conf: 90, x0: x - 18, x1: x + 18, y0: y - 7, y1: y + 7, cx: x, cy: y, h: 14, w: 36 });
+const ws = [];
+shotRows.forEach((r, i) => {
+  const y = 50 + i * 60;
+  ws.push(W('24/09', 30, y - 8), W('19:45', 30, y + 8), W(r[0].split(' ')[0], 100, y - 12), W(r[1].split(' ')[0], 100, y + 12));
+  if (r[1].split(' ').length > 1) r[1].split(' ').slice(1).forEach((t, k) => ws.push(W(t, 150 + k * 40, y + 12)));
+  r[2].forEach((t, k) => { if (t) ws.push(W(t, 260 + k * 57, y)); });
+});
+const G = SR.grid(ws), rd = G ? SR.reading(G) : [];
+ok(rd.length === 4 && rd[0].home === 'Andorra' && rd[0].away === 'Malta' && rd[3].away === 'Irlanda Del Nord', 'screenshot rows and team names');
+ok(rd[0].prices['1'] === 3.5 && rd[0].prices.NG === 1.52 && rd[0].prices.U === 1.3 && rd[0].line === '2' && !rd[0].issues.length, 'screenshot main row');
+ok(rd[1].prices['1'] === 11 && rd[1].prices.X2 === undefined && rd[1].prices['12'] === 1.15 && rd[2].prices['1X'] === undefined && rd[2].prices.X2 === 4.25, 'screenshot padlocked cells stay empty');
+ok(rd[3].line === '1' && rd[3].prices.O === 1.3, 'screenshot goals line on 1.5');
+const txt = SR.asText('', rd.map((r, i) => Object.assign({}, r, { name: ['Andorra - Malta', 'Liechtenstein - Lithuania', 'Portugal - Wales', 'Georgia - Northern Ireland'][i] })));
+const back = S.parseSnai(txt, [['a', 'Andorra', 'Malta'], ['l', 'Liechtenstein', 'Lithuania'], ['p', 'Portugal', 'Wales'], ['g', 'Georgia', 'Northern Ireland']].map(x => ({ id: x[0], home: x[1], away: x[2], names: [[x[1]], [x[2]]] })));
+const bk = {}; back.forEach(r => { bk[r.match.id] = r.prices; });
+ok(back.length === 4 && bk.a.U25 === 1.3 && bk.a.O25 === 3.1 && bk.l.X2 === undefined && bk.p['1X'] === undefined && bk.p.X2 === 4.25 && bk.g.O15 === 1.3 && bk.g.O25 === undefined, 'screenshot rows through the page reader');
+const badRow = SR.rowIssues({ '1': 2.7, X: 3.25, '2': 27 });
+ok(badRow.indexOf('1X2') > -1 && !SR.rowIssues({ '1': 2.7, X: 3.25, '2': 2.7, '1X': 1.45, X2: 1.45, '12': 1.36 }).length, 'screenshot row checks');
 
 console.log(checks + ' checks, ' + failures + ' failed; optimiser exact in ' + exact + ' of ' + feasible + ' feasible cases');
 process.exit(failures ? 1 : 0);

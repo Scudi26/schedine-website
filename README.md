@@ -39,7 +39,9 @@ reset. A typical month is about 400-430 credits; each pull records what it spent
 the site shows the credits left. SNAI is not in any feed: its prices are typed by hand, either into the site (remembered in the browser) or into `data/snai.json` (key = date, home, away; codes 1 X 2 1X X2 12 O25 U25
 GG NG, plus O15 U35 when read). Pasted into the site, SNAI's other tabs are read too, one at a time, from their column
 headers (Multigol, Combo, Handicap, 1° tempo, U/O casa and ospite); every price pasted teaches the site SNAI's real margin
-on that kind of pick. The site shows feed chances at SNAI's prices wherever the two meet.
+on that kind of pick. Easier (decision 79): "Read SNAI prices" → drop or paste a **screenshot** of SNAI's list; the browser
+reads it (Tesseract.js, loaded once from cdn.jsdelivr.net; the picture never leaves the browser), matches the rows to the
+week's matches, and shows each row next to its piece of the picture to check and correct before use. The site shows feed chances at SNAI's prices wherever the two meet.
 
 Team and player data come from ESPN's public site API through `tools/teams.py` (full depth for the big leagues and the
 Champions League; crests, squads, results, form and tables for everything else): no key, no published limits, but
@@ -127,6 +129,12 @@ are in `docs/strategy/`.
   the record (per pick type and competition, only for systematic errors), market signals (price movement between pulls,
   Pinnacle and Betfair first, and starters out) with "play now or wait"; the slip as a ticket image to share; team
   colours and the two teams side by side; confetti when a slip lands and a buzz at a goal in the live tracker.
+- Site features (decision 79): SNAI prices read from a screenshot; the Live screen opens on "Simulate a matchday" (any
+  slip, recommended or placed: goals drawn from each match's expected goals, the slip's chance minute by minute on a log
+  chart, legs green/red with their live chance, goals that mattered, pause / to the end / again, a counter of runs), with a
+  Simulate button under every slip; every panel has a one-line explanation and an "i" that opens the full explanation
+  with the numbers on screen (English and Italian); the builder's four steps are numbered; numbers count up, panels
+  rise into view, cards tilt, a soft aurora behind the page (all off with reduced motion).
 - `scudi_slips/sistema.py` — the exact sistema maths the site mirrors (tests compare the two).
 - `index.html` — the site; it reads `data/week.json`, `data/record.json`, `data/snai.json`, `data/teams.json` and
   `data/players.json` and falls back to example fixtures. Target multiplier from 1.5x to 1000x (by 0.5 to 5, by 5 to
