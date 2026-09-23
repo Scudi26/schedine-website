@@ -30,7 +30,22 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from scudi_slips.comps import BY_NAME, COMPETITIONS, FULL_TEAM_DATA
+
+
+def _load_comps():
+    """The competition list on its own. `import scudi_slips.comps` would also load the rest of the package, which needs
+    numpy and scipy; the team data job runs on a bare Python, so it reads comps.py directly (incident 2026-09-23)."""
+    import importlib.util
+    path = Path(__file__).resolve().parents[1] / "scudi_slips" / "comps.py"
+    spec = importlib.util.spec_from_file_location("scudi_comps_only", path)
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+_comps = _load_comps()
+BY_NAME, COMPETITIONS, FULL_TEAM_DATA = _comps.BY_NAME, _comps.COMPETITIONS, _comps.FULL_TEAM_DATA
 
 SLUGS = {c.name: c.espn for c in COMPETITIONS if c.espn}
 FULL = [c.name for c in COMPETITIONS if c.group in FULL_TEAM_DATA]
@@ -47,13 +62,15 @@ UA = "scudi/0.2 (personal accumulator builder; github.com/Scudi26)"
 
 
 class Budget:
-    """Counts requests and stops the run politely when the cap is reached."""
+    """Counts requests and stops the run politely when the cap or the time limit is reached. The time limit keeps the
+    GitHub job (90-minute timeout) from being cancelled before it saves; whatever is missing comes next run."""
 
-    def __init__(self, max_calls: int):
+    def __init__(self, max_calls: int, max_minutes: float | None = None):
         self.max_calls, self.calls, self.failed = max_calls, 0, 0
+        self.deadline = time.monotonic() + max_minutes * 60 if max_minutes else None
 
     def spent(self) -> bool:
-        return self.calls >= self.max_calls
+        return self.calls >= self.max_calls or (self.deadline is not None and time.monotonic() >= self.deadline)
 
 
 def live_fetch(pause: float = 0.25):
@@ -201,8 +218,8 @@ def _lineup(fetch, budget, slug: str, eid: str, tid: int):
 
 
 def build(fetch, comps: list[str], prev_teams: dict | None, prev_players: dict | None, now: datetime, max_calls: int = 5000,
-          transfers: bool = True, print_every: int = 50) -> tuple[dict, dict, Budget]:
-    budget = Budget(max_calls)
+          transfers: bool = True, print_every: int = 50, max_minutes: float | None = None) -> tuple[dict, dict, Budget]:
+    budget = Budget(max_calls, max_minutes)
     prev_teams = prev_teams or {}
     prev_players = prev_players or {}
     teams: dict[str, dict] = {}
@@ -285,7 +302,7 @@ def build(fetch, comps: list[str], prev_teams: dict | None, prev_players: dict |
         print(f"transfers to fetch: {len(wanted)}")
         for pid in wanted:
             if budget.spent():
-                print("  request cap reached; the rest next run")
+                print("  request cap or time limit reached; the rest next run")
                 break
             r = _get(fetch, budget, TRANSFERS.format(pid=pid))
             if r is None:
@@ -439,6 +456,7 @@ def main(argv=None):
     ap.add_argument("--teams", default="data/teams.json")
     ap.add_argument("--players", default="data/players.json")
     ap.add_argument("--max-calls", type=int, default=5000)
+    ap.add_argument("--max-minutes", type=float, default=75, help="stop and save after this long (the GitHub job times out at 90)")
     ap.add_argument("--no-transfers", action="store_true")
     ap.add_argument("--now")
     a = ap.parse_args(argv)
@@ -446,7 +464,8 @@ def main(argv=None):
     fetch = replay_fetch(json.loads(Path(a.replay).read_text())) if a.replay else live_fetch()
     prev_t = json.loads(Path(a.teams).read_text()) if Path(a.teams).exists() else {}
     prev_p = json.loads(Path(a.players).read_text()) if Path(a.players).exists() else {}
-    teams, players, budget = build(fetch, a.comps, prev_t, prev_p, now, max_calls=a.max_calls, transfers=not a.no_transfers)
+    teams, players, budget = build(fetch, a.comps, prev_t, prev_p, now, max_calls=a.max_calls, transfers=not a.no_transfers,
+                                   max_minutes=a.max_minutes)
     Path(a.teams).parent.mkdir(parents=True, exist_ok=True)
     Path(a.teams).write_text(json.dumps(teams, separators=(",", ":"), ensure_ascii=False))
     Path(a.players).write_text(json.dumps(players, separators=(",", ":"), ensure_ascii=False))
