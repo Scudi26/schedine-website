@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+data/Matches.csv
+results/priced.json
+results/priced_wide.json
+results/*.log
+results/priced_markets.pkl

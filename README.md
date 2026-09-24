@@ -140,6 +140,10 @@ are in `docs/strategy/`.
   in; the scores are read again as soon as the page is back in view; a match that went to extra time is settled on its
   90-minute score (site and grader), shoot-out kicks are not goals; the live chance starts from the pick's own chance and
   hands over to the score as the match runs out; a slip over several days squeezes the idle hours into a band.
+- Today (decision 81): the next kick-off and the slips in play; three recommended slips (5x, 25x, 100x) and under them the
+  Mega Bomba (a whole round of one competition on one slip at 250x, 1,000x or 5,000x, €2, capped at SNAI's €10,000);
+  SNAI's five best and five worst real prices by margin (1 − price × chance). The price-download credits, theme and
+  language are in Settings (the gear in the top bar).
 - `scudi_slips/sistema.py` — the exact sistema maths the site mirrors (tests compare the two).
 - `index.html` — the site; it reads `data/week.json`, `data/record.json`, `data/snai.json`, `data/teams.json` and
   `data/players.json` and falls back to example fixtures. Target multiplier from 1.5x to 1000x (by 0.5 to 5, by 5 to

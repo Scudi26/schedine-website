@@ -1,0 +1,5021 @@
+{
+"note": "New pick types checked on 2005-06..2025-26 (docs/strategy/2026-09-23-new-markets.md). corr = (a, b) of p' = sigmoid(a + b*logit(p)), fitted on 2005-06..2016-17. Bands: [picks, promised %, happened %, pass].",
+"half_share": 0.434,
+"half_rho": -0.04,
+"offered": [
+"MG1-2",
+"MG1-3",
+"MG1-4",
+"MG1-5",
+"MG1-6",
+"MG2-3",
+"MG2-4",
+"MG2-5",
+"MG2-6",
+"MG3-4",
+"MG3-5",
+"MG3-6",
+"MG4-6",
+"HO05",
+"HO15",
+"HU15",
+"HU25",
+"AU15",
+"AU25",
+"HMG1-2",
+"HMG1-3",
+"AMG1-2",
+"AMG1-3",
+"1+O15",
+"1+O25",
+"1+U35",
+"1+GG",
+"X+U25",
+"X+U35",
+"2+O15",
+"2+O25",
+"2+GG",
+"1X+O15",
+"1X+O25",
+"1X+U25",
+"1X+U35",
+"1X+GG",
+"X2+O15",
+"X2+O25",
+"X2+U25",
+"X2+U35",
+"X2+GG",
+"12+O15",
+"12+O25",
+"12+U35",
+"12+GG",
+"GG+O25",
+"GG+U35",
+"1X+MG1-4",
+"X2+MG1-3",
+"X2+MG1-4",
+"12+MG2-4",
+"12+MG2-5",
+"1H-1",
+"2H-1",
+"1H+1",
+"2H+1",
+"1H-2",
+"2H-2",
+"1H+2",
+"2H+2",
+"1TX",
+"1T2",
+"1T1X",
+"1TX2",
+"1T12",
+"1TO05",
+"1TO15",
+"1TU15",
+"1TU25",
+"1TU05",
+"1TNG"
+],
+"not_offered": [
+"AO05",
+"AO15",
+"HU05",
+"AU05",
+"1+NG",
+"X+GG",
+"2+U35",
+"2+NG",
+"NG+U25",
+"NG+O15",
+"1X+MG1-3",
+"XH-1",
+"XH+1",
+"XH-2",
+"XH+2",
+"1T1",
+"1TGG"
+],
+"codes": {
+"1": {
+"group": "classic",
+"half": false,
+"corr": null,
+"excluded_upfront": false,
+"fit_mid": [
+44428,
+42.99,
+42.73,
+true
+],
+"fit_slip": [
+16592,
+65.15,
+65.62,
+true
+],
+"fit_high": [
+646,
+88.37,
+90.56,
+true
+],
+"check_mid": [
+24257,
+42.17,
+41.48,
+true
+],
+"check_slip": [
+9090,
+65.65,
+66.06,
+true
+],
+"check_high": [
+606,
+88.44,
+89.93,
+true
+],
+"confirm_mid": [
+6623,
+42.34,
+41.49,
+true
+],
+"confirm_slip": [
+2806,
+65.18,
+65.93,
+true
+],
+"confirm_high": [
+144,
+88.52,
+88.19,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"X": {
+"group": "classic",
+"half": false,
+"corr": null,
+"excluded_upfront": false,
+"fit_mid": [
+11833,
+31.19,
+32.71,
+true
+],
+"check_mid": [
+5952,
+31.23,
+33.11,
+true
+],
+"confirm_mid": [
+1119,
+31.25,
+32.17,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"2": {
+"group": "classic",
+"half": false,
+"corr": null,
+"excluded_upfront": false,
+"fit_mid": [
+23598,
+37.78,
+37.34,
+true
+],
+"fit_slip": [
+3648,
+64.48,
+63.68,
+true
+],
+"fit_high": [
+29,
+87.88,
+89.66,
+null
+],
+"check_mid": [
+15902,
+38.72,
+38.81,
+true
+],
+"check_slip": [
+3155,
+65.37,
+66.56,
+true
+],
+"check_high": [
+44,
+87.63,
+81.82,
+null
+],
+"confirm_mid": [
+4488,
+39.21,
+39.22,
+true
+],
+"confirm_slip": [
+923,
+64.83,
+65.11,
+true
+],
+"confirm_high": [
+11,
+86.77,
+81.82,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1X": {
+"group": "classic",
+"half": false,
+"corr": null,
+"excluded_upfront": false,
+"fit_mid": [
+6696,
+45.72,
+46.33,
+true
+],
+"fit_slip": [
+52815,
+72.26,
+72.98,
+true
+],
+"fit_high": [
+10965,
+89.78,
+89.62,
+true
+],
+"check_mid": [
+5401,
+45.61,
+44.44,
+true
+],
+"check_slip": [
+29970,
+71.29,
+71.8,
+true
+],
+"check_high": [
+5557,
+89.91,
+90.35,
+true
+],
+"confirm_mid": [
+1636,
+45.55,
+46.03,
+true
+],
+"confirm_slip": [
+8504,
+71.38,
+71.95,
+true
+],
+"confirm_high": [
+1482,
+89.82,
+91.03,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"X2": {
+"group": "classic",
+"half": false,
+"corr": null,
+"excluded_upfront": false,
+"fit_mid": [
+30703,
+45.97,
+46.14,
+true
+],
+"fit_slip": [
+33742,
+64.9,
+64.91,
+true
+],
+"fit_high": [
+2154,
+89.13,
+88.02,
+true
+],
+"check_mid": [
+15300,
+45.52,
+45.75,
+true
+],
+"check_slip": [
+21845,
+66.14,
+66.78,
+true
+],
+"check_high": [
+1676,
+89.44,
+89.2,
+true
+],
+"confirm_mid": [
+4513,
+45.14,
+45.42,
+true
+],
+"confirm_slip": [
+6044,
+66.42,
+67.49,
+true
+],
+"confirm_high": [
+442,
+89.22,
+90.05,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"12": {
+"group": "classic",
+"half": false,
+"corr": null,
+"excluded_upfront": false,
+"fit_slip": [
+69041,
+72.97,
+72.44,
+true
+],
+"fit_high": [
+2533,
+88.27,
+88.31,
+true
+],
+"check_slip": [
+39928,
+73.58,
+72.89,
+true
+],
+"check_high": [
+2111,
+88.59,
+89.01,
+true
+],
+"confirm_slip": [
+11282,
+74.19,
+72.97,
+true
+],
+"confirm_high": [
+617,
+88.42,
+87.36,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"O15": {
+"group": "classic",
+"half": false,
+"corr": null,
+"excluded_upfront": false,
+"fit_mid": [
+4,
+52.59,
+75.0,
+null
+],
+"fit_slip": [
+69232,
+73.32,
+72.49,
+true
+],
+"fit_high": [
+2339,
+87.58,
+87.43,
+true
+],
+"check_mid": [
+25,
+53.33,
+52.0,
+null
+],
+"check_slip": [
+39175,
+73.9,
+73.57,
+true
+],
+"check_high": [
+2844,
+87.81,
+88.01,
+true
+],
+"confirm_mid": [
+10,
+53.3,
+80.0,
+null
+],
+"confirm_slip": [
+10951,
+74.55,
+74.21,
+true
+],
+"confirm_high": [
+938,
+87.73,
+88.81,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"O25": {
+"group": "classic",
+"half": false,
+"corr": null,
+"excluded_upfront": false,
+"fit_mid": [
+59430,
+45.4,
+45.38,
+true
+],
+"fit_slip": [
+12119,
+60.34,
+59.7,
+true
+],
+"fit_high": [
+13,
+86.83,
+92.31,
+null
+],
+"check_mid": [
+30294,
+45.33,
+45.38,
+true
+],
+"check_slip": [
+11608,
+61.65,
+61.89,
+true
+],
+"check_high": [
+15,
+86.66,
+100.0,
+null
+],
+"confirm_mid": [
+7876,
+45.86,
+46.83,
+true
+],
+"confirm_slip": [
+3976,
+61.38,
+61.72,
+true
+],
+"confirm_high": [
+4,
+86.97,
+100.0,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"U25": {
+"group": "classic",
+"half": false,
+"corr": null,
+"excluded_upfront": false,
+"fit_mid": [
+42844,
+47.97,
+47.94,
+true
+],
+"fit_slip": [
+28037,
+58.99,
+59.35,
+true
+],
+"check_mid": [
+26891,
+46.13,
+45.68,
+true
+],
+"check_slip": [
+14047,
+59.94,
+60.39,
+true
+],
+"confirm_mid": [
+8029,
+45.52,
+45.01,
+true
+],
+"confirm_slip": [
+3509,
+59.39,
+57.94,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"U35": {
+"group": "classic",
+"half": false,
+"corr": null,
+"excluded_upfront": false,
+"fit_mid": [
+1294,
+49.12,
+48.92,
+true
+],
+"fit_slip": [
+69973,
+73.81,
+73.86,
+true
+],
+"fit_high": [
+300,
+85.78,
+88.67,
+true
+],
+"check_mid": [
+1939,
+48.94,
+49.61,
+true
+],
+"check_slip": [
+39268,
+72.38,
+72.87,
+true
+],
+"check_high": [
+824,
+86.17,
+87.74,
+true
+],
+"confirm_mid": [
+680,
+49.44,
+50.88,
+true
+],
+"confirm_slip": [
+11032,
+71.53,
+72.17,
+true
+],
+"confirm_high": [
+183,
+86.37,
+87.43,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"GG": {
+"group": "classic",
+"half": false,
+"corr": null,
+"excluded_upfront": false,
+"fit_mid": [
+54336,
+48.78,
+49.02,
+true
+],
+"fit_slip": [
+17035,
+58.65,
+56.87,
+true
+],
+"check_mid": [
+28085,
+48.69,
+48.88,
+true
+],
+"check_slip": [
+13901,
+59.49,
+58.47,
+true
+],
+"confirm_mid": [
+7344,
+48.9,
+50.45,
+true
+],
+"confirm_slip": [
+4545,
+59.88,
+59.34,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"NG": {
+"group": "classic",
+"half": false,
+"corr": null,
+"excluded_upfront": true,
+"fit_mid": [
+57625,
+48.42,
+47.7,
+true
+],
+"fit_slip": [
+13926,
+58.81,
+55.18,
+false
+],
+"fit_high": [
+2,
+89.49,
+50.0,
+null
+],
+"check_mid": [
+34070,
+47.13,
+46.11,
+true
+],
+"check_slip": [
+7911,
+58.66,
+56.23,
+true
+],
+"check_high": [
+1,
+87.25,
+100.0,
+null
+],
+"confirm_mid": [
+9937,
+46.54,
+44.76,
+true
+],
+"confirm_slip": [
+1926,
+58.56,
+53.63,
+false
+],
+"pass_check": true,
+"pass_confirm": false
+},
+"MG1-2": {
+"group": "multigol",
+"half": false,
+"corr": [
+-0.0016,
+0.927
+],
+"excluded_upfront": false,
+"fit_mid": [
+70413,
+44.02,
+44.04,
+true
+],
+"fit_slip": [
+7,
+56.11,
+28.57,
+null
+],
+"check_mid": [
+40410,
+43.21,
+43.19,
+true
+],
+"check_slip": [
+35,
+55.65,
+54.29,
+null
+],
+"confirm_mid": [
+11356,
+42.64,
+41.86,
+true
+],
+"confirm_slip": [
+15,
+55.7,
+60.0,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"MG1-3": {
+"group": "multigol",
+"half": false,
+"corr": [
+0.0574,
+0.9312
+],
+"excluded_upfront": false,
+"fit_mid": [
+2469,
+50.6,
+48.56,
+true
+],
+"fit_slip": [
+69100,
+65.53,
+65.6,
+true
+],
+"check_mid": [
+3127,
+50.11,
+50.56,
+true
+],
+"check_slip": [
+38910,
+64.98,
+65.65,
+true
+],
+"confirm_mid": [
+1036,
+50.22,
+51.06,
+true
+],
+"confirm_slip": [
+10861,
+64.61,
+65.45,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"MG1-4": {
+"group": "multigol",
+"half": false,
+"corr": [
+0.1366,
+0.9237
+],
+"excluded_upfront": false,
+"fit_mid": [
+29,
+51.33,
+37.93,
+null
+],
+"fit_slip": [
+71547,
+79.22,
+79.23,
+true
+],
+"check_mid": [
+43,
+52.06,
+55.81,
+null
+],
+"check_slip": [
+42001,
+78.55,
+79.0,
+true
+],
+"confirm_mid": [
+6,
+50.2,
+50.0,
+null
+],
+"confirm_slip": [
+11893,
+78.34,
+79.47,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"MG1-5": {
+"group": "multigol",
+"half": false,
+"corr": [
+0.3954,
+0.8042
+],
+"excluded_upfront": false,
+"fit_slip": [
+3650,
+83.43,
+83.42,
+true
+],
+"fit_high": [
+67926,
+86.62,
+86.62,
+true
+],
+"check_slip": [
+3958,
+83.08,
+83.45,
+true
+],
+"check_high": [
+38086,
+86.63,
+87.27,
+true
+],
+"confirm_slip": [
+1212,
+83.05,
+84.41,
+true
+],
+"confirm_high": [
+10687,
+86.76,
+87.7,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"MG1-6": {
+"group": "multigol",
+"half": false,
+"corr": [
+-0.2255,
+1.1318
+],
+"excluded_upfront": false,
+"fit_slip": [
+194,
+83.41,
+86.08,
+true
+],
+"fit_high": [
+71382,
+89.8,
+89.8,
+true
+],
+"check_slip": [
+584,
+83.66,
+83.73,
+true
+],
+"check_high": [
+41460,
+90.09,
+90.58,
+true
+],
+"confirm_slip": [
+128,
+83.51,
+88.28,
+null
+],
+"confirm_high": [
+11771,
+90.42,
+91.05,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"MG2-3": {
+"group": "multigol",
+"half": false,
+"corr": [
+-0.0563,
+0.7654
+],
+"excluded_upfront": false,
+"fit_mid": [
+71561,
+46.45,
+46.45,
+true
+],
+"check_mid": [
+42025,
+45.83,
+46.62,
+true
+],
+"confirm_mid": [
+11895,
+45.58,
+46.55,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"MG2-4": {
+"group": "multigol",
+"half": false,
+"corr": [
+0.0882,
+0.7599
+],
+"excluded_upfront": false,
+"fit_mid": [
+241,
+52.75,
+53.11,
+true
+],
+"fit_slip": [
+71335,
+60.67,
+60.67,
+true
+],
+"check_mid": [
+492,
+53.06,
+53.25,
+true
+],
+"check_slip": [
+41552,
+60.47,
+61.16,
+true
+],
+"confirm_mid": [
+133,
+53.02,
+53.38,
+null
+],
+"confirm_slip": [
+11766,
+60.48,
+61.9,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"MG2-5": {
+"group": "multigol",
+"half": false,
+"corr": [
+0.0334,
+0.9193
+],
+"excluded_upfront": false,
+"fit_mid": [
+5,
+52.64,
+40.0,
+null
+],
+"fit_slip": [
+71571,
+67.9,
+67.9,
+true
+],
+"check_mid": [
+38,
+53.56,
+57.89,
+null
+],
+"check_slip": [
+42006,
+68.1,
+69.02,
+true
+],
+"confirm_mid": [
+17,
+53.72,
+70.59,
+null
+],
+"confirm_slip": [
+11882,
+68.42,
+69.71,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"MG2-6": {
+"group": "multigol",
+"half": false,
+"corr": [
+0.0003,
+0.9667
+],
+"excluded_upfront": false,
+"fit_mid": [
+4,
+52.27,
+75.0,
+null
+],
+"fit_slip": [
+71572,
+71.22,
+71.22,
+true
+],
+"check_mid": [
+33,
+53.42,
+54.55,
+null
+],
+"check_slip": [
+42011,
+71.85,
+72.59,
+true
+],
+"confirm_mid": [
+13,
+53.4,
+76.92,
+null
+],
+"confirm_slip": [
+11886,
+72.4,
+73.36,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"MG3-4": {
+"group": "multigol",
+"half": false,
+"corr": [
+0.0355,
+1.0445
+],
+"excluded_upfront": false,
+"fit_mid": [
+69007,
+35.72,
+35.73,
+true
+],
+"check_mid": [
+39185,
+36.54,
+37.02,
+true
+],
+"confirm_mid": [
+11260,
+36.93,
+38.45,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"MG3-5": {
+"group": "multigol",
+"half": false,
+"corr": [
+0.0106,
+1.0285
+],
+"excluded_upfront": false,
+"fit_mid": [
+71133,
+42.68,
+42.66,
+true
+],
+"fit_slip": [
+360,
+55.17,
+58.33,
+true
+],
+"check_mid": [
+41123,
+43.77,
+44.39,
+true
+],
+"check_slip": [
+543,
+55.15,
+56.17,
+true
+],
+"confirm_mid": [
+11622,
+44.56,
+46.09,
+true
+],
+"confirm_slip": [
+184,
+55.16,
+55.43,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"MG3-6": {
+"group": "multigol",
+"half": false,
+"corr": [
+0.0064,
+1.0235
+],
+"excluded_upfront": false,
+"fit_mid": [
+64623,
+44.72,
+44.78,
+true
+],
+"fit_slip": [
+6926,
+58.55,
+57.97,
+true
+],
+"check_mid": [
+34033,
+44.97,
+45.26,
+true
+],
+"check_slip": [
+7822,
+59.09,
+60.14,
+true
+],
+"confirm_mid": [
+9342,
+45.82,
+46.98,
+true
+],
+"confirm_slip": [
+2497,
+59.27,
+60.71,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"MG4-6": {
+"group": "multigol",
+"half": false,
+"corr": [
+0.0142,
+1.0065
+],
+"excluded_upfront": false,
+"fit_mid": [
+12208,
+34.18,
+34.12,
+true
+],
+"check_mid": [
+11665,
+35.19,
+35.05,
+true
+],
+"confirm_mid": [
+3991,
+34.99,
+34.83,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"HO05": {
+"group": "team goals",
+"half": false,
+"corr": [
+0.0272,
+1.0164
+],
+"excluded_upfront": false,
+"fit_mid": [
+1553,
+49.39,
+51.64,
+true
+],
+"fit_slip": [
+58481,
+74.94,
+74.79,
+true
+],
+"fit_high": [
+11371,
+89.25,
+89.73,
+true
+],
+"check_mid": [
+1028,
+49.58,
+51.46,
+true
+],
+"check_slip": [
+33460,
+73.96,
+74.05,
+true
+],
+"check_high": [
+7344,
+89.7,
+90.07,
+true
+],
+"confirm_mid": [
+288,
+49.77,
+51.74,
+true
+],
+"confirm_slip": [
+9261,
+74.4,
+74.52,
+true
+],
+"confirm_high": [
+2299,
+89.52,
+91.13,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"HO15": {
+"group": "team goals",
+"half": false,
+"corr": [
+-0.0013,
+1.0086
+],
+"excluded_upfront": false,
+"fit_mid": [
+51054,
+41.69,
+41.46,
+true
+],
+"fit_slip": [
+11556,
+64.29,
+64.66,
+true
+],
+"fit_high": [
+198,
+88.06,
+91.92,
+true
+],
+"check_mid": [
+27260,
+41.35,
+41.18,
+true
+],
+"check_slip": [
+7423,
+65.36,
+66.04,
+true
+],
+"check_high": [
+249,
+87.91,
+87.55,
+true
+],
+"confirm_mid": [
+7583,
+42.0,
+41.08,
+true
+],
+"confirm_slip": [
+2332,
+64.9,
+65.61,
+true
+],
+"confirm_high": [
+63,
+87.46,
+87.3,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"HU15": {
+"group": "team goals",
+"half": false,
+"corr": [
+0.0013,
+1.0086
+],
+"excluded_upfront": false,
+"fit_mid": [
+25043,
+46.44,
+46.53,
+true
+],
+"fit_slip": [
+42995,
+64.33,
+64.41,
+true
+],
+"fit_high": [
+762,
+87.92,
+85.83,
+true
+],
+"check_mid": [
+13860,
+45.94,
+45.38,
+true
+],
+"check_slip": [
+25400,
+65.63,
+66.13,
+true
+],
+"check_high": [
+497,
+87.8,
+86.92,
+true
+],
+"confirm_mid": [
+4405,
+45.75,
+46.06,
+true
+],
+"confirm_slip": [
+6712,
+65.58,
+66.21,
+true
+],
+"confirm_high": [
+138,
+87.65,
+83.33,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"HU25": {
+"group": "team goals",
+"half": false,
+"corr": [
+0.0865,
+0.9925
+],
+"excluded_upfront": false,
+"fit_mid": [
+1897,
+47.93,
+47.92,
+true
+],
+"fit_slip": [
+39554,
+77.08,
+77.16,
+true
+],
+"fit_high": [
+29357,
+89.04,
+88.94,
+true
+],
+"check_mid": [
+1704,
+46.82,
+47.89,
+true
+],
+"check_slip": [
+21128,
+76.48,
+76.44,
+true
+],
+"check_high": [
+18667,
+89.62,
+89.75,
+true
+],
+"confirm_mid": [
+486,
+46.8,
+47.33,
+true
+],
+"confirm_slip": [
+6400,
+76.11,
+76.48,
+true
+],
+"confirm_high": [
+4875,
+89.68,
+89.15,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"AO05": {
+"group": "team goals",
+"half": false,
+"corr": [
+0.0921,
+0.9062
+],
+"excluded_upfront": false,
+"fit_mid": [
+8538,
+49.17,
+49.93,
+true
+],
+"fit_slip": [
+60942,
+67.28,
+67.15,
+true
+],
+"fit_high": [
+2043,
+88.17,
+88.55,
+true
+],
+"check_mid": [
+4029,
+49.62,
+49.81,
+true
+],
+"check_slip": [
+35785,
+68.51,
+68.72,
+true
+],
+"check_high": [
+2215,
+88.71,
+90.47,
+true
+],
+"confirm_mid": [
+983,
+49.72,
+50.05,
+true
+],
+"confirm_slip": [
+10273,
+68.97,
+70.03,
+true
+],
+"confirm_high": [
+642,
+88.57,
+92.06,
+false
+],
+"pass_check": true,
+"pass_confirm": false
+},
+"AO15": {
+"group": "team goals",
+"half": false,
+"corr": [
+-0.0629,
+0.9037
+],
+"excluded_upfront": false,
+"fit_mid": [
+29485,
+37.57,
+37.63,
+true
+],
+"fit_slip": [
+2331,
+61.76,
+62.68,
+true
+],
+"fit_high": [
+4,
+87.35,
+100.0,
+null
+],
+"check_mid": [
+19784,
+38.55,
+38.72,
+true
+],
+"check_slip": [
+2458,
+63.02,
+65.7,
+false
+],
+"check_high": [
+6,
+86.65,
+83.33,
+null
+],
+"confirm_mid": [
+5931,
+38.92,
+39.72,
+true
+],
+"confirm_slip": [
+717,
+62.74,
+66.11,
+false
+],
+"pass_check": false,
+"pass_confirm": false
+},
+"AU15": {
+"group": "team goals",
+"half": false,
+"corr": [
+0.0629,
+0.9037
+],
+"excluded_upfront": false,
+"fit_mid": [
+6288,
+46.98,
+46.12,
+true
+],
+"fit_slip": [
+61274,
+71.28,
+71.47,
+true
+],
+"fit_high": [
+3763,
+88.34,
+86.98,
+true
+],
+"check_mid": [
+5721,
+46.37,
+44.12,
+true
+],
+"check_slip": [
+34297,
+70.31,
+70.5,
+true
+],
+"check_high": [
+1656,
+88.12,
+87.8,
+true
+],
+"confirm_mid": [
+1811,
+46.86,
+44.4,
+true
+],
+"confirm_slip": [
+9580,
+69.9,
+69.42,
+true
+],
+"confirm_high": [
+402,
+87.94,
+85.82,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"AU25": {
+"group": "team goals",
+"half": false,
+"corr": [
+0.2172,
+0.8972
+],
+"excluded_upfront": false,
+"fit_mid": [
+164,
+50.4,
+54.88,
+false
+],
+"fit_slip": [
+12293,
+78.25,
+77.79,
+true
+],
+"fit_high": [
+55775,
+91.42,
+91.52,
+true
+],
+"check_mid": [
+277,
+49.69,
+50.54,
+true
+],
+"check_slip": [
+10421,
+77.49,
+76.11,
+true
+],
+"check_high": [
+29877,
+91.16,
+91.5,
+true
+],
+"confirm_mid": [
+77,
+50.07,
+46.75,
+null
+],
+"confirm_slip": [
+3274,
+77.7,
+78.1,
+true
+],
+"confirm_high": [
+8191,
+91.03,
+91.52,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"HU05": {
+"group": "team goals",
+"half": false,
+"corr": null,
+"excluded_upfront": true,
+"fit_mid": [
+14341,
+36.15,
+35.04,
+true
+],
+"fit_slip": [
+295,
+59.25,
+53.56,
+false
+],
+"check_mid": [
+10985,
+36.22,
+35.5,
+true
+],
+"check_slip": [
+192,
+59.08,
+62.5,
+true
+],
+"confirm_mid": [
+2898,
+36.38,
+35.47,
+true
+],
+"confirm_slip": [
+50,
+58.93,
+52.0,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"AU05": {
+"group": "team goals",
+"half": false,
+"corr": null,
+"excluded_upfront": true,
+"fit_mid": [
+47550,
+39.11,
+38.25,
+true
+],
+"fit_slip": [
+2688,
+60.69,
+55.43,
+false
+],
+"fit_high": [
+2,
+88.49,
+50.0,
+null
+],
+"check_mid": [
+24640,
+38.81,
+37.65,
+true
+],
+"check_slip": [
+1150,
+60.13,
+59.83,
+true
+],
+"check_high": [
+1,
+85.21,
+0.0,
+null
+],
+"confirm_mid": [
+6625,
+38.63,
+36.68,
+true
+],
+"confirm_slip": [
+281,
+59.57,
+55.16,
+false
+],
+"pass_check": true,
+"pass_confirm": false
+},
+"HMG1-2": {
+"group": "team goals",
+"half": false,
+"corr": [
+0.0929,
+0.9386
+],
+"excluded_upfront": false,
+"fit_mid": [
+9368,
+49.84,
+49.89,
+true
+],
+"fit_slip": [
+62122,
+59.37,
+59.37,
+true
+],
+"check_mid": [
+6572,
+49.18,
+49.3,
+true
+],
+"check_slip": [
+35363,
+59.2,
+59.42,
+true
+],
+"confirm_mid": [
+1923,
+49.33,
+49.61,
+true
+],
+"confirm_slip": [
+9954,
+59.14,
+59.56,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"HMG1-3": {
+"group": "team goals",
+"half": false,
+"corr": [
+0.0681,
+1.0142
+],
+"excluded_upfront": false,
+"fit_mid": [
+1718,
+49.72,
+50.41,
+true
+],
+"fit_slip": [
+69853,
+70.5,
+70.48,
+true
+],
+"check_mid": [
+1250,
+49.85,
+52.08,
+true
+],
+"check_slip": [
+40789,
+69.86,
+70.08,
+true
+],
+"confirm_mid": [
+338,
+50.11,
+52.96,
+true
+],
+"confirm_slip": [
+11560,
+70.1,
+70.96,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"AMG1-2": {
+"group": "team goals",
+"half": false,
+"corr": [
+0.0751,
+0.7843
+],
+"excluded_upfront": false,
+"fit_mid": [
+25913,
+51.11,
+51.13,
+true
+],
+"fit_slip": [
+45633,
+57.31,
+57.3,
+true
+],
+"check_mid": [
+13721,
+51.17,
+51.03,
+true
+],
+"check_slip": [
+28313,
+57.43,
+57.94,
+true
+],
+"confirm_mid": [
+3646,
+51.35,
+52.88,
+true
+],
+"confirm_slip": [
+8253,
+57.47,
+59.28,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"AMG1-3": {
+"group": "team goals",
+"half": false,
+"corr": [
+0.0946,
+0.8879
+],
+"excluded_upfront": false,
+"fit_mid": [
+9521,
+49.48,
+49.87,
+true
+],
+"fit_slip": [
+62010,
+64.56,
+64.49,
+true
+],
+"check_mid": [
+4592,
+49.96,
+49.39,
+true
+],
+"check_slip": [
+37442,
+65.43,
+65.94,
+true
+],
+"confirm_mid": [
+1129,
+50.08,
+50.4,
+true
+],
+"confirm_slip": [
+10770,
+65.71,
+67.54,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1+O15": {
+"group": "combo",
+"half": false,
+"corr": [
+-0.0374,
+1.0084
+],
+"excluded_upfront": false,
+"fit_mid": [
+36556,
+38.94,
+38.54,
+true
+],
+"fit_slip": [
+6322,
+64.32,
+65.64,
+true
+],
+"fit_high": [
+100,
+87.58,
+92.0,
+null
+],
+"check_mid": [
+18528,
+39.21,
+39.11,
+true
+],
+"check_slip": [
+4070,
+65.55,
+66.04,
+true
+],
+"check_high": [
+108,
+87.49,
+87.96,
+null
+],
+"confirm_mid": [
+5453,
+39.8,
+38.8,
+true
+],
+"confirm_slip": [
+1164,
+65.28,
+66.41,
+true
+],
+"confirm_high": [
+21,
+86.52,
+76.19,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1+O25": {
+"group": "combo",
+"half": false,
+"corr": [
+-0.03,
+1.0014
+],
+"excluded_upfront": false,
+"fit_mid": [
+18954,
+38.14,
+38.29,
+true
+],
+"fit_slip": [
+1691,
+62.0,
+62.74,
+true
+],
+"fit_high": [
+2,
+87.4,
+100.0,
+null
+],
+"check_mid": [
+10552,
+38.59,
+38.98,
+true
+],
+"check_slip": [
+1621,
+62.93,
+62.49,
+true
+],
+"check_high": [
+2,
+87.29,
+100.0,
+null
+],
+"confirm_mid": [
+3397,
+38.37,
+39.3,
+true
+],
+"confirm_slip": [
+455,
+62.67,
+64.62,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1+U35": {
+"group": "combo",
+"half": false,
+"corr": [
+0.0453,
+1.0086
+],
+"excluded_upfront": false,
+"fit_mid": [
+45858,
+37.67,
+37.64,
+true
+],
+"fit_slip": [
+182,
+56.82,
+59.89,
+true
+],
+"check_mid": [
+23335,
+37.3,
+37.58,
+true
+],
+"check_slip": [
+31,
+57.15,
+54.84,
+null
+],
+"confirm_mid": [
+6486,
+37.25,
+37.9,
+true
+],
+"confirm_slip": [
+3,
+55.83,
+66.67,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1+GG": {
+"group": "combo",
+"half": false,
+"corr": [
+0.0859,
+1.0347
+],
+"excluded_upfront": false,
+"fit_mid": [
+3995,
+33.29,
+32.99,
+true
+],
+"fit_slip": [
+2,
+56.68,
+50.0,
+null
+],
+"check_mid": [
+4069,
+34.2,
+34.23,
+true
+],
+"confirm_mid": [
+1248,
+34.6,
+35.02,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1+NG": {
+"group": "combo",
+"half": false,
+"corr": null,
+"excluded_upfront": true,
+"fit_mid": [
+21438,
+37.32,
+35.92,
+true
+],
+"fit_slip": [
+1190,
+60.13,
+54.03,
+false
+],
+"check_mid": [
+11056,
+37.43,
+36.82,
+true
+],
+"check_slip": [
+567,
+59.62,
+60.32,
+true
+],
+"confirm_mid": [
+3206,
+37.22,
+35.22,
+true
+],
+"confirm_slip": [
+113,
+59.96,
+56.64,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"X+U25": {
+"group": "combo",
+"half": false,
+"corr": [
+0.247,
+1.2071
+],
+"excluded_upfront": false,
+"fit_mid": [
+366,
+30.9,
+31.15,
+true
+],
+"check_mid": [
+546,
+31.19,
+32.42,
+true
+],
+"confirm_mid": [
+118,
+31.33,
+28.81,
+null
+],
+"pass_check": true,
+"pass_confirm": null
+},
+"X+U35": {
+"group": "combo",
+"half": false,
+"corr": [
+0.247,
+1.2071
+],
+"excluded_upfront": false,
+"fit_mid": [
+366,
+30.9,
+31.15,
+true
+],
+"check_mid": [
+546,
+31.19,
+32.42,
+true
+],
+"confirm_mid": [
+118,
+31.33,
+28.81,
+null
+],
+"pass_check": true,
+"pass_confirm": null
+},
+"X+GG": {
+"group": "combo",
+"half": false,
+"corr": [
+0.0307,
+0.9841
+],
+"excluded_upfront": false,
+"pass_check": null,
+"pass_confirm": null
+},
+"2+O15": {
+"group": "combo",
+"half": false,
+"corr": [
+-0.0748,
+0.9796
+],
+"excluded_upfront": false,
+"fit_mid": [
+9162,
+38.59,
+38.69,
+true
+],
+"fit_slip": [
+1104,
+61.88,
+60.78,
+true
+],
+"fit_high": [
+4,
+86.44,
+100.0,
+null
+],
+"check_mid": [
+7469,
+38.67,
+40.15,
+true
+],
+"check_slip": [
+1218,
+62.94,
+64.2,
+true
+],
+"check_high": [
+3,
+86.39,
+100.0,
+null
+],
+"confirm_mid": [
+2320,
+38.58,
+38.75,
+true
+],
+"confirm_slip": [
+326,
+62.75,
+63.5,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"2+O25": {
+"group": "combo",
+"half": false,
+"corr": [
+-0.0857,
+0.964
+],
+"excluded_upfront": false,
+"fit_mid": [
+4653,
+37.69,
+37.01,
+true
+],
+"fit_slip": [
+183,
+59.65,
+57.38,
+true
+],
+"check_mid": [
+4220,
+38.4,
+40.69,
+true
+],
+"check_slip": [
+290,
+60.39,
+61.03,
+true
+],
+"confirm_mid": [
+1278,
+37.98,
+37.25,
+true
+],
+"confirm_slip": [
+79,
+60.05,
+60.76,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"2+U35": {
+"group": "combo",
+"half": false,
+"corr": [
+0.0297,
+1.0463
+],
+"excluded_upfront": false,
+"fit_mid": [
+9056,
+36.19,
+36.53,
+true
+],
+"fit_slip": [
+19,
+56.19,
+47.37,
+null
+],
+"check_mid": [
+7204,
+35.81,
+37.91,
+true
+],
+"check_slip": [
+4,
+57.81,
+75.0,
+null
+],
+"confirm_mid": [
+2066,
+35.87,
+38.82,
+false
+],
+"confirm_slip": [
+1,
+55.66,
+100.0,
+null
+],
+"pass_check": true,
+"pass_confirm": false
+},
+"2+GG": {
+"group": "combo",
+"half": false,
+"corr": [
+-0.0008,
+1.0043
+],
+"excluded_upfront": false,
+"fit_mid": [
+838,
+32.92,
+31.86,
+true
+],
+"check_mid": [
+1252,
+33.71,
+32.83,
+true
+],
+"confirm_mid": [
+378,
+33.99,
+32.8,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"2+NG": {
+"group": "combo",
+"half": false,
+"corr": null,
+"excluded_upfront": true,
+"fit_mid": [
+3907,
+37.28,
+35.68,
+true
+],
+"fit_slip": [
+83,
+59.14,
+51.81,
+null
+],
+"check_mid": [
+3119,
+37.14,
+36.81,
+true
+],
+"check_slip": [
+58,
+58.89,
+48.28,
+null
+],
+"confirm_mid": [
+885,
+36.99,
+38.76,
+true
+],
+"confirm_slip": [
+15,
+58.26,
+53.33,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1X+O15": {
+"group": "combo",
+"half": false,
+"corr": [
+-0.0013,
+0.988
+],
+"excluded_upfront": false,
+"fit_mid": [
+39082,
+46.88,
+47.08,
+true
+],
+"fit_slip": [
+29025,
+63.92,
+63.6,
+true
+],
+"fit_high": [
+434,
+88.07,
+89.63,
+true
+],
+"check_mid": [
+23504,
+45.67,
+45.54,
+true
+],
+"check_slip": [
+15531,
+64.71,
+65.78,
+true
+],
+"check_high": [
+500,
+88.07,
+87.2,
+true
+],
+"confirm_mid": [
+6319,
+45.45,
+45.86,
+true
+],
+"confirm_slip": [
+4760,
+64.67,
+64.92,
+true
+],
+"confirm_high": [
+118,
+87.9,
+86.44,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1X+O25": {
+"group": "combo",
+"half": false,
+"corr": [
+0.0038,
+0.9882
+],
+"excluded_upfront": false,
+"fit_mid": [
+35892,
+37.97,
+37.96,
+true
+],
+"fit_slip": [
+2897,
+61.96,
+62.2,
+true
+],
+"fit_high": [
+4,
+87.08,
+75.0,
+null
+],
+"check_mid": [
+18950,
+38.5,
+38.79,
+true
+],
+"check_slip": [
+2626,
+63.11,
+63.1,
+true
+],
+"check_high": [
+8,
+86.2,
+100.0,
+null
+],
+"confirm_mid": [
+5821,
+38.95,
+39.13,
+true
+],
+"confirm_slip": [
+753,
+63.03,
+64.41,
+true
+],
+"confirm_high": [
+2,
+85.62,
+50.0,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1X+U25": {
+"group": "combo",
+"half": false,
+"corr": [
+0.0377,
+1.0616
+],
+"excluded_upfront": false,
+"fit_mid": [
+64521,
+41.76,
+41.8,
+true
+],
+"fit_slip": [
+309,
+56.37,
+57.93,
+true
+],
+"check_mid": [
+33980,
+40.61,
+40.63,
+true
+],
+"check_slip": [
+368,
+56.75,
+57.34,
+true
+],
+"confirm_mid": [
+9230,
+39.91,
+39.43,
+true
+],
+"confirm_slip": [
+58,
+57.31,
+44.83,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1X+U35": {
+"group": "combo",
+"half": false,
+"corr": [
+0.0157,
+1.0431
+],
+"excluded_upfront": false,
+"fit_mid": [
+33325,
+47.61,
+47.71,
+true
+],
+"fit_slip": [
+35865,
+60.54,
+60.43,
+true
+],
+"check_mid": [
+23846,
+46.56,
+46.74,
+true
+],
+"check_slip": [
+15698,
+60.27,
+60.45,
+true
+],
+"confirm_mid": [
+7217,
+46.06,
+45.95,
+true
+],
+"confirm_slip": [
+3933,
+59.95,
+60.51,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1X+GG": {
+"group": "combo",
+"half": false,
+"corr": [
+0.0152,
+0.9157
+],
+"excluded_upfront": false,
+"fit_mid": [
+67030,
+39.15,
+39.18,
+true
+],
+"fit_slip": [
+18,
+57.09,
+61.11,
+null
+],
+"check_mid": [
+38382,
+39.32,
+39.3,
+true
+],
+"check_slip": [
+51,
+56.22,
+49.02,
+null
+],
+"confirm_mid": [
+10858,
+39.8,
+40.83,
+true
+],
+"confirm_slip": [
+16,
+56.35,
+68.75,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"X2+O15": {
+"group": "combo",
+"half": false,
+"corr": [
+-0.0226,
+0.9418
+],
+"excluded_upfront": false,
+"fit_mid": [
+49200,
+40.25,
+40.41,
+true
+],
+"fit_slip": [
+6542,
+63.31,
+62.35,
+true
+],
+"fit_high": [
+15,
+87.73,
+100.0,
+null
+],
+"check_mid": [
+27671,
+41.23,
+42.06,
+true
+],
+"check_slip": [
+5641,
+64.04,
+65.47,
+true
+],
+"check_high": [
+35,
+87.1,
+85.71,
+null
+],
+"confirm_mid": [
+7732,
+41.36,
+42.83,
+true
+],
+"confirm_slip": [
+1686,
+63.59,
+65.66,
+true
+],
+"confirm_high": [
+8,
+86.36,
+87.5,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"X2+O25": {
+"group": "combo",
+"half": false,
+"corr": [
+-0.0772,
+0.915
+],
+"excluded_upfront": false,
+"fit_mid": [
+10095,
+37.3,
+37.46,
+true
+],
+"fit_slip": [
+354,
+59.86,
+60.45,
+true
+],
+"check_mid": [
+8675,
+37.94,
+40.14,
+true
+],
+"check_slip": [
+553,
+60.58,
+60.22,
+true
+],
+"confirm_mid": [
+2693,
+37.76,
+39.7,
+true
+],
+"confirm_slip": [
+164,
+60.34,
+62.8,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"X2+U25": {
+"group": "combo",
+"half": false,
+"corr": [
+0.0442,
+1.1034
+],
+"excluded_upfront": false,
+"fit_mid": [
+49618,
+37.42,
+37.47,
+true
+],
+"fit_slip": [
+19,
+56.12,
+52.63,
+null
+],
+"check_mid": [
+27149,
+37.9,
+37.97,
+true
+],
+"check_slip": [
+62,
+56.73,
+62.9,
+null
+],
+"confirm_mid": [
+6934,
+37.72,
+37.6,
+true
+],
+"confirm_slip": [
+8,
+56.08,
+37.5,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"X2+U35": {
+"group": "combo",
+"half": false,
+"corr": [
+-0.0114,
+1.0726
+],
+"excluded_upfront": false,
+"fit_mid": [
+54021,
+43.01,
+43.08,
+true
+],
+"fit_slip": [
+6343,
+59.26,
+58.8,
+true
+],
+"check_mid": [
+30137,
+43.46,
+44.1,
+true
+],
+"check_slip": [
+4486,
+58.82,
+59.67,
+true
+],
+"confirm_mid": [
+8422,
+42.76,
+43.9,
+true
+],
+"confirm_slip": [
+1170,
+59.06,
+61.11,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"X2+GG": {
+"group": "combo",
+"half": false,
+"corr": [
+-0.0041,
+0.9512
+],
+"excluded_upfront": false,
+"fit_mid": [
+43269,
+35.9,
+35.82,
+true
+],
+"fit_slip": [
+8,
+55.89,
+62.5,
+null
+],
+"check_mid": [
+27170,
+37.01,
+37.95,
+true
+],
+"check_slip": [
+23,
+56.21,
+69.57,
+null
+],
+"confirm_mid": [
+7743,
+37.26,
+38.37,
+true
+],
+"confirm_slip": [
+11,
+56.11,
+54.55,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"12+O15": {
+"group": "combo",
+"half": false,
+"corr": [
+-0.0859,
+1.0816
+],
+"excluded_upfront": false,
+"fit_mid": [
+44162,
+49.69,
+49.59,
+true
+],
+"fit_slip": [
+27209,
+61.89,
+62.04,
+true
+],
+"fit_high": [
+205,
+88.04,
+90.24,
+true
+],
+"check_mid": [
+22002,
+49.07,
+49.12,
+true
+],
+"check_slip": [
+19785,
+62.86,
+62.84,
+true
+],
+"check_high": [
+256,
+87.85,
+85.16,
+true
+],
+"confirm_mid": [
+5529,
+49.44,
+48.94,
+true
+],
+"confirm_slip": [
+6303,
+62.74,
+61.97,
+true
+],
+"confirm_high": [
+67,
+87.18,
+88.06,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"12+O25": {
+"group": "combo",
+"half": false,
+"corr": [
+-0.0334,
+1.0214
+],
+"excluded_upfront": false,
+"fit_mid": [
+66607,
+40.74,
+40.76,
+true
+],
+"fit_slip": [
+4021,
+61.01,
+60.71,
+true
+],
+"fit_high": [
+5,
+86.7,
+80.0,
+null
+],
+"check_mid": [
+36085,
+41.77,
+42.13,
+true
+],
+"check_slip": [
+4421,
+61.65,
+61.23,
+true
+],
+"check_high": [
+7,
+86.14,
+100.0,
+null
+],
+"confirm_mid": [
+10233,
+42.55,
+42.91,
+true
+],
+"confirm_slip": [
+1372,
+61.47,
+61.01,
+true
+],
+"confirm_high": [
+2,
+85.28,
+100.0,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"12+U35": {
+"group": "combo",
+"half": false,
+"corr": [
+0.0331,
+0.7947
+],
+"excluded_upfront": false,
+"fit_mid": [
+57791,
+51.7,
+51.74,
+true
+],
+"fit_slip": [
+13776,
+56.14,
+55.98,
+true
+],
+"check_mid": [
+34344,
+51.01,
+51.16,
+true
+],
+"check_slip": [
+7687,
+56.11,
+56.24,
+true
+],
+"confirm_mid": [
+9790,
+50.78,
+50.96,
+true
+],
+"confirm_slip": [
+2105,
+56.11,
+56.72,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"12+GG": {
+"group": "combo",
+"half": false,
+"corr": [
+-0.0763,
+0.8693
+],
+"excluded_upfront": false,
+"fit_mid": [
+49471,
+34.3,
+34.26,
+true
+],
+"fit_slip": [
+2,
+56.78,
+50.0,
+null
+],
+"check_mid": [
+31277,
+35.62,
+35.57,
+true
+],
+"check_slip": [
+3,
+55.57,
+100.0,
+null
+],
+"confirm_mid": [
+9396,
+36.12,
+36.24,
+true
+],
+"confirm_slip": [
+1,
+55.5,
+0.0,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"GG+O25": {
+"group": "combo",
+"half": false,
+"corr": [
+-0.0345,
+0.8266
+],
+"excluded_upfront": false,
+"fit_mid": [
+69652,
+38.65,
+38.57,
+true
+],
+"fit_slip": [
+94,
+56.7,
+62.77,
+null
+],
+"check_mid": [
+40197,
+40.08,
+40.04,
+true
+],
+"check_slip": [
+270,
+57.21,
+61.11,
+true
+],
+"confirm_mid": [
+11436,
+40.84,
+41.68,
+true
+],
+"confirm_slip": [
+141,
+57.27,
+58.16,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"GG+U35": {
+"group": "combo",
+"half": false,
+"corr": [
+-0.0783,
+0.8894
+],
+"excluded_upfront": false,
+"fit_mid": [
+11800,
+30.44,
+29.83,
+true
+],
+"check_mid": [
+5152,
+30.32,
+30.65,
+true
+],
+"confirm_mid": [
+1076,
+30.29,
+31.69,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"NG+U25": {
+"group": "combo",
+"half": false,
+"corr": null,
+"excluded_upfront": true,
+"fit_mid": [
+66163,
+40.64,
+40.68,
+true
+],
+"fit_slip": [
+81,
+56.19,
+50.62,
+null
+],
+"check_mid": [
+35501,
+40.2,
+39.72,
+true
+],
+"check_slip": [
+278,
+56.61,
+53.6,
+true
+],
+"confirm_mid": [
+9755,
+39.59,
+38.29,
+true
+],
+"confirm_slip": [
+70,
+56.98,
+52.86,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"NG+O15": {
+"group": "combo",
+"half": false,
+"corr": null,
+"excluded_upfront": true,
+"fit_mid": [
+8576,
+36.76,
+32.93,
+false
+],
+"fit_slip": [
+133,
+58.82,
+50.38,
+null
+],
+"check_mid": [
+5050,
+36.9,
+34.02,
+false
+],
+"check_slip": [
+73,
+58.42,
+57.53,
+null
+],
+"confirm_mid": [
+1353,
+36.59,
+32.52,
+false
+],
+"confirm_slip": [
+15,
+57.47,
+53.33,
+null
+],
+"pass_check": false,
+"pass_confirm": false
+},
+"1X+MG1-3": {
+"group": "combo",
+"half": false,
+"corr": [
+0.0421,
+1.0379
+],
+"excluded_upfront": false,
+"fit_mid": [
+60159,
+45.46,
+45.51,
+true
+],
+"fit_slip": [
+6188,
+57.42,
+56.59,
+true
+],
+"check_mid": [
+35112,
+44.14,
+44.35,
+true
+],
+"check_slip": [
+2290,
+57.18,
+60.0,
+false
+],
+"confirm_mid": [
+9944,
+43.84,
+44.34,
+true
+],
+"confirm_slip": [
+534,
+56.97,
+55.99,
+true
+],
+"pass_check": false,
+"pass_confirm": true
+},
+"1X+MG1-4": {
+"group": "combo",
+"half": false,
+"corr": [
+0.0406,
+1.0214
+],
+"excluded_upfront": false,
+"fit_mid": [
+25951,
+47.61,
+47.49,
+true
+],
+"fit_slip": [
+43127,
+62.56,
+62.59,
+true
+],
+"check_mid": [
+18209,
+46.76,
+46.43,
+true
+],
+"check_slip": [
+21661,
+62.07,
+62.97,
+true
+],
+"confirm_mid": [
+5191,
+46.32,
+46.41,
+true
+],
+"confirm_slip": [
+6107,
+61.93,
+63.35,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"X2+MG1-3": {
+"group": "combo",
+"half": false,
+"corr": [
+0.0124,
+1.0513
+],
+"excluded_upfront": false,
+"fit_mid": [
+45033,
+38.28,
+38.26,
+true
+],
+"fit_slip": [
+746,
+57.2,
+56.17,
+true
+],
+"check_mid": [
+27441,
+39.15,
+40.16,
+true
+],
+"check_slip": [
+331,
+57.08,
+55.89,
+true
+],
+"confirm_mid": [
+7389,
+39.13,
+41.22,
+true
+],
+"confirm_slip": [
+117,
+56.69,
+62.39,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"X2+MG1-4": {
+"group": "combo",
+"half": false,
+"corr": [
+0.017,
+1.018
+],
+"excluded_upfront": false,
+"fit_mid": [
+50176,
+42.29,
+42.17,
+true
+],
+"fit_slip": [
+8664,
+61.43,
+61.32,
+true
+],
+"check_mid": [
+28034,
+43.04,
+43.8,
+true
+],
+"check_slip": [
+6833,
+60.93,
+61.64,
+true
+],
+"confirm_mid": [
+7912,
+42.71,
+44.21,
+true
+],
+"confirm_slip": [
+1959,
+60.84,
+63.04,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"12+MG2-4": {
+"group": "combo",
+"half": false,
+"corr": [
+-0.0003,
+1.2047
+],
+"excluded_upfront": false,
+"fit_mid": [
+71145,
+43.04,
+43.05,
+true
+],
+"fit_slip": [
+430,
+56.18,
+53.49,
+true
+],
+"check_mid": [
+41882,
+43.02,
+43.4,
+true
+],
+"check_slip": [
+159,
+55.97,
+59.75,
+true
+],
+"confirm_mid": [
+11861,
+43.24,
+43.71,
+true
+],
+"confirm_slip": [
+37,
+55.9,
+51.35,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"12+MG2-5": {
+"group": "combo",
+"half": false,
+"corr": [
+-0.0625,
+1.1527
+],
+"excluded_upfront": false,
+"fit_mid": [
+59029,
+48.45,
+48.51,
+true
+],
+"fit_slip": [
+12547,
+59.34,
+59.1,
+true
+],
+"check_mid": [
+32440,
+48.52,
+48.77,
+true
+],
+"check_slip": [
+9603,
+59.19,
+60.28,
+true
+],
+"confirm_mid": [
+8897,
+49.1,
+49.19,
+true
+],
+"confirm_slip": [
+3002,
+58.74,
+58.93,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1H-1": {
+"group": "handicap",
+"half": false,
+"corr": [
+-0.1233,
+0.9856
+],
+"excluded_upfront": false,
+"fit_mid": [
+13046,
+38.53,
+38.39,
+true
+],
+"fit_slip": [
+1936,
+62.16,
+63.12,
+true
+],
+"fit_high": [
+3,
+87.8,
+100.0,
+null
+],
+"check_mid": [
+7281,
+38.67,
+38.9,
+true
+],
+"check_slip": [
+1435,
+63.46,
+63.55,
+true
+],
+"check_high": [
+5,
+87.75,
+100.0,
+null
+],
+"confirm_mid": [
+2219,
+38.52,
+37.22,
+true
+],
+"confirm_slip": [
+374,
+63.11,
+62.03,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"XH-1": {
+"group": "handicap",
+"half": false,
+"corr": [
+0.2007,
+1.0697
+],
+"excluded_upfront": false,
+"fit_mid": [
+203,
+30.59,
+38.92,
+false
+],
+"check_mid": [
+137,
+30.48,
+35.77,
+null
+],
+"confirm_mid": [
+17,
+30.41,
+29.41,
+null
+],
+"pass_check": null,
+"pass_confirm": null
+},
+"2H-1": {
+"group": "handicap",
+"half": false,
+"corr": [
+-0.0034,
+1.0042
+],
+"excluded_upfront": false,
+"fit_mid": [
+30681,
+45.9,
+46.15,
+true
+],
+"fit_slip": [
+33697,
+64.88,
+64.92,
+true
+],
+"fit_high": [
+2173,
+89.14,
+87.9,
+true
+],
+"check_mid": [
+15308,
+45.51,
+45.86,
+true
+],
+"check_slip": [
+21766,
+66.14,
+66.79,
+true
+],
+"check_high": [
+1695,
+89.44,
+88.97,
+true
+],
+"confirm_mid": [
+4504,
+45.11,
+45.52,
+true
+],
+"confirm_slip": [
+6033,
+66.41,
+67.5,
+true
+],
+"confirm_high": [
+446,
+89.23,
+89.91,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1H+1": {
+"group": "handicap",
+"half": false,
+"corr": [
+0.0229,
+1.0095
+],
+"excluded_upfront": false,
+"fit_mid": [
+6071,
+45.26,
+45.64,
+true
+],
+"fit_slip": [
+53022,
+72.56,
+72.64,
+true
+],
+"fit_high": [
+11347,
+89.94,
+89.35,
+true
+],
+"check_mid": [
+5185,
+45.58,
+44.13,
+true
+],
+"check_slip": [
+29824,
+71.59,
+71.44,
+true
+],
+"check_high": [
+5916,
+89.9,
+89.96,
+true
+],
+"confirm_mid": [
+1572,
+45.58,
+45.36,
+true
+],
+"confirm_slip": [
+8463,
+71.68,
+71.61,
+true
+],
+"confirm_high": [
+1584,
+89.8,
+90.97,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"XH+1": {
+"group": "handicap",
+"half": false,
+"corr": [
+0.1593,
+1.0928
+],
+"excluded_upfront": false,
+"fit_mid": [
+3,
+30.14,
+66.67,
+null
+],
+"check_mid": [
+3,
+30.32,
+33.33,
+null
+],
+"confirm_mid": [
+1,
+30.16,
+0.0,
+null
+],
+"pass_check": null,
+"pass_confirm": null
+},
+"2H+1": {
+"group": "handicap",
+"half": false,
+"corr": [
+-0.1434,
+0.9572
+],
+"excluded_upfront": false,
+"fit_mid": [
+3182,
+38.05,
+37.87,
+true
+],
+"fit_slip": [
+184,
+59.53,
+56.52,
+true
+],
+"check_mid": [
+2739,
+38.75,
+38.77,
+true
+],
+"check_slip": [
+234,
+60.45,
+58.97,
+true
+],
+"confirm_mid": [
+790,
+38.24,
+36.71,
+true
+],
+"confirm_slip": [
+64,
+59.22,
+48.44,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1H-2": {
+"group": "handicap",
+"half": false,
+"corr": [
+-0.1785,
+0.9956
+],
+"excluded_upfront": false,
+"fit_mid": [
+2198,
+36.89,
+37.49,
+true
+],
+"fit_slip": [
+93,
+60.14,
+63.44,
+null
+],
+"check_mid": [
+1593,
+38.3,
+36.47,
+true
+],
+"check_slip": [
+98,
+59.73,
+59.18,
+null
+],
+"confirm_mid": [
+439,
+38.36,
+37.13,
+true
+],
+"confirm_slip": [
+14,
+58.36,
+57.14,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"XH-2": {
+"group": "handicap",
+"half": false,
+"corr": [
+0.0355,
+1.0378
+],
+"excluded_upfront": false,
+"pass_check": null,
+"pass_confirm": null
+},
+"2H-2": {
+"group": "handicap",
+"half": false,
+"corr": [
+0.1233,
+0.9856
+],
+"excluded_upfront": false,
+"fit_mid": [
+4309,
+46.23,
+45.51,
+true
+],
+"fit_slip": [
+49254,
+75.55,
+75.72,
+true
+],
+"fit_high": [
+16755,
+89.53,
+89.29,
+true
+],
+"check_mid": [
+2694,
+45.35,
+46.4,
+true
+],
+"check_slip": [
+25434,
+75.43,
+75.21,
+true
+],
+"check_high": [
+12796,
+89.71,
+90.33,
+true
+],
+"confirm_mid": [
+744,
+45.69,
+46.1,
+true
+],
+"confirm_slip": [
+7284,
+74.91,
+76.28,
+true
+],
+"confirm_high": [
+3592,
+89.84,
+90.31,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1H+2": {
+"group": "handicap",
+"half": false,
+"corr": [
+0.1434,
+0.9572
+],
+"excluded_upfront": false,
+"fit_mid": [
+684,
+48.35,
+49.12,
+true
+],
+"fit_slip": [
+15602,
+77.32,
+77.03,
+true
+],
+"fit_high": [
+49787,
+91.13,
+91.18,
+true
+],
+"check_mid": [
+770,
+47.67,
+48.7,
+true
+],
+"check_slip": [
+12046,
+76.89,
+76.46,
+true
+],
+"check_high": [
+26269,
+90.98,
+91.45,
+true
+],
+"confirm_mid": [
+207,
+47.79,
+47.34,
+true
+],
+"confirm_slip": [
+3592,
+76.84,
+77.28,
+true
+],
+"confirm_high": [
+7320,
+91.06,
+91.72,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"XH+2": {
+"group": "handicap",
+"half": false,
+"corr": [
+0.0424,
+1.0387
+],
+"excluded_upfront": false,
+"pass_check": null,
+"pass_confirm": null
+},
+"2H+2": {
+"group": "handicap",
+"half": false,
+"corr": [
+-0.3601,
+0.8997
+],
+"excluded_upfront": false,
+"fit_mid": [
+171,
+34.27,
+30.41,
+true
+],
+"fit_slip": [
+1,
+55.38,
+100.0,
+null
+],
+"check_mid": [
+242,
+34.88,
+36.78,
+true
+],
+"check_slip": [
+1,
+56.1,
+0.0,
+null
+],
+"confirm_mid": [
+66,
+34.0,
+30.3,
+null
+],
+"pass_check": true,
+"pass_confirm": null
+},
+"1T1": {
+"group": "first half",
+"half": true,
+"corr": [
+0.0098,
+0.9937
+],
+"excluded_upfront": false,
+"fit_mid": [
+44431,
+37.83,
+37.6,
+true
+],
+"fit_slip": [
+2893,
+60.73,
+62.63,
+true
+],
+"check_mid": [
+22857,
+38.06,
+38.71,
+true
+],
+"check_slip": [
+1998,
+61.73,
+61.11,
+true
+],
+"confirm_mid": [
+6597,
+38.43,
+39.06,
+true
+],
+"confirm_slip": [
+543,
+61.28,
+65.93,
+false
+],
+"pass_check": true,
+"pass_confirm": false
+},
+"1TX": {
+"group": "first half",
+"half": true,
+"corr": [
+0.0127,
+1.0637
+],
+"excluded_upfront": false,
+"fit_mid": [
+70630,
+43.5,
+43.49,
+true
+],
+"check_mid": [
+40993,
+42.95,
+42.2,
+true
+],
+"check_slip": [
+2,
+56.75,
+100.0,
+null
+],
+"confirm_mid": [
+11602,
+42.46,
+41.1,
+true
+],
+"confirm_slip": [
+1,
+55.2,
+0.0,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1T2": {
+"group": "first half",
+"half": true,
+"corr": [
+-0.0398,
+0.9758
+],
+"excluded_upfront": false,
+"fit_mid": [
+10539,
+37.12,
+37.2,
+true
+],
+"fit_slip": [
+294,
+58.67,
+59.52,
+true
+],
+"check_mid": [
+8676,
+37.41,
+39.08,
+true
+],
+"check_slip": [
+360,
+59.21,
+60.83,
+true
+],
+"confirm_mid": [
+2631,
+37.21,
+39.19,
+true
+],
+"confirm_slip": [
+93,
+58.83,
+49.46,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1T1X": {
+"group": "first half",
+"half": true,
+"corr": [
+0.0398,
+0.9758
+],
+"excluded_upfront": false,
+"fit_mid": [
+1644,
+49.35,
+50.79,
+true
+],
+"fit_slip": [
+58637,
+75.97,
+75.95,
+true
+],
+"fit_high": [
+11273,
+88.72,
+88.66,
+true
+],
+"check_mid": [
+1641,
+48.65,
+47.04,
+true
+],
+"check_slip": [
+34336,
+74.87,
+74.21,
+true
+],
+"check_high": [
+6056,
+88.74,
+88.08,
+true
+],
+"confirm_mid": [
+433,
+48.7,
+51.5,
+true
+],
+"confirm_slip": [
+9857,
+74.7,
+73.9,
+true
+],
+"confirm_high": [
+1608,
+88.67,
+87.06,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1TX2": {
+"group": "first half",
+"half": true,
+"corr": [
+-0.0098,
+0.9937
+],
+"excluded_upfront": false,
+"fit_mid": [
+9011,
+47.45,
+46.93,
+true
+],
+"fit_slip": [
+60432,
+68.03,
+68.14,
+true
+],
+"fit_high": [
+1985,
+88.13,
+87.15,
+true
+],
+"check_mid": [
+5423,
+46.79,
+46.58,
+true
+],
+"check_slip": [
+34903,
+69.11,
+68.97,
+true
+],
+"check_high": [
+1567,
+88.32,
+88.0,
+true
+],
+"confirm_mid": [
+1592,
+47.18,
+46.36,
+true
+],
+"confirm_slip": [
+9828,
+68.85,
+68.19,
+true
+],
+"confirm_high": [
+446,
+88.04,
+86.1,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1T12": {
+"group": "first half",
+"half": true,
+"corr": [
+-0.0127,
+1.0637
+],
+"excluded_upfront": false,
+"fit_mid": [
+27699,
+53.17,
+52.95,
+true
+],
+"fit_slip": [
+43876,
+58.96,
+59.1,
+true
+],
+"fit_high": [
+1,
+86.85,
+100.0,
+null
+],
+"check_mid": [
+14195,
+52.72,
+53.15,
+true
+],
+"check_slip": [
+27846,
+59.87,
+60.79,
+true
+],
+"check_high": [
+3,
+85.56,
+66.67,
+null
+],
+"confirm_mid": [
+3405,
+52.87,
+53.19,
+true
+],
+"confirm_slip": [
+8494,
+59.95,
+61.78,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1TO05": {
+"group": "first half",
+"half": true,
+"corr": [
+-0.017,
+1.0816
+],
+"excluded_upfront": false,
+"fit_mid": [
+4,
+53.48,
+25.0,
+null
+],
+"fit_slip": [
+71460,
+67.88,
+67.88,
+true
+],
+"fit_high": [
+112,
+86.54,
+89.29,
+null
+],
+"check_mid": [
+46,
+53.87,
+47.83,
+null
+],
+"check_slip": [
+41834,
+68.88,
+69.47,
+true
+],
+"check_high": [
+164,
+86.59,
+85.98,
+true
+],
+"confirm_mid": [
+18,
+53.92,
+61.11,
+null
+],
+"confirm_slip": [
+11838,
+69.6,
+70.75,
+true
+],
+"confirm_high": [
+43,
+86.33,
+90.7,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1TO15": {
+"group": "first half",
+"half": true,
+"corr": [
+0.0186,
+1.0283
+],
+"excluded_upfront": false,
+"fit_mid": [
+39697,
+34.74,
+34.67,
+true
+],
+"fit_slip": [
+115,
+58.0,
+64.35,
+null
+],
+"check_mid": [
+26084,
+36.29,
+36.64,
+true
+],
+"check_slip": [
+170,
+58.13,
+61.76,
+true
+],
+"confirm_mid": [
+7995,
+36.64,
+37.39,
+true
+],
+"confirm_slip": [
+44,
+57.72,
+65.91,
+null
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1TU15": {
+"group": "first half",
+"half": true,
+"corr": [
+-0.0186,
+1.0283
+],
+"excluded_upfront": false,
+"fit_mid": [
+1191,
+50.81,
+50.88,
+true
+],
+"fit_slip": [
+70385,
+68.85,
+68.85,
+true
+],
+"check_mid": [
+1822,
+50.76,
+48.41,
+true
+],
+"check_slip": [
+40221,
+67.97,
+67.87,
+true
+],
+"check_high": [
+1,
+85.16,
+100.0,
+null
+],
+"confirm_mid": [
+585,
+50.77,
+49.4,
+true
+],
+"confirm_slip": [
+11314,
+67.23,
+66.74,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1TU25": {
+"group": "first half",
+"half": true,
+"corr": [
+0.0997,
+0.9683
+],
+"excluded_upfront": false,
+"fit_slip": [
+4534,
+82.34,
+81.83,
+true
+],
+"fit_high": [
+67042,
+90.09,
+90.13,
+true
+],
+"check_slip": [
+5644,
+82.0,
+80.79,
+true
+],
+"check_high": [
+36400,
+89.88,
+89.81,
+true
+],
+"confirm_slip": [
+1930,
+82.09,
+81.09,
+true
+],
+"confirm_high": [
+9969,
+89.61,
+89.16,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1TU05": {
+"group": "first half",
+"half": true,
+"corr": [
+0.017,
+1.0816
+],
+"excluded_upfront": false,
+"fit_mid": [
+50805,
+34.34,
+34.25,
+true
+],
+"check_mid": [
+24959,
+34.71,
+34.17,
+true
+],
+"confirm_mid": [
+6342,
+34.42,
+33.43,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+},
+"1TGG": {
+"group": "first half",
+"half": true,
+"corr": [
+-0.3131,
+0.7583
+],
+"excluded_upfront": false,
+"fit_mid": [
+2,
+30.96,
+0.0,
+null
+],
+"check_mid": [
+9,
+31.14,
+44.44,
+null
+],
+"confirm_mid": [
+4,
+30.66,
+0.0,
+null
+],
+"pass_check": null,
+"pass_confirm": null
+},
+"1TNG": {
+"group": "first half",
+"half": true,
+"corr": [
+0.3131,
+0.7583
+],
+"excluded_upfront": false,
+"fit_slip": [
+67986,
+81.54,
+81.59,
+true
+],
+"fit_high": [
+3590,
+85.95,
+84.87,
+true
+],
+"check_slip": [
+39640,
+80.85,
+80.92,
+true
+],
+"check_high": [
+2404,
+85.88,
+88.1,
+true
+],
+"confirm_slip": [
+11395,
+80.49,
+80.19,
+true
+],
+"confirm_high": [
+504,
+85.85,
+85.52,
+true
+],
+"pass_check": true,
+"pass_confirm": true
+}
+}
+}

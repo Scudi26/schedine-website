@@ -1,0 +1,23 @@
+name: weekly slips
+on:
+  schedule:
+    - cron: "0 9 * * *"     # every morning 09:00 UTC: a full pull on Tuesday and Friday, a match-day refresh the other days
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install numpy scipy
+      - name: pull prices (full or match-day) and update the history
+        env: { ODDS_API_KEY: "${{ secrets.ODDS_API_KEY }}" }
+        run: python3 -m tools.weekly --mode auto --out data/week.json --history data/history.json
+      - name: commit the week's data
+        run: |
+          git config user.name scudi-bot && git config user.email bot@scudi.local
+          git add data/week.json data/history.json 2>/dev/null; git commit -m "prices $(date -u +%F)" || echo "nothing new"
+          git pull --rebase && git push
