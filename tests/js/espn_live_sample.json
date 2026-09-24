@@ -1,0 +1,485 @@
+[
+ {
+  "name": "Napoli at Fiorentina",
+  "date": "2026-09-20T10:30Z",
+  "competitions": [
+   {
+    "status": {
+     "period": 2,
+     "displayClock": "90'+5'",
+     "type": {
+      "name": "STATUS_FULL_TIME",
+      "state": "post",
+      "completed": true,
+      "shortDetail": "FT",
+      "description": "Full Time"
+     }
+    },
+    "competitors": [
+     {
+      "homeAway": "home",
+      "score": "1",
+      "team": {
+       "id": "109",
+       "displayName": "Fiorentina"
+      }
+     },
+     {
+      "homeAway": "away",
+      "score": "1",
+      "team": {
+       "id": "114",
+       "displayName": "Napoli"
+      }
+     }
+    ],
+    "details": [
+     {
+      "scoringPlay": true,
+      "shootout": false,
+      "ownGoal": false,
+      "penaltyKick": false,
+      "clock": {
+       "displayValue": "23'"
+      },
+      "team": {
+       "id": "114"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": false,
+      "ownGoal": false,
+      "penaltyKick": false,
+      "clock": {
+       "displayValue": "51'"
+      },
+      "team": {
+       "id": "109"
+      }
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Como at Frosinone",
+  "date": "2026-09-20T13:00Z",
+  "competitions": [
+   {
+    "status": {
+     "period": 2,
+     "displayClock": "90'+6'",
+     "type": {
+      "name": "STATUS_FULL_TIME",
+      "state": "post",
+      "completed": true,
+      "shortDetail": "FT",
+      "description": "Full Time"
+     }
+    },
+    "competitors": [
+     {
+      "homeAway": "home",
+      "score": "2",
+      "team": {
+       "id": "4057",
+       "displayName": "Frosinone"
+      }
+     },
+     {
+      "homeAway": "away",
+      "score": "0",
+      "team": {
+       "id": "2572",
+       "displayName": "Como"
+      }
+     }
+    ],
+    "details": [
+     {
+      "scoringPlay": true,
+      "shootout": false,
+      "ownGoal": false,
+      "penaltyKick": false,
+      "clock": {
+       "displayValue": "14'"
+      },
+      "team": {
+       "id": "4057"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": false,
+      "ownGoal": false,
+      "penaltyKick": false,
+      "clock": {
+       "displayValue": "45'+3'"
+      },
+      "team": {
+       "id": "4057"
+      }
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "England at Norway",
+  "date": "2026-07-11T21:00Z",
+  "competitions": [
+   {
+    "status": {
+     "period": 4,
+     "displayClock": "120'+2'",
+     "type": {
+      "name": "STATUS_FINAL_AET",
+      "state": "post",
+      "completed": true,
+      "shortDetail": "AET",
+      "description": "Final Score - After Extra Time"
+     }
+    },
+    "competitors": [
+     {
+      "homeAway": "home",
+      "score": "1",
+      "team": {
+       "id": "464",
+       "displayName": "Norway"
+      }
+     },
+     {
+      "homeAway": "away",
+      "score": "2",
+      "team": {
+       "id": "448",
+       "displayName": "England"
+      }
+     }
+    ],
+    "details": [
+     {
+      "scoringPlay": true,
+      "shootout": false,
+      "ownGoal": false,
+      "penaltyKick": false,
+      "clock": {
+       "displayValue": "36'"
+      },
+      "team": {
+       "id": "464"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": false,
+      "ownGoal": false,
+      "penaltyKick": false,
+      "clock": {
+       "displayValue": "45'+2'"
+      },
+      "team": {
+       "id": "448"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": false,
+      "ownGoal": false,
+      "penaltyKick": false,
+      "clock": {
+       "displayValue": "93'"
+      },
+      "team": {
+       "id": "448"
+      }
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Paraguay at Germany",
+  "date": "2026-06-29T20:30Z",
+  "competitions": [
+   {
+    "status": {
+     "period": 5,
+     "displayClock": "120'",
+     "type": {
+      "name": "STATUS_FINAL_PEN",
+      "state": "post",
+      "completed": true,
+      "shortDetail": "FT-Pens",
+      "description": "Final Score - After Penalties"
+     }
+    },
+    "competitors": [
+     {
+      "homeAway": "home",
+      "score": "1",
+      "team": {
+       "id": "481",
+       "displayName": "Germany"
+      }
+     },
+     {
+      "homeAway": "away",
+      "score": "1",
+      "team": {
+       "id": "210",
+       "displayName": "Paraguay"
+      }
+     }
+    ],
+    "details": [
+     {
+      "scoringPlay": true,
+      "shootout": false,
+      "ownGoal": false,
+      "penaltyKick": false,
+      "clock": {
+       "displayValue": "42'"
+      },
+      "team": {
+       "id": "210"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": false,
+      "ownGoal": false,
+      "penaltyKick": false,
+      "clock": {
+       "displayValue": "54'"
+      },
+      "team": {
+       "id": "481"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": true,
+      "ownGoal": false,
+      "penaltyKick": true,
+      "clock": {
+       "displayValue": "120'"
+      },
+      "team": {
+       "id": "210"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": true,
+      "ownGoal": false,
+      "penaltyKick": true,
+      "clock": {
+       "displayValue": "120'"
+      },
+      "team": {
+       "id": "481"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": true,
+      "ownGoal": false,
+      "penaltyKick": true,
+      "clock": {
+       "displayValue": "120'"
+      },
+      "team": {
+       "id": "210"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": true,
+      "ownGoal": false,
+      "penaltyKick": true,
+      "clock": {
+       "displayValue": "120'"
+      },
+      "team": {
+       "id": "481"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": true,
+      "ownGoal": false,
+      "penaltyKick": true,
+      "clock": {
+       "displayValue": "120'"
+      },
+      "team": {
+       "id": "210"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": true,
+      "ownGoal": false,
+      "penaltyKick": true,
+      "clock": {
+       "displayValue": "120'"
+      },
+      "team": {
+       "id": "481"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": true,
+      "ownGoal": false,
+      "penaltyKick": true,
+      "clock": {
+       "displayValue": "120'"
+      },
+      "team": {
+       "id": "210"
+      }
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Egypt at Australia",
+  "date": "2026-07-03T18:00Z",
+  "competitions": [
+   {
+    "status": {
+     "period": 5,
+     "displayClock": "120'",
+     "type": {
+      "name": "STATUS_FINAL_PEN",
+      "state": "post",
+      "completed": true,
+      "shortDetail": "FT-Pens",
+      "description": "Final Score - After Penalties"
+     }
+    },
+    "competitors": [
+     {
+      "homeAway": "home",
+      "score": "1",
+      "team": {
+       "id": "628",
+       "displayName": "Australia"
+      }
+     },
+     {
+      "homeAway": "away",
+      "score": "1",
+      "team": {
+       "id": "2620",
+       "displayName": "Egypt"
+      }
+     }
+    ],
+    "details": [
+     {
+      "scoringPlay": true,
+      "shootout": false,
+      "ownGoal": false,
+      "penaltyKick": false,
+      "clock": {
+       "displayValue": "13'"
+      },
+      "team": {
+       "id": "2620"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": false,
+      "ownGoal": true,
+      "penaltyKick": false,
+      "clock": {
+       "displayValue": "55'"
+      },
+      "team": {
+       "id": "628"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": true,
+      "ownGoal": false,
+      "penaltyKick": true,
+      "clock": {
+       "displayValue": "120'"
+      },
+      "team": {
+       "id": "2620"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": true,
+      "ownGoal": false,
+      "penaltyKick": true,
+      "clock": {
+       "displayValue": "120'"
+      },
+      "team": {
+       "id": "628"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": true,
+      "ownGoal": false,
+      "penaltyKick": true,
+      "clock": {
+       "displayValue": "120'"
+      },
+      "team": {
+       "id": "2620"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": true,
+      "ownGoal": false,
+      "penaltyKick": true,
+      "clock": {
+       "displayValue": "120'"
+      },
+      "team": {
+       "id": "628"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": true,
+      "ownGoal": false,
+      "penaltyKick": true,
+      "clock": {
+       "displayValue": "120'"
+      },
+      "team": {
+       "id": "2620"
+      }
+     },
+     {
+      "scoringPlay": true,
+      "shootout": true,
+      "ownGoal": false,
+      "penaltyKick": true,
+      "clock": {
+       "displayValue": "120'"
+      },
+      "team": {
+       "id": "2620"
+      }
+     }
+    ]
+   }
+  ]
+ }
+]

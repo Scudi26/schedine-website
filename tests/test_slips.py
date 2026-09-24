@@ -896,6 +896,25 @@ def test_espn_settles_on_ninety_minutes_and_matches_national_team_spellings():
     assert espn_final(postponed) is None
 
 
+
+def test_espn_extra_time_and_shootouts_from_the_goal_list_on_real_boards():
+    """Real ESPN boards (decision 80): a day's scoreboard lists no periods for extra-time matches, so the 90-minute score
+    comes from the goals up to 90'+stoppage; shoot-out kicks are not goals; an own goal counts for the side it helps."""
+    from tools.grade import espn_final, espn_half
+
+    boards = {e["name"]: e for e in json.loads((Path(__file__).parent / "js" / "espn_live_sample.json").read_text())}
+    nor = boards["England at Norway"]                     # 1-2 after extra time, 1-1 after 90 minutes
+    assert espn_final(nor) == (1, 1) and espn_half(nor, (1, 1)) == (1, 1)
+    ger = boards["Paraguay at Germany"]                   # 1-1, lost on penalties
+    assert espn_final(ger) == (1, 1) and espn_half(ger, (1, 1)) == (0, 1)
+    aus = boards["Egypt at Australia"]                    # 1-1 with an own goal, then penalties
+    assert espn_final(aus) == (1, 1) and espn_half(aus, (1, 1)) == (0, 1)
+    fro = boards["Como at Frosinone"]                     # 2-0, the second at 45'+3'
+    assert espn_final(fro) == (2, 0) and espn_half(fro, (2, 0)) == (2, 0)
+    broken = json.loads(json.dumps(nor))
+    broken["competitions"][0]["details"] = broken["competitions"][0]["details"][:1]
+    assert espn_final(broken) is None                     # the goals do not add up: left open
+
 def test_light_team_data_for_other_leagues_uses_only_rosters_and_schedules():
     from tools.teams import SITE, WEB, build, replay_fetch
 

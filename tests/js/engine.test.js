@@ -187,5 +187,73 @@ ok(back.length === 4 && bk.a.U25 === 1.3 && bk.a.O25 === 3.1 && bk.l.X2 === unde
 const badRow = SR.rowIssues({ '1': 2.7, X: 3.25, '2': 27 });
 ok(badRow.indexOf('1X2') > -1 && !SR.rowIssues({ '1': 2.7, X: 3.25, '2': 2.7, '1X': 1.45, X2: 1.45, '12': 1.36 }).length, 'screenshot row checks');
 
+/* live: ESPN's goal list, regular-time settlement, and the story rebuilt from it (decision 80), on real ESPN boards */
+const EV = JSON.parse(fs.readFileSync(path.join(__dirname, 'espn_live_sample.json'), 'utf8'));
+const evOf = n => EV.filter(e => e.name === n)[0];
+const fio = evOf('Napoli at Fiorentina'), nor = evOf('England at Norway'), ger = evOf('Paraguay at Germany'), aus = evOf('Egypt at Australia'), fro = evOf('Como at Frosinone');
+const legFio = { code: '1', p: 0.35, lh: 1.2, la: 1.5, th: '109', ta: '114', kick: fio.date };
+let st = S.espnState(legFio, fio);
+ok(st.state === 'post' && st.h === 1 && st.a === 1 && st.goals.length === 2 && st.hh === 0 && st.ha === 1 && !st.et, 'ESPN full time: score, goals, half time');
+const stSw = S.espnState(Object.assign({}, legFio, { th: '114', ta: '109' }), fio);
+ok(stSw.h === 1 && stSw.a === 1 && stSw.hh === 1 && stSw.ha === 0 && stSw.goals[0].s === 'h', 'ESPN swapped home and away');
+st = S.espnState({ code: '1', p: 0.5, th: '4057', ta: '2572', kick: fro.date }, fro);
+ok(st.hh === 2 && st.ha === 0 && st.goals[1].d === "45'+3'", "a 45'+3' goal belongs to the first half");
+/* extra time: England won 2-1 after extra time, but at 90 minutes it was 1-1, and SNAI settles on the 90 minutes */
+st = S.espnState({ code: 'X', p: 0.3, th: '464', ta: '448', kick: nor.date }, nor);
+ok(st.state === 'post' && st.et && st.h === 1 && st.a === 1 && st.goals.length === 2, 'extra time: settled on the 90-minute score');
+ok(S.settles('X', st.h, st.a) === true && S.settles('2', st.h, st.a) === false, 'extra time: a draw pick wins');
+/* penalties: shoot-out kicks are not goals, so the list adds up and the half-time score is known */
+st = S.espnState({ code: '1TO05', p: 0.4, th: '481', ta: '210', kick: ger.date }, ger);
+ok(st.state === 'post' && st.h === 1 && st.a === 1 && st.goals.length === 2 && st.hh === 0 && st.ha === 1, 'shoot-out kicks left out');
+st = S.espnState({ code: '1', p: 0.4, th: '628', ta: '2620', kick: aus.date }, aus);
+ok(st.goals && st.h === 1 && st.a === 1 && st.goals.filter(g => g.s === 'h').length === 1, 'own goal credited to the side it helps');
+/* in play: the same match at the 60th minute */
+const live = JSON.parse(JSON.stringify(fio)), lc = live.competitions[0];
+lc.status = { period: 2, displayClock: "60'", type: { name: 'STATUS_SECOND_HALF', state: 'in', completed: false, shortDetail: "60'" } };
+lc.details = lc.details.slice(0, 2); lc.competitors.forEach(c => { c.score = '1'; });
+st = S.espnState(legFio, live);
+ok(st.state === 'in' && st.minute === 60 && st.hh === 0 && st.ha === 1 && st.goals.length === 2, 'in play: minute, half time from the goals');
+const late = S.lateBy(st, 63 + 15 + 4);
+ok(Math.abs(late - 4) < 1e-9 && S.lateBy({ state: 'in', minute: 20, period: 1 }, 25) === 5 && S.lateBy({ state: 'post' }, 99) === null, 'how late a match runs');
+const a30 = S.stateAt(st, 30), a10 = S.stateAt(st, 10), a55 = S.stateAt(st, 55);
+ok(a10.h === 0 && a10.a === 0 && a30.a === 1 && a30.h === 0 && a30.hh === null && a55.hh === 0 && a55.ha === 1 && a55.minute === 45, 'a leg rebuilt at an earlier minute');
+/* the story of a two-leg slip: Fiorentina to win (in play, 60') and a second leg not started yet */
+const legB = { code: 'O15', p: 0.7, lh: 1.4, la: 1.2, kick: new Date(Date.parse(fio.date) + 180 * 6e4).toISOString() };
+const sty = S.story([legFio, legB], [st, { state: 'pre' }], [0, 180], 63 + 15);
+ok(sty && sty.pts.length > 20 && sty.pts.every((q, i, a) => !i || q.t > a[i - 1].t) && sty.ev.length === 2, 'story: ordered points, both goals');
+const g23 = sty.ev[1], g51 = sty.ev[0];
+ok(g23.md === "23'" && g23.after < g23.before && g51.after > g51.before && g51.h === 1 && g51.a === 1, 'story: the away goal hurts, the equaliser helps');
+ok(Math.abs(sty.pts[0].p - legFio.p * legB.p) < 0.02 && Math.abs(sty.pts[sty.pts.length - 1].p - S.legLive(legFio, st).p * legB.p) < 1e-12, 'story: starts at the kick-off chance, ends at the chance now');
+ok(S.story([legFio], [{ state: 'in', h: 1, a: 0, minute: 30, goals: null }], [0], 30) === null, 'story: no goal list, no story');
+const fin = S.story([legFio], [S.espnState(legFio, fio)], [0], 200);
+ok(fin.pts[fin.pts.length - 1].p === 0 && fin.pts.some(q => q.t > 100 && q.p > 0), 'story: a finished leg ends at its result');
+
+/* review fixes (decision 80): suspended, postponed, extra time without goals, stoppage goal, same minute, just scored */
+const mk = (name, state, completed, period, clock, h, a, details) => { const e = JSON.parse(JSON.stringify(fio)), c = e.competitions[0];
+  c.status = { period: period, displayClock: clock, type: { name: name, state: state, completed: completed, shortDetail: '' } };
+  c.competitors.forEach(x => { x.score = String(x.homeAway === 'home' ? h : a); }); c.details = details || []; return e; };
+const gd = (clock, team) => ({ scoringPlay: true, shootout: false, ownGoal: false, clock: { displayValue: clock }, team: { id: team } });
+st = S.espnState(legFio, mk('STATUS_SUSPENDED', 'post', false, 1, "30'", 0, 0));
+ok(st.state === 'unknown' && !st.et, 'a suspended match is not over');
+st = S.espnState(legFio, mk('STATUS_POSTPONED', 'post', false, 0, "0'", 0, 0));
+ok(st.state === 'unknown', 'a postponed match is not a 0-0');
+const nor2 = JSON.parse(JSON.stringify(nor)); nor2.competitions[0].details = nor2.competitions[0].details.slice(0, 1);
+st = S.espnState({ code: 'X', p: 0.3, th: '464', ta: '448', kick: nor.date }, nor2);
+ok(st.state === 'unknown' && st.et, 'extra time without a goal list that adds up: left open');
+st = S.espnState(legFio, mk('STATUS_FULL_TIME', 'post', true, 2, "90'+5'", 2, 1, [gd("23'", '109'), gd("51'", '114'), gd("93'", '109')]));
+ok(st.state === 'post' && st.h === 2 && st.a === 1, 'no extra time: a goal written 93\' still counts');
+ok(S.lateBy({ state: 'in', minute: 45, ht: true, hh: 0, ha: 0, period: 1 }, 55) === null && S.lateBy({ state: 'in', minute: 90, period: 2 }, 110) === null, 'no delay read at the break or in stoppage');
+/* two matches at the same time, a goal in each at 30': one helps (home win, home scores), one hurts (home win, away scores) */
+const L1 = { code: '1', p: 0.45, lh: 1.4, la: 1.1 }, L2 = { code: '1', p: 0.45, lh: 1.4, la: 1.1 };
+const s1 = { state: 'in', minute: 40, period: 1, h: 1, a: 0, hh: null, ha: null, goals: [{ m: 30, x: 0, d: "30'", s: 'h' }] };
+const s2 = { state: 'in', minute: 40, period: 1, h: 0, a: 1, hh: null, ha: null, goals: [{ m: 30, x: 0, d: "30'", s: 'a' }] };
+const same = S.story([L1, L2], [s1, s2], [0, 0], 40);
+const e1 = same.ev.filter(e => e.i === 0)[0], e2 = same.ev.filter(e => e.i === 1)[0];
+ok(e1.after > e1.before && e2.after < e2.before, 'same-minute goals each show their own effect');
+/* read in the very minute of the goal: it counts at once */
+const s3 = { state: 'in', minute: 51, period: 2, h: 1, a: 1, hh: 0, ha: 1, goals: [{ m: 23, x: 0, d: "23'", s: 'a' }, { m: 51, x: 0, d: "51'", s: 'h' }] };
+const just = S.story([legFio], [s3], [0], 63 + 6);
+ok(just.ev[0].md === "51'" && just.ev[0].after > just.ev[0].before && just.ev[0].h === 1, 'a goal read in its own minute counts');
+
 console.log(checks + ' checks, ' + failures + ' failed; optimiser exact in ' + exact + ' of ' + feasible + ' feasible cases');
 process.exit(failures ? 1 : 0);

@@ -135,6 +135,11 @@ are in `docs/strategy/`.
   Simulate button under every slip; every panel has a one-line explanation and an "i" that opens the full explanation
   with the numbers on screen (English and Italian); the builder's four steps are numbered; numbers count up, panels
   rise into view, cards tilt, a soft aurora behind the page (all off with reduced motion).
+- Live for real slips (decision 80): the chart and the goals are saved in the browser and rebuilt every minute from the
+  minute of each goal ESPN lists, so closing or reloading the page loses nothing and the minutes it was closed are filled
+  in; the scores are read again as soon as the page is back in view; a match that went to extra time is settled on its
+  90-minute score (site and grader), shoot-out kicks are not goals; the live chance starts from the pick's own chance and
+  hands over to the score as the match runs out; a slip over several days squeezes the idle hours into a band.
 - `scudi_slips/sistema.py` — the exact sistema maths the site mirrors (tests compare the two).
 - `index.html` — the site; it reads `data/week.json`, `data/record.json`, `data/snai.json`, `data/teams.json` and
   `data/players.json` and falls back to example fixtures. Target multiplier from 1.5x to 1000x (by 0.5 to 5, by 5 to

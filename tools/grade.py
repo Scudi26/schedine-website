@@ -7,7 +7,8 @@ Scores come from ESPN's public scoreboards first (free, no key: one request per 
 matched to the odds feed's matches by kickoff time and team names. Only matches ESPN cannot settle (a competition it
 does not cover, a name it spells too differently) are asked of the odds feed's scores endpoint, 2 credits per
 competition, results up to 3 days back (decision 74). Bets settle on 90 minutes: a match that went to extra time is
-settled on its first two periods when ESPN lists them, and left open otherwise.
+settled on its first two periods when ESPN lists them, else on the goals it lists up to 90'+stoppage, and left open
+otherwise.
 A slip is graded only when every leg's match has a final score; a slip with a postponed match stays open. The record
 keeps, for every graded slip, the chance Scudi promised and whether it landed, so expected and actual hits can be
 compared honestly over time. Slips of a week that a later full pull replaced ride along in week["pending"].
@@ -18,6 +19,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 import urllib.parse
 import urllib.request
@@ -81,20 +83,23 @@ def _minute(display: str) -> int | None:
         return None
 
 
-def espn_half(ev: dict, final: tuple[int, int] | None) -> tuple[int, int] | None:
-    """The half-time score from the goals ESPN lists (scoring plays with their minute; first-half stoppage time counts as
-    the first half). Used only when the goals it lists add up to the final score; own goals are tried both ways, since
-    ESPN may credit them to either side. None when it cannot be told."""
+# ESPN's names for a match that went past 90 minutes (the page uses the same list; "SUSPENDED" must not match "PEN")
+ET_STATUS = re.compile(r"^STATUS_(FINAL_AET|FINAL_PEN|END_OF_REGULATION|END_OF_EXTRATIME|HALFTIME_ET|OVERTIME|SHOOTOUT|(FIRST_HALF_|SECOND_HALF_)?EXTRA_?TIME)$")
+
+
+def espn_goals(ev: dict) -> list[tuple[str, int]] | None:
+    """The goals ESPN lists for a match, as (side, minute), when they add up to its reported score. Shoot-out kicks are
+    not goals; own goals are tried both ways, since ESPN may credit them to either side. None when they do not add up."""
     comp = (ev.get("competitions") or [{}])[0]
     sides = {str((c.get("team") or {}).get("id")): c.get("homeAway") for c in comp.get("competitors", [])}
-    goals = [d for d in comp.get("details") or [] if d.get("scoringPlay")]
-    if final is None or not sides:
+    teams = {c.get("homeAway"): c for c in comp.get("competitors", [])}
+    if "home" not in teams or "away" not in teams:
         return None
-    if not goals:
-        return (0, 0) if final == (0, 0) else None
+    reported = (_espn_score(teams["home"]), _espn_score(teams["away"]))
+    plays = [d for d in comp.get("details") or [] if d.get("scoringPlay") and not d.get("shootout")]
     for flip in (False, True):
-        tot, half, ok = {"home": 0, "away": 0}, {"home": 0, "away": 0}, True
-        for d in goals:
+        out, ok = [], True
+        for d in plays:
             side = sides.get(str((d.get("team") or {}).get("id")))
             minute = _minute((d.get("clock") or {}).get("displayValue", ""))
             if side is None or minute is None:
@@ -102,28 +107,45 @@ def espn_half(ev: dict, final: tuple[int, int] | None) -> tuple[int, int] | None
                 break
             if flip and d.get("ownGoal"):
                 side = "away" if side == "home" else "home"
-            tot[side] += 1
-            if minute <= 45:
-                half[side] += 1
-        if ok and (tot["home"], tot["away"]) == tuple(final):
-            return half["home"], half["away"]
+            out.append((side, minute))
+        if ok and (sum(g[0] == "home" for g in out), sum(g[0] == "away" for g in out)) == reported:
+            return out
     return None
 
 
+def espn_half(ev: dict, final: tuple[int, int] | None) -> tuple[int, int] | None:
+    """The half-time score from the goals ESPN lists (scoring plays with their minute; first-half stoppage time counts as
+    the first half), used only when those goals add up to the reported score. None when it cannot be told."""
+    if final is None:
+        return None
+    goals = espn_goals(ev)
+    if goals is None:
+        return None
+    first = [g for g in goals if g[1] <= 45]
+    return sum(g[0] == "home" for g in first), sum(g[0] == "away" for g in first)
+
+
 def espn_final(ev: dict) -> tuple[int, int] | None:
-    """(home, away) after 90 minutes, or None if the match is not finished or its 90-minute score cannot be told."""
+    """(home, away) after 90 minutes, or None if the match is not finished or its 90-minute score cannot be told.
+    After extra time: the first two periods when ESPN lists them, else the goals up to 90'+stoppage when its goal list
+    adds up (decision 80: a day's scoreboard often has no periods for these matches)."""
     comp = (ev.get("competitions") or [{}])[0]
-    st = (comp.get("status") or ev.get("status") or {}).get("type") or {}
+    status = comp.get("status") or ev.get("status") or {}
+    st = status.get("type") or {}
     if not st.get("completed"):
         return None
     sides = {c.get("homeAway"): c for c in comp.get("competitors", [])}
     if "home" not in sides or "away" not in sides:
         return None
     name = str(st.get("name", "")).upper()
-    if "AET" in name or "PEN" in name or "EXTRA" in name:
+    if ET_STATUS.match(name) or int(status.get("period") or 0) > 2:
         ls = [[_espn_score({"score": x.get("value", x.get("displayValue"))}) for x in (sides[k].get("linescores") or [])[:2]] for k in ("home", "away")]
         if all(len(v) == 2 and None not in v for v in ls):
             return sum(ls[0]), sum(ls[1])
+        goals = espn_goals(ev)
+        if goals is not None:
+            reg = [g for g in goals if g[1] <= 90]
+            return sum(g[0] == "home" for g in reg), sum(g[0] == "away" for g in reg)
         return None
     h, a = _espn_score(sides["home"]), _espn_score(sides["away"])
     return (h, a) if h is not None and a is not None else None
