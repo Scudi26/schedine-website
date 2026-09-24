@@ -44,7 +44,8 @@ h1,h2,h3,p{margin:0}
 b.num,strong.num{font-weight:500}
 .eyebrow{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .muted{color:var(--muted)} .fine{font-size:12.5px;color:var(--muted)}
-#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;background:radial-gradient(circle at 82% 2%,rgba(77,163,255,.13),rgba(120,90,220,.05) 35vmax,transparent 70vmax)}
+:root.theme-light #sky{background:radial-gradient(circle at 82% 2%,rgba(233,185,73,.18),rgba(77,163,255,.05) 35vmax,transparent 70vmax)}
 .wrap{position:relative;z-index:1;max-width:1180px;margin-inline:auto;padding-inline:20px}
 
 /* header */
@@ -74,6 +75,7 @@ b.num,strong.num{font-weight:500}
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spin 4.5s linear infinite}
 .scard[aria-pressed="true"]{background:radial-gradient(130% 100% at 100% 0%,color-mix(in srgb,var(--c) 22%,transparent),transparent 62%),var(--surface);border-color:color-mix(in srgb,var(--c) 45%,var(--line))}
 .scard[aria-pressed="true"]::before{opacity:1}
+.scard::before{animation-play-state:paused}.scard:hover::before,.scard:focus-visible::before{animation-play-state:running}
 .scard-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
 .scard-name b{display:block;font-size:17px;font-weight:700;line-height:1.2}
 .scard-name span{display:block;font-size:13px;line-height:1.3;color:var(--muted)}
@@ -959,15 +961,16 @@ summary .what{margin-top:8px}
 @media (max-width:620px){.mega{padding:18px}.megabig{text-align:left}.megalegs{grid-template-columns:minmax(0,1fr)}.megactl .seg{min-width:0;width:100%}.megactl > div{width:100%}
   .srow{grid-template-columns:18px auto minmax(0,1fr) auto;gap:8px}.srow .mg{grid-column:3 / -1;justify-self:start;display:flex;gap:6px;align-items:baseline;min-width:0;padding:3px 8px}.srow .mg small{margin:0}
   .theme{display:none}}
+.mega::before{animation-play-state:paused}.mega:hover::before{animation-play-state:running}
 @media (prefers-reduced-motion:reduce){.mega::before,.megaic .spark{animation:none}}
 @media (prefers-reduced-motion:reduce){#explain .xcard,#explain .xscrim{transition:none}.stepped.flash{animation:none}}
 /* v13: motion */
 .aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.aurora i{position:absolute;width:52vmax;height:52vmax;border-radius:50%;filter:blur(90px);opacity:.22;mix-blend-mode:screen;animation:drift 38s ease-in-out infinite alternate}
-.aurora i:nth-child(1){left:-12vmax;top:-18vmax;background:var(--sa)}
-.aurora i:nth-child(2){right:-16vmax;top:18vh;background:var(--brand);animation-duration:46s;animation-delay:-12s;opacity:.14}
-.aurora i:nth-child(3){left:22vw;bottom:-26vmax;background:var(--ut);animation-duration:54s;animation-delay:-24s;opacity:.16}
-:root.theme-light .aurora i{mix-blend-mode:multiply;opacity:.10}
+.aurora i{position:absolute;width:64vmax;height:64vmax;border-radius:50%;opacity:.22;will-change:transform;background:radial-gradient(closest-side,var(--c) 0,color-mix(in srgb,var(--c) 45%,transparent) 45%,transparent 100%);animation:drift 38s ease-in-out infinite alternate}
+.aurora i:nth-child(1){--c:var(--sa);left:-18vmax;top:-24vmax}
+.aurora i:nth-child(2){--c:var(--brand);right:-22vmax;top:12vh;animation-duration:46s;animation-delay:-12s;opacity:.14}
+.aurora i:nth-child(3){--c:var(--ut);left:16vw;bottom:-32vmax;animation-duration:54s;animation-delay:-24s;opacity:.16}
+:root.theme-light .aurora i{opacity:.10}
 @keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(6vmax,4vmax) scale(1.12)}100%{transform:translate(-4vmax,7vmax) scale(.94)}}
 .rv{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.8,.2,1) var(--rvd,0ms),transform .7s cubic-bezier(.2,.8,.2,1) var(--rvd,0ms)}
 .rv.in{opacity:1;transform:none}
@@ -1938,19 +1941,39 @@ var Scudi = (function () {
      Dynamic programme on a grid of log-odds, two passes: rounded DOWN (a slip found always reaches the target),
      then rounded to NEAREST (kept only if its exact odds reach the target and it scores higher). */
   var NEG = -1e18;
-  function step(src, list, K, W, B, D, nearest, rowsReady) {
-    var best = new Float64Array((K + 1) * W).fill(NEG), ch = new Int8Array((K + 1) * W).fill(-1), pv = new Int32Array((K + 1) * W);
-    for (var j = 0; j < list.length; j++) {
-      var st = Math.log(list[j].odds) / D, w = Math.min(B, nearest === 2 ? Math.ceil(st - 1e-9) : nearest ? Math.round(st) : Math.floor(st + 1e-9)), lv = Math.log(list[j].w || list[j].p);
-      for (var k = 0; k < K && k <= rowsReady; k++) {
-        var off = k * W, to = (k + 1) * W;
-        for (var b = 0; b < W; b++) {
-          var v = src[off + b]; if (v === NEG) continue;
-          var nb = b + w >= B ? B : b + w, nv = v + lv;
-          if (nv > best[to + nb]) { best[to + nb] = nv; ch[to + nb] = j; pv[to + nb] = b; }
+  /* The cells of one row worth extending (decision 82): reachable, and not beaten by a cell further right (more odds) with
+     at least the same score. Whatever follows a beaten cell does at least as well from the cell that beats it, so leaving
+     beaten cells out changes no answer; it cuts the work several times over. Written into `out`, right to left. */
+  function frontier(src, off, W, out) {
+    var n = 0, best = NEG;
+    for (var b = W - 1; b >= 0; b--) { var v = src[off + b]; if (v > best) { out[n++] = b; best = v; } }
+    return n;
+  }
+  function stepsOf(list, B, D, nearest) {
+    var ws = new Int32Array(list.length), lvs = new Float64Array(list.length);
+    for (var j = 0; j < list.length; j++) { var st = Math.log(list[j].odds) / D; ws[j] = Math.min(B, nearest === 2 ? Math.ceil(st - 1e-9) : nearest ? Math.round(st) : Math.floor(st + 1e-9)); lvs[j] = Math.log(list[j].w || list[j].p); }
+    return { ws: ws, lvs: lvs };
+  }
+  /* one match's picks added to every useful cell of `src`, written into `dst` (which already holds the "match not used"
+     values, or nothing when the match must be used); ch/pv remember which pick and from which cell */
+  function relax(src, dst, ch, pv, list, K, W, B, D, nearest, rowsReady, fr, sp) {
+    sp = sp || stepsOf(list, B, D, nearest);
+    var ws = sp.ws, lvs = sp.lvs, J = list.length, full = pv.length > K + 1;   /* full: a source cell for every cell (rules that bite) */
+    for (var k = 0; k < K && k <= rowsReady; k++) {
+      var off = k * W, to = (k + 1) * W, n = frontier(src, off, W, fr);
+      for (var i = 0; i < n; i++) {
+        var b = fr[i], v = src[off + b];
+        for (var j = 0; j < J; j++) {
+          var nb = b + ws[j]; if (nb > B) nb = B;
+          var nv = v + lvs[j], at = to + nb;
+          if (nv > dst[at]) { dst[at] = nv; ch[at] = j; if (full) pv[at] = b; else if (nb === B) pv[k + 1] = b; }
         }
       }
     }
+  }
+  function step(src, list, K, W, B, D, nearest, rowsReady, fr) {
+    var best = new Float64Array((K + 1) * W).fill(NEG), ch = new Int8Array((K + 1) * W).fill(-1), pv = new Int32Array((K + 1) * W);
+    relax(src, best, ch, pv, list, K, W, B, D, nearest, rowsReady, fr || new Int32Array(W));
     return { best: best, ch: ch, pv: pv };
   }
   function rowBonus(opts, k) { return opts.lambda ? opts.lambda * Math.log(1 + snaiBonus(k)) : 0; }
@@ -1958,16 +1981,17 @@ var Scudi = (function () {
     var K = opts.legs || matches.length, n = matches.length, D = opts.grid || 0.001, B = Math.ceil(Math.log(target) / D), W = B + 1, size = (K + 1) * W;
     var mustAll = !opts.autoLegs && K >= n, locks = opts.locks || {}, limits = opts.groupLimits || {}, order = [], seg = {}, i, j, k, b;
     matches.forEach(function (m, idx) { var g = m.lg; if (!seg[g]) { seg[g] = []; order.push(g); } seg[g].push(idx); });
-    var cur = new Float64Array(size).fill(NEG), trail = [], done = 0; cur[0] = 0;
+    var cur = new Float64Array(size).fill(NEG), spare = new Float64Array(size), trail = [], done = 0, fr = new Int32Array(W); cur[0] = 0;
     for (var gi = 0; gi < order.length; gi++) {
       var g = order[gi], members = seg[g], lim = limits[g] || [0, opts.groupMax || null];
       var hi = Math.min(lim[1] == null ? K : lim[1], members.length, K), lo = Math.max(0, lim[0] || 0);
       if (lo > hi) return null;
       if (lo === 0 && hi >= Math.min(members.length, K)) {                 /* no rule bites */
         for (i = 0; i < members.length; i++) {
-          var idx = members[i], forced = mustAll || !!locks[matches[idx].id], s1 = step(cur, menus[idx], K, W, B, D, nearest, done), nxt = new Float64Array(size), chx = new Int8Array(size).fill(-1);
-          for (b = 0; b < size; b++) { var base = forced ? NEG : cur[b]; if (s1.best[b] > base) { nxt[b] = s1.best[b]; chx[b] = s1.ch[b]; } else nxt[b] = base; }
-          trail.push({ kind: 0, idx: idx, ch: chx, pv: s1.pv }); cur = nxt; done++;
+          var idx = members[i], forced = mustAll || !!locks[matches[idx].id], nxt = spare, chx = new Int8Array(size).fill(-1), pvx = new Int32Array(K + 1), sp = stepsOf(menus[idx], B, D, nearest);
+          if (forced) nxt.fill(NEG); else nxt.set(cur);
+          relax(cur, nxt, chx, pvx, menus[idx], K, W, B, D, nearest, done, fr, sp);
+          trail.push({ kind: 0, idx: idx, ch: chx, pv: pvx, ws: sp.ws }); spare = cur; cur = nxt; done++;
         }
         continue;
       }
@@ -1976,7 +2000,7 @@ var Scudi = (function () {
       for (i = 0; i < members.length; i++) {
         var id2 = members[i], f2 = mustAll || !!locks[matches[id2].id], steps = [], fresh = [f2 ? new Float64Array(size).fill(NEG) : layers[0]];
         var chs = new Int8Array((hi + 1) * size).fill(-1), pvs = new Int32Array((hi + 1) * size);
-        for (j = 0; j < hi; j++) steps.push(step(layers[j], menus[id2], K, W, B, D, nearest, done));
+        for (j = 0; j < hi; j++) steps.push(step(layers[j], menus[id2], K, W, B, D, nearest, done, fr));
         for (j = 0; j < hi; j++) {
           var t = new Float64Array(size), o = (j + 1) * size;
           for (b = 0; b < size; b++) { var bs = f2 ? NEG : layers[j + 1][b]; if (steps[j].best[b] > bs) { t[b] = steps[j].best[b]; chs[o + b] = steps[j].ch[b]; pvs[o + b] = steps[j].pv[b]; } else t[b] = bs; }
@@ -2001,7 +2025,7 @@ var Scudi = (function () {
     for (i = trail.length - 1; i >= 0; i--) {
       var t2 = trail[i], at = k * W + b, c;
       if (t2.kind === 2) j = t2.js[at];
-      else if (t2.kind === 0) { c = t2.ch[at]; if (c >= 0) { picks.push({ match: matches[t2.idx], pick: menus[t2.idx][c] }); b = t2.pv[at]; k--; } }
+      else if (t2.kind === 0) { c = t2.ch[at]; if (c >= 0) { picks.push({ match: matches[t2.idx], pick: menus[t2.idx][c] }); b = b === B ? t2.pv[k] : b - t2.ws[c]; k--; } }
       else { c = t2.ch[j * t2.size + at]; if (c >= 0) { picks.push({ match: matches[t2.idx], pick: menus[t2.idx][c] }); b = t2.pv[j * t2.size + at]; k--; j--; } }
     }
     return pack(picks, opts);
@@ -2222,7 +2246,7 @@ var Scudi = (function () {
   }
   function plausible(pr) {
     var ok = function (ids, lo, hi) { if (!ids.every(function (i) { return pr[i] > 1; })) return true; var s = ids.reduce(function (a, i) { return a + 1 / pr[i]; }, 0); return s > lo && s < hi; };
-    return ok(['1', 'X', '2'], 1.0, 1.2) && ok(['U25', 'O25'], 1.0, 1.2) && ok(['GG', 'NG'], 1.0, 1.2) && ok(['1T1', '1TX', '1T2'], 1.0, 1.3) && ok(['1TU15', '1TO15'], 1.0, 1.25) &&
+    return ok(['1', 'X', '2'], 1.01, 1.13) && ok(['U25', 'O25'], 1.01, 1.13) && ok(['GG', 'NG'], 1.01, 1.13) && ok(['1T1', '1TX', '1T2'], 1.0, 1.3) && ok(['1TU15', '1TO15'], 1.0, 1.25) &&
       (!(pr['1'] && pr['X'] && pr['1X']) || pr['1X'] < Math.min(pr['1'], pr['X'])) && (!(pr['2'] && pr['X'] && pr['X2']) || pr['X2'] < Math.min(pr['2'], pr['X']));
   }
   function anchors(t, matches, f) {
@@ -2468,7 +2492,7 @@ if (typeof module !== 'undefined') module.exports = Scudi;
    leaves its cell empty, so nothing shifts. A second, larger reading is made when the first leaves gaps, and the two
    are merged. */
 var ShotReader = (function () {
-  var TESS = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js', worker = null, libP = null, workerP = null, onProg = null;
+  var TESS = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js', libP = null, poolP = null, pool = null, onProg = null;
   function loadLib() {
     if (typeof window !== 'undefined' && window.Tesseract) return Promise.resolve();
     if (libP) return libP;
@@ -2479,16 +2503,38 @@ var ShotReader = (function () {
     });
     return libP;
   }
-  function getWorker() {
-    if (worker) return Promise.resolve(worker);
-    if (workerP) return workerP;
-    workerP = loadLib().then(function () { return window.Tesseract.createWorker('eng', 1, { logger: function (m) { if (onProg) onProg(m); } }); })
-      .then(function (w) { worker = w; return w; }, function (e) { workerP = null; throw e; });
-    return workerP;
+  /* several readers side by side (decision 82): one per spare processor core, three at most (two on phones with little
+     memory). The picture is cut into horizontal bands that overlap by more than a row, and the bands are read at once. */
+  function howMany() {
+    var nav = typeof navigator !== 'undefined' ? navigator : {}, c = nav.hardwareConcurrency || 2, touch = (nav.maxTouchPoints || 0) > 0;
+    var mem = nav.deviceMemory || (touch ? 4 : 8);   /* Safari and Firefox do not say: a touch screen counts as a phone */
+    return Math.max(1, Math.min(mem <= 4 ? 2 : 3, c - 1));
   }
-  /* grey, dark text on a light ground, contrast stretched, enlarged so the prices are about 30 px tall */
-  function prep(img, boost) {
+  var PARAMS = { tessedit_pageseg_mode: '11', tessedit_char_whitelist: '', thresholding_method: '2', user_defined_dpi: '300' };
+  function makeWorker() {
+    return window.Tesseract.createWorker('eng', 1, { logger: function (m) { if (onProg && /loading|initializing/.test(m.status)) onProg(m); } })
+      .then(function (w) { return w.setParameters(PARAMS).then(function () { return w; }); });
+  }
+  function getPool() {
+    if (pool) return Promise.resolve(pool);
+    if (poolP) return poolP;
+    poolP = loadLib().then(function () {
+      var ws = []; for (var i = 0, n = howMany(); i < n; i++) ws.push(makeWorker().catch(function () { return null; }));
+      return Promise.all(ws);
+    }).then(function (ws) { ws = ws.filter(Boolean); if (!ws.length) throw new Error('ocr-load'); pool = ws; return ws; }, function (e) { poolP = null; throw e; });
+    return poolP;
+  }
+  /* started when the reader opens, so the first picture does not wait for the download */
+  function warm() { return getPool().then(function () { return true; }, function () { return false; }); }
+  /* grey, dark text on a light ground, contrast stretched, enlarged so the prices are about 30 px tall (the whole picture
+     at once, so every band is an exact piece of it; a very tall picture is enlarged less: 16 million pixels at most, the
+     largest canvas an iPhone allows) */
+  function scaleOf(img, boost) {
     var W = img.naturalWidth || img.width, H = img.naturalHeight || img.height, s = Math.max(1, Math.min(4, (boost || 1) * 2600 / W));
+    return Math.max(1, Math.min(s, Math.sqrt(1.6e7 / Math.max(1, W * H))));
+  }
+  function prep(img, boost) {
+    var W = img.naturalWidth || img.width, H = img.naturalHeight || img.height, s = scaleOf(img, boost);
     var c = document.createElement('canvas'); c.width = Math.round(W * s); c.height = Math.round(H * s);
     var x = c.getContext('2d', { willReadFrequently: true }); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high'; x.drawImage(img, 0, 0, c.width, c.height);
     var d = x.getImageData(0, 0, c.width, c.height), p = d.data, n = c.width * c.height, L = new Uint8ClampedArray(n), sum = 0, i;
@@ -2501,6 +2547,15 @@ var ShotReader = (function () {
     for (i = 0; i < n; i++) { var v = Math.max(0, Math.min(255, (L[i] - lo) * k)); p[i * 4] = p[i * 4 + 1] = p[i * 4 + 2] = v; p[i * 4 + 3] = 255; }
     x.putImageData(d, 0, 0);
     return { canvas: c, scale: s, W: W, H: H };
+  }
+  /* one band of the prepared picture (rows y0..y0+h of the enlarged canvas) */
+  function slice(c, y0, h) { var b = document.createElement('canvas'); b.width = c.width; b.height = h; b.getContext('2d').drawImage(c, 0, y0, c.width, h, 0, 0, c.width, h); return b; }
+  /* the bands: as many as readers (at least one per ~1,900 enlarged pixels of height), overlapping by 260 enlarged pixels,
+     more than a row of SNAI's list, so every row is whole in at least one band */
+  function bandsOf(tall, n) {
+    var nb = tall < 1100 ? 1 : Math.max(Math.min(n, Math.ceil(tall / 600)), Math.ceil(tall / 1900)), ov = 260, out = [], step = Math.ceil(tall / nb);
+    for (var i = 0; i < nb; i++) { var y0 = Math.max(0, i * step - (i ? ov : 0)), y1 = Math.min(tall, (i + 1) * step + (i < nb - 1 ? ov : 0)); out.push({ y0: y0, h: y1 - y0, top: i === 0, bottom: i === nb - 1 }); }
+    return out;
   }
   function median(a) { var s = a.slice().sort(function (x, y) { return x - y; }); return s.length ? s[Math.floor(s.length / 2)] : 0; }
   function cluster(items, key, gap) {
@@ -2520,19 +2575,25 @@ var ShotReader = (function () {
     return null;
   }
   function lineOf(t) { var m = /^(\d)\.?5$/.exec(clean(t).replace(/[^0-9.]/g, '')); return m ? m[1] : null; }
-  function wordsOf(res, s) {
-    return ((res && res.data && res.data.words) || []).map(function (wd) {
-      var b = wd.bbox;
-      return { text: String(wd.text || '').trim(), conf: wd.confidence, x0: b.x0 / s, y0: b.y0 / s, x1: b.x1 / s, y1: b.y1 / s, cx: (b.x0 + b.x1) / 2 / s, cy: (b.y0 + b.y1) / 2 / s, h: (b.y1 - b.y0) / s, w: (b.x1 - b.x0) / s };
-    }).filter(function (w) { return w.text; });
-  }
   /* rows of prices, their columns, the header above them and the team names to the left of each row (original pixels) */
   function grid(ws) {
     var nums = ws.filter(function (b) { return PRICE_TXT.test(b.text) && /\d/.test(b.text) && (priceOf(b.text) != null || lineOf(b.text)); });
     if (nums.length < 3) return null;
     var hMed = median(nums.map(function (b) { return b.h; })) || 10;
-    var rows = cluster(nums, function (b) { return b.cy; }, hMed * 0.6).filter(function (r) { return r.items.length >= 3; });
+    /* the recogniser sometimes draws a box much taller than the text (it runs down into the row below): rows are found
+       from the ordinary boxes, and a tall box joins the row its top or its bottom lines up with */
+    var tall = nums.filter(function (b) { return b.h > hMed * 1.45; });
+    var rows = cluster(nums.filter(function (b) { return b.h <= hMed * 1.45; }), function (b) { return b.cy; }, hMed * 0.6).filter(function (r) { return r.items.length >= 3; });
     if (!rows.length) return null;
+    tall.forEach(function (b) {
+      var best = null, bd = 1e9;
+      rows.forEach(function (r) {
+        var d = Math.min(Math.abs(r.at - (b.y0 + hMed / 2)), Math.abs(r.at - (b.y1 - hMed / 2)) + hMed * 0.25);   /* the top first */
+        if (r.items.some(function (o) { return Math.abs(o.cx - b.cx) < Math.min(o.w, b.w) * 0.6; })) d += hMed;   /* that row has this price already */
+        if (d < bd) { bd = d; best = r; }
+      });
+      if (best && bd < hMed * 0.8) best.items.push(b);
+    });
     var inRows = []; rows.forEach(function (r) { r.items.forEach(function (b) { inRows.push(b); }); });
     var wMed = median(inRows.map(function (b) { return b.w; })) || 20;
     var cols = cluster(inRows, function (b) { return b.cx; }, wMed * 0.75).filter(function (c) { return c.items.length >= Math.max(2, Math.ceil(rows.length * 0.3)) || rows.length === 1; });
@@ -2556,6 +2617,13 @@ var ShotReader = (function () {
       var above = lines.filter(function (l) { return l.y <= r.at; }), below = lines.filter(function (l) { return l.y > r.at; });
       if (!above.length && lines.length >= 2) { above = [lines[0]]; below = lines.slice(1); }
       r.home = above.length ? above[above.length - 1].text : ''; r.away = below.length ? below[0].text : '';
+      /* the date and time SNAI prints left of the names (24/09 and 17:00), in the time of the device that took the picture */
+      ws.forEach(function (b) {
+        if (b.cy <= up || b.cy > down || b.x1 >= (nameX || cols[0].at - step)) return;
+        var t = clean(b.text).replace(/[^0-9/:.]/g, ''), dm = /^(\d{1,2})\/(\d{1,2})$/.exec(t), hm = /^(\d{1,2})[:.](\d{2})$/.exec(t);
+        if (dm && +dm[1] >= 1 && +dm[1] <= 31 && +dm[2] >= 1 && +dm[2] <= 12) r.when = Object.assign(r.when || {}, { d: +dm[1], mo: +dm[2] });
+        else if (hm && +hm[1] < 24 && +hm[2] < 60) r.when = Object.assign(r.when || {}, { hh: +hm[1], mi: +hm[2] });
+      });
       if (!r.away && above.length >= 2) { r.away = r.home; r.home = above[above.length - 2].text; }
       r.top = Math.min.apply(null, [up + (i ? 0 : hMed * 1.5)].concat(mine.map(function (b) { return b.y0; }))); r.bottom = Math.max.apply(null, [down - (i + 1 < rows.length ? 0 : hMed * 1.5)].concat(mine.map(function (b) { return b.y1; })));
       r.left = Math.min.apply(null, [cols[0].at - step].concat(mine.map(function (b) { return b.x0; })));
@@ -2575,7 +2643,7 @@ var ShotReader = (function () {
   function rowIssues(pr) {
     var bad = [];
     var ov = function (ids, lo, hi) { if (!ids.every(function (i) { return pr[i] > 1; })) return; var s = ids.reduce(function (a, i) { return a + 1 / pr[i]; }, 0); if (s < lo || s > hi) bad.push(ids.join('')); };
-    ov(['1', 'X', '2'], 1.0, 1.2); ov(['U', 'O'], 1.0, 1.2); ov(['GG', 'NG'], 1.0, 1.2);
+    ov(['1', 'X', '2'], 1.01, 1.13); ov(['U', 'O'], 1.01, 1.13); ov(['GG', 'NG'], 1.01, 1.13);   /* SNAI keeps 4-10% on these (decision 82) */
     if (pr['1X'] && pr['1'] && pr.X && !(pr['1X'] < Math.min(pr['1'], pr.X))) bad.push('1X');
     if (pr.X2 && pr['2'] && pr.X && !(pr.X2 < Math.min(pr['2'], pr.X))) bad.push('X2');
     if (pr['12'] && pr['1'] && pr['2'] && !(pr['12'] < Math.min(pr['1'], pr['2']))) bad.push('12');
@@ -2597,7 +2665,7 @@ var ShotReader = (function () {
     return G.rows.map(function (r) {
       var pr = {}, low = [];
       r.cells.forEach(function (b, ci) { var role = roles[ci]; if (!b || !role || role === 'LINE') return; var v = priceOf(b.text); if (v != null && v >= 1.01 && v <= 500) { pr[role] = v; if (b.conf < 70) low.push(role); } });
-      return { y: r.at, top: r.top, bottom: r.bottom, left: r.left, home: r.home, away: r.away, cells: r.cells, roles: roles, line: lc > -1 && r.cells[lc] ? lineOf(r.cells[lc].text) || mainLine : mainLine, main: lc > -1, prices: pr, low: low, issues: lc > -1 ? rowIssues(pr) : [] };
+      return { y: r.at, top: r.top, bottom: r.bottom, left: r.left, home: r.home, away: r.away, when: r.when || null, cells: r.cells, roles: roles, line: lc > -1 && r.cells[lc] ? lineOf(r.cells[lc].text) || mainLine : mainLine, main: lc > -1, prices: pr, low: low, issues: lc > -1 ? rowIssues(pr) : [] };
     });
   }
   /* two readings of the same picture merged row by row: a price read by both, or needed to make a group add up, wins */
@@ -2606,7 +2674,7 @@ var ShotReader = (function () {
     return A.map(function (a) {
       var b = B.filter(function (x) { return Math.abs(x.y - a.y) < hTol; })[0]; if (!b) return a;
       var out = Object.assign({}, a, { prices: Object.assign({}, a.prices), low: a.low.slice() });
-      if (!out.home && b.home) out.home = b.home; if (!out.away && b.away) out.away = b.away;
+      if (!out.home && b.home) out.home = b.home; if (!out.away && b.away) out.away = b.away; if (!out.when && b.when) out.when = b.when;
       Object.keys(b.prices).forEach(function (k) {
         if (out.prices[k] == null) { out.prices[k] = b.prices[k]; return; }
         if (out.prices[k] !== b.prices[k]) { var t = Object.assign({}, out.prices); t[k] = b.prices[k]; if (rowIssues(t).length < rowIssues(out.prices).length) out.prices[k] = b.prices[k]; else if (out.low.indexOf(k) < 0) out.low.push(k); }
@@ -2615,27 +2683,56 @@ var ShotReader = (function () {
       return out;
     }).concat(B.filter(function (b) { return !A.some(function (a) { return Math.abs(a.y - b.y) < hTol; }); })).sort(function (x, y) { return x.y - y.y; });
   }
-  function ocr(w, img, boost) {
-    var P = prep(img, boost);
-    return w.recognize(P.canvas).then(function (res) { var G = grid(wordsOf(res, P.scale)); return G ? { G: G, rows: reading(G) } : { G: null, rows: [] }; });
+  /* every band read by the next free reader; words touching a cut edge are dropped (the neighbouring band has them whole),
+     words seen by two bands are kept once */
+  function ocr(ws, img, boost, from, to) {
+    var P = prep(img, boost), s = P.scale, bands = bandsOf(P.canvas.height, ws.length), next = 0, done = 0, words = [];
+    return new Promise(function (res, rej) {
+      var failed = false;
+      function feed(w) {
+        if (failed || next >= bands.length) return;
+        var bd = bands[next++], c, edge = 3;
+        try { c = bands.length === 1 ? P.canvas : slice(P.canvas, bd.y0, bd.h); } catch (e) { failed = true; rej(e); return; }
+        w.recognize(c).then(function (r) { if (failed) return; try {
+          var list = ((r && r.data && r.data.words) || []).filter(function (wd) { var b = wd.bbox; return String(wd.text || '').trim() && (bd.top || b.y0 > edge) && (bd.bottom || b.y1 < c.height - edge); });
+          list.forEach(function (wd) {
+            var b = wd.bbox, o = { text: String(wd.text || '').trim(), conf: wd.confidence, x0: b.x0 / s, y0: (b.y0 + bd.y0) / s, x1: b.x1 / s, y1: (b.y1 + bd.y0) / s };
+            o.cx = (o.x0 + o.x1) / 2; o.cy = (o.y0 + o.y1) / 2; o.h = o.y1 - o.y0; o.w = o.x1 - o.x0;
+            /* the same word read by two bands: boxes that overlap by more than half; the recogniser sometimes draws a taller
+               box around the same text, so the tighter box (or, for different readings, the surer one) is kept */
+            var dup = null; o.band = bd;
+            for (var i = 0; i < words.length; i++) {
+              var q = words[i]; if (q.band === bd) continue;   /* only a neighbouring band can have read the same word */
+              var ox = Math.min(q.x1, o.x1) - Math.max(q.x0, o.x0), oy = Math.min(q.y1, o.y1) - Math.max(q.y0, o.y0);
+              if (q.text === o.text ? ox > 0.5 * Math.min(q.w, o.w) && oy > 0.5 * Math.min(q.h, o.h) : ox > 0.5 * Math.max(q.w, o.w) && oy > 0.5 * Math.max(q.h, o.h)) { dup = i; break; }
+            }
+            if (dup == null) words.push(o);
+            else { var q2 = words[dup]; if (q2.text === o.text ? o.h < q2.h : o.conf > q2.conf) words[dup] = o; }
+          });
+          done++; if (onProg) onProg({ status: 'reading', progress: from + (to - from) * done / bands.length });
+          if (done === bands.length) { var G = grid(words); res(G ? { G: G, rows: reading(G) } : { G: null, rows: [] }); } else feed(w);
+        } catch (e) { failed = true; rej(e); } }, function (e) { failed = true; rej(e); });
+      }
+      ws.forEach(feed);
+    });
   }
   /* read one picture: rows with the names as read, prices by role (1 X 2 1X X2 12 U O GG NG), the goals line, and where
      each row sits in the picture */
   function read(img, progress) {
     onProg = progress || null;
-    var W;
-    return getWorker().then(function (w) {
-      W = w;
+    var WS;
+    return getPool().then(function (ws) {
+      WS = ws;
       if (onProg) onProg({ status: 'reading', progress: 0.2 });
-      return w.setParameters({ tessedit_pageseg_mode: '11', tessedit_char_whitelist: '', thresholding_method: '2', user_defined_dpi: '300' }).then(function () { return ocr(w, img, 1); });
+      return ocr(ws, img, 1, 0.2, 0.7);
     }).then(function (A) {
       var weak = !A.rows.length || A.rows.some(function (r) { return r.issues.length || !r.home || !r.away || Object.keys(r.prices).length < (A.rows[0].main ? 8 : 3); });
       if (!weak) return A;
-      if (onProg) onProg({ status: 'second look', progress: 0.6 });
-      return ocr(W, img, 1.6).then(function (B) {
+      if (onProg) onProg({ status: 'second look', progress: 0.7 });
+      return ocr(WS, img, 1.6, 0.7, 0.95).then(function (B) {
         if (!A.rows.length) return B;
         return { G: A.G, rows: merge(A.rows, B.rows, (A.G.hMed || 10) * 1.2) };
-      });
+      }, function () { return A; });
     }).then(function (R) {
       if (onProg) onProg({ status: 'done', progress: 1 });
       return { rows: R.rows, head: R.G ? R.G.head : '', right: R.G ? R.G.right : 0 };
@@ -2650,7 +2747,7 @@ var ShotReader = (function () {
       return r.name + '\n' + parts.join(' ');
     }).join('\n');
   }
-  return { read: read, prep: prep, priceOf: priceOf, lineOf: lineOf, grid: grid, reading: reading, merge: merge, rowIssues: rowIssues, asText: asText, loaded: function () { return !!worker; } };
+  return { read: read, warm: warm, prep: prep, bandsOf: bandsOf, priceOf: priceOf, lineOf: lineOf, grid: grid, reading: reading, merge: merge, rowIssues: rowIssues, asText: asText, loaded: function () { return !!pool; } };
 })();
 /* ===== end ShotReader ===== */
 
@@ -2822,6 +2919,24 @@ var ShotReader = (function () {
     boot(res[0], res[1]);
   });
   function boot(DATA, LIVE_RECORD) {
+  /* ---------- background work (decision 82): what is on screen is computed first; the rest waits for idle moments, one
+     short job at a time (a job is one optimiser run, a few hundredths of a second), and stops while a screenshot is read ---------- */
+  var JOBS = { q: [], t: null, hold: 0 };
+  function later(key, fn) { JOBS.q = JOBS.q.filter(function (j) { return j.key !== key; }); JOBS.q.push({ key: key, fn: fn }); pump(); }
+  function pump() {
+    if (JOBS.t || JOBS.hold || !JOBS.q.length) return;
+    var run1 = function (dl) {
+      JOBS.t = null; if (JOBS.hold) return;
+      var t0 = performance.now();
+      while (JOBS.q.length && !JOBS.hold) {
+        var j = JOBS.q.shift(); try { j.fn(); } catch (e) { if (window.console) console.error(e); }
+        if (performance.now() - t0 > 14 || (dl && dl.timeRemaining && dl.timeRemaining() < 3)) break;
+      }
+      pump();
+    };
+    JOBS.t = window.requestIdleCallback ? requestIdleCallback(run1, { timeout: 250 }) : setTimeout(run1, 16);
+  }
+  function holdJobs(on) { JOBS.hold = Math.max(0, JOBS.hold + (on ? 1 : -1)); if (!JOBS.hold) pump(); }
   var ALL = DATA.matches, NOW = new Date();   /* a match that has kicked off is never offered */
   /* ---------- the week's matches and the five slips ---------- */
   var ORDER = Object.keys(COMP_INFO).sort(function (a, b) { var A = COMP_INFO[a], B = COMP_INFO[b], ga = GROUPS.map(function (g) { return g[0]; });
@@ -3056,7 +3171,9 @@ var ShotReader = (function () {
     return '<div class="pile" aria-hidden="true">' + show.map(function (t, i) { return '<span style="--i:' + i + '">' + crest(t[0], 'xs', t[1]) + '</span>'; }).join('') + (ts.length > show.length ? '<em>+' + (ts.length - show.length) + '</em>' : '') + '</div>';
   }
   function renderCards() {
+    var wait = [];
     $('#cards').innerHTML = SLIPS.map(function (s) {
+      if (s.result === undefined && s !== active) { wait.push(s); return '<button class="scard" data-slip="' + s.id + '" aria-pressed="false" style="--c:var(' + s.c + ')"><div class="scard-top"><div class="scard-name"><b>' + s.name + '</b><span>' + s.sub + '</span></div></div><div class="scard-big"><strong class="display calc">…</strong></div></button>'; }
       var r = s.result === undefined ? (s.result = run(s, s.cfg.target)) : s.result;
       return '<button class="scard" data-slip="' + s.id + '" aria-pressed="' + (s === active) + '" style="--c:var(' + s.c + ')">' +
         '<div class="scard-top"><div class="scard-name"><b>' + s.name + '</b><span>' + s.sub + '</span></div><span class="pill">' + (r ? r.picks.length : s.cfg.legs) + (r && r.picks.length === 1 ? ' leg' : ' legs') + '</span></div>' +
@@ -3064,6 +3181,7 @@ var ShotReader = (function () {
              '<div class="scard-foot"><span>Pays <b class="num">' + r.pays.toFixed(1) + 'x</b></span>' + (function () { var pl = placedOf(s); return '<span class="' + (pl ? 'placed' : '') + '">' + (pl ? (pl.settled ? (pl.landed ? 'Landed · ' : 'Settled · ') : 'Placed · ') + euro(pl.stake) : 'Not placed') + '</span>'; })() + '</div>'
            : '<div class="scard-big"><span>No slip fits these rules</span></div><div class="scard-foot"><span>Loosen a rule</span></div>') + '</button>';
     }).join('');
+    wait.forEach(function (s) { later('card:' + s.id, function () { if (s.result === undefined) { s.result = run(s, s.cfg.target); renderCards(); } }); });
   }
   $('#cards').onpointermove = function (e) { var b = e.target.closest('.scard'); if (!b) return; var r = b.getBoundingClientRect(); b.style.setProperty('--mx', (e.clientX - r.left) + 'px'); b.style.setProperty('--my', (e.clientY - r.top) + 'px'); };
   $('#cards').onclick = function (e) {
@@ -3215,12 +3333,13 @@ var ShotReader = (function () {
     var todoT = QUICK.filter(function (t) { return s.frontier[t] === undefined; }), todoL = [];
     for (n = MIN_LEGS; n <= maxL; n++) if (s.curve[n] === undefined) todoL.push(n);
     if (!todoT.length && !todoL.length) return;
-    setTimeout(function () {
-      if (s.key !== key || s !== active) return;
+    if (SCREEN !== 'slips') return;   /* picked up again when the screen is shown */
+    later('explorer', function () {
+      if (s.key !== key || s !== active || SCREEN !== 'slips') return;
       if (todoT.length) { var t = todoT[0], r = run(s, t, c.autoLegs ? 'auto' : c.legs, true); s.frontier[t] = r ? r.prob : 0; }
       else { var L = todoL[0], r2 = L === nL && s.result ? s.result : run(s, c.target, L, true); s.curve[L] = r2 ? r2.prob : 0; }
       renderTargets();
-    }, 20);
+    });
   }
   function renderSide() {
     var s = active, c = s.cfg, r = s.result, L = 175.9;
@@ -3618,6 +3737,7 @@ var ShotReader = (function () {
       $$('[data-view]').forEach(function (a) { if (a.dataset.view === view) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
       document.body.dataset.screen = view;
       if (view === 'matches') renderMatches();
+      if (view === 'slips') { renderTargets(); renderPortfolio(); if (TRADE.seen) renderTrade(); }
       if (view === 'live') renderPlaced();
       if (view === 'lab') { renderStatus(); renderLabControls(); }
       if (view === 'today') renderToday(); else stopTodayClock();
@@ -3840,16 +3960,56 @@ var ShotReader = (function () {
   }
   function bestSim(txt, list) { return list.reduce(function (m, n) { return Math.max(m, nameSim(txt, n)); }, 0); }
   /* each row of the picture to one of the week's matches: both names alike, each match used once, the best pairs first */
+  /* how far a row's prices sit from a match's chances (decision 82): SNAI's prices with their margin taken out, market by
+     market (1 X 2, under/over 2.5, both teams to score), against the week's chances for that match. The right match is a
+     point or two away; another match is usually five or more. null when the row has no whole market to compare. */
+  function priceGap(r, m) {
+    var P = r.prices || {}, ch = Scudi.chancesOf(m), d = 0, n = 0, groups = [[['1', '1'], ['X', 'X'], ['2', '2']], [['GG', 'GG'], ['NG', 'NG']]];
+    if ((r.line || '2') === '2') groups.push([['U', 'U25'], ['O', 'O25']]);   /* under/over only on the 2.5 line */
+    groups.forEach(function (grp) {
+      if (!grp.every(function (x) { return P[x[0]] > 1 && ch[x[1]] > 0; })) return;
+      var tot = grp.reduce(function (a, x) { return a + 1 / P[x[0]]; }, 0);
+      grp.forEach(function (x) { d += Math.abs(1 / P[x[0]] / tot - ch[x[1]]); n++; });
+    });
+    return n ? d / n : null;
+  }
+  /* hours between the kick-off read on the row and a match's kick-off in this device's time; null when none was read */
+  function whenGap(r, m) {
+    var w = r.when; if (!w || w.d == null) return null;
+    var k = m.kick, t = new Date(k.getFullYear(), w.mo - 1, w.d, w.hh != null ? w.hh : 12, w.mi || 0), g = Math.abs(t - k) / 36e5;
+    if (w.guess) g = Math.min(g, Math.abs(t.getTime() + 864e5 - k) / 36e5, Math.abs(t.getTime() - 864e5 - k) / 36e5);   /* a carried date may be a day off */
+    return Math.max(0, g - (w.hh != null ? 0 : 12));
+  }
   function matchShotRows(rows) {
     var pool = ALL.filter(function (m) { return m.kick > NOW; }), cands = [];
+    /* SNAI lists by kick-off: a row whose date was not read takes the date of the row above (or below, at the top) */
+    var dated = rows.filter(function (r) { return r.when && r.when.d != null; }), lastD = dated.length ? dated[0].when : null;
+    rows.forEach(function (r) {
+      if (r.when && r.when.d != null) lastD = r.when;
+      else if (lastD) r.when = Object.assign({}, r.when || {}, { d: lastD.d, mo: lastD.mo, guess: true });
+    });
     rows.forEach(function (r, ri) {
-      pool.forEach(function (m) {
-        var nm = namesFor(m), h = bestSim(r.home, nm[0]), a = bestSim(r.away, nm[1]);
-        var sc = r.home && r.away ? (h + a) / 2 - (Math.min(h, a) < 0.45 ? 0.35 : 0) : (Math.max(h, a) >= 0.95 ? 0.7 : 0);
-        if (sc >= 0.62) cands.push({ ri: ri, m: m, sc: sc, one: !(r.home && r.away) });
+      /* the kick-off read on the row keeps out matches on other days, unless the names say otherwise (a digit can be misread);
+         three hours either way covers another time zone */
+      var nameOf = pool.map(function (m) { var nm = namesFor(m); return [bestSim(r.home, nm[0]), bestSim(r.away, nm[1])]; });
+      var bestName = nameOf.reduce(function (a, x) { return Math.max(a, r.home && r.away ? (x[0] + x[1]) / 2 : Math.max(x[0], x[1])); }, 0);
+      var near = pool.map(function (m, mi) { var g = whenGap(r, m), x = nameOf[mi]; return g == null || g <= 3 || (r.home && r.away && (x[0] + x[1]) / 2 >= 0.8); });
+      var gaps = pool.map(function (m, mi) { return near[mi] ? priceGap(r, m) : null; }), best = Infinity, second = Infinity;
+      gaps.forEach(function (g) { if (g == null) return; if (g < best) { second = best; best = g; } else if (g < second) second = g; });
+      pool.forEach(function (m, mi) {
+        if (!near[mi]) return;
+        var h = nameOf[mi][0], a = nameOf[mi][1], g = gaps[mi], sc, wg = whenGap(r, m);
+        if (wg != null && wg < 0.1) { h = Math.min(1, h + 0.05); a = Math.min(1, a + 0.05); }   /* the same kick-off: a small nudge */
+        var px = g == null ? 0 : Math.max(0, 1 - g / 0.06);                     /* 1 when the prices agree exactly, 0 from 6 points apart */
+        var clear = g != null && g === best && g <= 0.03 && second >= Math.max(0.04, 2 * g);   /* the prices point at this match and no other */
+        if (r.home && r.away) sc = (h + a) / 2 - (Math.min(h, a) < 0.45 ? 0.35 : 0) + (g == null ? 0 : 0.2 * (px - 0.5));
+        else sc = Math.max(h, a) >= 0.95 ? 0.7 + 0.1 * px : 0;
+        /* a name misread or missing: the prices decide, with what little of the name was read */
+        if (sc < 0.62 && clear && bestName < 0.62) sc = 0.62 + 0.2 * px + 0.1 * Math.max(h, a);   /* only when no match's names fit */
+        if (sc >= 0.62) cands.push({ ri: ri, m: m, sc: sc, one: !(r.home && r.away) && !clear });
       });
     });
-    /* a row with only one name read is used only when a single match of the week has that team */
+    /* a row with only one name read (and no clear price match) is used only when a single match of the week has that team */
     cands = cands.filter(function (c) { return !c.one || cands.filter(function (d) { return d.ri === c.ri; }).length === 1; });
     cands.sort(function (x, y) { return y.sc - x.sc; });
     var usedR = {}, usedM = {}, out = {};
@@ -3858,6 +4018,7 @@ var ShotReader = (function () {
   }
   var SHOT = { items: [], busy: false };
   function openPaste(mode) {
+    ShotReader.warm();   /* the recogniser starts downloading and warming up now, not when the picture arrives (decision 82) */
     SHOT.items = []; SHOT.edits = {};   /* a reading still running finishes quietly, then the new pictures follow */
     var d = openDrawer('<div class="drawer-top"><span class="tag" style="color:var(--acc)"><span class="dot"></span>SNAI prices</span>' + CLOSE + '</div>' +
       '<div class="paste dview"><div><h2 class="display" id="dTitle" style="font-size:26px">Read SNAI\'s prices</h2>' +
@@ -3933,9 +4094,13 @@ var ShotReader = (function () {
     var info = function (t, p) { var b = $('.shotinfo b', card), bar = $('.shotinfo .bar i', card); if (b && t) b.textContent = t; if (bar && p != null) bar.style.width = Math.round(4 + p * 96) + '%'; };
     var img = new Image();
     img.onload = function () {
-      it.img = img;
-      ShotReader.read(img, function (m) { var t = SHOT_STAGE[m.status]; var p = m.status === 'recognizing text' ? 0.2 + (m.progress || 0) * 0.4 : m.progress; if (t) info(t, /loading|initializing/.test(m.status) ? 0.04 + (m.progress || 0) * 0.14 : p); })
+      it.img = img; holdJobs(true);
+      /* a picture that never finishes (the device ran out of memory) frees the reader after two minutes */
+      var over = false, guard = setTimeout(function () { over = true; it.state = 'error'; card.classList.remove('busy'); card.classList.add('fail'); info('This picture took too long to read. Try a smaller screenshot.', 1); holdJobs(false); SHOT.busy = false; runShots(); }, 120000);
+      Promise.race([ShotReader.read(img, function (m) { var t = SHOT_STAGE[m.status]; var p = m.status === 'recognizing text' ? 0.2 + (m.progress || 0) * 0.4 : m.progress; if (t) info(t, /loading|initializing/.test(m.status) ? 0.04 + (m.progress || 0) * 0.14 : p); })
+        , new Promise(function (res, rej) { setTimeout(function () { rej(new Error('late')); }, 121000); })])
         .then(function (R) {
+          clearTimeout(guard); if (over) return;
           it.rows = R.rows; it.head = R.head; it.right = R.right; it.state = 'done';
           if (!document.body.contains(card)) return;   /* the drawer was closed meanwhile */
           var hits = matchShotRows(R.rows); it.hits = hits;
@@ -3946,9 +4111,10 @@ var ShotReader = (function () {
           if (R.rows.length && nm < R.rows.length) $('.shotinfo small', card).insertAdjacentHTML('afterbegin', '<span>Not in this week\'s matches: </span>');
           drawShotBoxes(card, it);
         }).catch(function (e) {
+          clearTimeout(guard); if (over) return;
           it.state = 'error'; if (!document.body.contains(card)) return; card.classList.remove('busy'); card.classList.add('fail');
           info(/ocr-load/.test(String(e && e.message)) ? 'The reader could not be downloaded. Check the connection and try again.' : 'This picture could not be read.', 1);
-        }).then(function () { SHOT.busy = false; runShots(); });
+        }).then(function () { if (over) return; holdJobs(false); SHOT.busy = false; runShots(); });
     };
     img.onerror = function () { it.state = 'error'; info('This file is not a picture Scudi can open.', 1); SHOT.busy = false; runShots(); };
     img.src = it.url;
@@ -4703,6 +4869,7 @@ var ShotReader = (function () {
   }
   $('#simSlips').onclick = function (e) { var b = e.target.closest('[data-sim]'); if (b) { SIM.on[b.dataset.sim] = !SIM.on[b.dataset.sim]; renderSimControls(); } };
   $('#simRun').onclick = function () {
+    SLIPS.forEach(function (s) { if (SIM.on[s.id]) solveSlip(s); });   /* some are computed in the background (decision 82) */
     var plans = SLIPS.filter(function (s) { return SIM.on[s.id] && s.result; }).map(function (s) { return { p: s.result.prob, pay: s.result.pays, stake: s.stake, n: Math.round(SIM.perWeek[s.id] * SIM.weeks) }; });
     if (!plans.length) { toast('Pick at least one slip that has a result.'); return; }
     var sims = 20000, chances = [], pays = [], stakes = [];
@@ -4771,16 +4938,17 @@ var ShotReader = (function () {
     if (!TRADE.seen) return;
     var todo = []; TRADE_T.forEach(function (t) { LAMBDAS.forEach(function (l) { if (TRADE.pts[t + '|' + l] === undefined) todo.push([t, l]); }); });
     $('#tradeState').textContent = todo.length ? 'working… ' + Math.round((1 - todo.length / 30) * 100) + '%' : '';
-    if (!todo.length || TRADE.busy) return;
+    if (!todo.length || TRADE.busy || SCREEN !== 'slips') return;
     TRADE.busy = true;
-    setTimeout(function () {
+    later('trade', function () {
       TRADE.busy = false;
+      if (SCREEN !== 'slips') return;
       if (TRADE.key !== key) { renderTrade(); return; }
       var x = todo[0], cur = x[0] === active.cfg.target && x[1] === (active.cfg.lambda || 0) && active.result;
       var r = cur ? active.result : run(active, x[0], 'auto', true, { lambda: x[1] });
       TRADE.pts[x[0] + '|' + x[1]] = r ? { p: r.prob, ret: backPerEuro(r), legs: r.picks.length } : null;
       renderTrade();
-    }, 12);
+    });
   }
   function drawTrade() {
     var svg = $('#tradeChart'), pts = [], W = 340, Hh = 230, x0 = 40, x1 = W - 12, y0 = 14, y1 = Hh - 34;
@@ -4881,7 +5049,8 @@ var ShotReader = (function () {
     if (PORT.key !== key) {
       PORT.key = key; PORT.res = null;
       body.innerHTML = '<p class="fine" style="margin-top:10px">Building ' + PORT.n + ' slips with no match in common…</p>';
-      clearTimeout(PORT.t); PORT.t = setTimeout(function () { if (PORT.key !== key) return; PORT.res = buildPortfolio(s, PORT.n); renderPortfolio(); }, 60);
+      if (SCREEN === 'slips') later('portfolio', function () { if (PORT.key !== key) return; if (SCREEN !== 'slips') { PORT.key = null; return; } PORT.res = buildPortfolio(s, PORT.n); renderPortfolio(); });
+      else PORT.key = null;   /* built when the screen is shown */
       return;
     }
     if (!PORT.res) return;
@@ -5327,7 +5496,23 @@ var ShotReader = (function () {
     if (LAB.data) return Promise.resolve(LAB.data);
     if (!LAB.loading) LAB.loading = fetch('lab/seasons.json').then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (j) {
       var ep = new Date(j.epoch + 'T12:00:00Z'), SS = j.seasons.map(function (s) { return +s.slice(0, 4); });
-      var ms = j.matches.map(function (x, i) {
+      /* ~5,000 matches, each with its score matrix: 400 at a time, with a breath in between (decision 82) */
+      return new Promise(function (done, fail) {
+        var ms = [], at = 0;
+        (function slice() {
+          try {
+            var end = Math.min(j.matches.length, at + 400);
+            for (; at < end; at++) ms.push(one(j.matches[at], at));
+          } catch (e) { fail(e); return; }
+          if (at < j.matches.length) setTimeout(slice, 0); else done(ms);
+        })();
+      }).then(function (ms) {
+        LAB.data = { matches: ms, seasons: SS, labels: j.seasons, comps: j.comps, built: j.built_at, byTeam: null };
+        if (window.Scudi18n) Scudi18n.names(j.teams);
+        SS.forEach(function (s) { if (LAB.seasons[s] === undefined) LAB.seasons[s] = true; });
+        return LAB.data;
+      });
+      function one(x, i) {   /* one season match with its prices and its score matrix */
         var kick = new Date(ep.getTime() + x[0] * 864e5), y = kick.getUTCFullYear(), season = kick.getUTCMonth() >= 6 ? y : y - 1;
         var o1 = x[11] / 100, oX = x[12] / 100, o2 = x[13] / 100, oO = x[14] / 100, oU = x[15] / 100, f2 = function (v) { return Math.floor(v * 100 + 1e-9) / 100; };
         var m = { id: 'L' + i, lg: j.comps[x[1]], home: j.teams[x[2]], away: j.teams[x[3]], kick: kick, ord: kick.getTime(), day: kick.getUTCDay(), season: season, fh: x[4], fa: x[5], hh: x[6] < 0 ? null : x[6], ha: x[7] < 0 ? null : x[7],
@@ -5337,11 +5522,7 @@ var ShotReader = (function () {
         [['O15', 0.01], ['U35', 0.01], ['GG', 0.015]].forEach(function (q) { est[q[0]] = Math.max(1.01, f2(1 / (ch[q[0]] * (1 + mg + q[1])))); });
         m.pre = { estimate: est };   /* chances come from the matrix (pre.chances left out on purpose) */
         return m;
-      });
-      LAB.data = { matches: ms, seasons: SS, labels: j.seasons, comps: j.comps, built: j.built_at, byTeam: null };
-      if (window.Scudi18n) Scudi18n.names(j.teams);
-      SS.forEach(function (s) { if (LAB.seasons[s] === undefined) LAB.seasons[s] = true; });
-      return LAB.data;
+      }
     });
     return LAB.loading;
   }
@@ -5437,27 +5618,26 @@ var ShotReader = (function () {
 
   /* ---------- night sky ---------- */
   (function sky() {
-    var cv = $('#sky'), ctx = cv.getContext('2d'), stars = [], W, H, dpr = Math.min(2, window.devicePixelRatio || 1), raf;
-    function size() { W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr; }
+    /* decision 82: the glow is a CSS gradient under the canvas; the canvas holds only the stars, at most 1.5 pixels per
+       point, redrawn 8 times a second (their drift and twinkle are slow) and not at all while the page is hidden */
+    var cv = $('#sky'), ctx = cv.getContext('2d'), stars = [], W, H, dpr = Math.min(1.5, window.devicePixelRatio || 1), timer = null, last = 0;
+    function size() { W = cv.width = Math.round(innerWidth * dpr); H = cv.height = Math.round(innerHeight * dpr); }
     function seed() { stars = []; for (var i = 0; i < 90; i++) stars.push({ x: Math.random(), y: Math.random(), r: Math.random() * 1.3 + 0.3, s: Math.random() * 0.00006 + 0.00002, tw: Math.random() * 6.28, gold: Math.random() < 0.12 }); }
-    function frame(t) {
+    function paint(t) {
+      var dt = last ? Math.min(500, t - last) : 0, light = Theme.light(); last = t;
       ctx.clearRect(0, 0, W, H);
-      var light = Theme.light(), g = ctx.createRadialGradient(W * 0.82, H * 0.02, 0, W * 0.82, H * 0.02, Math.max(W, H) * 0.7);
-      if (light) { g.addColorStop(0, 'rgba(233,185,73,.18)'); g.addColorStop(0.5, 'rgba(77,163,255,.05)'); g.addColorStop(1, 'rgba(255,255,255,0)'); }
-      else { g.addColorStop(0, 'rgba(77,163,255,.13)'); g.addColorStop(0.5, 'rgba(120,90,220,.05)'); g.addColorStop(1, 'rgba(0,0,0,0)'); }
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
       stars.forEach(function (s) {
-        s.x -= s.s * 16; if (s.x < -0.02) s.x = 1.02;
+        s.x -= s.s * dt; if (s.x < -0.02) s.x = 1.02;
         var a = 0.35 + 0.35 * Math.sin(t / 900 + s.tw);
         ctx.beginPath(); ctx.arc(s.x * W, s.y * H, s.r * dpr * (light ? 1.4 : 1), 0, 6.283);
         ctx.fillStyle = light ? (s.gold ? 'rgba(156,111,0,' + a * 0.35 + ')' : 'rgba(30,111,217,' + a * 0.18 + ')') : s.gold ? 'rgba(233,185,73,' + a + ')' : 'rgba(200,210,255,' + a * 0.8 + ')'; ctx.fill();
       });
-      if (!reduced) raf = requestAnimationFrame(frame);
     }
-    size(); seed(); frame(0);
-    window.addEventListener('scudi-theme', function () { if (reduced) frame(0); });
-    addEventListener('resize', function () { size(); if (reduced) frame(0); });
-    document.addEventListener('visibilitychange', function () { if (document.hidden) cancelAnimationFrame(raf); else if (!reduced) raf = requestAnimationFrame(frame); });
+    function loop() { timer = null; if (document.hidden) return; paint(performance.now()); if (!reduced) timer = setTimeout(loop, 125); }
+    size(); seed(); loop();
+    window.addEventListener('scudi-theme', function () { paint(performance.now()); });
+    addEventListener('resize', function () { size(); paint(performance.now()); });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden && !timer) { last = 0; loop(); } });
   })();
 
   /* ---------- every panel explained: a sentence under the title and an "i" that opens the full explanation with the

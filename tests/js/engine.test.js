@@ -184,6 +184,16 @@ const txt = SR.asText('', rd.map((r, i) => Object.assign({}, r, { name: ['Andorr
 const back = S.parseSnai(txt, [['a', 'Andorra', 'Malta'], ['l', 'Liechtenstein', 'Lithuania'], ['p', 'Portugal', 'Wales'], ['g', 'Georgia', 'Northern Ireland']].map(x => ({ id: x[0], home: x[1], away: x[2], names: [[x[1]], [x[2]]] })));
 const bk = {}; back.forEach(r => { bk[r.match.id] = r.prices; });
 ok(back.length === 4 && bk.a.U25 === 1.3 && bk.a.O25 === 3.1 && bk.l.X2 === undefined && bk.p['1X'] === undefined && bk.p.X2 === 4.25 && bk.g.O15 === 1.3 && bk.g.O25 === undefined, 'screenshot rows through the page reader');
+/* decision 82: kick-off read from the row, tall boxes, bands */
+ok(rd[0].when && rd[0].when.d === 24 && rd[0].when.mo === 9 && rd[0].when.hh === 19 && rd[0].when.mi === 45, 'screenshot kick-off date and time read');
+const wsTall = ws.map(w => Object.assign({}, w));
+const tallBox = wsTall.filter(w => w.text === '2.70')[0]; tallBox.y1 += 22; tallBox.h += 22; tallBox.cy += 11;   /* the recogniser's box runs into the row below */
+const rdT = SR.reading(SR.grid(wsTall));
+ok(rdT.length === 4 && rdT[0].prices.X === 2.7 && rdT[1].prices.X === 4.25, 'a tall word box stays in its own row');
+const bs = SR.bandsOf(1815, 3), cover = bs.every((b, i) => !i || bs[i - 1].y0 + bs[i - 1].h - b.y0 >= 260);
+ok(SR.bandsOf(900, 3).length === 1 && bs.length === 3 && bs[0].y0 === 0 && bs[2].y0 + bs[2].h === 1815 && cover, 'screenshot bands overlap by more than a row');
+ok(SR.bandsOf(9000, 2).length >= 5, 'a very tall screenshot is cut into bands of at most about 1,900 pixels');
+ok(SR.rowIssues({ '1': 1.75, X: 2.75, '2': 4.25 }).indexOf('1X2') > -1 && !SR.rowIssues({ '1': 1.75, X: 3.75, '2': 4.25 }).length, 'a misread price that breaks the margin is flagged');
 const badRow = SR.rowIssues({ '1': 2.7, X: 3.25, '2': 27 });
 ok(badRow.indexOf('1X2') > -1 && !SR.rowIssues({ '1': 2.7, X: 3.25, '2': 2.7, '1X': 1.45, X2: 1.45, '12': 1.36 }).length, 'screenshot row checks');
 

@@ -144,6 +144,10 @@ are in `docs/strategy/`.
   Mega Bomba (a whole round of one competition on one slip at 250x, 1,000x or 5,000x, €2, capped at SNAI's €10,000);
   SNAI's five best and five worst real prices by margin (1 − price × chance). The price-download credits, theme and
   language are in Settings (the gear in the top bar).
+- Speed (decision 82): the optimiser extends only the cells no other cell beats (exact, 3–5x faster); the explorer, trade-off
+  chart, portfolio and other slip cards are computed in idle moments while "Slips" is on screen; the screenshot reader starts
+  when its drawer opens and reads overlapping bands of the picture with one recogniser per spare core, then matches rows by
+  names, kick-off time and prices.
 - `scudi_slips/sistema.py` — the exact sistema maths the site mirrors (tests compare the two).
 - `index.html` — the site; it reads `data/week.json`, `data/record.json`, `data/snai.json`, `data/teams.json` and
   `data/players.json` and falls back to example fixtures. Target multiplier from 1.5x to 1000x (by 0.5 to 5, by 5 to
