@@ -123,8 +123,8 @@ are in `docs/strategy/`.
   Placed slips live in the browser: "Back up my slips" / "Restore" moves them between devices.
 - Site features (decision 78): more pick types from the same score matrix (multigol, team goals, combos, handicap,
   first half; only the 72 types that passed the check of `docs/strategy/2026-09-23-new-markets.md`, from 30% up, at
-  estimated SNAI prices until pasted); "Aim for" from the highest chance to the best average return, with the
-  trade-off chart for every multiplier; the budget split over 2-5 slips with no match in common, compared with the
+  estimated SNAI prices until pasted); "Aim for" the highest chance or the best average return (decision 84: two
+  choices, and a ladder of what each multiplier gives back); the budget split over 2-5 slips with no match in common, compared with the
   single slip and the sistema; "How Scudi judges chances": prudent (penalise picks the books disagree on), learn from
   the record (per pick type and competition, only for systematic errors), market signals (price movement between pulls,
   Pinnacle and Betfair first, and starters out) with "play now or wait"; the slip as a ticket image to share; team
@@ -148,6 +148,17 @@ are in `docs/strategy/`.
   chart, portfolio and other slip cards are computed in idle moments while "Slips" is on screen; the screenshot reader starts
   when its drawer opens and reads overlapping bands of the picture with one recogniser per spare core, then matches rows by
   names, kick-off time and prices.
+- SNAI live (decision 83): on a computer, "Read SNAI prices" → "Live from snai.it" gives a button to drag to the bookmarks
+  bar. Clicked on snai.it (a competition's list), it reads SNAI's own page (SNAI's event numbers, names, kick-off and each
+  price button's market code), opens Scudi in a new tab and sends the prices there; while SNAI's tab stays open it reads
+  again every 5 seconds and sends what changed. Nothing is clicked, typed or downloaded on SNAI; a small card at the bottom
+  left of SNAI's page shows what is read and stops it. Scudi matches each row once (names, exact kick-off, prices; youth and
+  women's teams never), then by SNAI's event number; padlocked prices are taken away. On the phone (SNAI's app) the
+  screenshot reader stays.
+- What each multiplier gives back (decision 84): on "Slips", one row per multiplier (2x to 500x and the slip's own) with
+  the likeliest slip's average return for every €1 played (chance × pay-out, SNAI bonus included) as a bar, its chance,
+  matches and SNAI's cut; tap a row to use that multiplier. Under it, "Most likely" or "Best average return", each with
+  its own chance and return at this multiplier, and a sentence on whether they differ.
 - `scudi_slips/sistema.py` — the exact sistema maths the site mirrors (tests compare the two).
 - `index.html` — the site; it reads `data/week.json`, `data/record.json`, `data/snai.json`, `data/teams.json` and
   `data/players.json` and falls back to example fixtures. Target multiplier from 1.5x to 1000x (by 0.5 to 5, by 5 to

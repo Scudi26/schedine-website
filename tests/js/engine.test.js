@@ -265,5 +265,45 @@ const s3 = { state: 'in', minute: 51, period: 2, h: 1, a: 1, hh: 0, ha: 1, goals
 const just = S.story([legFio], [s3], [0], 63 + 6);
 ok(just.ev[0].md === "51'" && just.ev[0].after > just.ev[0].before && just.ev[0].h === 1, 'a goal read in its own minute counts');
 
+
+/* ---------- SNAI live (decision 83): the reader's rows, SNAI's market codes, the kick-off text, the checks ---------- */
+{
+  // the codes read from snai.it on 25 Sep 2026, Armenia - Lettonia (buttons in page order: 1X is outcome 1, X2 is 3, 12 is 2)
+  const row = [[3, 0, 1, 1.75], [3, 0, 2, 3.5], [3, 0, 3, 4.5], [28319, 0, 1, 1.16], [28319, 0, 3, 1.9], [28319, 0, 2, 1.25],
+    [7989, 250, 1, 1.75], [7989, 250, 2, 1.95], [18, 0, 1, 1.85], [18, 0, 2, 1.85], [30562, 0, 1, 9]];
+  const k = S.snaiMarkets(row);
+  ok(k.prices['1'] === 1.75 && k.prices.X === 3.5 && k.prices['2'] === 4.5, 'SNAI market 3 is 1 X 2');
+  ok(k.prices['1X'] === 1.16 && k.prices.X2 === 1.9 && k.prices['12'] === 1.25, 'SNAI market 28319 is the double chance, outcomes 1 3 2');
+  ok(k.prices.U25 === 1.75 && k.prices.O25 === 1.95 && k.line === '2', 'SNAI market 7989 line 250 is under/over 2.5');
+  ok(k.prices.GG === 1.85 && k.prices.NG === 1.85, 'SNAI market 18 is goal/no goal');
+  ok(Object.keys(k.prices).length === 10 && !k.locked.length, 'unknown codes (multigoal 30562) are ignored');
+  ok(k.shot.U === 1.75 && k.shot.O === 1.95 && k.shot['1'] === 1.75 && !k.shot.U25, 'the matching keys are the screenshot reader\'s');
+  const k2 = S.snaiMarkets([[7989, 150, 2, 1.3], [7989, 150, 1, 3.2], [7989, 350, 1, 1.25], [7989, 225, 1, 1.9], [7989, 50, 2, 1.05], [28319, 0, 3, null], [3, 0, 1, null], [3, 0, 9, 2]]);
+  ok(k2.prices.O15 === 1.3 && k2.prices.U35 === 1.25 && !k2.prices.U15 && Object.keys(k2.prices).length === 2, 'other goals lines: only the picks Scudi prices (O 1.5, U 3.5); quarter lines and 0.5 ignored');
+  ok(k2.locked.join() === 'X2,1' && !k2.shot.U && !k2.shot.O, 'a padlocked button is listed as locked; no 2.5 line, no under/over for matching');
+  ok(k2.line === '1', 'the first goals line is kept when there is no 2.5');
+  ok(S.snaiMarkets([[3, 0, 1, 0.5], [3, 0, 2, 1000]]).locked.length === 2, 'a price at or under 1, or absurdly high, counts as missing');
+  const w = S.snaiWhen('25/09\n17:00'), w2 = S.snaiWhen('01/10/2026 20.45'), w3 = S.snaiWhen('17:00');
+  ok(w.d === 25 && w.mo === 9 && w.hh === 17 && w.mi === 0, 'kick-off "25/09 17:00"');
+  ok(w2.d === 1 && w2.mo === 10 && w2.hh === 20 && w2.mi === 45, 'kick-off with the year and a dot');
+  ok(w3.d == null && w3.hh === 17, 'a time alone');
+  const w4 = S.snaiWhen('25/09 17 : 00');
+  ok(w4.d === 25 && w4.mo === 9 && w4.hh === 17 && w4.mi === 0, 'kick-off as snai.it\'s page gives it, in pieces: "25/09 17 : 00"');
+  ok(S.snaiWhen("45' 1T") === null && S.snaiWhen('') === null && S.snaiWhen('99/99 99:99') === null, 'no kick-off in text that is not one');
+  const msg = { type: 'scudi-snai', rows: [{ id: 4856400, home: '  Armenia ', away: 'Lettonia', when: '25/09 17:00', comp: 'INT Nations League', m: row },
+    { id: '<img>', home: 'A', away: 'B', m: [] }, { id: 7, home: 'A', m: [] }, { id: 8, home: 'x'.repeat(200), away: 'B', m: [[3, 0, 1, 'NaN'], [3, 0, 1.5, 2], 'bad', [3, 0, 2, -1], [3, 0, 3, null]] }, null] };
+  const rs = S.snaiRows(msg);
+  ok(rs.length === 3 && rs[0].id === '4856400' && rs[0].home === 'Armenia' && rs[0].m.length === 11, 'a message from the reader, cleaned');
+  ok(rs[1].id === 'img', 'odd characters taken out of the event number');
+  ok(rs[2].home.length === 60 && rs[2].m.length === 1 && rs[2].m[0][3] === null, 'long names cut, malformed prices dropped');
+  ok(S.snaiRows({ type: 'other', rows: [] }) === null && S.snaiRows(null) === null && S.snaiRows({ type: 'scudi-snai', rows: 'x' }) === null, 'anything else is not a reading');
+  ok(S.snaiRows({ type: 'scudi-snai', rows: new Array(2000).fill({ id: 1, home: 'A', away: 'B', m: [] }) }).length === 800, 'at most 800 rows');
+  // the same checks as a screenshot: a price far from the market is left out, a market that does not add up fails
+  const ref = { pre: { chances: { '1': 0.55, 'X': 0.25, '2': 0.2, 'GG': 0.45 } } };
+  const c1 = S.checkPrices({ '1': 1.75, 'X': 3.6, '2': 4.6, 'GG': 3.9 }, ref);
+  ok(c1.ok && c1.odd.join() === 'GG' && !c1.prices.GG && c1.prices['1'] === 1.75, 'a price far above fair is dropped, the rest kept');
+  ok(!S.checkPrices({ '1': 1.9, 'X': 3.9, '2': 4.9 }, ref).ok, '1 X 2 adding up to under 101% is not used');
+  ok(!S.checkPrices({ '1': 1.75, 'X': 3.6, '2': 4.6, '1X': 1.9 }, {}).ok, 'a double chance dearer than its own single is not used');
+}
 console.log(checks + ' checks, ' + failures + ' failed; optimiser exact in ' + exact + ' of ' + feasible + ' feasible cases');
 process.exit(failures ? 1 : 0);
