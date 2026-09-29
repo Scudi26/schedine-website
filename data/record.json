@@ -1,8 +1,78 @@
 {
  "summary": {
-  "graded": 0,
-  "expected_hits": 0,
+  "graded": 1,
+  "expected_hits": 0.02,
   "actual_hits": 0,
-  "by_name": {}
- }
+  "by_name": {
+   "National teams": {
+    "graded": 1,
+    "expected": 0.02,
+    "actual": 0
+   }
+  }
+ },
+ "slips": [
+  {
+   "key": "2026-09-22T16:45:53.002701+00:00|National teams|50",
+   "name": "National teams",
+   "target": 50,
+   "legs": 4,
+   "chance": 0.016102204802852762,
+   "odds": 50.07779073000001,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 2,
+   "graded_at": "2026-09-29T08:07:16.994422+00:00",
+   "leg_results": [
+    {
+     "match": "567186cbb46d455027b928c7204fa1e8",
+     "name": "Slovenia v Scotland",
+     "competition": "Nations League",
+     "code": "X",
+     "chance": 0.295,
+     "odds": 3.1900000000000004,
+     "won": true,
+     "score": "0-0",
+     "close_chance": 0.2997,
+     "clv": -0.044
+    },
+    {
+     "match": "133c2380620459b6c4dcefe9ce9f16dd",
+     "name": "San Marino v Finland",
+     "competition": "Nations League",
+     "code": "GG",
+     "chance": 0.2512,
+     "odds": 3.69,
+     "won": false,
+     "score": "0-7",
+     "close_chance": 0.2455,
+     "clv": -0.0941
+    },
+    {
+     "match": "663bf315127df32b389f73d7b570955a",
+     "name": "Denmark v Wales",
+     "competition": "Nations League",
+     "code": "1",
+     "chance": 0.598,
+     "odds": 1.63,
+     "won": true,
+     "score": "2-0",
+     "close_chance": 0.6968,
+     "clv": 0.1358
+    },
+    {
+     "match": "ede91daefcca16990379ab59f170ad5c",
+     "name": "Georgia v Ukraine",
+     "competition": "Nations League",
+     "code": "1",
+     "chance": 0.3633,
+     "odds": 2.6100000000000003,
+     "won": false,
+     "score": "0-0",
+     "close_chance": 0.3513,
+     "clv": -0.0831
+    }
+   ]
+  }
+ ]
 }
