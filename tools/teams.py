@@ -2,14 +2,20 @@
 
 Writes data/teams.json (crests, squads, last lineup and formation, season averages such as possession and shots)
 and data/players.json (transfer history with fees where ESPN shows them). Everything is public data; the job is
-polite (one request every 0.25 s, a plain User-Agent) and incremental (matches and players already stored are not
-fetched again).
+polite (one request every 0.25 s, a plain User-Agent) and incremental: every finished match is stored one by one in
+the team record ("matches", short keys) and only matches not stored yet are fetched. On every run ESPN's schedule is
+the truth: a stored match it does not list is dropped and every average is recomputed from what is left (incident
+2026-10-05: the live file had grown out of the example data and showed matches that were never played). A stored file
+whose header says "example" is ignored altogether.
 
     python3 tools/teams.py                                   # live, every competition with an ESPN league
     python3 tools/teams.py --comps "Serie A" --max-calls 400  # a smaller run
     python3 tools/teams.py --replay tests/espn_sample.json    # no network: replay recorded responses (the tests)
 
-Not available from any free source, so not promised by the site: heatmaps, preferred foot, market values.
+Player depth (decision 86): when `lab/transfermarkt.json` is present (built by tools/transfermarkt.py from the open
+transfermarkt-datasets project), every roster player is matched to it by date of birth and name, and carries "tm":
+market value and career peak (euro), preferred foot, contract end, Transfermarkt's sub-position, and the snapshot date.
+Not available from any free source, so not promised by the site: heatmaps.
 
 Two depths (decision 74): the big five leagues and the Champions League get everything (lineups and formations, match
 stats such as possession, transfer histories); every other competition gets the light version (crests, squads,
@@ -57,8 +63,20 @@ WEB = SITE
 TRANSFERS = "https://site.web.api.espn.com/apis/common/v3/sports/soccer/athletes/{pid}/transactions"
 LINEUP = "https://sports.core.api.espn.com/v2/sports/soccer/leagues/{slug}/events/{eid}/competitions/{eid}/competitors/{tid}/roster"
 STATS = {"possessionPct": "possession", "totalShots": "shots", "shotsOnTarget": "shots_on", "wonCorners": "corners", "passPct": "pass_pct",
-         "tackles": "tackles", "interceptions": "interceptions", "foulsCommitted": "fouls", "saves": "saves"}
+         "tackles": "tackles", "totalTackles": "tackles", "interceptions": "interceptions", "foulsCommitted": "fouls", "saves": "saves",
+         "yellowCards": "yellows", "redCards": "reds", "offsides": "offsides", "blockedShots": "blocked"}
+STAT_KEYS = ("possession", "shots", "shots_on", "corners", "pass_pct", "tackles", "interceptions", "fouls", "saves", "yellows", "reds", "offsides", "blocked")
 UA = "scudi/0.2 (personal accumulator builder; github.com/Scudi26)"
+
+
+def trusted_prev(prev: dict, kind: str) -> dict:
+    """The stored file, unless it is the example file (its header says so). Incident 2026-10-05: the live runs of September
+    had started from the example data/teams.json uploaded with v8 and carried its invented matches into every big-league
+    club's record and averages (Milan: 10 matches, 5 of them never played). Example data never rides into a live run."""
+    if re.search(r"example", str((prev or {}).get("source", "")), re.I):
+        print(f"stored {kind} file is example data: starting from scratch")
+        return {}
+    return prev or {}
 
 
 class Budget:
@@ -200,6 +218,69 @@ def find_team(name: str, teams: list[dict]) -> dict | None:
     return None
 
 
+TM_PATH = Path(__file__).resolve().parents[1] / "lab" / "transfermarkt.json"
+
+
+def _name_key(name: str) -> str:
+    s = unicodedata.normalize("NFKD", name or "").encode("ascii", "ignore").decode().lower()
+    return " ".join(re.sub(r"[^a-z ]+", " ", s).split())
+
+
+def load_transfermarkt(path: Path = TM_PATH) -> dict | None:
+    """The compact Transfermarkt file indexed for matching: {dob: [players]}, plus the snapshot date."""
+    if not path.exists():
+        return None
+    try:
+        d = json.loads(path.read_text())
+    except (OSError, ValueError):
+        return None
+    by_dob: dict[str, list[dict]] = {}
+    for p in d.get("players", []):
+        if p.get("dob"):
+            by_dob.setdefault(p["dob"], []).append(p)
+    return {"as_of": d.get("as_of"), "by_dob": by_dob, "n": len(d.get("players", []))}
+
+
+PARTICLES = {"de", "da", "di", "del", "della", "van", "von", "der", "den", "le", "la", "el", "al", "do", "dos", "das", "jr", "junior"}
+
+
+def tm_match(player: dict, tm: dict) -> dict | None:
+    """The Transfermarkt record of an ESPN player: same date of birth and a shared name token (surname or first name,
+    accents dropped); with several candidates on the same day the one sharing the most tokens wins, ties pick none."""
+    if not tm or not player.get("dob"):
+        return None
+    cands = tm["by_dob"].get(player["dob"]) or []
+    if not cands:
+        return None
+    mine = set(_name_key(player.get("name", "")).split()) | set(_name_key(player.get("short", "") or "").split())
+    mine = {w for w in mine if len(w) > 1 and w not in PARTICLES}
+    if not mine:
+        return None
+    scored = sorted(((len(mine & (set(_name_key(c.get("n", "")).split()) - PARTICLES)), c) for c in cands), key=lambda x: -x[0])
+    if not scored or scored[0][0] == 0:
+        return None
+    if len(scored) > 1 and scored[1][0] == scored[0][0]:
+        return None
+    return scored[0][1]
+
+
+def enrich(players: list[dict], tm: dict | None) -> int:
+    """Attach Transfermarkt depth to a squad; returns how many players were matched."""
+    if not tm:
+        return 0
+    n = 0
+    for p in players:
+        c = tm_match(p, tm)
+        if not c:
+            p.pop("tm", None)
+            continue
+        rec = {k: c[k] for k in ("v", "pk", "foot", "c", "sub", "h") if c.get(k) is not None}
+        rec["id"] = c["id"]
+        p["tm"] = rec
+        n += 1
+    return n
+
+
 def _formation_place(entry: dict) -> int:
     try:
         return int(entry.get("formationPlace") or 0)
@@ -218,13 +299,17 @@ def _lineup(fetch, budget, slug: str, eid: str, tid: int):
 
 
 def build(fetch, comps: list[str], prev_teams: dict | None, prev_players: dict | None, now: datetime, max_calls: int = 5000,
-          transfers: bool = True, print_every: int = 50, max_minutes: float | None = None) -> tuple[dict, dict, Budget]:
+          transfers: bool = True, print_every: int = 50, max_minutes: float | None = None,
+          transfermarkt: Path | None = TM_PATH) -> tuple[dict, dict, Budget]:
     budget = Budget(max_calls, max_minutes)
-    prev_teams = prev_teams or {}
-    prev_players = prev_players or {}
+    prev_teams = trusted_prev(prev_teams, "teams")
+    prev_players = trusted_prev(prev_players, "players")
     teams: dict[str, dict] = {}
-    seen_events: dict[str, set] = {}
     rostered: set[str] = set()
+    dropped = 0
+    members: dict[str, set[str]] = {}   # competition -> the teams ESPN lists in it this run
+    tm = load_transfermarkt(transfermarkt) if transfermarkt else None
+    tm_hits = 0
     for comp in comps:
         if comp not in SLUGS:
             print(f"{comp}: no ESPN league, skipped")
@@ -238,6 +323,7 @@ def build(fetch, comps: list[str], prev_teams: dict | None, prev_players: dict |
             for league in sport.get("leagues", []):
                 entries.extend(x.get("team") or x for x in league.get("teams", []))
         print(f"{comp}: {len(entries)} teams")
+        members[comp] = {str(int(t["id"])) for t in entries}
         for t in entries:
             rec = _team_record(t)
             key = str(rec["id"])
@@ -247,9 +333,14 @@ def build(fetch, comps: list[str], prev_teams: dict | None, prev_players: dict |
             team.setdefault("comps", [])
             if comp not in team["comps"]:
                 team["comps"].append(comp)
-            team.setdefault("sums", {"matches": 0, "events": [], "formations": {}, "goals_for": 0, "goals_against": 0, "wins": 0, "draws": 0, "losses": 0})
+            if not isinstance(team.get("matches"), dict):
+                # a record from before matches were stored one by one (or the example file): nothing in its sums can be
+                # checked against ESPN's schedule, so every match is fetched again (incremental from now on)
+                for k in ("sums", "results", "last", "formation", "formations", "avg", "form", "light"):
+                    team.pop(k, None)
+                team["matches"] = {}
+            team.setdefault("light", {})
             teams[key] = team
-            seen_events[key] = set(team["sums"]["events"])
         full = BY_NAME[comp].group in FULL_TEAM_DATA if comp in BY_NAME else False
         # squads (once per team per run, even when the team plays in two competitions)
         for t in entries:
@@ -259,6 +350,7 @@ def build(fetch, comps: list[str], prev_teams: dict | None, prev_players: dict |
             r = _get(fetch, budget, f"{WEB.format(slug=slug)}/teams/{key}/roster")
             if r and r.get("athletes"):
                 teams[key]["players"] = [_player(a, slim=not full and not teams[key].get("full")) for a in r["athletes"] if a.get("id")]
+                tm_hits += enrich(teams[key]["players"], tm)
                 rostered.add(key)
             if full:
                 teams[key]["full"] = True
@@ -271,30 +363,77 @@ def build(fetch, comps: list[str], prev_teams: dict | None, prev_players: dict |
             if not full:
                 _results_from_schedule(teams[key], sched, key, comp)
                 continue
-            for ev in sched.get("events", []):
-                eid = str(ev.get("id"))
-                comp0 = (ev.get("competitions") or [{}])[0]
-                done = ((comp0.get("status") or ev.get("status") or {}).get("type") or {}).get("completed")
-                if not done or eid in seen_events.get(key, set()):
+            team = teams[key]
+            if not isinstance(sched.get("events"), list) or not sched["events"]:
+                continue   # an empty or odd answer is not a schedule: nothing is dropped, nothing is added
+            played = _completed(sched, key)
+            # ESPN's schedule is the truth for this competition: a stored match it does not list (a replay, the example
+            # file, a fixture ESPN re-numbered) is dropped before anything is averaged
+            stale = [eid for eid, m in team["matches"].items() if m.get("c") == comp and eid not in played]
+            for eid in stale:
+                del team["matches"][eid]
+            dropped += len(stale)
+            if team.get("last") and team["last"].get("event") not in team["matches"]:
+                team.pop("last")
+            for eid, (ev, mine, other) in sorted(played.items(), key=lambda kv: kv[1][0].get("date") or ""):
+                if eid in team["matches"]:
                     continue
-                mine = next((c for c in comp0.get("competitors", []) if str((c.get("team") or c).get("id")) == key), None)
-                other = next((c for c in comp0.get("competitors", []) if str((c.get("team") or c).get("id")) != key), None)
-                if not mine or not other:
-                    continue
+                if budget.spent():
+                    break   # the rest next run: a match is stored only with its summary and its line-up read
                 summ = _get(fetch, budget, f"{SITE.format(slug=slug)}/summary?event={eid}")
                 if summ is None:
                     continue
-                _absorb(teams[key], summ, eid, key, mine, other, ev.get("date"), comp)
-                seen_events[key].add(eid)
+                m = _match(summ, eid, key, mine, other, ev.get("date"), comp)
+                if budget.spent():
+                    break
                 lu = _lineup(fetch, budget, slug, eid, int(key))
                 if lu and lu["xi"]:
-                    s = teams[key]["sums"]
                     if lu["formation"]:
-                        s["formations"][lu["formation"]] = s["formations"].get(lu["formation"], 0) + 1
-                    if not teams[key].get("last") or (ev.get("date") or "") >= teams[key]["last"].get("date", ""):
-                        teams[key]["last"] = {"date": ev.get("date"), "event": eid, "formation": lu["formation"], "xi": lu["xi"]}
+                        m["f"] = lu["formation"]
+                    if not team.get("last") or (ev.get("date") or "") >= team["last"].get("date", ""):
+                        team["last"] = {"date": ev.get("date"), "event": eid, "formation": lu["formation"], "xi": lu["xi"]}
+                elif lu is None:
+                    m["lu"] = 0   # line-up not read (ESPN failed or has none): tried again next run
+                team["matches"][eid] = m
+            # the line-up shown must be the newest stored match of this competition: after a clean-up, a stopped run or a
+            # failed read it is read again (one request); older matches without a line-up are tried once more too
+            newest = max((eid for eid in team["matches"] if eid in played), key=lambda e: team["matches"][e].get("d") or "", default=None)
+            if newest and not budget.spent() and (not team.get("last") or (team["matches"][newest].get("d") or "") > (team["last"].get("date") or "")[:10]):
+                lu = _lineup(fetch, budget, slug, newest, int(key))
+                if lu and lu["xi"]:
+                    team["last"] = {"date": played[newest][0].get("date"), "event": newest, "formation": lu["formation"], "xi": lu["xi"]}
+                    if lu["formation"]:
+                        team["matches"][newest]["f"] = lu["formation"]
+                    team["matches"][newest].pop("lu", None)
+            for eid in [e for e, m in team["matches"].items() if e in played and m.get("lu") == 0 and e != newest]:
+                if budget.spent():
+                    break
+                lu = _lineup(fetch, budget, slug, eid, int(key))
+                if lu is not None:
+                    team["matches"][eid].pop("lu", None)
+                    if lu["xi"] and lu["formation"]:
+                        team["matches"][eid]["f"] = lu["formation"]
             if budget.calls % print_every < 3:
                 print(f"  {budget.calls} requests so far", flush=True)
+    # a team ESPN no longer lists in a competition fetched this run (relegated, promoted, out of a cup) loses that
+    # competition's matches, light results and label, so last season never leaks into this one
+    for comp, keys in members.items():
+        for key, team in teams.items():
+            if key in keys:
+                continue
+            gone = [eid for eid, m in team["matches"].items() if m.get("c") == comp]
+            for eid in gone:
+                del team["matches"][eid]
+            dropped += len(gone)
+            team.get("light", {}).pop(comp, None)
+            if comp in team.get("comps", []):
+                team["comps"].remove(comp)
+            if team.get("last") and team["last"].get("event") not in team["matches"]:
+                team.pop("last")
+    if dropped:
+        print(f"dropped {dropped} stored matches that ESPN's schedules do not list")
+    if tm:
+        print(f"Transfermarkt depth ({tm['as_of']}): {tm_hits} players matched")
     # transfers: only players not stored yet
     players = dict(prev_players.get("players", {})) if isinstance(prev_players.get("players"), dict) else {}
     if transfers:
@@ -310,6 +449,8 @@ def build(fetch, comps: list[str], prev_teams: dict | None, prev_players: dict |
             players[str(pid)] = {"transfers": [_transfer(x) for x in r.get("transactions", [])]}
     out_teams = {"built_at": now.isoformat(), "source": "ESPN public site API (unofficial); logos and photos are ESPN's",
                  "competitions": {c: SLUGS[c] for c in comps if c in SLUGS}, "teams": {}, "tables": {}}
+    if tm:
+        out_teams["transfermarkt"] = {"as_of": tm["as_of"], "matched": tm_hits}
     for key, t in teams.items():
         out_teams["teams"][key] = _finish(t)
     out_teams["tables"] = tables(out_teams["teams"], [c for c in comps if c in SLUGS])
@@ -335,62 +476,84 @@ def _add_result(r: dict, gf: float, ga: float):
     r["w" if gf > ga else "d" if gf == ga else "l"] += 1
 
 
-def _absorb(team: dict, summ: dict, eid: str, key: str, mine: dict, other: dict, date: str | None, comp: str | None = None):
-    s = team["sums"]
-    gf, ga = _score(mine), _score(other)
-    if gf is not None and ga is not None:
-        s["goals_for"] += gf
-        s["goals_against"] += ga
-        s["wins" if gf > ga else "draws" if gf == ga else "losses"] += 1
-        home = mine.get("homeAway") == "home"
-        if comp:
-            c = s.setdefault("by_comp", {}).setdefault(comp, {"all": _blank_record(), "home": _blank_record(), "away": _blank_record()})
-            _add_result(c["all"], gf, ga)
-            _add_result(c["home" if home else "away"], gf, ga)
-        team.setdefault("results", []).append({"date": (date or "")[:10], "event": eid, "vs": (other.get("team") or {}).get("displayName"),
-                                               "vs_id": (other.get("team") or other).get("id"), "home": home, "gf": gf, "ga": ga, "comp": comp})
-        team["results"] = sorted(team["results"], key=lambda r: r["date"])[-10:]
-    for bt in (summ.get("boxscore") or {}).get("teams", []):
-        if str((bt.get("team") or {}).get("id")) != key:
-            continue
-        for st in bt.get("statistics", []):
-            name = STATS.get(st.get("name"))
-            v = _num(st.get("displayValue"))
-            if name and v is not None:
-                s[name] = s.get(name, 0) + v
-                s[name + "_n"] = s.get(name + "_n", 0) + 1
-    s["matches"] += 1
-    s["events"].append(eid)
-
-
-def _results_from_schedule(team: dict, sched: dict, key: str, comp: str):
-    """Light competitions: results, form and home/away records straight from the team schedule (scores included), rebuilt
-    from scratch every run so nothing is counted twice."""
-    rec = {"all": _blank_record(), "home": _blank_record(), "away": _blank_record()}
-    res = [r for r in team.get("results", []) if r.get("comp") != comp]
+def _completed(sched: dict, key: str) -> dict:
+    """The finished matches of a team schedule: event id -> (event, this team's competitor, the other one)."""
+    out = {}
     for ev in sched.get("events", []):
         comp0 = (ev.get("competitions") or [{}])[0]
         done = ((comp0.get("status") or ev.get("status") or {}).get("type") or {}).get("completed")
         mine = next((c for c in comp0.get("competitors", []) if str((c.get("team") or c).get("id")) == key), None)
         other = next((c for c in comp0.get("competitors", []) if str((c.get("team") or c).get("id")) != key), None)
-        if not done or not mine or not other:
+        if done and mine and other:
+            out[str(ev.get("id"))] = (ev, mine, other)
+    return out
+
+
+def _match(summ: dict, eid: str, key: str, mine: dict, other: dict, date: str | None, comp: str | None) -> dict:
+    """One finished match as stored in the team record: result and this team's match statistics (short keys: these
+    records are kept in data/teams.json so the next run only fetches what is new)."""
+    gf, ga = _score(mine), _score(other)
+    m = {"d": (date or "")[:10], "c": comp, "h": mine.get("homeAway") == "home", "v": (other.get("team") or {}).get("displayName"),
+         "vi": (other.get("team") or other).get("id"), "gf": gf, "ga": ga}
+    raw, stats = {}, {}
+    for bt in (summ.get("boxscore") or {}).get("teams", []):
+        if str((bt.get("team") or {}).get("id")) != key:
             continue
+        for st in bt.get("statistics", []):
+            v = _num(st.get("displayValue") if st.get("displayValue") not in (None, "") else st.get("value"))
+            if v is None:
+                continue
+            raw[st.get("name")] = v
+            name = STATS.get(st.get("name"))
+            if name and name not in stats:
+                stats[name] = v
+    # pass completion as a percentage: accurate / total when ESPN lists both, else its passPct, which it prints as a
+    # fraction (0.8) for some competitions and as a percentage for others
+    if raw.get("totalPasses"):
+        stats["pass_pct"] = round(100 * (raw.get("accuratePasses") or 0) / raw["totalPasses"], 1)
+    elif stats.get("pass_pct") is not None and stats["pass_pct"] <= 1.5:
+        stats["pass_pct"] = round(100 * stats["pass_pct"], 1)
+    if stats:
+        m["s"] = stats
+    return m
+
+
+def _results_from_schedule(team: dict, sched: dict, key: str, comp: str):
+    """Light competitions: results and home/away records straight from the team schedule (scores included), rebuilt from
+    scratch every run so nothing is counted twice."""
+    rec = {"all": _blank_record(), "home": _blank_record(), "away": _blank_record()}
+    res = []
+    for eid, (ev, mine, other) in _completed(sched, key).items():
         gf, ga = _score(mine), _score(other)
         if gf is None or ga is None:
             continue
         home = mine.get("homeAway") == "home"
         _add_result(rec["all"], gf, ga)
         _add_result(rec["home" if home else "away"], gf, ga)
-        res.append({"date": (ev.get("date") or "")[:10], "event": str(ev.get("id")), "vs": (other.get("team") or {}).get("displayName"),
+        res.append({"date": (ev.get("date") or "")[:10], "event": eid, "vs": (other.get("team") or {}).get("displayName"),
                     "vs_id": (other.get("team") or other).get("id"), "home": home, "gf": gf, "ga": ga, "comp": comp})
-    team["sums"].setdefault("by_comp", {})[comp] = rec
-    team["results"] = sorted(res, key=lambda r: r["date"])[-10:]
+    team.setdefault("light", {})[comp] = {"rec": rec, "results": sorted(res, key=lambda r: r["date"])[-10:]}
 
 
 def _transfer(x: dict) -> dict:
     f, t = x.get("from") or {}, x.get("to") or {}
     side = lambda d: dict({"id": d.get("id"), "name": d.get("displayName") or d.get("name")}, **_logos(d))
     return {"date": (x.get("date") or "")[:10], "from": side(f), "to": side(t), "type": x.get("type"), "amount": x.get("amount"), "fee": x.get("displayAmount")}
+
+
+def by_comp(t: dict) -> dict:
+    """Played / won / drawn / lost / goals per competition, overall and split home and away, from the stored matches
+    (full competitions) and the light results."""
+    out = {}
+    for m in (t.get("matches") or {}).values():
+        if m.get("gf") is None or m.get("ga") is None or not m.get("c"):
+            continue
+        c = out.setdefault(m["c"], {"all": _blank_record(), "home": _blank_record(), "away": _blank_record()})
+        _add_result(c["all"], m["gf"], m["ga"])
+        _add_result(c["home" if m.get("h") else "away"], m["gf"], m["ga"])
+    for comp, lt in (t.get("light") or {}).items():
+        out.setdefault(comp, lt["rec"])
+    return out
 
 
 def tables(teams: dict, comps: list[str]) -> dict:
@@ -400,7 +563,7 @@ def tables(teams: dict, comps: list[str]) -> dict:
     for comp in comps:
         rows = []
         for t in teams.values():
-            rec = ((t.get("sums") or {}).get("by_comp") or {}).get(comp)
+            rec = (t.get("by_comp") or by_comp(t)).get(comp)
             if comp not in (t.get("comps") or []):
                 continue
             rec = rec or {"all": _blank_record(), "home": _blank_record(), "away": _blank_record()}
@@ -415,37 +578,55 @@ def tables(teams: dict, comps: list[str]) -> dict:
 
 
 def _finish(t: dict) -> dict:
-    s = t["sums"]
-    n = s["matches"] or 0
+    """The team as the site reads it. Everything averaged is recomputed from the stored matches on every run, so a match
+    dropped from the store disappears from the averages too."""
+    ms = sorted((t.get("matches") or {}).items(), key=lambda kv: kv[1].get("d") or "")
+    played = [m for _, m in ms if m.get("gf") is not None and m.get("ga") is not None]
+    n = len(played)
     avg = {"matches": n}
-    for k in ("possession", "shots", "shots_on", "corners", "pass_pct", "tackles", "interceptions", "fouls", "saves"):
-        if s.get(k + "_n"):
-            avg[k] = round(s[k] / s[k + "_n"], 1)
+    for k in STAT_KEYS:
+        vals = [m["s"][k] for _, m in ms if k in (m.get("s") or {})]
+        if vals:
+            avg[k] = round(sum(vals) / len(vals), 1)
     if n:
-        avg["goals_for"] = round(s["goals_for"] / n, 2)
-        avg["goals_against"] = round(s["goals_against"] / n, 2)
-        avg["record"] = f"{s['wins']}-{s['draws']}-{s['losses']}"
-    else:   # a light competition: the season record from the stored results
-        tot = [c["all"] for c in (s.get("by_comp") or {}).values()]
+        avg["goals_for"] = round(sum(m["gf"] for m in played) / n, 2)
+        avg["goals_against"] = round(sum(m["ga"] for m in played) / n, 2)
+        w = sum(1 for m in played if m["gf"] > m["ga"])
+        d = sum(1 for m in played if m["gf"] == m["ga"])
+        avg["record"] = f"{w}-{d}-{n - w - d}"
+    else:   # a light competition: the season record from the schedule results
+        tot = [lt["rec"]["all"] for lt in (t.get("light") or {}).values()]
         p = sum(r["p"] for r in tot)
         if p:
             avg["matches"] = p
             avg["goals_for"] = round(sum(r["gf"] for r in tot) / p, 2)
             avg["goals_against"] = round(sum(r["ga"] for r in tot) / p, 2)
             avg["record"] = f"{sum(r['w'] for r in tot)}-{sum(r['d'] for r in tot)}-{sum(r['l'] for r in tot)}"
-    forms = sorted(s.get("formations", {}).items(), key=lambda kv: -kv[1])
+    counts: dict[str, int] = {}
+    for _, m in ms:
+        if m.get("f"):
+            counts[m["f"]] = counts.get(m["f"], 0) + 1
+    forms = sorted(counts.items(), key=lambda kv: -kv[1])
+    results = [{"date": m["d"], "event": eid, "vs": m.get("v"), "vs_id": m.get("vi"), "home": m.get("h"), "gf": m["gf"], "ga": m["ga"], "comp": m.get("c")}
+               for eid, m in ms if m.get("gf") is not None and m.get("ga") is not None]
+    for lt in (t.get("light") or {}).values():
+        results.extend(lt["results"])
+    results = sorted(results, key=lambda r: r["date"])
     out = {k: t[k] for k in ("id", "name", "short", "abbr", "color", "alt", "logo", "logo_dark", "comps", "full") if k in t}
     out["key"] = norm(t.get("name", ""))
     out["keys"] = sorted({norm(t.get("name", "")), norm(t.get("short", "")), norm(t.get("abbr", ""))} - {""})
     out["avg"] = avg
-    out["form"] = "".join("W" if r["gf"] > r["ga"] else "D" if r["gf"] == r["ga"] else "L" for r in t.get("results", [])[-5:])
-    out["results"] = t.get("results", [])[-5:]
+    out["form"] = "".join("W" if r["gf"] > r["ga"] else "D" if r["gf"] == r["ga"] else "L" for r in results[-5:])
+    out["results"] = results[-5:]
     out["formation"] = forms[0][0] if forms else (t.get("last") or {}).get("formation")
     out["formations"] = dict(forms)
+    out["by_comp"] = by_comp(t)
     if t.get("last"):
         out["last"] = t["last"]
     out["players"] = t.get("players", [])
-    out["sums"] = s   # kept so the next run can continue the averages without refetching
+    out["matches"] = dict(ms)   # kept so the next run only fetches what is new, and can drop what ESPN no longer lists
+    if t.get("light"):
+        out["light"] = t["light"]
     return out
 
 

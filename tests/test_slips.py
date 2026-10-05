@@ -662,6 +662,79 @@ def test_team_job_builds_league_tables_and_falls_back_to_the_other_espn_host():
     assert all(r["comp"] == "Serie A" for r in t["results"])
 
 
+def test_team_job_drops_matches_espn_does_not_list_and_never_starts_from_the_example_file():
+    """Incident 2026-10-05: the live runs had grown out of the example data/teams.json, so Milan showed 10 matches, 5 of them
+    invented, and pass completion averaged a fraction (0.8) with a percentage (85). Now: (a) a stored file whose header says
+    "example" is ignored; (b) a stored record without per-match data is rebuilt; (c) a stored match that ESPN's schedule for
+    that competition does not list is dropped and leaves the averages; (d) pass completion is a percentage."""
+    import copy
+    from datetime import datetime, timezone
+
+    from tools.teams import build, replay_fetch
+
+    _feed, rec = _espn_sample()
+    now = datetime(2026, 10, 8, tzinfo=timezone.utc)
+    teams, _p, b0 = build(replay_fetch(rec), ["Serie A"], {}, {}, now, transfers=False)
+    key, t = next(iter(teams["teams"].items()))
+    assert t["avg"]["matches"] == 5 and len(t["matches"]) == 5 and "sums" not in t
+    assert all(50 <= m["s"]["pass_pct"] <= 100 for m in t["matches"].values())        # the sample prints percentages already
+    # (a) the example header: everything is fetched again, nothing of the stored record survives
+    example = copy.deepcopy(teams)
+    example["source"] = "example data: real teams, crests and colours; invented squads, results and transfers, in ESPN's shapes"
+    example["teams"][key]["matches"]["400999"] = {"d": "2026-09-12", "c": "Serie A", "h": True, "v": "Nobody", "vi": "1", "gf": 9, "ga": 0, "s": {"pass_pct": 85}}
+    again, _p, b1 = build(replay_fetch(rec), ["Serie A"], example, {"source": example["source"]}, now, transfers=False)
+    assert "400999" not in again["teams"][key]["matches"] and again["teams"][key]["avg"] == t["avg"] and b1.calls == b0.calls
+    # (b) a legacy record (sums, no per-match store) is rebuilt from scratch
+    legacy = copy.deepcopy(teams)
+    tl = legacy["teams"][key]
+    tl.pop("matches")
+    tl["sums"] = {"matches": 10, "events": ["400006", "400033"], "pass_pct": 428, "pass_pct_n": 10}
+    tl["avg"] = {"matches": 10, "pass_pct": 42.8, "record": "3-4-3"}
+    again, _p, b2 = build(replay_fetch(rec), ["Serie A"], legacy, {}, now, transfers=False)
+    assert again["teams"][key]["avg"] == t["avg"] and "sums" not in again["teams"][key]
+    assert b2.calls == 1 + 20 + 20 + 5 + 5                 # list, rosters, schedules; only that team's 5 matches and line-ups again
+    # (c) a stored match the schedule does not list is dropped; the real ones are not fetched again
+    stale = copy.deepcopy(teams)
+    stale["teams"][key]["matches"]["400033"] = {"d": "2026-09-12", "c": "Serie A", "h": False, "v": "AS Roma", "vi": "104", "gf": 1, "ga": 2, "s": {"pass_pct": 85, "shots": 30}}
+    stale["teams"][key]["last"] = {"date": "2026-09-12T18:45Z", "event": "400033", "formation": "4-4-2", "xi": []}
+    again, _p, b3 = build(replay_fetch(rec), ["Serie A"], stale, {}, now, transfers=False)
+    a = again["teams"][key]
+    assert "400033" not in a["matches"] and a["avg"] == t["avg"] and a["results"] == t["results"] and a["form"] == t["form"]
+    assert a["last"] == t["last"] and b3.calls < b0.calls / 2                      # the stale "last" line-up is replaced by a real one
+    assert all(r["event"] != "400033" for r in a["results"]) and a["by_comp"]["Serie A"]["all"]["p"] == 5
+    assert again["tables"]["Serie A"] == teams["tables"]["Serie A"]
+    # (e) a run stopped by the request cap stores only matches with summary and line-up; the next run completes them
+    part, _p, bp = build(replay_fetch(rec), ["Serie A"], {}, {}, now, transfers=False, max_calls=31)
+    tp = part["teams"][key]
+    assert bp.calls == 31 and 0 < len(tp["matches"]) < 5 and all("f" in m for m in tp["matches"].values())
+    full_again, _p, _bf = build(replay_fetch(rec), ["Serie A"], part, {}, now, transfers=False)
+    assert full_again["teams"][key]["avg"] == t["avg"] and full_again["teams"][key]["last"] == t["last"]
+    assert all("f" in m for m in full_again["teams"][key]["matches"].values())
+    # (f) an empty schedule answer drops nothing; a team no longer listed in a competition loses that competition's matches
+    empty = {u: ({"events": []} if u.endswith("/schedule") else v) for u, v in rec.items()}
+    kept, _p, _b = build(replay_fetch(empty), ["Serie A"], teams, {}, now, transfers=False)
+    assert kept["teams"][key]["avg"] == t["avg"] and kept["teams"][key]["last"] == t["last"]
+    gone = copy.deepcopy(teams)
+    gone["teams"][key]["matches"]["400777"] = {"d": "2025-05-01", "c": "Serie B", "h": True, "v": "Old", "vi": "9", "gf": 1, "ga": 0, "s": {"shots": 30}}
+    gone["teams"][key]["comps"].append("Serie B")
+    gone["teams"][key]["light"] = {"Serie B": {"rec": {"all": {"p": 1, "w": 1, "d": 0, "l": 0, "gf": 1, "ga": 0}, "home": {"p": 1, "w": 1, "d": 0, "l": 0, "gf": 1, "ga": 0}, "away": {"p": 0, "w": 0, "d": 0, "l": 0, "gf": 0, "ga": 0}}, "results": []}}
+    rolled, _p, _b = build(replay_fetch(rec), ["Serie A"], gone, {}, now, transfers=False)   # Serie B not fetched this run: untouched
+    assert "400777" in rolled["teams"][key]["matches"] and "Serie B" in rolled["teams"][key]["comps"]
+    recB = dict(rec)
+    recB[next(u for u in rec if u.endswith("/teams") and "ita.1" in u).replace("ita.1", "ita.2")] = {"sports": [{"leagues": [{"teams": []}]}]}
+    rolled, _p, _b = build(replay_fetch(recB), ["Serie A", "Serie B"], gone, {}, now, transfers=False)   # Serie B fetched, the team is not in it
+    assert "400777" not in rolled["teams"][key]["matches"] and "Serie B" not in rolled["teams"][key]["comps"] and "Serie B" not in rolled["teams"][key].get("light", {})
+    assert rolled["teams"][key]["avg"] == t["avg"]
+    # (d) ESPN's passPct as a fraction becomes a percentage; accurate / total passes win when both are listed
+    from tools.teams import _match
+    comp = {"homeAway": "home", "score": {"value": 2}, "team": {"id": "1", "displayName": "A"}}
+    oth = {"homeAway": "away", "score": {"value": 0}, "team": {"id": "2", "displayName": "B"}}
+    summ = {"boxscore": {"teams": [{"team": {"id": "1"}, "statistics": [{"name": "passPct", "displayValue": "0.8"}, {"name": "totalShots", "displayValue": "12"}]}]}}
+    assert _match(summ, "9", "1", comp, oth, "2026-10-01T18:45Z", "Serie A")["s"] == {"pass_pct": 80.0, "shots": 12.0}
+    summ = {"boxscore": {"teams": [{"team": {"id": "1"}, "statistics": [{"name": "passPct", "displayValue": "0.8"}, {"name": "accuratePasses", "displayValue": "412"}, {"name": "totalPasses", "displayValue": "500"}]}]}}
+    assert _match(summ, "9", "1", comp, oth, "2026-10-01T18:45Z", "Serie A")["s"] == {"pass_pct": 82.4}
+
+
 # ---------- sistema bets ----------
 def test_sistema_straight_equals_the_accumulator_and_errors_add_chances():
     from scudi_slips.sistema import plan
@@ -1226,3 +1299,244 @@ def test_page_engine_in_node():
         pytest.skip("node is not installed")
     r = subprocess.run([node, "tests/js/engine.test.js"], capture_output=True, text=True, timeout=300)
     assert r.returncode == 0, r.stdout + r.stderr
+
+
+# ---------- closing line from football-data.co.uk (decision 85) ----------
+def _fd_sample() -> str:
+    from pathlib import Path
+
+    return Path(__file__).with_name("football_data_sample.csv").read_text(encoding="utf-8")
+
+
+def test_closing_rows_are_matched_by_names_and_day_and_fitted_to_the_closing_market():
+    from scudi_slips.closing import ClosingSource, closing_prices, closing_view, find_row, parse_csv, season_code, xg
+
+    rows = parse_csv(_fd_sample())
+    assert len(rows) == 9 and rows[0]["Div"] == "I1"
+    ko = datetime(2026, 9, 20, 18, 45, tzinfo=timezone.utc)                        # 19:45 UK, the file's own time
+    row = find_row(rows, "AC Milan", "Lecce", ko)                                   # the odds feed's spellings
+    assert row and row["HomeTeam"] == "Milan" and row["FTHG"] == "3"
+    assert find_row(rows, "Milan", "Lecce", ko) is row and find_row(rows, "Inter Milan", "AS Roma", ko) is None      # wrong way round
+    assert find_row(rows, "AS Roma", "Inter Milan", datetime(2026, 9, 19, 16, 0, tzinfo=timezone.utc))["AwayTeam"] == "Inter"
+    assert find_row(rows, "AC Milan", "Lecce", ko + timedelta(days=3)) is None    # another day: not this match
+    assert find_row(rows, "AC Milan", "Lecce", ko - timedelta(hours=20)) is row    # late kick-off read on the UK day after
+    prices, label = closing_prices(row)
+    assert label == "betfair" and prices == {"1": 1.26, "X": 6.8, "2": 16.0, "O25": 1.63, "U25": 2.56}
+    view, label2, _ = closing_view(row)
+    assert label2 == "betfair" and abs(view.p_home + view.p_draw + view.p_away - 1) < 1e-9 and view.p_home > 0.75
+    assert view.fit_error < 0.01 and 0.55 < view.p_over25 < 0.65
+    assert xg(row) == (2.19, 0.21)
+    # no Betfair columns: the market average, then Bet365
+    r2 = {k: v for k, v in row.items() if not k.startswith("BFEC")}
+    assert closing_prices(r2)[1] == "average"
+    r3 = {k: v for k, v in r2.items() if not k.startswith("AvgC")}
+    assert closing_prices(r3)[1] == "bet365"
+    assert closing_prices({k: v for k, v in r3.items() if not k.startswith("B365C")}) is None
+    assert season_code(datetime(2026, 9, 20)) == "2627" and season_code(datetime(2027, 5, 1)) == "2627" and season_code(datetime(2027, 8, 1)) == "2728"
+    calls = []
+
+    def fetch(url):
+        calls.append(url)
+        if "/I1.csv" not in url:
+            raise OSError("boom")
+        return _fd_sample()
+    src = ClosingSource(fetch)
+    assert src.covers("Serie A") and not src.covers("Champions League") and not src.covers("Nations League")
+    assert src.find("Serie A", "AC Milan", "Lecce", ko)["HomeTeam"] == "Milan"
+    assert src.find("Serie A", "Juventus", "Atalanta", ko)["FTAG"] == rows[7]["FTAG"]
+    assert src.find("Premier League", "Arsenal", "Chelsea", ko) is None and src.notes and "Premier League" in src.notes[0]
+    assert src.find("Premier League", "Arsenal", "Chelsea", ko) is None and len(src.notes) == 1   # asked once per run
+    assert len([u for u in calls if "I1" in u]) == 1 and calls[0].endswith("/2627/I1.csv")
+
+
+def test_graded_legs_use_the_real_closing_price_where_the_files_carry_the_match():
+    from scudi_slips.closing import ClosingSource
+    from scudi_slips.devig import power_devig
+    from tools.grade import fill_pending, grade, summarise
+
+    def fetch(url):
+        if "/I1.csv" in url:
+            return _fd_sample()
+        raise OSError("not there")
+    ko = "2026-09-20T18:45:00+00:00"
+    ko2 = "2026-09-20T16:00:00+00:00"
+    week = {"built_at": "2026-09-18T09:00:00+00:00",
+            "matches": [{"id": "m1", "competition": "Serie A", "kickoff": ko, "home": "AC Milan", "away": "Lecce"},
+                        {"id": "m2", "competition": "Nations League", "kickoff": ko2, "home": "Italy", "away": "Estonia"},
+                        {"id": "m3", "competition": "Premier League", "kickoff": ko2, "home": "Arsenal", "away": "Chelsea"}],
+            "slips": [{"name": "Test", "target": 5, "legs": 3, "chance": 0.2, "odds": 5.1, "bonus": 0.0,
+                       "picks": [{"match": "m1", "code": "1", "chance": 0.74, "odds": 1.30}, {"match": "m2", "code": "O25", "chance": 0.55, "odds": 1.8},
+                                 {"match": "m3", "code": "X2", "chance": 0.6, "odds": 1.6}]}]}
+    hist = {"m1": {"kickoff": ko, "snaps": [{"t": "2026-09-20T09:00:00+00:00", "p": {"1": 0.70}}]},
+            "m2": {"kickoff": ko2, "snaps": [{"t": "2026-09-20T09:00:00+00:00", "p": {"O25": 0.52}}]},
+            "m3": {"kickoff": ko2, "snaps": [{"t": "2026-09-20T09:00:00+00:00", "p": {"X2": 0.58}}]}}
+    now = datetime(2026, 9, 22, 8, 0, tzinfo=timezone.utc)
+    rec = grade(week, {"m1": (3, 0), "m2": (2, 1), "m3": (1, 1)}, {}, now, hist, ClosingSource(fetch))
+    legs = {leg["match"]: leg for leg in rec["slips"][0]["leg_results"]}
+    close_home = power_devig([1.26, 6.8, 16.0])[0]
+    assert legs["m1"]["close_source"] == "close:betfair" and abs(legs["m1"]["close_chance"] - close_home) < 0.01
+    assert legs["m1"]["pull_chance"] == 0.70 and legs["m1"]["pull_clv"] == round(1.30 * 0.70 - 1, 4)
+    assert abs(legs["m1"]["clv"] - (1.30 * legs["m1"]["close_chance"] - 1)) < 1e-3 and legs["m1"]["close_odds"] == 1.26 and legs["m1"]["xg"] == [2.19, 0.21]
+    assert legs["m2"]["close_source"] == "last_pull" and legs["m2"]["close_chance"] == 0.52 and "xg" not in legs["m2"]
+    assert legs["m3"]["close_source"] == "pending" and legs["m3"]["close_chance"] == 0.58 and legs["m3"]["kickoff"] == ko2   # file failed: waits
+    assert rec["summary"]["closing"] == {"legs": 3, "close": 1, "pending": 1, "last_pull": 1,
+                                         "avg_clv": round((legs["m1"]["clv"] + legs["m2"]["clv"] + legs["m3"]["clv"]) / 3, 4),
+                                         "avg_clv_close": round(legs["m1"]["clv"], 4)}
+    # a later run: the Premier League file now carries the match -> the pending leg is filled in
+    def fetch2(url):
+        if "/E0.csv" in url:
+            return _fd_sample().replace("Milan,Lecce", "Arsenal,Chelsea").replace("20/09/2026,19:45", "20/09/2026,17:00")
+        return fetch(url)
+    changed = fill_pending(rec, ClosingSource(fetch2), now + timedelta(days=2))
+    rec = summarise(rec)
+    legs = {leg["match"]: leg for leg in rec["slips"][0]["leg_results"]}
+    assert changed == 1 and legs["m3"]["close_source"] == "close:betfair" and legs["m3"]["pull_chance"] == 0.58
+    assert legs["m3"]["close_chance"] != 0.58 and rec["summary"]["closing"]["close"] == 2 and rec["summary"]["closing"]["pending"] == 0
+    # a pending leg older than 12 days settles on the pull when the file is there without the match; while the file cannot be
+    # downloaded at all it keeps waiting, whatever its age
+    legs["m3"]["close_source"], legs["m3"]["close_chance"], legs["m3"]["clv"] = "pending", 0.58, legs["m3"]["pull_clv"]
+    assert fill_pending(rec, ClosingSource(fetch), now + timedelta(days=13)) == 0 and legs["m3"]["close_source"] == "pending"
+    assert fill_pending(rec, ClosingSource(lambda url: _fd_sample()), now + timedelta(days=13)) == 1 and legs["m3"]["close_source"] == "last_pull"
+    # no source at all (replay / --no-closing): every leg is "last_pull"
+    plain = grade(week, {"m1": (3, 0), "m2": (2, 1), "m3": (1, 1)}, {}, now, hist)
+    assert {leg["close_source"] for leg in plain["slips"][0]["leg_results"]} == {"last_pull"}
+
+
+# ---------- Transfermarkt depth (decision 86) ----------
+def test_transfermarkt_file_is_compact_and_players_match_espn_by_birthday_and_name():
+    import json
+    from pathlib import Path
+
+    from tools.teams import enrich, load_transfermarkt, tm_match
+    from tools.transfermarkt import compact
+
+    rows = [{"player_id": "406625", "name": "Lautaro Martínez", "last_season": "2026", "current_club_domestic_competition_id": "IT1", "date_of_birth": "1997-08-22 00:00:00",
+             "foot": "right", "height_in_cm": "174", "position": "Attack", "sub_position": "Centre-Forward", "market_value_in_eur": "85000000",
+             "highest_market_value_in_eur": "110000000", "contract_expiration_date": "2029-06-30 00:00:00", "current_club_name": "Inter Milan"},
+            {"player_id": "1", "name": "Old Timer", "last_season": "2015", "current_club_domestic_competition_id": "IT1", "date_of_birth": "1980-01-01 00:00:00"},
+            {"player_id": "2", "name": "Far Away", "last_season": "2026", "current_club_domestic_competition_id": "BRA1", "date_of_birth": "2000-01-01 00:00:00"},
+            {"player_id": "3", "name": "Marco Rossi", "last_season": "2026", "current_club_domestic_competition_id": "IT1", "date_of_birth": "1997-08-22 00:00:00", "foot": "left"},
+            {"player_id": "4", "name": "Luca Rossi", "last_season": "2026", "current_club_domestic_competition_id": "IT1", "date_of_birth": "1997-08-22 00:00:00", "foot": "both"}]
+    kept = compact(rows)
+    assert [p["id"] for p in kept] == [406625, 3, 4]                       # old seasons and other continents left out
+    assert kept[0] == {"id": 406625, "n": "Lautaro Martínez", "dob": "1997-08-22", "foot": "right", "h": 174, "pos": "Attack", "sub": "Centre-Forward",
+                       "v": 85000000, "pk": 110000000, "c": "2029-06-30", "comp": "IT1"}
+    path = Path("/tmp") / "tm_test.json"
+    path.write_text(json.dumps({"as_of": "2026-07-06", "players": kept}))
+    tm = load_transfermarkt(path)
+    assert tm["n"] == 3 and tm["as_of"] == "2026-07-06"
+    assert tm_match({"name": "Lautaro Martinez", "dob": "1997-08-22"}, tm)["id"] == 406625         # accent dropped, same birthday
+    assert tm_match({"name": "L. Martínez", "short": "L. Martínez", "dob": "1997-08-22"}, tm)["id"] == 406625
+    assert tm_match({"name": "Lautaro Martinez", "dob": "1997-08-23"}, tm) is None               # a different birthday never matches
+    assert tm_match({"name": "Rossi", "dob": "1997-08-22"}, tm) is None                           # two Rossi born that day: none chosen
+    assert tm_match({"name": "Marco Rossi", "dob": "1997-08-22"}, tm)["id"] == 3
+    assert tm_match({"name": "Somebody Else", "dob": "1997-08-22"}, tm) is None
+    squad = [{"id": 9, "name": "Lautaro Martínez", "dob": "1997-08-22", "tm": {"v": 1}}, {"id": 10, "name": "Nobody", "dob": "1999-01-01", "tm": {"v": 2}}]
+    assert enrich(squad, tm) == 1
+    assert squad[0]["tm"] == {"v": 85000000, "pk": 110000000, "foot": "right", "c": "2029-06-30", "sub": "Centre-Forward", "h": 174, "id": 406625}
+    assert tm_match({"name": "Juan de Rossi", "dob": "1997-08-22"}, tm) is None                       # a particle is not a shared name
+    assert "tm" not in squad[1]                                                                   # a stale match is removed, never kept
+    assert enrich(squad, None) == 0 and load_transfermarkt(Path("/tmp/does-not-exist.json")) is None
+
+
+def test_transfermarkt_depth_reaches_most_of_a_real_big_league_squad():
+    """On the real lab/transfermarkt.json (when present) and ESPN's real Serie A rosters recorded in data/espn_teams.json's
+    season, four of five big-league players were matched on 2026-10-05; the test guards the matcher against regressions
+    with a lower bar on a stored slice of real names."""
+    from pathlib import Path
+
+    from tools.teams import load_transfermarkt, tm_match
+
+    tm = load_transfermarkt()
+    if not tm:
+        import pytest
+        pytest.skip("lab/transfermarkt.json not built in this checkout")
+    real = [("Lautaro Martínez", "1997-08-22"), ("Nicolò Barella", "1997-02-07"), ("Mike Maignan", "1995-07-03"), ("Dusan Vlahovic", "2000-01-28"),
+            ("Khvicha Kvaratskhelia", "2001-02-12"), ("Erling Haaland", "2000-07-21"), ("Kylian Mbappé", "1998-12-20"), ("Harry Kane", "1993-07-28"),
+            ("Jude Bellingham", "2003-06-29"), ("Lamine Yamal", "2007-07-13")]
+    hits = [tm_match({"name": n, "dob": d}, tm) for n, d in real]
+    assert sum(1 for h in hits if h) >= 8 and all(h is None or h.get("v") for h in hits)
+    assert Path("lab/transfermarkt.json").stat().st_size < 2_500_000
+
+
+# ---------- the live model (decision 87) ----------
+def test_live_model_file_is_sane_and_the_chain_hands_back_the_pre_match_goals_at_kickoff():
+    from scudi_slips.live import chance, expected_goals_at_kickoff, model, steps
+
+    m = model()
+    assert len(m["bins"]) == 18 and all(0.5 < f < 1.5 for f in m["bins"]) and m["bins"][0] < m["bins"][-1]      # a slow start
+    assert m["stoppage"]["1"]["len"] < m["stoppage"]["2"]["len"] and m["red"]["own"] < 1 < m["red"]["opp"]
+    assert m["state"]["trail1"] > 1 and m["state"]["trail2"] > m["state"]["trail1"] and m["fit"]["matches"] > 1000
+    eh, ea = expected_goals_at_kickoff(1.5, 1.1)
+    assert abs(eh + ea - 2.6) < 0.03                                              # the scale keeps the total honest
+    assert len(steps(False, 0)) == 45 + 1 + 45 + 1 and len(steps(True, 60)) == 30 + 1 and len(steps(False, 30, True)) == 15 + 1
+    assert steps(False, 46)[0] == (18, pytest.approx(max(0.3, m["stoppage"]["1"]["len"] - 1)))                 # in first-half stoppage
+    p0 = chance("1", 1.5, 1.0, 0, 0, 0, False)
+    assert 0.44 < p0 < 0.50
+    assert chance("1", 1.5, 1.0, 1, 0, 90, True) > 0.9 > chance("1", 1.5, 1.0, 0, 1, 60, True) > chance("1", 1.5, 1.0, 0, 1, 85, True)
+    assert chance("1", 1.5, 1.0, 0, 1, 60, True, reds=(0, 1)) > 2 * chance("1", 1.5, 1.0, 0, 1, 60, True)       # the other side a man short
+    assert chance("1", 1.5, 1.0, 0, 1, 60, True, reds=(1, 0)) < chance("1", 1.5, 1.0, 0, 1, 60, True)
+    assert chance("1", 1.5, 1.0, 2, 0, 90, True, finished=True) == 1.0 and chance("X", 1.5, 1.0, 2, 0, 90, True, finished=True) == 0.0
+    assert chance("1TO05", 1.5, 1.0, 0, 0, 30, False) < chance("1TO05", 1.5, 1.0, 0, 0, 10, False) < chance("O15", 1.5, 1.0, 0, 0, 10, False)
+    assert chance("1TO05", 1.5, 1.0, 1, 0, 30, False, hh=1, ha=0) == 1.0 and chance("1TO05", 1.5, 1.0, 0, 0, 60, True) == 0.0
+
+
+def test_page_live_chance_equals_python_live_model():
+    """index.html's inplay and scudi_slips.live.chance are the same chain: checked on random scores, minutes, halves, red cards
+    and pick types (full time and first half), to 1e-9."""
+    import json
+    import shutil
+    import subprocess
+
+    from scudi_slips.live import chance
+    from scudi_slips.picks import SLIP_MENU
+
+    node = shutil.which("node")
+    if not node:
+        pytest.skip("node is not installed")
+    rng = random.Random(7)
+    codes = sorted(SLIP_MENU)
+    cases = []
+    for _ in range(60):
+        second = rng.random() < 0.5
+        minute = rng.randint(46, 93) if second else rng.randint(0, 47)
+        cases.append({"code": rng.choice(codes), "lh": round(rng.uniform(0.6, 2.6), 3), "la": round(rng.uniform(0.5, 2.0), 3), "h": rng.randint(0, 3), "a": rng.randint(0, 3),
+                      "minute": minute, "period": 2 if second else 1, "rh": int(rng.random() < 0.15), "ra": int(rng.random() < 0.15), "ht": False})
+    cases.append({"code": "O25", "lh": 1.4, "la": 1.1, "h": 1, "a": 1, "minute": 45, "period": 1, "rh": 0, "ra": 0, "ht": True})
+    want = []
+    for c in cases:
+        second = c["period"] >= 2 or (c["minute"] > 45 and c["period"] != 1 and not c["ht"])
+        hh, ha = (c["h"], c["a"]) if (second or c["ht"]) else (None, None)
+        want.append(chance(c["code"], c["lh"], c["la"], c["h"], c["a"], c["minute"], second, False, hh, ha, (c["rh"], c["ra"]), c["ht"]))
+    script = """
+const fs=require('fs'),vm=require('vm');const html=fs.readFileSync('index.html','utf8');
+const a=html.indexOf('/* ===== Scudi slip maths'), b=html.indexOf("if (typeof module !== 'undefined') module.exports = Scudi;");
+const ctx={module:{},console}; vm.runInNewContext(html.slice(a,b)+'\\nthis.Scudi = Scudi;',ctx); const S=ctx.Scudi;
+const cases=JSON.parse(process.argv[1]);
+console.log(JSON.stringify(cases.map(c => { const second = c.period >= 2 || (c.minute > 45 && c.period !== 1 && !c.ht); const hh = (second || c.ht) ? c.h : null, ha = (second || c.ht) ? c.a : null;
+  return S.inplay(c.code, c.lh, c.la, c.h, c.a, c.minute, false, hh, ha, { period: c.period, ht: c.ht, rh: c.rh, ra: c.ra }); })));
+"""
+    r = subprocess.run([node, "-e", script, json.dumps(cases)], capture_output=True, text=True, timeout=120)
+    assert r.returncode == 0, r.stderr
+    got = json.loads(r.stdout)
+    assert len(got) == len(want) and max(abs(g - w) for g, w in zip(got, want)) < 1e-9
+    assert any(0 < w < 1 for w in want) and sum(1 for c, w in zip(cases, want) if c["rh"] or c["ra"]) > 5
+
+
+def test_graded_matches_leave_their_goal_and_red_card_minutes_for_the_live_model():
+    import json
+    from pathlib import Path
+
+    from tools.grade import espn_finals, espn_reds, timeline
+
+    evs = json.loads((Path(__file__).parent / "js" / "espn_live_sample.json").read_text())
+    fio = next(e for e in evs if e["name"] == "Napoli at Fiorentina")
+    comp = fio["competitions"][0]
+    comp["details"].append({"redCard": True, "scoringPlay": False, "clock": {"displayValue": "77'"}, "team": {"id": comp["competitors"][1]["team"]["id"]}})
+    assert espn_reds(fio) == [(comp["competitors"][1]["homeAway"], 77)]
+    m = {"id": "m1", "competition": "Serie A", "kickoff": fio["date"].replace("Z", "+00:00"), "home": "Fiorentina", "away": "Napoli"}
+    tl = timeline(m, fio, (1, 1))
+    assert tl["ft"] == [1, 1] and len(tl["goals"]) == 2 and all(g[0] in "ha" and 0 < g[1] <= 95 for g in tl["goals"]) and tl["reds"] == [[comp["competitors"][1]["homeAway"][0], 77]]
+    tls = {}
+    finals, _notes = espn_finals(lambda url: {"events": [fio]}, [m], {"Serie A": "ita.1"}, tls)
+    assert finals["m1"][:2] == (1, 1) and tls["m1"] == tl

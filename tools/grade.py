@@ -12,6 +12,13 @@ otherwise.
 A slip is graded only when every leg's match has a final score; a slip with a postponed match stays open. The record
 keeps, for every graded slip, the chance Scudi promised and whether it landed, so expected and actual hits can be
 compared honestly over time. Slips of a week that a later full pull replaced ride along in week["pending"].
+
+Closing line (decision 85): every leg's CLV is measured against the real closing market when football-data.co.uk
+carries the match (sixteen leagues, published within days of the round, no credits): the closing 1 X 2 and over/under
+2.5 prices (Betfair Exchange first), margin removed, fitted to the score matrix, priced for the leg's pick. Until the
+file carries the match the leg is "pending" and shows the last pre-kickoff pull; after 12 days it settles on that pull.
+Competitions the files do not cover (Champions League, national teams, cups) always use the last pull ("last_pull").
+The match's expected goals (HxG / AxG) ride along on the leg.
 """
 
 from __future__ import annotations
@@ -28,6 +35,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scudi_slips import settles
+from scudi_slips.closing import ClosingSource, closing_view, xg
 from scudi_slips.comps import BY_NAME
 from scudi_slips.feed import SPORT_KEYS
 from scudi_slips.matrix import view_from
@@ -156,8 +164,34 @@ def _team_name(c: dict) -> str:
     return t.get("displayName") or t.get("shortDisplayName") or t.get("name") or ""
 
 
-def espn_finals(fetch, matches: list[dict], slugs: dict[str, str | None]) -> tuple[dict[str, tuple[int, int]], list[str]]:
-    """Final scores from ESPN's scoreboards for the given matches: {match id: (home, away)}, plus notes."""
+def espn_reds(ev: dict) -> list[tuple[str, int]]:
+    """The players sent off, as (side, minute), from the match details ESPN flags with redCard."""
+    comp = (ev.get("competitions") or [{}])[0]
+    sides = {str((c.get("team") or {}).get("id")): c.get("homeAway") for c in comp.get("competitors", [])}
+    out = []
+    for d in comp.get("details") or []:
+        if not d.get("redCard"):
+            continue
+        side = sides.get(str((d.get("team") or {}).get("id")))
+        minute = _minute((d.get("clock") or {}).get("displayValue", ""))
+        if side and minute is not None:
+            out.append((side, minute))
+    return out
+
+
+def timeline(m: dict, ev: dict, fs: tuple) -> dict | None:
+    """What the live model learns from a graded match (decision 87): kick-off, competition, 90-minute score, the minute and
+    side of every goal and every red card. Kept in record.json so Scudi's own leagues feed the next fit."""
+    goals = espn_goals(ev)
+    if goals is None:
+        return None
+    return {"ko": m["kickoff"], "comp": m["competition"], "ft": [fs[0], fs[1]], "goals": [[g[0][0], g[1]] for g in goals],
+            "reds": [[r[0][0], r[1]] for r in espn_reds(ev)]}
+
+
+def espn_finals(fetch, matches: list[dict], slugs: dict[str, str | None], timelines: dict | None = None) -> tuple[dict[str, tuple[int, int]], list[str]]:
+    """Final scores from ESPN's scoreboards for the given matches: {match id: (home, away)}, plus notes. When a dict is
+    passed as `timelines`, each settled match's goal and red-card minutes are written into it."""
     finals, notes = {}, []
     by_comp: dict[str, list[dict]] = {}
     for m in matches:
@@ -201,6 +235,10 @@ def espn_finals(fetch, matches: list[dict], slugs: dict[str, str | None]) -> tup
             if fs is not None:
                 ht = espn_half(best, fs)
                 finals[m["id"]] = fs + ht if ht is not None else fs
+                if timelines is not None:
+                    tl = timeline(m, best, fs)
+                    if tl:
+                        timelines[m["id"]] = tl
     return finals, notes
 
 
@@ -224,9 +262,54 @@ def final_score(ev: dict) -> tuple[int, int] | None:
     return got[ev["home_team"]], got[ev["away_team"]]
 
 
-def grade(week: dict, scores: dict[str, dict], record: dict, now: datetime, history: dict | None = None) -> dict:
+PENDING_DAYS = 12   # how long a leg waits for football-data.co.uk's closing price before settling on the last pull
+
+
+def close_leg(leg: dict, match: dict | None, source: ClosingSource | None, now: datetime) -> dict:
+    """Fill a leg's closing view. The last pre-kickoff pull is always kept ("pull_chance", "pull_clv"); when the match's
+    competition is in football-data.co.uk's files the real closing market replaces it as "close_chance" / "clv" with
+    close_source "close:<columns>", else the leg is "pending" (and settles on the pull after PENDING_DAYS) or "last_pull"."""
+    if "pull_chance" not in leg and leg.get("close_chance") is not None:
+        leg["pull_chance"], leg["pull_clv"] = leg["close_chance"], leg["clv"]
+    comp = leg.get("competition")
+    if not match or not match.get("kickoff") or not source or not source.covers(comp):
+        leg["close_source"] = "last_pull"
+        return leg
+    ko = datetime.fromisoformat(match["kickoff"])
+    rows = source.rows(comp, ko)
+    if rows is None:   # the file could not be downloaded this run: wait, whatever the leg's age
+        leg["close_source"] = "pending"
+        if "pull_chance" in leg:
+            leg["close_chance"], leg["clv"] = leg["pull_chance"], leg["pull_clv"]
+        return leg
+    row = source.find(comp, match["home"], match["away"], ko)
+    got = closing_view(row) if row else None
+    if got and got[1].endswith("-no-goals-line") and PICKS[leg["code"]].group not in ("result", "double chance"):
+        got = None   # a goals pick needs a real closing goals line; this leg settles on the pull
+    if got:
+        view, label, prices = got
+        cc = round(PICKS[leg["code"]].chance(view), 4)
+        leg["close_chance"], leg["clv"], leg["close_source"] = cc, round(leg["odds"] * cc - 1, 4), f"close:{label}"
+        if leg["code"] in prices:
+            leg["close_odds"] = prices[leg["code"]]
+        x = xg(row)
+        if x:
+            leg["xg"] = [round(x[0], 2), round(x[1], 2)]
+        return leg
+    if now - ko > timedelta(days=PENDING_DAYS):
+        leg["close_source"] = "last_pull"
+    else:
+        leg["close_source"] = "pending"
+    if "pull_chance" in leg:
+        leg["close_chance"], leg["clv"] = leg["pull_chance"], leg["pull_clv"]
+    return leg
+
+
+def grade(week: dict, scores: dict[str, dict], record: dict, now: datetime, history: dict | None = None,
+          source: ClosingSource | None = None) -> dict:
     done = {s["key"] for s in record.get("slips", [])}
     finals = {mid: (tuple(ev) if isinstance(ev, (tuple, list)) else final_score(ev)) for mid, ev in scores.items()}
+    matches = {m["id"]: m for m in week.get("matches", [])}
     comp_of = {m["id"]: m["competition"] for m in week.get("matches", [])}
     names = {m["id"]: f'{m["home"]} v {m["away"]}' for m in week.get("matches", [])}
     for slip in week.get("slips", []):
@@ -244,11 +327,15 @@ def grade(week: dict, scores: dict[str, dict], record: dict, now: datetime, hist
                    "chance": round(p["chance"], 4), "odds": p["odds"], "won": won, "score": f"{fs[0]}-{fs[1]}"}
             if len(fs) >= 4:
                 leg["half"] = f"{fs[2]}-{fs[3]}"
+            if matches.get(p["match"], {}).get("kickoff"):
+                leg["kickoff"] = matches[p["match"]]["kickoff"]
             close = closing(history or {}, p["match"])
             cc = closing_chance(close, p["code"]) if close else None
             if cc is not None:
-                leg["close_chance"] = cc
-                leg["clv"] = round(p["odds"] * cc - 1, 4)   # >0: the price taken beat the last pre-kickoff view
+                leg["pull_chance"] = cc
+                leg["pull_clv"] = round(p["odds"] * cc - 1, 4)   # >0: the price taken beat the last pre-kickoff view
+                leg["close_chance"], leg["clv"] = cc, leg["pull_clv"]
+            close_leg(leg, matches.get(p["match"]), source, now)
             legs.append(leg)
         if legs is None:
             continue
@@ -256,6 +343,25 @@ def grade(week: dict, scores: dict[str, dict], record: dict, now: datetime, hist
         record.setdefault("slips", []).append({"key": key, "name": slip["name"], "target": slip["target"], "legs": slip["legs"],
                                                "chance": slip["chance"], "odds": slip["odds"], "bonus": slip["bonus"],
                                                "landed": all(won), "legs_won": sum(won), "graded_at": now.isoformat(), "leg_results": legs})
+    return summarise(record)
+
+
+def fill_pending(record: dict, source: ClosingSource | None, now: datetime) -> int:
+    """Legs graded before football-data.co.uk carried their match: try the file again (or settle on the pull after
+    PENDING_DAYS). Returns how many legs changed."""
+    changed = 0
+    for s in record.get("slips", []):
+        for leg in s.get("leg_results", []):
+            if leg.get("close_source") != "pending" or not leg.get("kickoff"):
+                continue
+            before = (leg.get("close_source"), leg.get("close_chance"))
+            match = {"kickoff": leg["kickoff"], "home": leg["name"].split(" v ")[0], "away": leg["name"].split(" v ")[-1]}
+            close_leg(leg, match, source, now)
+            changed += (leg.get("close_source"), leg.get("close_chance")) != before
+    return changed
+
+
+def summarise(record: dict) -> dict:
     graded = record.get("slips", [])
     exp = sum(s["chance"] for s in graded)
     record["summary"] = {"graded": len(graded), "expected_hits": round(exp, 2), "actual_hits": sum(s["landed"] for s in graded),
@@ -265,6 +371,16 @@ def grade(week: dict, scores: dict[str, dict], record: dict, now: datetime, hist
         b["graded"] += 1
         b["expected"] = round(b["expected"] + s["chance"], 2)
         b["actual"] += int(s["landed"])
+    legs = [leg for s in graded for leg in s.get("leg_results", []) if leg.get("clv") is not None]
+    by = {"close": 0, "pending": 0, "last_pull": 0}
+    for leg in legs:
+        leg.setdefault("close_source", "last_pull")   # legs graded before decision 85 were measured against the last pull
+        src = str(leg["close_source"])
+        by["close" if src.startswith("close") else src if src in by else "last_pull"] += 1
+    real = [leg["clv"] for leg in legs if str(leg.get("close_source", "")).startswith("close")]
+    record["summary"]["closing"] = {"legs": len(legs), **by,
+                                    "avg_clv": round(sum(leg["clv"] for leg in legs) / len(legs), 4) if legs else None,
+                                    "avg_clv_close": round(sum(real) / len(real), 4) if real else None}
     return record
 
 
@@ -280,13 +396,14 @@ def weeks_of(week: dict, now: datetime | None = None) -> list[dict]:
     return [w for w in out if real(w)]
 
 
-def main(argv=None, fetch=None):
+def main(argv=None, fetch=None, closing_fetch=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--week", default="data/week.json")
     ap.add_argument("--record", default="data/record.json")
     ap.add_argument("--scores-file", help="replay odds-feed scores instead of any network call")
     ap.add_argument("--history", default="data/history.json")
     ap.add_argument("--no-espn", action="store_true", help="skip ESPN and use the odds feed's scores only")
+    ap.add_argument("--no-closing", action="store_true", help="skip football-data.co.uk's closing prices (legs keep the last pull)")
     ap.add_argument("--now")
     a = ap.parse_args(argv)
     now = datetime.fromisoformat(a.now.replace("Z", "+00:00")) if a.now else datetime.now(timezone.utc)
@@ -306,8 +423,11 @@ def main(argv=None, fetch=None):
         slugs = {c["name"]: c.get("espn") for c in week.get("competitions", [])}
         slugs.update({n: c.espn for n, c in BY_NAME.items()})
         if not a.no_espn:
-            finals, notes = espn_finals(fetch or live_fetch(pause=0.3), list(wanted.values()), slugs)
+            tls: dict = {}
+            finals, notes = espn_finals(fetch or live_fetch(pause=0.3), list(wanted.values()), slugs, tls)
             scores.update(finals)
+            if tls:
+                record.setdefault("timelines", {}).update(tls)
             for n in notes:
                 print("  " + n)
             print(f"ESPN settled {len(finals)} of {len(wanted)} finished matches")
@@ -322,10 +442,16 @@ def main(argv=None, fetch=None):
                 print(f"odds feed scores failed: {e}")
         elif left:
             print(f"not settled and no odds key to ask: {', '.join(left)}")
+    source = None if (a.no_closing or (a.scores_file and closing_fetch is None)) else ClosingSource(closing_fetch)
     for w in weeks_of(week, now):
-        record = grade(w, scores, record, now, hist)
-    if "summary" not in record:
-        record = grade({"built_at": "", "matches": [], "slips": []}, {}, record, now)
+        record = grade(w, scores, record, now, hist, source)
+    if source is not None:
+        filled = fill_pending(record, source, now)
+        if filled:
+            print(f"closing prices filled in for {filled} legs graded earlier")
+        for n in source.notes:
+            print("  " + n)
+    record = summarise(record)
     rec_path.parent.mkdir(parents=True, exist_ok=True)
     rec_path.write_text(json.dumps(record, indent=1, ensure_ascii=False))
     print(record["summary"])

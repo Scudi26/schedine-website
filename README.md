@@ -14,13 +14,16 @@ as little as possible to the margin: pick the cheapest legs, land just above the
 |---|---|---|
 | `index.html` | GitHub Pages (this repository, root) | always on |
 | `.github/workflows/weekly.yml` → `tools/weekly.py --mode auto` | GitHub Actions | every morning 09:00 UTC: full pull Tuesday and Friday (and any morning the stored week is empty), match-day refresh of the big leagues and national teams the other days (no credit spent when nothing kicks off within 18 hours) |
-| `.github/workflows/grade.yml` → `tools/grade.py` | GitHub Actions | Tuesday and Friday 08:00 UTC, or by hand; final scores from ESPN (free), the odds feed only for what ESPN cannot settle |
+| `.github/workflows/grade.yml` → `tools/grade.py` | GitHub Actions | Tuesday and Friday 08:00 UTC, or by hand; final scores from ESPN (free), the odds feed only for what ESPN cannot settle; closing prices from football-data.co.uk (free, decision 85); goal and red-card minutes kept for the live model |
 | `data/week.json`, `data/record.json` | written by the jobs, read by the site | |
 | `data/history.json` | one snapshot of every match's chances per pull: price movement on the site, closing chance of each graded leg | written by the weekly job |
 | `data/snai.json` | SNAI's prices, typed by hand (or pasted into the site) | before each matchweek |
 | `.github/workflows/teams.yml` → `tools/teams.py` | GitHub Actions | Thursday 07:00 UTC, or by hand |
 | `data/teams.json`, `data/players.json` | crests, squads, line-ups, season averages, transfers (ESPN public API) | written by the team job, read by the site |
 | `lab/seasons.json` | three past seasons (2023-24 → 2025-26, 17 leagues): scores, half-time scores, Bet365 prices and each match's fitted score matrix, for the Lab | built once by `tools/lab_data.py`, uploaded with the site |
+| `lab/style.json` | every team's seasons since 2005-06 in the 17 leagues (points, goals, shots, on target, corners, cards, home and away form, Elo, this season's expected goals): the "Season by season" blocks (decision 88) | built by `tools/style_data.py`, uploaded with the site; rebuild now and then for the current season |
+| `lab/transfermarkt.json` | player profiles from the open transfermarkt-datasets project (CC0): preferred foot, market value and peak, contract end, sub-position (decision 86) | built by `tools/transfermarkt.py`, uploaded with the site; read by the team job |
+| `results/live_model.json` | the live model (decision 87): the goal rate by minute, the score-state and red-card multipliers, fitted on StatsBomb open data + Bet365 prices; copied into `index.html` as `LIVE_MODEL` | built by `tools/live_data.py` then `tools/live_fit.py` |
 
 Prices come from The Odds API (free plan, 500 credits a month). The key lives only in the repository secret
 `ODDS_API_KEY`. Competitions (decision 74, `scudi_slips/comps.py`): the big five leagues and the Champions League;
@@ -48,9 +51,28 @@ Champions League; crests, squads, results, form and tables for everything else):
 unofficial, so the job is polite (one request every 0.25 s) and the site works without the files (the pitch and the
 squads simply do not appear). If ESPN ever refuses the GitHub runner, run `python3 tools/teams.py` on a computer and
 upload `data/teams.json` and `data/players.json` by hand. The repository ships example team data (invented squads and
-numbers, real shapes, tagged "example" in the header) until the job has run once.
+numbers, real shapes, tagged "example" in the header) until the job has run once; the job never starts from that file
+(incident 2026-10-05: it had, and invented matches were counted for a month). Every finished match is stored one by one
+and checked against ESPN's schedule on every run; what ESPN no longer lists is dropped and the averages are recomputed.
+With `lab/transfermarkt.json` in the repository, every squad player is matched by birthday and name to Transfermarkt's
+profile (market value and peak, preferred foot, contract end — Transfermarkt's estimates, through the open
+transfermarkt-datasets project, current to July 2026 while that project's updates are paused).
 
-Not available from any free source, so not shown: heatmaps, preferred foot, market values.
+Closing prices (decision 85): football-data.co.uk publishes, within days of each round, the closing 1 X 2 and over/under
+2.5 prices (Betfair Exchange, Bet365, market average) and the expected goals of every match of sixteen of the leagues
+here. The grader measures every leg's CLV against that closing market (margin removed, score matrix fitted, the pick
+priced); a leg the file does not carry yet is "pending" and settles on the last price pull after 12 days; the Champions
+League, the other cups and national teams always use the last pull. The Record screen says how many legs are measured
+against the real closing price.
+
+The live model (decision 87): the chance of a pick during the match follows the goals still to come minute by minute,
+with the goal rate of a level eleven-a-side match through the ninety minutes and its stoppage time, more goals for a
+side that trails (one goal down about 14% more, two or more down 23%; one up 6%), fewer for a side with a player sent
+off (a third less) and more for its opponent (80% more), fitted on 1,136 league matches with pre-match prices (StatsBomb
+open data: Serie A, Premier League and Ligue 1 2015-16; Bet365 prices from football-data.co.uk). Red cards come from
+ESPN's match details. The simulation draws its goals at the same rates. Data: StatsBomb (github.com/statsbomb/open-data).
+
+Not available from any free source, so not shown: heatmaps.
 
 ## Setting it up (once)
 
@@ -91,11 +113,15 @@ and grading never looks at one (decision 76).
 
 ```
 pip install numpy scipy pandas pytest ruff
-pytest -q            # 99 tests (they also run tests/js/engine.test.js with node)
+pytest -q            # 108 tests (they also run tests/js/engine.test.js with node)
 python3 -m tools.weekly --from-file tests/feed_week_sample.json --now 2026-10-09T09:00:00Z   # no key needed
 ODDS_API_KEY=... python3 -m tools.weekly                                                       # the real thing
 python3 tools/snai.py    # SNAI's margins and the slips at SNAI's typed prices -> results/snai_<date>.json
 python3 tools/teams.py   # team and player data from ESPN -> data/teams.json, data/players.json (incremental)
+python3 tools/transfermarkt.py   # players.csv.gz from the open transfermarkt-datasets -> lab/transfermarkt.json (the team job reads it)
+python3 tools/style_data.py      # data/Matches.csv + this season's football-data.co.uk files -> lab/style.json (season by season)
+python3 tools/live_data.py       # StatsBomb open data: goal and red-card minutes of ~1,700 matches -> results/live_events.json
+python3 tools/live_fit.py        # the live model -> results/live_model.json (then copy LIVE_MODEL into index.html)
 python3 tools/sample_espn.py   # example team data (invented) in the same shapes, for the site without the job
 python3 tools/markets.py all   # the new markets' calibration check (needs data/Matches.csv) -> results/markets.json
 python3 tools/lab_data.py      # the Lab's seasons (needs data/Matches.csv) -> lab/seasons.json
@@ -155,6 +181,11 @@ are in `docs/strategy/`.
   left of SNAI's page shows what is read and stops it. Scudi matches each row once (names, exact kick-off, prices; youth and
   women's teams never), then by SNAI's event number; padlocked prices are taken away. On the phone (SNAI's app) the
   screenshot reader stays.
+- Season by season (decision 88): on a team page and in the side-by-side view, each team's last seasons from
+  `lab/style.json` (points a game, goals, shots and shots on target for and against, expected goals this season) and, for
+  the current season, its attack and defence against the league average in shots on target.
+- The player card (decision 86) shows preferred foot, market value, peak value and contract end from Transfermarkt's
+  open dataset when the team job found the player there (four of five big-league players).
 - What each multiplier gives back (decision 84): on "Slips", one row per multiplier (2x to 500x and the slip's own) with
   the likeliest slip's average return for every €1 played (chance × pay-out, SNAI bonus included) as a bar, its chance,
   matches and SNAI's cut; tap a row to use that multiplier. Under it, "Most likely" or "Best average return", each with

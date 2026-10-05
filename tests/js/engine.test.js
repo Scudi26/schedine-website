@@ -223,6 +223,33 @@ lc.status = { period: 2, displayClock: "60'", type: { name: 'STATUS_SECOND_HALF'
 lc.details = lc.details.slice(0, 2); lc.competitors.forEach(c => { c.score = '1'; });
 st = S.espnState(legFio, live);
 ok(st.state === 'in' && st.minute === 60 && st.hh === 0 && st.ha === 1 && st.goals.length === 2, 'in play: minute, half time from the goals');
+/* red cards (decision 87): ESPN flags them in the details; counted for the leg's sides, with the swap, and they move the live chance */
+const liveRed = JSON.parse(JSON.stringify(live)), lrc = liveRed.competitions[0];
+lrc.details = lrc.details.concat([{ redCard: true, scoringPlay: false, clock: { displayValue: "52'" }, team: { id: '114' } }, { yellowCard: true, scoringPlay: false, clock: { displayValue: "40'" }, team: { id: '109' } }]);
+const stRed = S.espnState(legFio, liveRed), stRedSw = S.espnState(Object.assign({}, legFio, { th: '114', ta: '109' }), liveRed);
+ok(stRed.rh === 0 && stRed.ra === 1 && stRed.reds.length === 1 && stRed.reds[0].m === 52 && stRed.reds[0].s === 'a' && st.rh === 0 && st.ra === 0, 'a red card read for the right side, a yellow ignored');
+ok(stRedSw.rh === 1 && stRedSw.ra === 0, 'red card with home and away swapped');
+ok(S.legLive(legFio, stRed).p > S.legLive(legFio, st).p + 0.05, 'the other side a man short: the home win is likelier');
+const atRed = S.stateAt(stRed, 63 + 10), beforeRed = S.stateAt(stRed, 40);
+ok(atRed.ra === 1 && atRed.rh === 0 && beforeRed.ra === 0 && atRed.period === 2 && beforeRed.period === 1, 'a red card counts only from its minute');
+/* the live model itself: kick-off hands back the pre-match goals (scale), states and cards move the rates, steps add up */
+const M = S.LIVE_MODEL, stepsAll = S.liveSteps(false, 0, false), steps60 = S.liveSteps(true, 60, false), stepsHT = S.liveSteps(false, 30, true);
+ok(stepsAll.length === 92 && steps60.length === 31 && stepsHT.length === 16 && stepsHT[15][0] === 18 && steps60[30][0] === 19, 'live steps: minutes left plus stoppage');
+ok(Math.abs(stepsAll.reduce((acc, q) => acc + q[1], 0) - (90 + M.stoppage['1'].len + M.stoppage['2'].len)) < 1e-9, 'live steps: the whole match');
+const d0 = S.liveDist(1.5, 1.1, 0, 0, stepsAll, 0, 0); let eh = 0, ea = 0; d0.forEach((row, x) => row.forEach((p, y) => { eh += x * p; ea += y * p; }));
+ok(Math.abs(eh + ea - 2.6) < 0.03, 'at kick-off the chain hands back the pre-match expected goals');
+ok(S.liveRate(1.5, 10, -1, 0, 0) > S.liveRate(1.5, 10, 0, 0, 0) && S.liveRate(1.5, 10, 0, 1, 0) < S.liveRate(1.5, 10, 0, 0, 0) && S.liveRate(1.5, 10, 0, 0, 0) < S.liveRate(1.5, 10, 0, 0, 1), 'trailing, a man short, the opponent a man short');
+ok(S.liveRate(1.5, 0, 0, 0, 0) < S.liveRate(1.5, 17, 0, 0, 0) && S.liveRate(1.5, 19, 0, 0, 0) > S.liveRate(1.5, 10, 0, 0, 0), 'a slow start, a busy stoppage time');
+ok(S.inplay('1', 1.5, 1.0, 2, 0, 90, true) === 1 && S.inplay('X', 1.5, 1.0, 2, 0, 90, true) === 0 && S.inplay('1TO05', 1.5, 1.0, 0, 0, 60, false, 0, 0, { period: 2 }) === 0, 'settled picks');
+ok(Math.abs(S.inplay('1', 1.5, 1.0, 0, 0, 46, false, null, null, { period: 1 }) - S.inplay('1', 1.5, 1.0, 0, 0, 46, false, 0, 0, { period: 2 })) > 0.005, 'minute 46 in first-half stoppage differs from minute 46 of the second half');
+/* stoppage time on ESPN's clock ("90'+5'") reaches the model: fewer minutes left than at 90' flat; the break starts the second half */
+const stop5 = JSON.parse(JSON.stringify(live)); stop5.competitions[0].status = { period: 2, displayClock: "90'+5'", type: { name: 'STATUS_SECOND_HALF', state: 'in', completed: false, shortDetail: "90'+5'" } };
+const st95 = S.espnState(legFio, stop5);
+ok(st95.minute === 95 && st95.state === 'in', "90'+5' is read as minute 95");
+ok(S.liveSteps(true, 95, false).length === 1 && S.liveSteps(true, 95, false)[0][1] < S.liveSteps(true, 90, false)[0 + 0][1] + 4, 'in stoppage only what is left of it remains');
+ok(S.inplay('O25', 1.4, 1.1, 1, 1, 95, false, 1, 0, { period: 2 }) < S.inplay('O25', 1.4, 1.1, 1, 1, 90, false, 1, 0, { period: 2 }) - 0.05, 'five minutes into stoppage: much less time for a third goal');
+ok(Math.abs(S.inplay('1', 1.5, 1.0, 1, 0, 45, false, 1, 0, { period: 1, ht: true }) - S.inplay('1', 1.5, 1.0, 1, 0, 45, false, 1, 0, { period: 2 })) < 1e-12, 'at the break a full-time pick looks at the second half only');
+ok(S.stateAt(st, 50).ht === true && S.stateAt(st, 50).minute === 45 && S.stateAt(st, 46).minute === 46 && S.stateAt(st, 46).period === 1, 'the rebuilt clock runs into first-half stoppage, then the break');
 const late = S.lateBy(st, 63 + 15 + 4);
 ok(Math.abs(late - 4) < 1e-9 && S.lateBy({ state: 'in', minute: 20, period: 1 }, 25) === 5 && S.lateBy({ state: 'post' }, 99) === null, 'how late a match runs');
 const a30 = S.stateAt(st, 30), a10 = S.stateAt(st, 10), a55 = S.stateAt(st, 55);
