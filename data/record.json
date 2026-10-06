@@ -9,6 +9,14 @@
     "expected": 0.19,
     "actual": 0
    }
+  },
+  "closing": {
+   "legs": 28,
+   "close": 0,
+   "pending": 0,
+   "last_pull": 28,
+   "avg_clv": -0.0473,
+   "avg_clv_close": null
   }
  },
  "slips": [
@@ -34,7 +42,8 @@
      "won": true,
      "score": "0-0",
      "close_chance": 0.2997,
-     "clv": -0.044
+     "clv": -0.044,
+     "close_source": "last_pull"
     },
     {
      "match": "133c2380620459b6c4dcefe9ce9f16dd",
@@ -46,7 +55,8 @@
      "won": false,
      "score": "0-7",
      "close_chance": 0.2455,
-     "clv": -0.0941
+     "clv": -0.0941,
+     "close_source": "last_pull"
     },
     {
      "match": "663bf315127df32b389f73d7b570955a",
@@ -58,7 +68,8 @@
      "won": true,
      "score": "2-0",
      "close_chance": 0.6968,
-     "clv": 0.1358
+     "clv": 0.1358,
+     "close_source": "last_pull"
     },
     {
      "match": "ede91daefcca16990379ab59f170ad5c",
@@ -70,7 +81,8 @@
      "won": false,
      "score": "0-0",
      "close_chance": 0.3513,
-     "clv": -0.0831
+     "clv": -0.0831,
+     "close_source": "last_pull"
     }
    ]
   },
@@ -96,7 +108,8 @@
      "won": false,
      "score": "1-1",
      "close_chance": 0.329,
-     "clv": -0.0624
+     "clv": -0.0624,
+     "close_source": "last_pull"
     },
     {
      "match": "25729c523424cd79daafd14635c7ea12",
@@ -108,7 +121,8 @@
      "won": true,
      "score": "0-0",
      "close_chance": 0.6017,
-     "clv": -0.0373
+     "clv": -0.0373,
+     "close_source": "last_pull"
     },
     {
      "match": "d2ec606c3816938d5306b5f43c36dc55",
@@ -120,7 +134,8 @@
      "won": false,
      "score": "0-3",
      "close_chance": 0.1388,
-     "clv": -0.0798
+     "clv": -0.0798,
+     "close_source": "last_pull"
     }
    ]
   },
@@ -146,7 +161,8 @@
      "won": false,
      "score": "1-1",
      "close_chance": 0.329,
-     "clv": -0.0624
+     "clv": -0.0624,
+     "close_source": "last_pull"
     },
     {
      "match": "d2ec606c3816938d5306b5f43c36dc55",
@@ -158,7 +174,8 @@
      "won": false,
      "score": "0-3",
      "close_chance": 0.1388,
-     "clv": -0.0798
+     "clv": -0.0798,
+     "close_source": "last_pull"
     },
     {
      "match": "6321b7d465a21274f0da7a5e50dbf5ef",
@@ -170,7 +187,8 @@
      "won": false,
      "score": "2-2",
      "close_chance": 0.4711,
-     "clv": 0.0129
+     "clv": 0.0129,
+     "close_source": "last_pull"
     }
    ]
   },
@@ -196,7 +214,8 @@
      "won": true,
      "score": "0-3",
      "close_chance": 0.4329,
-     "clv": -0.0563
+     "clv": -0.0563,
+     "close_source": "last_pull"
     },
     {
      "match": "d2ec606c3816938d5306b5f43c36dc55",
@@ -208,7 +227,8 @@
      "won": false,
      "score": "0-3",
      "close_chance": 0.1388,
-     "clv": -0.0798
+     "clv": -0.0798,
+     "close_source": "last_pull"
     },
     {
      "match": "85506167f42ea07df572481f38ee3ba7",
@@ -220,7 +240,8 @@
      "won": true,
      "score": "2-0",
      "close_chance": 0.5966,
-     "clv": -0.0335
+     "clv": -0.0335,
+     "close_source": "last_pull"
     },
     {
      "match": "6321b7d465a21274f0da7a5e50dbf5ef",
@@ -232,7 +253,8 @@
      "won": false,
      "score": "2-2",
      "close_chance": 0.4711,
-     "clv": 0.0129
+     "clv": 0.0129,
+     "close_source": "last_pull"
     }
    ]
   },
@@ -258,7 +280,8 @@
      "won": false,
      "score": "0-0",
      "close_chance": 0.5481,
-     "clv": -0.0353
+     "clv": -0.0353,
+     "close_source": "last_pull"
     },
     {
      "match": "f4993853b5a6a8ff445a173fff6c6a02",
@@ -270,7 +293,8 @@
      "won": true,
      "score": "0-3",
      "close_chance": 0.4329,
-     "clv": -0.0476
+     "clv": -0.0476,
+     "close_source": "last_pull"
     },
     {
      "match": "d2ec606c3816938d5306b5f43c36dc55",
@@ -282,7 +306,8 @@
      "won": false,
      "score": "0-3",
      "close_chance": 0.1388,
-     "clv": -0.095
+     "clv": -0.095,
+     "close_source": "last_pull"
     }
    ]
   },
@@ -308,7 +333,8 @@
      "won": false,
      "score": "0-3",
      "close_chance": 0.1388,
-     "clv": -0.095
+     "clv": -0.095,
+     "close_source": "last_pull"
     },
     {
      "match": "562098ccc1859420552f95039d168817",
@@ -320,7 +346,8 @@
      "won": true,
      "score": "4-1",
      "close_chance": 0.6724,
-     "clv": -0.0317
+     "clv": -0.0317,
+     "close_source": "last_pull"
     },
     {
      "match": "6321b7d465a21274f0da7a5e50dbf5ef",
@@ -332,7 +359,8 @@
      "won": false,
      "score": "2-2",
      "close_chance": 0.2704,
-     "clv": -0.1347
+     "clv": -0.1347,
+     "close_source": "last_pull"
     }
    ]
   },
@@ -358,7 +386,8 @@
      "won": true,
      "score": "0-2",
      "close_chance": 0.7452,
-     "clv": -0.0312
+     "clv": -0.0312,
+     "close_source": "last_pull"
     },
     {
      "match": "f4993853b5a6a8ff445a173fff6c6a02",
@@ -370,7 +399,8 @@
      "won": true,
      "score": "0-3",
      "close_chance": 0.4329,
-     "clv": -0.0476
+     "clv": -0.0476,
+     "close_source": "last_pull"
     },
     {
      "match": "d2ec606c3816938d5306b5f43c36dc55",
@@ -382,7 +412,8 @@
      "won": false,
      "score": "0-3",
      "close_chance": 0.1388,
-     "clv": -0.095
+     "clv": -0.095,
+     "close_source": "last_pull"
     },
     {
      "match": "6321b7d465a21274f0da7a5e50dbf5ef",
@@ -394,7 +425,8 @@
      "won": false,
      "score": "2-2",
      "close_chance": 0.4711,
-     "clv": 0.0129
+     "clv": 0.0129,
+     "close_source": "last_pull"
     }
    ]
   },
@@ -420,7 +452,8 @@
      "won": false,
      "score": "1-1",
      "close_chance": 0.329,
-     "clv": -0.0673
+     "clv": -0.0673,
+     "close_source": "last_pull"
     },
     {
      "match": "d2ec606c3816938d5306b5f43c36dc55",
@@ -432,7 +465,8 @@
      "won": false,
      "score": "0-3",
      "close_chance": 0.1388,
-     "clv": -0.095
+     "clv": -0.095,
+     "close_source": "last_pull"
     },
     {
      "match": "ddcce787d28e80a28c55081be6c722ed",
@@ -444,7 +478,8 @@
      "won": true,
      "score": "2-1",
      "close_chance": 0.7757,
-     "clv": -0.0226
+     "clv": -0.0226,
+     "close_source": "last_pull"
     },
     {
      "match": "6321b7d465a21274f0da7a5e50dbf5ef",
@@ -456,7 +491,8 @@
      "won": false,
      "score": "2-2",
      "close_chance": 0.4711,
-     "clv": 0.0129
+     "clv": 0.0129,
+     "close_source": "last_pull"
     }
    ]
   }
