@@ -1,6 +1,6 @@
 /* Scudi as an installed app: network first for everything of this site (a new upload or a new price pull always shows),
    the last copy only when there is no connection. Other sites (ESPN, crests, fonts) are never touched. */
-const CACHE = 'scudi-v1';
+const CACHE = 'scudi-v2';
 self.addEventListener('install', (e) => {
   self.skipWaiting();
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', 'index.html', 'manifest.webmanifest', 'icons/icon-192.png'])).catch(() => {}));

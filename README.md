@@ -106,6 +106,18 @@ describe the app.
 Crests: clubs the team-data job has not covered yet get their crest from ESPN's public team list, read by the browser
 (one request per league, kept a week). National teams show their flag (drawn in the page).
 
+## The look (decision 89: "Notturna")
+
+One design system in the page's stylesheet: a stadium at night. Tokens for the night ground, lit surfaces, hairlines,
+the coin gold (a metallic gradient on the key numbers and the main action), the competition accents and the semantic
+green/red, with a light theme of the same tokens ("Giorno") chosen by the phone or in Settings. Floodlights sweep from the
+top corners, the pitch breathes green at the bottom, a star field and a film grain sit behind everything (all still under
+reduced motion). Phone first: a floating glass dock for the six screens, bottom sheets for the match, team and player
+views and for the explanations; the desktop widens the same components and keeps a lit tab rail in the header. The
+brand mark — a gold shield with a night field and a coin — is drawn in SVG in the page, in the launch splash and in the
+app icons (`tools/make_icons.py`); the wordmark dots its i with the coin. Nothing in the engine, the data files or the
+jobs changed for the look: every id and class the scripts rely on is kept.
+
 Example data never passes for real prices: the jobs discard a stored week that is a replay or is dated in the future,
 and grading never looks at one (decision 76).
 
