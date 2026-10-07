@@ -1604,3 +1604,28 @@ def test_dashboard_function_is_the_two_file_function():
     root = Path(__file__).resolve().parents[1]
     r = subprocess.run([sys.executable, "tools/pack_function.py", "--check"], cwd=root, capture_output=True, text=True)
     assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_feed_fit_cases_are_the_python_code():
+    """tests/js/fit_cases.json (what the snai-pull function's de-vig, consensus and score-matrix fit are compared with in
+    tests/js/feed.test.mjs) is what scudi_slips computes today (decision 94)."""
+    import subprocess
+    import sys
+    root = Path(__file__).resolve().parents[1]
+    r = subprocess.run([sys.executable, "tests/make_fit_cases.py", "--check"], cwd=root, capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_sharp_fit_stays_private():
+    """Decision 94: the sharp books' fit lives in the private store (book_events.fit, same row-level security), is saved by
+    feed_save only (service role), and the site reads it only with the owner's sign-in, never from the repository."""
+    root = Path(__file__).resolve().parents[1]
+    sql = (root / "supabase/migrations/20261007120000_sharp_fit.sql").read_text()
+    assert "alter table public.book_events add column if not exists fit jsonb;" in sql
+    assert "revoke all on function public.feed_save(jsonb) from public, anon, authenticated;\ngrant execute on function public.feed_save(jsonb) to service_role;" in sql
+    assert "fit = coalesce(excluded.fit, b.fit)" in sql
+    html = (root / "index.html").read_text()
+    assert "rest/v1/book_events?select=event_id,match_id,home,away,league,commence_time,m,odds_at,fit&book=eq.snai" in html
+    assert "Authorization: 'Bearer ' + t" in html
+    week = (root / "tools/weekly.py").read_text()
+    assert "odss" not in week.lower()   # the public weekly job never touches odss-api's data

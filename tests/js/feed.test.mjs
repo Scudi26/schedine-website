@@ -176,7 +176,152 @@ const rome = (iso) => Date.parse(iso);   /* the ISO strings below carry their of
   ok(same(F.pickIds(rows, now, {}), ['soon', 'tomorrow', 'late']), 'soonest first; far matches only when their prices are 12 hours old; never a match already started');
   ok(same(F.pickIds(rows, now, {}, true), ['soon', 'tomorrow', 'late', 'lateFresh']), 'Update now asks for every match ahead');
   const many = Array.from({ length: 400 }, (_, i) => ({ event_id: 'e' + i, commence_time: iso(1 + i / 100) }));
-  ok(F.pickIds(many, now, {}).length === 150, 'at most 150 ids in one request');
+  const ids = F.pickIds(many, now, {}), parts = F.chunks(ids, 150);
+  ok(ids.length === 300 && parts.length === 2 && parts.every(c => c.length === 150) && parts[0][0] === 'e0', 'at most 150 ids in one request, two requests at most in one pull, soonest first');
+  ok(F.pickIds(many, now, { maxChunks: 1 }).length === 150, 'one request when maxChunks is 1');
+}
+
+/* ---------- decision 94: fixtures, tighter pairing, what was not paired ---------- */
+{
+  const now = Date.parse('2026-10-07T13:00:00Z');
+  const week = {
+    matches: [
+      { id: 'lazio', competition: 'Serie A', kickoff: '2026-10-11T13:00:00+00:00', home: 'Lazio', away: 'Monza' },
+      { id: 'gala', competition: 'Süper Lig', kickoff: '2026-10-09T17:00:00+00:00', home: 'Galatasaray', away: 'Kasimpasa SK' },
+      { id: 'old', competition: 'Serie A', kickoff: '2026-10-06T08:00:00+00:00', home: 'Old', away: 'Match' },
+    ],
+    fixtures: [
+      { id: 'lazio', competition: 'Serie A', kickoff: '2026-10-11T13:00:00+00:00', home: 'Lazio', away: 'Monza' },
+      { id: 'emp', competition: 'Serie B', kickoff: '2026-10-10T13:00:00+00:00', home: 'Empoli', away: 'Palermo' },
+      { id: 'catz', competition: 'Serie B', kickoff: '2026-10-11T13:00:00+00:00', home: 'US Catanzaro 1929', away: 'Mantova' },
+      { id: 'far', competition: 'Serie B', kickoff: '2026-10-25T13:00:00+00:00', home: 'Far', away: 'Away' },
+    ],
+  };
+  const items = F.scudiItems(week, now, {});
+  ok(same(items.map(m => m.id), ['lazio', 'gala', 'emp', 'catz']), 'the priced matches, then the fixtures not priced yet, within the list\'s eight days: ' + items.map(m => m.id));
+  ok(items.find(m => m.id === 'emp').priced === false && items.find(m => m.id === 'lazio').priced === true, 'a fixture is marked as not priced');
+  const ev = [
+    { id: 'e1', home: 'Lazio', away: 'Monza', league: 'Serie A', commence: '2026-10-11T13:00:00Z' },
+    { id: 'e2', home: 'Foggia', away: 'Potenza', league: 'Serie C, Group C', commence: '2026-10-11T13:00:00Z' },
+    { id: 'e3', home: 'Empoli', away: 'Palermo', league: 'Serie B', commence: '2026-10-10T13:00:00Z' },
+    { id: 'e4', home: 'Catanzaro', away: 'Mantova', league: 'Serie B', commence: '2026-10-11T13:00:00Z' },
+    { id: 'e5', home: 'Galatasaray Istanbul', away: 'Kasimpasa', league: 'Turchia Super Lig', commence: '2026-10-09T19:00:00Z' },
+  ];
+  const s = F.selectEvents(ev, items, now, {});
+  const got = Object.fromEntries(s.events.map(e => [e.id, e.match]));
+  ok(got.e1 === 'lazio' && !got.e2, 'Foggia - Potenza (Serie C) is not paired with Lazio - Monza any more: "Monza" and "Potenza" alone are not enough');
+  ok(got.e3 === 'emp' && got.e4 === 'catz', 'fixtures are paired too (Serie B before the Friday pull)');
+  ok(s.matched === 3 && s.of === 4 && s.pricedMatched === 1 && s.pricedOf === 2, 'counts: all items and the priced ones: ' + JSON.stringify([s.matched, s.of, s.pricedMatched, s.pricedOf]));
+  const un = s.unpaired.find(u => /Galatasaray/.test(u.match));
+  ok(un && un.snai && un.snai.offMin === 120 && un.snai.league === 'Turchia Super Lig' && un.priced === true, 'what was not paired is reported with SNAI\'s nearest namesake (two hours later here)');
+  ok(same(s.byComp['Serie B'], [2, 2]) && same(s.byComp['Süper Lig'], [0, 1]), 'pairing per competition');
+  ok(F.namesAlike(0.6, 0.56) && F.namesAlike(0.1, 0.8) && !F.namesAlike(0.1, 0.57) && F.namesAlike(0.1, 0.57, true) && !F.namesAlike(0.1, 0.3, true), 'names alike: both 0.55, or one 0.8, or one 0.55 in the competition\'s league');
+  ok(F.teamSim('Paris Saint-Germain', 'PSG') === 1 && F.teamSim('RB Leipzig', 'Lipsia') === 1 && F.teamSim('SC Freiburg', 'Friburgo') === 1 && F.teamSim('Sporting Lisbon', 'Sporting Lisbona') === 1, 'clubs in SNAI\'s Italian: PSG, Lipsia, Friburgo, Sporting Lisbona');
+  const ps = F.selectEvents([{ id: 'p', home: 'PSG', away: 'Marsiglia', league: 'Ligue 1', commence: '2026-10-11T19:00:00Z' }], [{ id: 'psg', competition: 'Ligue 1', kickoff: '2026-10-11T19:00:00Z', home: 'Paris Saint-Germain', away: 'Marseille' }], now, {});
+  ok(ps.matched === 1, 'PSG - Marsiglia is Paris Saint-Germain - Marseille');
+  const lc = F.leagueCounts(ev.concat([{ id: 'y', home: 'Roma U19', away: 'Lazio U19', league: 'Primavera 1', commence: '2026-10-11T10:00:00Z' }]), 3);
+  ok(Object.keys(lc).length === 3 && lc['Serie B'] === 2 && !lc['Primavera 1'], 'SNAI\'s list by league, youth left out');
+  /* new matches in Scudi's list → SNAI's list is read again */
+  const known = F.itemKeys(week, now, {});
+  ok(F.freshCount(week, now, {}, known) === 0, 'nothing new: no extra reading');
+  const later = JSON.parse(JSON.stringify(week)); later.fixtures.push({ id: 'new1', competition: 'Championship', kickoff: '2026-10-10T14:00:00+00:00', home: 'Watford', away: 'Burnley' });
+  ok(F.freshCount(later, now, {}, known) === 1, 'a new fixture in the window: read again');
+  ok(F.freshCount(week, now + 5 * D, {}, known) === 0, 'matches leaving the window do not count');
+  ok(F.freshCount(week, now, {}, null) === 4 && F.freshCount(null, now, {}, known) === 0, 'never read: everything is new; no list: nothing');
+}
+
+/* ---------- decision 94: the planner reads SNAI's list as soon as there is something new ---------- */
+{
+  const now = Date.parse('2026-10-09T09:30:00Z');
+  const st = { quota_remaining: 400, quota_reset_at: '2026-11-06T13:10:00Z', last_pull_at: '2026-10-09T09:20:00Z', discovered_at: '2026-10-09T07:00:00Z', avg_cost: 2 };
+  const a = F.plan({ now, st, cfg: {}, kicks: [], manual: false });
+  const b = F.plan({ now, st, cfg: {}, kicks: [], manual: false, fresh: true });
+  ok(!a.pull && b.pull && b.discover && b.why === 'new-matches', 'new matches: a pull with the list now (otherwise it would wait)');
+  ok(!F.plan({ now: Date.parse('2026-10-09T01:00:00Z'), st, cfg: {}, kicks: [], fresh: true }).pull, 'not at night');
+  ok(!F.plan({ now, st: { ...st, quota_remaining: 20 }, cfg: {}, kicks: [], fresh: true }).pull, 'not from the reserve');
+}
+
+/* ---------- decision 94: the sharp books and Scudi's own chances ---------- */
+{
+  ok(same(F.sharpBooks({ bookmakers: [{ key: 'snai' }, { key: 'pinnacle' }, { key: 'betfair_ex_it', is_exchange: true }, { key: 'betfair_sb', is_exchange: false }, { key: 'matchbook' }, { key: 'bet365' }] }), ['pinnacle', 'betfair_ex_it', 'matchbook']), 'the sharp books in odss-api\'s list: Pinnacle, the Betfair exchange, Matchbook');
+  ok(same(F.sharpBooks(['snai', 'pinnacle']), ['pinnacle']) && same(F.sharpBooks({ data: [{ id: 'Pinnacle' }] }), ['Pinnacle']) && same(F.sharpBooks(null), []), 'any shape of the list');
+  ok(F.sharpWeight('pinnacle') === 3 && F.sharpWeight('betfair_ex_eu') === 2 && F.sharpWeight('matchbook') === 1.5 && F.sharpWeight('snai') === 0, 'the weekly job\'s weights');
+  const rb = F.refBooks({ bookmakers: [{ key: 'snai', country: 'IT', playable_it: true }, { key: 'bet365', country: 'GB' }, { key: 'sisal', country: 'IT' }, { key: 'pinnacle', country: 'CW' },
+    { key: 'smarkets', is_exchange: true }, { key: 'betfair_ex_eu', is_exchange: true }, { key: 'williamhill' }, { key: 'eurobet', playable_it: true }] }, 10);
+  ok(same(rb.keys, ['pinnacle', 'betfair_ex_eu', 'smarkets', 'williamhill', 'bet365']) && rb.all.length === 8, 'the reference books: sharp first, then exchanges, then big books; never an Italian one (' + rb.keys + ')');
+  ok(same(F.refBooks({ bookmakers: [{ key: 'pinnacle' }, { key: 'bet365' }, { key: 'williamhill' }] }, 2).keys, ['pinnacle', 'williamhill']), 'at most refBooks of them');
+  ok(F.usablePrices([2.15, 3.7, 3.95], null, null, 48, 'matchbook') && !F.usablePrices([2.15, 3.7, 3.95], null, null, 48, 'bet365'), 'an exchange\'s best prices may add up to a little under 100%, a bookmaker\'s may not');
+  const u = F.oddsUrl(F.nearParams(['a1'], {}, ['pinnacle', 'snai']));
+  ok(u.includes('bookmakers=snai,pinnacle'), 'the prices request brings the sharp books with SNAI (same request)');
+  const cases = JSON.parse(fs.readFileSync(path.join(here, 'fit_cases.json'), 'utf8'));
+  let worstDevig = 0, worstFit = 0, worstErr = 0, worstCons = 0;
+  for (const c of cases.devig) { const f = F.powerDevig(c.prices); f.forEach((v, i) => { worstDevig = Math.max(worstDevig, Math.abs(v - c.fair[i])); }); }
+  ok(worstDevig < 1e-9, 'power de-vig as in scudi_slips/devig.py (worst gap ' + worstDevig.toExponential(1) + ')');
+  let both = 0, bad = 0, badAgree = 0;
+  for (const c of cases.fit) {
+    const f = F.fitMarket(...c.p);
+    if (c.err > 0.01) { bad++; if (f.err > 0.01) badAgree++; continue; }
+    both++;
+    worstFit = Math.max(worstFit, Math.abs(f.lh - c.lh), Math.abs(f.la - c.la), Math.abs(f.rho - c.rho));
+    worstErr = Math.max(worstErr, Math.abs(f.err - c.err));
+    const s1 = F.summaryOf(f.lh, f.la, f.rho), s2 = F.summaryOf(c.lh, c.la, c.rho);
+    worstCons = Math.max(worstCons, ...s1.map((v, i) => Math.abs(v - s2[i])));
+  }
+  ok(both >= 55 && worstErr < 1e-5, both + ' markets: the fitted matrix misses the market\'s chances by as much as in Python (worst gap ' + worstErr.toExponential(1) + ')');
+  ok(worstCons < 1e-5, 'and gives the same chances as scudi_slips/matrix.fit_market (worst gap ' + worstCons.toExponential(1) + ')');
+  ok(worstFit < 1e-3, 'with the same expected goals and low-score correction (worst gap ' + worstFit.toExponential(1) + ')');
+  ok(bad >= 8 && badAgree === bad, 'a market no matrix reproduces is turned down in both (' + badAgree + '/' + bad + ')');
+  let worstC = 0, nulls = 0;
+  for (const c of cases.consensus) {
+    const r = F.consensusOf(c.books.map(b => ({ book: b.book, prices: b.prices, at: null })), null, 48);
+    if (c.probs === null) { ok(r === null, 'no usable book: no consensus'); nulls++; continue; }
+    if (!r) { worstC = 1; continue; }
+    r.probs.forEach((v, i) => { worstC = Math.max(worstC, Math.abs(v - c.probs[i])); });
+  }
+  ok(worstC < 1e-9, 'the weighted consensus as in scudi_slips/consensus.py (worst gap ' + worstC.toExponential(1) + ')');
+  /* records → fits */
+  const now = Date.parse('2026-10-09T09:00:00Z'), lu = '2026-10-09T08:55:00Z';
+  const R = (id, market, line, books) => ({ event_id: id, market, line, period: null, scope: null, commence_time: '2026-10-10T13:00:00Z', home_team: 'Empoli', away_team: 'Palermo', league: 'Serie B', bookmakers: books });
+  const recs = [
+    R('ev1', '1x2', null, [{ key: 'snai', outcomes: { HOME: 2.5, DRAW: 3.1, AWAY: 2.9 }, last_update: lu }, { key: 'pinnacle', outcomes: { HOME: 2.62, DRAW: 3.25, AWAY: 3.02 }, last_update: lu }]),
+    R('ev1', 'ou', 2.5, [{ key: 'snai', outcomes: { OVER: 2.0, UNDER: 1.75 }, last_update: lu }, { key: 'pinnacle', outcomes: { OVER: 2.08, UNDER: 1.84 }, last_update: lu }]),
+    R('ev1', 'ou', 2.25, [{ key: 'pinnacle', outcomes: { OVER: 1.9, UNDER: 2.0 }, last_update: lu }]),
+    R('ev2', '1x2', null, [{ key: 'pinnacle', outcomes: { HOME: 1.5, DRAW: 4.4, AWAY: 7.2 }, last_update: lu }]),
+    R('ev3', '1x2', null, [{ key: 'pinnacle', outcomes: { HOME: 1.5, DRAW: 4.4 }, suspended: ['AWAY'], last_update: lu }]),
+    R('ev4', '1x2', null, [{ key: 'pinnacle', outcomes: { HOME: 2, DRAW: 3.4, AWAY: 3.9 }, last_update: '2026-10-01T08:00:00Z' }]),
+    R('ev5', '1x2', null, [{ key: 'snai', outcomes: { HOME: 2, DRAW: 3.4, AWAY: 3.9 }, last_update: lu }]),
+  ];
+  const fits = F.sharpFits(recs, ['pinnacle'], now, {});
+  const f1 = fits.get('ev1'), f2 = fits.get('ev2');
+  const fair = F.powerDevig([2.62, 3.25, 3.02]), over = F.powerDevig([2.08, 1.84])[0];
+  ok(f1 && f1.goals && Math.abs(f1.p[0] - fair[0]) < 1e-4 && Math.abs(f1.p[3] - over) < 1e-4 && same(f1.books, ['pinnacle']) && f1.err <= 0.01, 'a match with Pinnacle\'s 1X2 and over/under 2.5: fitted from Pinnacle alone (SNAI never counts, nor the 2.25 line)');
+  const chk = F.summaryOf(f1.lh, f1.la, f1.rho);
+  ok(Math.abs(chk[0] - fair[0]) < 1e-3 && Math.abs(chk[3] - over) < 1e-3, 'the stored expected goals give back the market\'s chances');
+  ok(f2 && f2.goals === false && f2.p[3] === null, 'no over/under from the sharp books: fitted with a bland 0.5, marked "result picks only"');
+  ok(!fits.has('ev3') && !fits.has('ev4') && !fits.has('ev5'), 'no fit from a suspended outcome, an eight-day-old price, or SNAI alone');
+  ok(F.sharpFits(recs, [], now, {}).size === 0, 'no sharp book known: no fit');
+  const why = {};
+  const R2 = (id, books) => R(id, '1x2', null, books);
+  const recs2 = [
+    R2('w1', [{ key: 'bet365', outcomes: { HOME: 2.0, DRAW: 3.3, AWAY: 3.7 }, last_update: lu }]),
+    R2('w2', [{ key: 'bet365', outcomes: { HOME: 2.0, DRAW: 3.3, AWAY: 3.7 }, last_update: lu }, { key: 'williamhill', outcomes: { HOME: 1.95, DRAW: 3.4, AWAY: 3.75 }, last_update: lu }]),
+    R2('w3', [{ key: 'snai', outcomes: { HOME: 2.0, DRAW: 3.3, AWAY: 3.7 }, last_update: lu }]),
+    R2('w4', [{ key: 'pinnacle', outcomes: { HOME: 1.2, DRAW: 2, AWAY: 3 }, last_update: lu }]),
+  ];
+  const f3 = F.sharpFits(recs2, ['pinnacle', 'bet365', 'williamhill', 'snai'], now, {}, why);
+  ok(!f3.has('w1') && f3.has('w2') && f3.get('w2').sharp === 0 && same(f3.get('w2').books, ['bet365', 'williamhill']), 'without Pinnacle two ordinary books are needed (one is not enough), weight 1 each');
+  ok(!f3.has('w3') && !f3.has('w4'), 'SNAI never counts; a market that does not add up is not used');
+  ok(why.counts['few-books'] === 1 && why.counts['no-result-price'] === 1 && why.counts['not-usable'] === 1 && why.sample.length === 3 && why.sample.some(x => x.reason === 'not-usable' && x.x[0][0] === 'pinnacle'),
+    'the reasons for no fit are counted, with examples: ' + JSON.stringify(why.counts));
+  const rbi = F.refBooks({ bookmakers: [{ key: 'snai', playable_it: true }, { key: 'sisal', playable_it: true }, { key: 'eurobet', playable_it: true }, { key: 'goldbet', playable_it: true }, { key: 'pinnacle' }] }, 10);
+  ok(same(rbi.keys, ['pinnacle']) && same(rbi.it, ['sisal', 'eurobet', 'goldbet']), 'the big Italian books other than SNAI are kept apart, for the last resort');
+  const it3 = [R2('i3', [{ key: 'snai', outcomes: { HOME: 2.0, DRAW: 3.2, AWAY: 3.6 }, last_update: lu }, { key: 'sisal', outcomes: { HOME: 2.05, DRAW: 3.2, AWAY: 3.55 }, last_update: lu },
+      { key: 'eurobet', outcomes: { HOME: 2.0, DRAW: 3.25, AWAY: 3.6 }, last_update: lu }, { key: 'goldbet', outcomes: { HOME: 2.02, DRAW: 3.2, AWAY: 3.6 }, last_update: lu }]),
+    R2('i2', [{ key: 'sisal', outcomes: { HOME: 2.05, DRAW: 3.2, AWAY: 3.55 }, last_update: lu }, { key: 'eurobet', outcomes: { HOME: 2.0, DRAW: 3.25, AWAY: 3.6 }, last_update: lu }]),
+    R2('i1', [{ key: 'pinnacle', outcomes: { HOME: 2.1, DRAW: 3.4, AWAY: 3.7 }, last_update: lu }, { key: 'sisal', outcomes: { HOME: 2.05, DRAW: 3.2, AWAY: 3.55 }, last_update: lu }])];
+  const fi = F.sharpFits(it3, ['pinnacle'], now, {}, {}, ['sisal', 'eurobet', 'goldbet', 'snai']);
+  ok(fi.get('i3') && fi.get('i3').tier === 'it' && same(fi.get('i3').books, ['sisal', 'eurobet', 'goldbet']), 'no international price: three Italian books (never SNAI) make a fit, marked tier it');
+  ok(!fi.has('i2') && fi.get('i1').tier === 'ref' && same(fi.get('i1').books, ['pinnacle']), 'two Italian books are not enough; Pinnacle, when there, is used and not the Italian books');
 }
 
 /* ---------- requests and answers ---------- */

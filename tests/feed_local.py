@@ -15,6 +15,7 @@ Needs Postgres 16 running on that socket directory (port 55432), Deno and psycop
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -39,7 +40,7 @@ ODSS_KEY = "odss_live_localtest"
 USERS = {"gianluca@example.com": ("11111111-1111-1111-1111-111111111111", "pw-owner"),
          "other@example.com": ("22222222-2222-2222-2222-222222222222", "pw-other")}
 TABLES = {"book_events", "feed_state", "feed_log", "owners"}
-STATE: dict = {"quota": 500, "odss_calls": [], "week": None, "events": [], "odss_status": 200}
+STATE: dict = {"quota": 500, "odss_calls": [], "week": None, "events": [], "odss_status": 200, "week_reads": []}
 NOW = datetime.now(timezone.utc).replace(second=0, microsecond=0)
 
 
@@ -56,6 +57,9 @@ CLUBS = [("Serie A", "Juventus", "Internazionale", "Juventus", "Inter"), ("Serie
          ("Nations League", "Germany", "Netherlands", None, None), ("Nations League", "England", "Spain", None, None),
          ("Champions League", "Atletico Madrid", "Tottenham Hotspur", "Atletico Madrid", "Tottenham"), ("Serie B", "Sampdoria", "Palermo", "Sampdoria", "Palermo")]
 HOURS = [2, 5, 20, 26, 30, 50, 75, 100, 125, 150, 170, 190]   # kick-offs from now: two within three hours, some beyond 48 h
+FIXTURES = [("Serie B", "Empoli", "Palermo", "Empoli", "Palermo", 28), ("Championship", "West Bromwich Albion", "Birmingham City", "West Brom", "Birmingham", 29),
+            ("Ligue 2", "Saint Etienne", "Rodez AF", "Saint-Etienne", "Rodez", 31), ("Eredivisie", "PSV Eindhoven", "Heerenveen", "PSV", "Heerenveen", 52),
+            ("Süper Lig", "Kasimpasa SK", "Rizespor", None, None, 53)]   # the last: SNAI does not list it
 
 
 def build_world() -> None:
@@ -77,7 +81,16 @@ def build_world() -> None:
     events.append({"id": "evslip", "home": "Siviglia", "away": "Valencia", "league": "LaLiga", "k": slip + timedelta(hours=1), "true": None, "p": 2.2})
     # a match the week does not have
     events.append({"id": "evnone", "home": "Boca Juniors", "away": "River Plate", "league": "Liga Profesional", "k": NOW + timedelta(hours=7), "true": None, "p": 2.6})
-    STATE["week"] = {"built_at": iso(NOW), "matches": matches}
+    # decision 94: the fixtures the weekly job has not priced yet (the smaller leagues before Friday); week.json lists the
+    # priced matches among its fixtures too, and one fixture has no SNAI event at all
+    fixtures = [dict(m) for m in matches[:2]]
+    for j, (comp, home, away, sh, sa, hrs) in enumerate(FIXTURES):
+        k = NOW + timedelta(hours=hrs)
+        fixtures.append({"id": f"f{j}", "competition": comp, "kickoff": k.isoformat(), "home": home, "away": away, "priced_from": iso(NOW + timedelta(days=2))})
+        if sh:
+            events.append({"id": f"evf{j}", "home": sh, "away": sa, "league": comp, "k": k, "true": f"f{j}", "p": 2.0 + j * 0.2})
+    fixtures.append({"id": "ffar", "competition": "Serie B", "kickoff": (NOW + timedelta(days=12)).isoformat(), "home": "Bari", "away": "Pisa"})   # beyond SNAI's eight days
+    STATE["week"] = {"built_at": iso(NOW), "matches": matches, "fixtures": fixtures}
     STATE["events"] = events
 
 
@@ -101,12 +114,53 @@ def site_world(path: Path) -> None:
     STATE["events"] = events
 
 
+def live_world(path: Path) -> None:
+    """Decision 94, for the browser test: a real week file (priced matches and fixtures). SNAI's list has every match and
+    every fixture of the next eight days (prices from the week's chances, or invented for the fixtures), with Pinnacle
+    beside it; one fixture has SNAI's prices but no sharp book (it stays a fixture, with SNAI's result prices), one is not
+    on SNAI at all."""
+    import random
+    rnd = random.Random(94)
+    week = json.loads(path.read_text())
+    events, end = [], NOW + timedelta(days=8)
+    def priced(ch: dict) -> dict:
+        return {c: round(1 / (ch[c] * 1.06), 2) for c in ("1", "X", "2", "1X", "12", "X2", "U15", "O15", "U25", "O25", "U35", "O35", "GG", "NG") if ch.get(c)}
+    for i, m in enumerate(week["matches"]):
+        k = datetime.fromisoformat(m["kickoff"].replace("Z", "+00:00"))
+        if k < NOW or k > end:
+            continue
+        events.append({"id": f"lm{i:03d}", "home": IT_NAMES.get(m["home"], m["home"]), "away": IT_NAMES.get(m["away"], m["away"]), "league": m["competition"], "k": k, "true": m["id"], "prices": priced(m.get("chances") or {})})
+    ids = {m["id"] for m in week["matches"]}
+    fx = [f for f in week.get("fixtures", []) if f["id"] not in ids and NOW < datetime.fromisoformat(f["kickoff"].replace("Z", "+00:00")) <= end]
+    for j, f in enumerate(fx):
+        k = datetime.fromisoformat(f["kickoff"].replace("Z", "+00:00"))
+        if j == 1:
+            STATE["not_on_snai"] = f["id"]
+            continue
+        h, d, o = rnd.uniform(0.3, 0.55), 0.27, rnd.uniform(0.42, 0.58)
+        a = 1 - h - d
+        ch = {"1": h, "X": d, "2": a, "1X": h + d, "12": h + a, "X2": d + a, "O25": o, "U25": 1 - o, "O15": min(0.9, o + 0.25), "U15": max(0.1, 0.75 - o), "GG": o + 0.03, "NG": 0.97 - o}
+        ev = {"id": f"lf{j:03d}", "home": f["home"], "away": f["away"], "league": f["competition"], "k": k, "true": f["id"], "prices": priced(ch)}
+        if j == 2:
+            ev["nosharp"] = True
+            STATE["no_sharp"] = f["id"]
+        events.append(ev)
+    STATE["week"] = {"built_at": week.get("built_at", iso(NOW)), "matches": [{k: m[k] for k in ("id", "competition", "kickoff", "home", "away")} for m in week["matches"]],
+                     "fixtures": [{k: f.get(k) for k in ("id", "competition", "kickoff", "home", "away")} for f in week.get("fixtures", [])]}
+    STATE["events"] = events
+
+
 def records_for(ev: dict, markets: list[str]) -> list[dict]:
     base = {"event_id": ev["id"], "event": f'{ev["home"]} - {ev["away"]}', "sport": "calcio", "league": ev["league"], "home_team": ev["home"],
             "away_team": ev["away"], "commence_time": iso(ev["k"]), "line": None, "scope": None, "period": None, "state": "prematch", "score": None, "minute": None}
     lu = iso(NOW - timedelta(minutes=4))
-    book = lambda outs, **kw: [dict({"key": "snai", "country": "IT", "playable_it": True, "outcomes": outs, "last_update": lu}, **kw),
-                               {"key": "pinnacle", "outcomes": {k: round(v + 0.05, 2) for k, v in outs.items()}, "last_update": lu}]
+    def sharp(outs: dict) -> dict:   # Pinnacle: SNAI's view of the match at a 2.5% margin (a sharp book's prices)
+        if len(outs) < 2:
+            return {}
+        tot = sum(1 / v for v in outs.values())
+        return {k: round(1 / ((1 / v) / tot * 1.025), 2) for k, v in outs.items()}
+    book = lambda outs, **kw: [dict({"key": "snai", "country": "IT", "playable_it": True, "outcomes": outs, "last_update": lu}, **kw)] + \
+        ([{"key": "pinnacle", "outcomes": sharp(outs), "last_update": lu}] if sharp(outs) and not ev.get("nosharp") else [])
     out = []
     if ev.get("prices") is not None:   # the browser test's world: prices from the week's chances
         P = ev["prices"]
@@ -135,8 +189,20 @@ def records_for(ev: dict, markets: list[str]) -> list[dict]:
     return out
 
 
+def books() -> tuple[int, dict, dict]:
+    """odss-api's list of books (GET /bookmakers): two sharp ones, Pinnacle and the Betfair exchange."""
+    STATE["odss_calls"].append({"_path": "bookmakers"})
+    if STATE["odss_status"] != 200:
+        return STATE["odss_status"], {"error": "Chiave API non valida", "code": "auth_invalid"}, {}
+    STATE["quota"] -= 1
+    hdr = {"X-Quota-Limit": "500", "X-Quota-Remaining": str(STATE["quota"]), "X-Quota-Reset": str(20 * 86400)}
+    return 200, {"count": 4, "bookmakers": [{"key": "snai", "country": "IT", "is_exchange": False}, {"key": "pinnacle", "country": "CW", "is_exchange": False},
+                                            {"key": "betfair_ex", "country": "GB", "is_exchange": True}, {"key": "bet365", "country": "GB", "is_exchange": False}]}, hdr
+
+
 def odss(query: dict) -> tuple[int, dict, dict]:
     q = {k: v[0] for k, v in query.items()}
+    q["_path"] = "odds"
     STATE["odss_calls"].append(q)
     if STATE["odss_status"] != 200:
         return STATE["odss_status"], {"error": "Chiave API non valida", "code": "auth_invalid"}, {}
@@ -255,13 +321,18 @@ class H(BaseHTTPRequestHandler):
         u = urllib.parse.urlsplit(self.path)
         q = urllib.parse.parse_qs(u.query, keep_blank_values=True)
         try:
-            if u.path == "/odss/api/v1/odds":
+            if u.path in ("/odss/api/v1/odds", "/odss/api/v1/bookmakers"):
                 if self.headers.get("x-api-key") != ODSS_KEY and STATE["odss_status"] == 200:
                     return self.send(401, {"error": "Chiave API mancante", "code": "auth_missing"})
-                code, body, hdr = odss(q)
+                code, body, hdr = odss(q) if u.path.endswith("/odds") else books()
                 return self.send(code, body, hdr)
             if u.path == "/site/data/week.json":
-                return self.send(200, STATE["week"])
+                raw = json.dumps(STATE["week"], sort_keys=True)
+                tag = '"' + hashlib.md5(raw.encode()).hexdigest() + '"'
+                STATE["week_reads"].append(self.headers.get("If-None-Match") == tag)
+                if self.headers.get("If-None-Match") == tag:
+                    return self.send(304, None, {"ETag": tag})
+                return self.send(200, STATE["week"], {"ETag": tag})
             if u.path == "/auth/v1/user":
                 m = re.match(r"Bearer tok-([0-9a-f-]{36})$", self.headers.get("Authorization") or "")
                 if not m or self.headers.get("apikey") not in (SECRET, PUBLISHABLE):
@@ -334,7 +405,8 @@ def fresh_db(sock: str) -> None:
     STATE["dsn"] = f"host={sock} port=55432 user=postgres dbname=scudi_feed"
     with psycopg.connect(STATE["dsn"], autocommit=True) as c:
         c.execute((ROOT / "tests/sql/supabase_stub.sql").read_text())
-        c.execute((ROOT / "supabase/migrations/20261006120000_snai_feed.sql").read_text())
+        for mig in sorted((ROOT / "supabase/migrations").glob("*.sql")):   # every migration, in order
+            c.execute(mig.read_text())
         for email, (uid, _) in USERS.items():   # the owner signs up first
             c.execute("insert into auth.users (id, email) values (%s, %s)", (uid, email))
 
@@ -387,14 +459,16 @@ def checks() -> None:
     code, r = call({"x-cron-token": token})
     check(code == 200 and r.get("pulled") and r.get("status") == "ok", f"the first wake by day pulls: {r}")
     calls = STATE["odss_calls"]
-    check(len(calls) == 2 and calls[0].get("market") == "1x2" and calls[0].get("sport") == "calcio" and "event_id" in calls[1], f"two requests: SNAI's list (1X2), then the prices by event id ({[c.get('market') for c in calls]})")
-    check(calls[0].get("bookmakers") == "snai" and calls[1].get("bookmakers") == "snai", "only SNAI is asked for")
+    check(len(calls) == 3 and calls[0]["_path"] == "bookmakers" and calls[1].get("market") == "1x2" and calls[1].get("sport") == "calcio" and "event_id" in calls[2],
+          f"three requests: odss-api's list of books (once a week), SNAI's list (1X2), then the prices by event id ({[c.get('_path') + ':' + str(c.get('market')) for c in calls]})")
+    check(calls[1].get("bookmakers") == "snai" and calls[2].get("bookmakers") == "snai,pinnacle,betfair_ex,bet365", f"the list asks SNAI only, the prices SNAI and the reference books ({calls[2].get('bookmakers')})")
     check(all(ODSS_KEY not in json.dumps(c) for c in calls), "the key never travels in the address")
-    rows = {r[0]: r for r in sql("select event_id, match_id, m, full_at, odds_at from public.book_events")}
+    rows = {r[0]: r for r in sql("select event_id, match_id, m, full_at, odds_at, fit from public.book_events")}
     true = {e["id"]: e["true"] for e in STATE["events"] if e["true"]}
-    check(set(true) <= set(rows), f"every one of the week's matches has its SNAI event ({len(set(true) & set(rows))}/{len(true)})")
-    check(all(rows[i][1] == m for i, m in true.items() if i in rows), "each paired with the right match")
+    check(set(true) <= set(rows), f"every one of the week's matches and fixtures has its SNAI event ({len(set(true) & set(rows))}/{len(true)})")
+    check(all(rows[i][1] == m for i, m in true.items() if i in rows), "each paired with the right match or fixture")
     check(not any(i.endswith("u19") for i in rows) and "evslip" not in rows and "evnone" not in rows, f"no youth team, no hour-late namesake, no match outside the week ({sorted(i for i in rows if i not in true)})")
+    check(all(rows[f"evf{j}"][1] == f"f{j}" for j in range(4)), "the fixtures not priced yet (Serie B, Championship, Ligue 2, Eredivisie) are paired too")
     m0 = rows["ev00aa"][2]
     codes = {(x[0], x[1], x[2]) for x in m0}
     check({(3, 0, 1), (3, 0, 2), (3, 0, 3), (28319, 0, 1), (28319, 0, 2), (28319, 0, 3), (18, 0, 1), (18, 0, 2)} <= codes and {(7989, ln, oc) for ln in (50, 150, 250, 350, 450) for oc in (1, 2)} <= codes,
@@ -403,18 +477,55 @@ def checks() -> None:
     check(next(x for x in m0 if x[0] == 18 and x[2] == 2)[3] is None, "SNAI's suspended No Goal is a padlock (null)")
     check(next(x for x in m0 if x[0] == 3 and x[2] == 1)[3] == 1.6, "the 1 is SNAI's price, not Pinnacle's")
     check(all(r[3] is not None for r in rows.values()), "every paired event got its full markets in the first pull")
+    # decision 94: Scudi's own chances from the sharp book, for every paired event
+    sys.path.insert(0, str(ROOT))
+    from scudi_slips.devig import power_devig
+    from scudi_slips.matrix import fit_market
+    fit0 = rows["ev00aa"][5]
+    pin = lambda outs: {k: round(1 / ((1 / v) / sum(1 / x for x in outs.values()) * 1.025), 2) for k, v in outs.items()}
+    p1x2 = pin({"HOME": 1.6, "DRAW": 3.4, "AWAY": round(6 / 1.6, 2)})
+    pou = pin({"UNDER": 1.95, "OVER": 1.85})
+    fair = power_devig([p1x2["HOME"], p1x2["DRAW"], p1x2["AWAY"]])
+    over = power_devig([pou["OVER"], pou["UNDER"]])[0]
+    ref = fit_market(fair[0], fair[1], fair[2], over)
+    check(all(r[5] for r in rows.values()), f"every paired event has Scudi's own chances from the sharp book ({sum(1 for r in rows.values() if r[5])}/{len(rows)})")
+    check(fit0 and fit0["books"] == ["pinnacle"] and fit0["goals"] is True and abs(fit0["p"][0] - fair[0]) < 1e-4 and abs(fit0["p"][3] - over) < 1e-4,
+          f"from Pinnacle's prices, de-vigged as the weekly job does ({fit0 and fit0['p']} vs {[round(x, 4) for x in fair]}, {over:.4f})")
+    check(abs(fit0["lh"] - ref.lh) < 2e-3 and abs(fit0["la"] - ref.la) < 2e-3 and fit0["err"] <= 0.01, f"the same expected goals as scudi_slips.matrix.fit_market ({fit0['lh']}, {fit0['la']} vs {ref.lh:.4f}, {ref.la:.4f})")
     st = sql("select quota_remaining, quota_limit, last_status, last_requests, discovered_at is not null, matched, of_matches, diag, events, busy_until from public.feed_state")[0]
     check(st[0] == STATE["quota"] and st[1] == 500, f"the quota comes from odss-api's headers ({st[0]} left)")
-    check(st[2] == "ok" and st[3] == 2 and st[4] and st[9] is None, "state: ok, two requests, list read, lease freed")
-    check(st[5] == len(CLUBS) and st[6] == len(CLUBS) + 1, f"{st[5]} of {st[6]} matches paired (Sevilla - Valencia has no SNAI event at its kick-off)")
-    check(any("Sevilla" in d["match"] and d["offMin"] == 60 for d in (st[7] or {}).get("timezone", [])), f"its namesake an hour late is reported for checking: {(st[7] or {}).get('timezone')}")
+    check(st[2] == "ok" and st[3] == 3 and st[4] and st[9] is None, "state: ok, three requests, list read, lease freed")
+    check(st[5] == len(CLUBS) + 4 and st[6] == len(CLUBS) + 1 + 5, f"{st[5]} of {st[6]} matches and fixtures paired (Sevilla - Valencia has no SNAI event at its kick-off, Kasimpasa - Rizespor none at all)")
+    dg = st[7] or {}
+    check(any("Sevilla" in d["match"] and d["offMin"] == 60 for d in dg.get("timezone", [])), f"its namesake an hour late is reported for checking: {dg.get('timezone')}")
+    un = {u["match"]: u for u in dg.get("unpaired", [])}
+    check(set(un) == {"Sevilla - Valencia", "Kasimpasa SK - Rizespor"} and un["Sevilla - Valencia"]["snai"]["offMin"] == 60 and un["Kasimpasa SK - Rizespor"]["snai"] is None and un["Kasimpasa SK - Rizespor"]["priced"] is False,
+          f"what was not paired is listed, with SNAI's nearest namesake or none ({list(un)})")
+    check(dg.get("books", {}).get("sharp") == ["pinnacle", "betfair_ex", "bet365"] and dg["books"].get("v") == 4 and len(dg["books"].get("all", [])) == 4 and dg.get("by_comp", {}).get("Serie B") == [2, 2] and dg.get("leagues", {}).get("Serie A", 0) >= 3 and dg.get("priced") == [len(CLUBS), len(CLUBS) + 1],
+          f"the sharp books, the pairing per competition and SNAI's list by league are recorded ({dg.get('books')}, {dg.get('by_comp', {}).get('Serie B')})")
+    check(dg.get("fit", {}).get("fitted") == len(rows), f"the fits are counted ({dg.get('fit')})")
     log = sql("select kind, requests, status from public.feed_log order by id")
-    check(log[-1] == ("list+prices", 2, "ok"), f"the log has the pull: {log[-1]}")
+    check(log[-1] == ("list+prices", 3, "ok"), f"the log has the pull: {log[-1]}")
 
     n = len(STATE["odss_calls"])
     code, r = call({"x-cron-token": token})
     check(code == 200 and not r.get("pulled") and r.get("why") in ("waiting", "night"), f"ten minutes later nothing is spent ({r.get('why')})")
     check(len(STATE["odss_calls"]) == n, "no request went out")
+    check(STATE["week_reads"][-1] is True, "Scudi's list was asked for only if changed, and it had not changed")
+    # decision 94: Scudi's list gets a new fixture (the Friday pull, a new day in the window): SNAI's list is read at once
+    kf = NOW + timedelta(hours=40)
+    STATE["week"]["fixtures"].append({"id": "fnew", "competition": "Championship", "kickoff": kf.isoformat(), "home": "Watford", "away": "Burnley"})
+    STATE["events"].append({"id": "evfnew", "home": "Watford", "away": "Burnley", "league": "Championship", "k": kf, "true": "fnew", "p": 2.3})
+    code, r = call({"x-cron-token": token})
+    new_calls = STATE["odss_calls"][n:]
+    check(code == 200 and r.get("pulled") and sql("select why from public.feed_state")[0][0] == "new-matches" and [c["_path"] for c in new_calls] == ["odds", "odds"] and new_calls[0].get("market") == "1x2",
+          f"a new fixture in Scudi's list: SNAI's list is read at once, then the prices ({r}, {[c.get('market') for c in new_calls]})")
+    got = sql("select match_id, fit is not null from public.book_events where event_id = 'evfnew'")
+    check(got == [("fnew", True)], f"and the new fixture is paired, with its own chances ({got})")
+    n = len(STATE["odss_calls"])
+    code, r = call({"x-cron-token": token})
+    check(not r.get("pulled") and len(STATE["odss_calls"]) == n, f"the next wake has nothing new: nothing spent ({r.get('why')})")
+    true = {e["id"]: e["true"] for e in STATE["events"] if e["true"]}
 
     code, r = call({"apikey": PUBLISHABLE, "Authorization": "Bearer tok-22222222-2222-2222-2222-222222222222"})
     check(code == 401, "another account cannot press Update now")
@@ -449,9 +560,13 @@ def main() -> int:
     ap.add_argument("--pg", required=True, help="Postgres socket directory (port 55432)")
     ap.add_argument("--serve", action="store_true", help="after the checks, keep serving for the site's browser test")
     ap.add_argument("--week", help="no checks: SNAI's list built from this week file (the site's example week), one cron pull, then serve")
+    ap.add_argument("--week-live", help="no checks: SNAI's list (and Pinnacle) for a real week file's matches and fixtures, one cron pull, then serve")
     a = ap.parse_args()
     fresh_db(a.pg)
-    if a.week:
+    if a.week_live:
+        live_world(Path(a.week_live))
+        a.week = a.week_live
+    elif a.week:
         site_world(Path(a.week))
     else:
         build_world()
@@ -461,6 +576,7 @@ def main() -> int:
     try:
         if a.week:
             print("first pull:", call({"x-cron-token": sql("select cron_token from private.feed_config")[0][0]}), flush=True)
+            print("world:", json.dumps({k: STATE.get(k) for k in ("not_on_snai", "no_sharp")}), "events:", len(STATE["events"]), flush=True)
             a.serve = True
         else:
             checks()

@@ -123,7 +123,7 @@ jobs changed for the look: every id and class the scripts rely on is kept.
 Example data never passes for real prices: the jobs discard a stored week that is a replay or is dated in the future,
 and grading never looks at one (decision 76).
 
-## SNAI's prices without typing (decisions 91 and 92)
+## SNAI's prices without typing (decisions 91, 92 and 94)
 
 Two ways, both reading SNAI and nothing else, neither ever clicking, betting or logging in on snai.it:
 
@@ -156,11 +156,38 @@ publishable key written into `index.html` (`FEED_PROJECT`; both public by design
 codes), `tests/sql/feed_checks.sql` and `tests/feed_local.py` (the real function under Deno against the real tables on a
 local Postgres, with stand-ins for odss-api and Supabase's endpoints).
 
+### Every league, from the private store (decision 94)
+
+The weekly job prices the big leagues 8 days ahead but the smaller ones (Serie B, Championship, Ligue 2, the other
+second divisions and European leagues) only from Friday's pull, to stay inside The Odds API's free 500 credits. The feed
+now fills that gap without spending any of them:
+
+- it pairs SNAI's events with the week's **fixtures** too (the matches not priced yet), with tighter name matching (both
+  names alike, one very alike, or one alike in a league with the competition's words; Italian club names such as PSG,
+  Lipsia, Siviglia known);
+- it reads SNAI's list again as soon as `data/week.json` has a match or fixture it has not seen (Friday's pull, a new day
+  in the window), checking the file every 10 minutes with an ETag (no odss-api request when nothing changed);
+- the requests that bring SNAI's prices also bring the **reference books'** (Pinnacle, the exchanges, then big
+  international books such as bet365 and William Hill — never an Italian book; their keys come from odss-api's list of
+  books, read once a week), and the function fits Scudi's own chances to them with the weekly job's method (power de-vig, sharp-weighted consensus, Dixon–Coles matrix fitted to 1X2 and over/under 2.5;
+  `tests/js/fit_cases.json` holds Python's numbers and the tests compare). The fit is stored in `book_events.fit`
+  (`supabase/migrations/…_sharp_fit.sql`), private like the rest: odss-api's licence is for internal use;
+- a fit needs Pinnacle's result price or two usable books (failing that, three of the big Italian books other than SNAI,
+  marked "Italian books" on the site); the reasons a match got none are counted in
+  `feed_state.diag.fit` (with examples);
+- what could not be paired is recorded (`feed_state.diag.unpaired`, with SNAI's nearest namesake), with SNAI's list by
+  league and the pairing per competition; Settings shows it under "Not found on SNAI".
+
+On a device signed in to the store, the page adds those fixtures as matches before it is built ("Pinnacle" tag in the
+Matches list; the match sheet says where the chances come from): every view and slip counts them, with SNAI's own prices
+from the same store. A fixture SNAI prices but no sharp book does shows SNAI's result prices in "Coming up". Without the
+sign-in the site is exactly the public one.
+
 ## Running the engine on a computer
 
 ```
 pip install numpy scipy pandas pytest ruff
-pytest -q            # 108 tests (they also run tests/js/engine.test.js with node)
+pytest -q            # 114 tests (they also run tests/js/engine.test.js with node)
 python3 -m tools.weekly --from-file tests/feed_week_sample.json --now 2026-10-09T09:00:00Z   # no key needed
 ODDS_API_KEY=... python3 -m tools.weekly                                                       # the real thing
 python3 tools/snai.py    # SNAI's margins and the slips at SNAI's typed prices -> results/snai_<date>.json
