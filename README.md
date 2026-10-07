@@ -23,6 +23,8 @@ as little as possible to the margin: pick the cheapest legs, land just above the
 | `lab/seasons.json` | three past seasons (2023-24 → 2025-26, 17 leagues): scores, half-time scores, Bet365 prices and each match's fitted score matrix, for the Lab | built once by `tools/lab_data.py`, uploaded with the site |
 | `lab/style.json` | every team's seasons since 2005-06 in the 17 leagues (points, goals, shots, on target, corners, cards, home and away form, Elo, this season's expected goals): the "Season by season" blocks (decision 88) | built by `tools/style_data.py`, uploaded with the site; rebuild now and then for the current season |
 | `lab/transfermarkt.json` | player profiles from the open transfermarkt-datasets project (CC0): preferred foot, market value and peak, contract end, sub-position (decision 86) | built by `tools/transfermarkt.py`, uploaded with the site; read by the team job |
+| `extension/` → `scudi-snai-extension.zip` | the Scudi · SNAI Chrome extension (decision 91): reads every snai.it page you open and passes SNAI's prices to Scudi | installed once on the computer; the zip is rebuilt by `tools/pack_extension.py` |
+| `supabase/` | the automatic SNAI prices (decision 92): a private store and the `snai-pull` function in your own Supabase project, fed by odss-api.com | every 10 minutes (pg_cron); spends a request only when worth it |
 | `results/live_model.json` | the live model (decision 87): the goal rate by minute, the score-state and red-card multipliers, fitted on StatsBomb open data + Bet365 prices; copied into `index.html` as `LIVE_MODEL` | built by `tools/live_data.py` then `tools/live_fit.py` |
 
 Prices come from The Odds API (free plan, 500 credits a month). The key lives only in the repository secret
@@ -120,6 +122,39 @@ jobs changed for the look: every id and class the scripts rely on is kept.
 
 Example data never passes for real prices: the jobs discard a stored week that is a replay or is dated in the future,
 and grading never looks at one (decision 76).
+
+## SNAI's prices without typing (decisions 91 and 92)
+
+Two ways, both reading SNAI and nothing else, neither ever clicking, betting or logging in on snai.it:
+
+- **The extension** (computer; Chrome, Edge or Brave). Settings → "Read SNAI prices" → "Live from snai.it" explains the
+  four steps: download `scudi-snai-extension.zip` from the site, unzip, `chrome://extensions` → Developer mode → "Load
+  unpacked". From then on every snai.it page with prices sends them to every open Scudi tab a few seconds after SNAI
+  changes them, from several tabs at once and after a reload, with a small card on SNAI's page saying what it read. The
+  prices are exactly SNAI's (the page you see). The older bookmark still works without the extension.
+- **The automatic feed** (computer and phone, nothing open). odss-api.com publishes SNAI's prices, with a delay of a few
+  minutes, 500 requests a month on its free plan. Its licence is for your own use only, so the prices cannot go into this
+  public repository or onto a page open to anyone: they live in a Supabase project of your own, behind a sign-in. The
+  `snai-pull` function wakes every 10 minutes and decides whether a request is worth it: never at night (00:30-08:00
+  Rome), about every 40 minutes in the three hours before one of the week's kick-offs, every couple of hours otherwise,
+  spread so that the month's quota lasts to its reset (25 requests are kept for "Update now"). Twice a day it reads
+  SNAI's whole football list (1X2 only, one request) to pair SNAI's events with the week's matches (same kick-off, names
+  or competition alike, Italian names included); the other pulls ask for the 1X2, double chance, under/over and goal/no
+  goal of those events by id (one request for up to 150 matches). The prices are stored in SNAI's own codes, so the site
+  reads them exactly as it reads SNAI's page (same matching, same checks). A price read later on SNAI's page, from a
+  screenshot or typed always wins over an older automatic one. Settings → "Automatic SNAI prices": sign in, last pull,
+  requests left, next pull, Update now, sign out.
+
+Setting up the feed (once): a free Supabase organisation and project; `supabase/migrations/…_snai_feed.sql` (tables,
+row-level security: only the first account created in the project reads anything; the function's calls closed to the
+site's keys); the function deployed from `supabase/functions/snai-pull` with `verify_jwt = false` (`supabase/config.toml`:
+it checks its callers itself); the odss-api key added by hand in the dashboard (Edge Functions → Secrets →
+`ODSS_API_KEY`) and nowhere else; one user created in the dashboard (Authentication → Users → Add user, auto-confirmed),
+then sign-ups switched off; `supabase/setup_cron.sql` run with the project's reference; the project's address and
+publishable key written into `index.html` (`FEED_PROJECT`; both public by design). What the feed did is in the
+`feed_state` and `feed_log` tables. Tests: `tests/js/feed.test.mjs` (the planner over a simulated month, the pairing, the
+codes), `tests/sql/feed_checks.sql` and `tests/feed_local.py` (the real function under Deno against the real tables on a
+local Postgres, with stand-ins for odss-api and Supabase's endpoints).
 
 ## Running the engine on a computer
 

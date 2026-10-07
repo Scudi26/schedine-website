@@ -1,0 +1,4 @@
+# Scudi · automatic SNAI prices (decision 92). Only what differs from Supabase's defaults.
+# The function checks its callers itself (the cron's token, or the owner's sign-in): the new secret keys are not JWTs.
+[functions.snai-pull]
+verify_jwt = false

@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Scudi · SNAI",
+  "version": "1.0.0",
+  "description": "Reads the SNAI prices on the snai.it pages you open and hands them to your Scudi site. It never clicks, types or bets anything.",
+  "icons": { "16": "icons/icon-16.png", "32": "icons/icon-32.png", "48": "icons/icon-48.png", "128": "icons/icon-128.png" },
+  "action": { "default_title": "Scudi · SNAI — open Scudi", "default_icon": { "16": "icons/icon-16.png", "32": "icons/icon-32.png" } },
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [
+    { "matches": ["https://www.snai.it/*", "https://snai.it/*"], "js": ["reader.js", "snai.js"], "run_at": "document_idle" },
+    { "matches": ["https://scudi26.github.io/schedine-website/*"], "js": ["bridge.js"], "run_at": "document_start" }
+  ],
+  "permissions": ["storage"],
+  "host_permissions": ["https://www.snai.it/*", "https://snai.it/*", "https://scudi26.github.io/*"]
+}

@@ -1,7 +1,7 @@
 """The app icons (installable site): Scudi's mark — a gold shield with a night field and a gold coin — on the night
 background, with a soft floodlight glow. The same geometry as the SVG mark in index.html (48-unit grid). Needs Pillow.
 
-    python3 tools/make_icons.py      # writes icons/icon-192.png, icon-512.png, icon-maskable-512.png, apple-touch-icon.png, favicon-32.png
+    python3 tools/make_icons.py      # writes icons/icon-192.png, icon-512.png, icon-maskable-512.png, apple-touch-icon.png, favicon-32.png, extension/icons/icon-{16,32,48,128}.png
 """
 
 from pathlib import Path
@@ -107,7 +107,11 @@ def main():
     mark(512, 0.22).save(out / "icon-maskable-512.png")   # the safe zone of a maskable icon is the inner 80%
     mark(180, 0.12).convert("RGB").save(out / "apple-touch-icon.png")
     mark(64, 0.08, glow=False).resize((32, 32), Image.LANCZOS).save(out / "favicon-32.png")
-    print("icons written to", out)
+    ext = Path("extension/icons")   # the Chrome extension's icons (decision 91)
+    ext.mkdir(parents=True, exist_ok=True)
+    for n in (16, 32, 48, 128):
+        mark(max(64, n), 0.06 if n < 48 else 0.1, glow=n >= 48).resize((n, n), Image.LANCZOS).save(ext / f"icon-{n}.png")
+    print("icons written to", out, "and", ext)
 
 
 if __name__ == "__main__":

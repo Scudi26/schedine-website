@@ -1,0 +1,328 @@
+{
+ "note": "Shaped like odss-api.com's answer (GET /odds): invented events and prices, written for Scudi's tests.",
+ "count": 9,
+ "offset": 0,
+ "returned": 9,
+ "limit": 500,
+ "state": "prematch",
+ "odds": [
+  {
+   "event_id": "demo0001",
+   "event": "Fulham - Brentford",
+   "sport": "calcio",
+   "league": "Premier League",
+   "home_team": "Fulham",
+   "away_team": "Brentford",
+   "commence_time": "2026-10-17T14:00:00.000Z",
+   "market": "1x2",
+   "line": null,
+   "scope": null,
+   "period": null,
+   "state": "prematch",
+   "score": null,
+   "minute": null,
+   "bookmakers": [
+    {
+     "key": "book_a",
+     "outcomes": {
+      "HOME": 2.5,
+      "DRAW": 2.1,
+      "AWAY": 1.8
+     },
+     "last_update": "2026-10-16T08:00:00.000Z"
+    },
+    {
+     "key": "book_b",
+     "outcomes": {
+      "HOME": 2.8,
+      "DRAW": 2.4
+     },
+     "last_update": "2026-10-16T08:01:00.000Z",
+     "suspended": [
+      "AWAY"
+     ]
+    }
+   ]
+  },
+  {
+   "event_id": "demo0001",
+   "event": "Fulham - Brentford",
+   "sport": "calcio",
+   "league": "Premier League",
+   "home_team": "Fulham",
+   "away_team": "Brentford",
+   "commence_time": "2026-10-17T14:00:00.000Z",
+   "market": "ou",
+   "line": 2.5,
+   "scope": null,
+   "period": null,
+   "state": "prematch",
+   "score": null,
+   "minute": null,
+   "bookmakers": [
+    {
+     "key": "book_a",
+     "outcomes": {
+      "OVER": 3.2,
+      "UNDER": 1.5
+     },
+     "last_update": "2026-10-16T08:00:00.000Z"
+    },
+    {
+     "key": "book_b",
+     "outcomes": {
+      "OVER": 3.5,
+      "UNDER": 1.8
+     },
+     "last_update": "2026-10-16T08:01:00.000Z"
+    }
+   ]
+  },
+  {
+   "event_id": "demo0001",
+   "event": "Fulham - Brentford",
+   "sport": "calcio",
+   "league": "Premier League",
+   "home_team": "Fulham",
+   "away_team": "Brentford",
+   "commence_time": "2026-10-17T14:00:00.000Z",
+   "market": "btts",
+   "line": null,
+   "scope": null,
+   "period": null,
+   "state": "prematch",
+   "score": null,
+   "minute": null,
+   "bookmakers": [
+    {
+     "key": "book_a",
+     "outcomes": {
+      "YES": 1.9,
+      "NO": 3.1
+     },
+     "last_update": "2026-10-16T08:00:00.000Z"
+    },
+    {
+     "key": "book_b",
+     "outcomes": {
+      "YES": 2.2,
+      "NO": 3.4
+     },
+     "last_update": "2026-10-16T08:01:00.000Z"
+    }
+   ]
+  },
+  {
+   "event_id": "demo0002",
+   "event": "Mainz - Freiburg",
+   "sport": "calcio",
+   "league": "Bundesliga",
+   "home_team": "Mainz",
+   "away_team": "Freiburg",
+   "commence_time": "2026-10-18T13:30:00.000Z",
+   "market": "1x2",
+   "line": null,
+   "scope": null,
+   "period": null,
+   "state": "prematch",
+   "score": null,
+   "minute": null,
+   "bookmakers": [
+    {
+     "key": "book_a",
+     "outcomes": {
+      "HOME": 3.2,
+      "DRAW": 2.8,
+      "AWAY": 2.5
+     },
+     "last_update": "2026-10-16T08:00:00.000Z"
+    },
+    {
+     "key": "book_b",
+     "outcomes": {
+      "HOME": 3.5,
+      "DRAW": 3.1
+     },
+     "last_update": "2026-10-16T08:01:00.000Z",
+     "suspended": [
+      "AWAY"
+     ]
+    }
+   ]
+  },
+  {
+   "event_id": "demo0002",
+   "event": "Mainz - Freiburg",
+   "sport": "calcio",
+   "league": "Bundesliga",
+   "home_team": "Mainz",
+   "away_team": "Freiburg",
+   "commence_time": "2026-10-18T13:30:00.000Z",
+   "market": "ou",
+   "line": 2.5,
+   "scope": null,
+   "period": null,
+   "state": "prematch",
+   "score": null,
+   "minute": null,
+   "bookmakers": [
+    {
+     "key": "book_a",
+     "outcomes": {
+      "OVER": 1.6,
+      "UNDER": 2.2
+     },
+     "last_update": "2026-10-16T08:00:00.000Z"
+    },
+    {
+     "key": "book_b",
+     "outcomes": {
+      "OVER": 1.9,
+      "UNDER": 2.5
+     },
+     "last_update": "2026-10-16T08:01:00.000Z"
+    }
+   ]
+  },
+  {
+   "event_id": "demo0002",
+   "event": "Mainz - Freiburg",
+   "sport": "calcio",
+   "league": "Bundesliga",
+   "home_team": "Mainz",
+   "away_team": "Freiburg",
+   "commence_time": "2026-10-18T13:30:00.000Z",
+   "market": "btts",
+   "line": null,
+   "scope": null,
+   "period": null,
+   "state": "prematch",
+   "score": null,
+   "minute": null,
+   "bookmakers": [
+    {
+     "key": "book_a",
+     "outcomes": {
+      "YES": 2.6,
+      "NO": 1.5
+     },
+     "last_update": "2026-10-16T08:00:00.000Z"
+    },
+    {
+     "key": "book_b",
+     "outcomes": {
+      "YES": 2.9,
+      "NO": 1.8
+     },
+     "last_update": "2026-10-16T08:01:00.000Z"
+    }
+   ]
+  },
+  {
+   "event_id": "demo0000",
+   "event": "Atalanta - Torino",
+   "sport": "calcio",
+   "league": "Serie A",
+   "home_team": "Atalanta",
+   "away_team": "Torino",
+   "commence_time": "2026-10-17T13:00:00.000Z",
+   "market": "1x2",
+   "line": null,
+   "scope": null,
+   "period": null,
+   "state": "prematch",
+   "score": null,
+   "minute": null,
+   "bookmakers": [
+    {
+     "key": "book_a",
+     "outcomes": {
+      "HOME": 1.8,
+      "DRAW": 3.7,
+      "AWAY": 3.4
+     },
+     "last_update": "2026-10-16T08:00:00.000Z"
+    },
+    {
+     "key": "book_b",
+     "outcomes": {
+      "HOME": 2.1,
+      "DRAW": 1.7
+     },
+     "last_update": "2026-10-16T08:01:00.000Z",
+     "suspended": [
+      "AWAY"
+     ]
+    }
+   ]
+  },
+  {
+   "event_id": "demo0000",
+   "event": "Atalanta - Torino",
+   "sport": "calcio",
+   "league": "Serie A",
+   "home_team": "Atalanta",
+   "away_team": "Torino",
+   "commence_time": "2026-10-17T13:00:00.000Z",
+   "market": "ou",
+   "line": 2.5,
+   "scope": null,
+   "period": null,
+   "state": "prematch",
+   "score": null,
+   "minute": null,
+   "bookmakers": [
+    {
+     "key": "book_a",
+     "outcomes": {
+      "OVER": 2.5,
+      "UNDER": 3.1
+     },
+     "last_update": "2026-10-16T08:00:00.000Z"
+    },
+    {
+     "key": "book_b",
+     "outcomes": {
+      "OVER": 2.8,
+      "UNDER": 3.4
+     },
+     "last_update": "2026-10-16T08:01:00.000Z"
+    }
+   ]
+  },
+  {
+   "event_id": "demo0000",
+   "event": "Atalanta - Torino",
+   "sport": "calcio",
+   "league": "Serie A",
+   "home_team": "Atalanta",
+   "away_team": "Torino",
+   "commence_time": "2026-10-17T13:00:00.000Z",
+   "market": "btts",
+   "line": null,
+   "scope": null,
+   "period": null,
+   "state": "prematch",
+   "score": null,
+   "minute": null,
+   "bookmakers": [
+    {
+     "key": "book_a",
+     "outcomes": {
+      "YES": 3.5,
+      "NO": 2.4
+     },
+     "last_update": "2026-10-16T08:00:00.000Z"
+    },
+    {
+     "key": "book_b",
+     "outcomes": {
+      "YES": 1.5,
+      "NO": 2.7
+     },
+     "last_update": "2026-10-16T08:01:00.000Z"
+    }
+   ]
+  }
+ ]
+}

@@ -332,5 +332,17 @@ ok(just.ev[0].md === "51'" && just.ev[0].after > just.ev[0].before && just.ev[0]
   ok(!S.checkPrices({ '1': 1.9, 'X': 3.9, '2': 4.9 }, ref).ok, '1 X 2 adding up to under 101% is not used');
   ok(!S.checkPrices({ '1': 1.75, 'X': 3.6, '2': 4.6, '1X': 1.9 }, {}).ok, 'a double chance dearer than its own single is not used');
 }
+/* the extension (decision 91) reads SNAI's page exactly as the bookmark does: same code, checked text for text */
+{
+  const ext = fs.readFileSync(path.join(__dirname, '..', '..', 'extension', 'reader.js'), 'utf8');
+  const squash = t => t.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, '');
+  const bi = html.indexOf('function SNAI_READER(cfg)'), bw = html.indexOf('function words(e) {', bi), be = html.indexOf('function post(msg)', bw);
+  const bm = squash(html.slice(bw, be)).replace('functionread(){titles=[];', '').replace(/returnout;}$/, 'returnout;');
+  const ew = ext.indexOf('function words(e) {'), ee = ext.lastIndexOf('return out;');
+  const em = squash(ext.slice(ew, ee + 'return out;'.length));
+  ok(bw > 0 && ew > 0 && bm === em, 'extension/reader.js reads SNAI exactly as the bookmark (SNAI_READER) does');
+  const man = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'extension', 'manifest.json'), 'utf8'));
+  ok(man.manifest_version === 3 && man.permissions.join() === 'storage' && man.content_scripts[0].matches.every(u => /^https:\/\/(www\.)?snai\.it\/\*$/.test(u)), 'the extension asks only for storage and runs its reader only on snai.it');
+}
 console.log(checks + ' checks, ' + failures + ' failed; optimiser exact in ' + exact + ' of ' + feasible + ' feasible cases');
 process.exit(failures ? 1 : 0);

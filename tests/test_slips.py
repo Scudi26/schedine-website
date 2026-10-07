@@ -1540,3 +1540,67 @@ def test_graded_matches_leave_their_goal_and_red_card_minutes_for_the_live_model
     tls = {}
     finals, _notes = espn_finals(lambda url: {"events": [fio]}, [m], {"Serie A": "ita.1"}, tls)
     assert finals["m1"][:2] == (1, 1) and tls["m1"] == tl
+
+
+def test_extension_download_is_the_extension_folder():
+    """scudi-snai-extension.zip (the site's download, decision 91) is rebuilt from extension/ whenever a file changes."""
+    import subprocess
+    import sys
+    root = Path(__file__).resolve().parents[1]
+    r = subprocess.run([sys.executable, "tools/pack_extension.py", "--check"], cwd=root, capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+# ---------- automatic SNAI prices (decision 92) ----------
+def test_snai_feed_logic_in_node():
+    """The snai-pull function's pure part: odss-api records to SNAI's codes, SNAI's events to Scudi's matches, the
+    request planner over a simulated month (quota kept, nights skipped, pre-match gaps under an hour)."""
+    import shutil
+    import subprocess
+    node = shutil.which("node")
+    if not node:
+        pytest.skip("node is not installed")
+    r = subprocess.run([node, "tests/js/feed.test.mjs"], capture_output=True, text=True, timeout=300)
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_snai_feed_end_to_end_locally():
+    """The real Edge Function under Deno against the real migration on a local Postgres, with odss-api and Supabase's
+    endpoints served by tests/feed_local.py. Runs only where SCUDI_PG names a Postgres socket directory (port 55432)."""
+    import os
+    import shutil
+    import subprocess
+    import sys
+    pg = os.environ.get("SCUDI_PG")
+    if not pg or not shutil.which("deno"):
+        pytest.skip("set SCUDI_PG to a local Postgres 16 socket directory, with Deno installed")
+    root = Path(__file__).resolve().parents[1]
+    r = subprocess.run([sys.executable, "tests/feed_local.py", "--pg", pg], cwd=root, capture_output=True, text=True, timeout=300)
+    assert r.returncode == 0, r.stdout[-3000:] + r.stderr[-2000:]
+
+
+def test_snai_feed_store_is_private():
+    """The migration's promises, read in its text: row-level security on every table, reading only for the owner, the
+    function's calls closed to the site's keys, and no key or price ever in the repository."""
+    root = Path(__file__).resolve().parents[1]
+    sql = (root / "supabase/migrations/20261006120000_snai_feed.sql").read_text()
+    for t in ("owners", "book_events", "feed_state", "feed_log"):
+        assert f"alter table public.{t} enable row level security;" in sql
+    assert sql.count("using ((select public.is_owner()))") == 3
+    assert "from public, anon, authenticated;\ngrant execute on function public.feed_load(text), public.feed_claim(), public.feed_tick(jsonb), public.feed_save(jsonb) to service_role;" in sql
+    fn = (root / "supabase/functions/snai-pull/index.ts").read_text()
+    assert "Deno.env.get('ODSS_API_KEY')" in fn and "x-api-key" in fn
+    for p in [*root.joinpath("supabase").rglob("*"), root / "index.html"]:
+        if p.is_file():
+            txt = p.read_text(errors="ignore")
+            assert "odss_live_" not in txt.replace("odss_live_…", ""), p   # no odss-api key anywhere
+            assert "sb_secret_" not in txt.replace("'sb_'", "").replace("sb_secret_…", ""), p
+
+
+def test_dashboard_function_is_the_two_file_function():
+    """supabase/dashboard/snai-pull.ts (one file, for Supabase's dashboard editor) is rebuilt whenever the function changes."""
+    import subprocess
+    import sys
+    root = Path(__file__).resolve().parents[1]
+    r = subprocess.run([sys.executable, "tools/pack_function.py", "--check"], cwd=root, capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
