@@ -1629,3 +1629,80 @@ def test_sharp_fit_stays_private():
     assert "Authorization: 'Bearer ' + t" in html
     week = (root / "tools/weekly.py").read_text()
     assert "odss" not in week.lower()   # the public weekly job never touches odss-api's data
+
+
+# ---------- decision 95: the same Scudi on every device, notifications on the phone, the live hedge ----------
+def test_notify_logic_in_node():
+    """scudi-notify's pure parts (Web Push encryption against RFC 8291's worked example, the VAPID signature, what is
+    worth a notification on the page's own live maths) and the service worker's notifications."""
+    import shutil
+    import subprocess
+    node = shutil.which("node")
+    if not node:
+        pytest.skip("node is not installed")
+    for t in ("tests/js/notify.test.mjs", "tests/js/sw.test.mjs"):
+        r = subprocess.run([node, t], capture_output=True, text=True, timeout=300)
+        assert r.returncode == 0, t + "\n" + r.stdout + r.stderr
+
+
+def test_notify_end_to_end_locally():
+    """The real scudi-notify function under Deno against every migration on a local Postgres, with ESPN, the site's team
+    data and a push service served by tests/notify_local.py (each message decrypted as a phone would). Runs only where
+    SCUDI_PG names a Postgres socket directory (port 55432)."""
+    import os
+    import shutil
+    import subprocess
+    import sys
+    pg = os.environ.get("SCUDI_PG")
+    if not pg or not shutil.which("deno"):
+        pytest.skip("set SCUDI_PG to a local Postgres 16 socket directory, with Deno installed")
+    root = Path(__file__).resolve().parents[1]
+    r = subprocess.run([sys.executable, "tests/notify_local.py", "--pg", pg], cwd=root, capture_output=True, text=True, timeout=300)
+    assert r.returncode == 0, r.stdout[-3000:] + r.stderr[-2000:]
+
+
+def test_store_sql_checks_locally():
+    """tests/sql/feed_checks.sql and sync_push_checks.sql on a fresh database with every migration (roles, row-level
+    security, the function's calls). Runs only where SCUDI_PG names a Postgres socket directory (port 55432)."""
+    import os
+    import shutil
+    import subprocess
+    pg = os.environ.get("SCUDI_PG")
+    if not pg or not shutil.which("psql"):
+        pytest.skip("set SCUDI_PG to a local Postgres 16 socket directory")
+    root = Path(__file__).resolve().parents[1]
+    env = dict(os.environ, PGHOST=pg, PGPORT="55432", PGUSER="postgres")
+    subprocess.run(["psql", "-q", "-d", "postgres", "-c", "drop database if exists scudi_sqlchk with (force)", "-c", "create database scudi_sqlchk"], env=env, check=True, capture_output=True)
+    files = ["tests/sql/supabase_stub.sql", *sorted(str(p.relative_to(root)) for p in (root / "supabase/migrations").glob("*.sql")), "tests/sql/feed_checks.sql", "tests/sql/sync_push_checks.sql"]
+    r = subprocess.run(["psql", "-q", "-d", "scudi_sqlchk", "-v", "ON_ERROR_STOP=1", *[x for f in files for x in ("-f", f)]], cwd=root, env=env, capture_output=True, text=True)
+    assert r.returncode == 0 and "sync sql checks passed" in r.stdout and "feed sql checks passed" in r.stdout, r.stdout[-2000:] + r.stderr[-2000:]
+
+
+def test_sync_and_notify_store_is_private():
+    """The sync and notifications migration's promises, read in its text: row-level security on every table, the owner
+    alone reads and writes their state and devices, the function's calls closed to the site's keys, the VAPID key pair
+    and the memo out of the API's reach; and the site never syncs its sign-in."""
+    import re
+    root = Path(__file__).resolve().parents[1]
+    sql = (root / "supabase/migrations/20261008120000_sync_push.sql").read_text()
+    for t in ("public.user_state", "public.push_subs", "public.notify_sent", "private.push_keys", "private.notify_memo"):
+        assert f"alter table {t} enable row level security;" in sql, t
+    assert sql.count("user_id = (select auth.uid()) and (select public.is_owner())") >= 7
+    assert "public.notify_memo_save(jsonb) from public, anon, authenticated;" in sql and "public.notify_memo_save(jsonb) to service_role;" in sql
+    assert "revoke all on function public.state_put(jsonb), public.push_add(jsonb), public.push_remove(text) from public, anon;" in sql
+    html = (root / "index.html").read_text()
+    keys = re.search(r"var KEYS = \[([^\]]+)\]", html).group(1)
+    assert "scudi-feed-session" not in keys and "scudi-placed" in keys and "scudi-notify" in keys
+    fn = (root / "supabase/functions/scudi-notify/index.ts").read_text()
+    assert "uid !== load.owner" in fn and "load.cron_ok" in fn
+
+
+def test_notify_site_block_is_the_page():
+    """supabase/functions/scudi-notify/site.mjs is the page's own engine and names, extracted from index.html (the live
+    maths can never drift between the page and the notifications)."""
+    root = Path(__file__).resolve().parents[1]
+    site = (root / "supabase/functions/scudi-notify/site.mjs").read_text()
+    html = (root / "index.html").read_text()
+    a = html.index("/* ===== Scudi slip maths")
+    b = html.index("if (typeof module !== 'undefined') module.exports = Scudi;")
+    assert html[a:b].rstrip() in site

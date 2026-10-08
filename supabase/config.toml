@@ -2,3 +2,7 @@
 # The function checks its callers itself (the cron's token, or the owner's sign-in): the new secret keys are not JWTs.
 [functions.snai-pull]
 verify_jwt = false
+
+# Decision 95: the notifications function checks its callers the same way.
+[functions.scudi-notify]
+verify_jwt = false

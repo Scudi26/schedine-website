@@ -183,6 +183,47 @@ Matches list; the match sheet says where the chances come from): every view and 
 from the same store. A fixture SNAI prices but no sharp book does shows SNAI's result prices in "Coming up". Without the
 sign-in the site is exactly the public one.
 
+## Every device the same, notifications, the live hedge (decision 95)
+
+Signed in to the private store (Settings → "Automatic SNAI prices"), every device keeps the same Scudi:
+
+- **Sync.** What the browser keeps for you — placed slips, SNAI prices read or typed (and when), the learned SNAI
+  margins, preferences, the notifications' choices, the language — is also kept in the store (`public.user_state`, one
+  row per key, readable and writable by the owner only). A device reads it before the page is built (four seconds at
+  most) and sends its own changes a moment after they happen (any write to one of those keys, wherever it happens on
+  the page), when the page is hidden, and every minute while it is open. Each write names the stored copy it was based
+  on; if another device wrote in between, the two are merged — placed slips one by one (a settled copy wins, otherwise
+  the newer), a slip removed stays removed (`scudi-placed-gone`), SNAI prices by when they were read, margin readings
+  joined — and sent again. Settings → "Same Scudi on every device" shows the last sync. The sign-in itself is never
+  synced; nothing of odss-api's is in it.
+- **Notifications.** The `scudi-notify` function wakes every minute (`supabase/setup_notify_cron.sql`, the same token
+  as the feed's), reads the owner's placed slips from the store and ESPN's public scoreboards for their matches, and
+  sends what is new with Web Push: a goal (scorer, which picks are winning, each slip's chance now), a red card, half
+  time for first-half picks, the final whistle (legs won or lost, each slip's tally), a slip that landed, **one leg
+  left** (with the cover from SNAI's price in the store when the last match has not started), and the line-ups about an
+  hour before kick-off (who from the last eleven is not starting, from the site's team data). Each alert has a
+  reference (a score, a whistle, a slip) and is sent once only (`public.notify_sent`); finished legs are remembered and
+  not read again. The messages are encrypted for each device (RFC 8291) and signed with a VAPID key pair the function
+  makes on its first call and keeps in `private.push_keys`; no key is typed anywhere. Settings → "Notifications":
+  turn on for this device, choose which (for every device), send a test. **On iPhone** they reach the Scudi app on the
+  home screen only (Apple's rule for web apps): Safari → Share → "Add to Home Screen", open Scudi from the icon, sign in,
+  turn notifications on. The home-screen app has its own storage, which the sync fills.
+- **The live hedge.** On the Live screen, a placed slip with every leg won but one shows how to cover it: type SNAI's
+  live price for the outcome that wins exactly when the pick loses (1 → X2, Over 2.5 → Under 2.5, Goal → No goal, …;
+  filled in with SNAI's pre-match price when there is one) and Scudi gives the full cover (H = payout / price: the same
+  amount whatever happens, profit locked), the stakes-back cover (stake / (price − 1)), and what covering costs on
+  average against Scudi's live chance. The bet itself is placed on SNAI by you.
+
+Setting up (once, after decision 94's store): `supabase/migrations/…_sync_push.sql`; the function deployed from
+`supabase/functions/scudi-notify` (or `supabase/dashboard/scudi-notify.ts`, one file for the dashboard's editor) with
+"Verify JWT" off; `supabase/setup_notify_cron.sql` run with the project's reference. `site.mjs` in the function is the
+page's own engine and team names, extracted from `index.html` by `tools/pack_function.py` (the tests check it is in
+step). Tests: `tests/js/notify.test.mjs` (RFC 8291's worked example byte for byte, the VAPID signature, the alerts on
+a simulated matchday in English and Italian), `tests/js/sw.test.mjs` (the service worker's notifications),
+`tests/sql/sync_push_checks.sql` (the owner alone, merges by stamp, the function's calls closed to the site) and
+`tests/notify_local.py` (the real function under Deno against the real tables, with stand-ins for ESPN and a push
+service that decrypts every message as a phone would).
+
 ## Running the engine on a computer
 
 ```

@@ -39,7 +39,7 @@ PUBLISHABLE = "sb_publishable_localtest"
 ODSS_KEY = "odss_live_localtest"
 USERS = {"gianluca@example.com": ("11111111-1111-1111-1111-111111111111", "pw-owner"),
          "other@example.com": ("22222222-2222-2222-2222-222222222222", "pw-other")}
-TABLES = {"book_events", "feed_state", "feed_log", "owners"}
+TABLES = {"book_events", "feed_state", "feed_log", "owners", "user_state", "push_subs", "notify_sent"}
 STATE: dict = {"quota": 500, "odss_calls": [], "week": None, "events": [], "odss_status": 200, "week_reads": []}
 NOW = datetime.now(timezone.utc).replace(second=0, microsecond=0)
 
@@ -270,6 +270,11 @@ def rest_get(table: str, query: dict, role: str, uid: str | None):
         if not re.fullmatch(r"[a-z_]+", k):
             raise ValueError("bad filter")
         op, _, val = v.partition(".")
+        if op == "in":   # in.("a","b") or in.(a,b)
+            items = [x.strip().strip('"') for x in val.strip("()").split(",") if x.strip()]
+            where.append(f"{k}::text = any(%s)")
+            args.append(items)
+            continue
         sqlop = {"eq": "=", "gt": ">", "gte": ">=", "lt": "<", "lte": "<="}.get(op)
         if not sqlop:
             raise ValueError("bad op")
