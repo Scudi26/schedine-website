@@ -422,5 +422,25 @@ const rome = (iso) => Date.parse(iso);   /* the ISO strings below carry their of
   ok(pulls.filter(p => p.why !== 'closing').length >= 120, 'the ordinary pulls go on between them');
 }
 
+/* ---------- decision 98: results and the last full reading ---------- */
+{
+  const week = { results: { done: { m1: [2, 1, 1, 0, '2026-10-12T13:00:00+00:00'], m2: [0, 0, null, null, '2026-10-12T18:45:00+00:00'],
+    bad1: 'x', bad2: [1, 1], bad3: [1.5, 0, null, null, null], bad4: [-1, 0, null, null, null] }, watch: { m3: ['Serie A', 'A', 'B', '2026-10-14T18:45:00+00:00'] } } };
+  const r = F.resultsOf(week);
+  ok(r && same(Object.keys(r.done).sort(), ['m1', 'm2']) && same(r.done.m1, [2, 1, 1, 0, '2026-10-12T13:00:00+00:00']), 'results: the settled matches pass, malformed ones and the watch list do not');
+  ok(F.resultsOf({}) === null && F.resultsOf(null) === null && F.resultsOf({ results: { done: [] } }) === null && F.resultsOf({ results: { done: { x: 'y' } } }) === null, 'results: nothing to save is nothing');
+  ok(Object.keys(F.resultsOf(week, 1).done).length === 1, 'results: at most the cap');
+  const codes = new Map([['ev1', { m: [[3, 0, 1, 2]] }]]), refs = new Map([['pinnacle', new Map([['ev1', { m: [] }], ['ev2', { m: [] }]])], ['matchbook', new Map()]]);
+  const old = { pinnacle: [[3, 0, 1, 2.2], [3, 0, 2, 3.4], [3, 0, 3, 3.7]], matchbook: [[3, 0, 1, 2.25]] };
+  const fresh = new Map([['pinnacle', new Map([['ev1', { m: [[3, 0, 1, 2.1], [3, 0, 2, 3.5], [3, 0, 3, 3.8]] }]])], ['matchbook', new Map()]]);
+  const ra = F.refAfter(old, fresh, 'ev1', true, ['1x2', 'dc', 'ou', 'btts']);
+  ok(same(ra.pinnacle.map(x => x[3]), [2.1, 3.5, 3.8]) && same(ra.matchbook, []), 'a complete reading: a sharp book seen gets its new prices, one no longer there is emptied');
+  ok(same(F.refAfter(old, fresh, 'ev1', false, ['1x2']).matchbook, old.matchbook), '… an incomplete one leaves the missing book as it was');
+  const rows = F.memoryRows('ev1', 'x', 'snai', { m: [], ref: old }, { m: [], ref: ra }, false).ticks.filter(t => t.book === 'matchbook');
+  ok(rows.length === 1 && same(rows[0].c, [100001]) && same(rows[0].p, [null]), '… and the memory keeps its price as closed, so it can never pass for the close');
+  ok(same(F.nearBooks('ev1', codes, 'snai', refs), ['snai', 'pinnacle']) && same(F.nearBooks('ev2', codes, 'snai', refs), ['pinnacle']) && same(F.nearBooks('ev3', codes, 'snai', refs), []),
+    'the books that priced an event in a full reading: SNAI first, then the sharp books');
+}
+
 console.log(`${checks - failures}/${checks} feed checks passed`);
 if (failures) process.exit(1);

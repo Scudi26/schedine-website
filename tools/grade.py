@@ -46,7 +46,8 @@ from tools.weekly import closing
 API = "https://api.the-odds-api.com/v4/sports/{key}/scores"
 NATIONAL_ALIASES = {"czech republic": "czechia", "turkey": "turkiye", "ireland": "republic of ireland", "republic ireland": "republic of ireland",
                     "bosnia and herzegovina": "bosnia herzegovina", "korea republic": "south korea", "usa": "united states", "cote d ivoire": "ivory coast",
-                    "macedonia": "north macedonia", "holland": "netherlands", "swiss": "switzerland"}
+                    "macedonia": "north macedonia", "holland": "netherlands", "swiss": "switzerland",
+                    "stade rennais": "rennes"}   # ESPN's name for Rennes (the odds feed's), seen 11 Oct 2026
 
 
 def fetch_scores(comps: list[str], api_key: str, days_from: int = 3) -> dict[str, dict]:
@@ -189,6 +190,37 @@ def timeline(m: dict, ev: dict, fs: tuple) -> dict | None:
             "reds": [[r[0][0], r[1]] for r in espn_reds(ev)]}
 
 
+def _board_events(fetch, slug: str, lo: datetime, hi: datetime) -> list | None:
+    """Every event of a league's scoreboard between two dates, or None when ESPN answers nothing. The date range
+    (dates=YYYYMMDD-YYYYMMDD) first; since October 2026 ESPN answers it with 400 "Failed to get events endpoint" for every
+    sport (OSSERVATO 13 Oct), so then each calendar month the range touches (dates=YYYYMM, every match of the month),
+    on both of ESPN's hosts."""
+    def get(q: str):
+        url = f"{SITE.format(slug=slug)}/scoreboard?{q}&limit=300"
+        for u in (url, url.replace("https://site.web.api.espn.com/", "https://site.api.espn.com/", 1)):
+            try:
+                board = fetch(u)
+            except Exception:
+                continue
+            if isinstance(board, dict) and isinstance(board.get("events"), list):
+                return board["events"]
+        return None
+    got = get(f"dates={lo:%Y%m%d}-{hi:%Y%m%d}")
+    if got is not None:
+        return got
+    months, d = [], lo.replace(day=1)
+    while d <= hi:
+        months.append(f"{d:%Y%m}")
+        d = (d + timedelta(days=32)).replace(day=1)
+    out, ok = [], False
+    for mo in months:
+        evs = get(f"dates={mo}")
+        if evs is not None:
+            ok = True
+            out += evs
+    return out if ok else None
+
+
 def espn_finals(fetch, matches: list[dict], slugs: dict[str, str | None], timelines: dict | None = None) -> tuple[dict[str, tuple[int, int]], list[str]]:
     """Final scores from ESPN's scoreboards for the given matches: {match id: (home, away)}, plus notes. When a dict is
     passed as `timelines`, each settled match's goal and red-card minutes are written into it."""
@@ -203,17 +235,10 @@ def espn_finals(fetch, matches: list[dict], slugs: dict[str, str | None], timeli
             continue
         kicks = [datetime.fromisoformat(m["kickoff"]) for m in ms]
         lo, hi = min(kicks) - timedelta(days=1), max(kicks) + timedelta(days=1)
-        url = f"{SITE.format(slug=slug)}/scoreboard?dates={lo:%Y%m%d}-{hi:%Y%m%d}&limit=300"
-        board = None
-        for u in (url, url.replace("https://site.web.api.espn.com/", "https://site.api.espn.com/", 1)):
-            try:
-                board = fetch(u)
-                break
-            except Exception as e:  # ESPN failing only means the odds feed is asked instead
-                notes.append(f"{comp}: ESPN scoreboard failed ({e})")
-        if board is None:
+        events = _board_events(fetch, slug, lo, hi)
+        if events is None:   # ESPN failing only means the odds feed is asked instead
+            notes.append(f"{comp}: ESPN scoreboard failed")
             continue
-        events = board.get("events", []) if isinstance(board, dict) else []
         for m in ms:
             ko = datetime.fromisoformat(m["kickoff"])
             best, best_score = None, 0

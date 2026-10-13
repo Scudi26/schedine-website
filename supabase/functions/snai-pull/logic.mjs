@@ -481,6 +481,37 @@ export function memoryRows(id, at, book, before, after, fresh) {
   return { ticks, fit };
 }
 
+/* ---------- decision 98: results and the last full reading ----------
+   The daily job settles every listed match from ESPN and writes the results into week.json ("results": {"done": {match
+   id: [home, away, ht home, ht away, kick-off]}}); the store saves them (results_save) whenever it reads a new copy. */
+export function resultsOf(week, max) {
+  const d = week && week.results && week.results.done;
+  if (!d || typeof d !== 'object' || Array.isArray(d)) return null;
+  const done = {}; let n = 0;
+  for (const [k, v] of Object.entries(d)) {
+    if (n >= (max || 5000)) break;
+    if (k && Array.isArray(v) && v.length === 5 && Number.isInteger(v[0]) && Number.isInteger(v[1]) && v[0] >= 0 && v[1] >= 0) { done[k] = v; n++; }
+  }
+  return n ? { done } : null;
+}
+/* the sharp books' latest prices after a reading: a book seen gets its fresh markets; a book a complete answer no longer
+   has for the event is emptied (memoryRows then keeps its prices as closed), so an old price can never pass for the close */
+export function refAfter(old, refs, id, complete, markets) {
+  const ref = Object.assign({}, old || {});
+  for (const [k, byEv] of refs || []) {
+    const r = byEv && byEv.get(id);
+    if (r) ref[k] = memoryCodes(mergeCodes(ref[k], r.m, markets));
+    else if (complete && ref[k]) ref[k] = [];
+  }
+  return ref;
+}
+/* the books that had prices for an event in a near pull: SNAI, then the sharp books whose own prices are kept */
+export function nearBooks(id, snaiCodes, book, refs) {
+  const out = snaiCodes && snaiCodes.get(id) ? [book] : [];
+  for (const [k, byEv] of refs || []) if (byEv && byEv.get(id)) out.push(k);
+  return out;
+}
+
 /* ---------- the planner ---------- */
 const ROME = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Rome', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
 const OFFSET = new Map();   /* Rome's offset from UTC, worked out once per hour (summer time changes on the hour) */

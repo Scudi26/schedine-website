@@ -1662,7 +1662,7 @@ def test_notify_end_to_end_locally():
 
 
 def test_store_sql_checks_locally():
-    """tests/sql/feed_checks.sql, sync_push_checks.sql and memory_checks.sql on a fresh database with every migration (roles, row-level
+    """tests/sql/feed_checks.sql, sync_push_checks.sql, memory_checks.sql and truth_checks.sql on a fresh database with every migration (roles, row-level
     security, the function's calls). Runs only where SCUDI_PG names a Postgres socket directory (port 55432)."""
     import os
     import shutil
@@ -1673,9 +1673,9 @@ def test_store_sql_checks_locally():
     root = Path(__file__).resolve().parents[1]
     env = dict(os.environ, PGHOST=pg, PGPORT="55432", PGUSER="postgres")
     subprocess.run(["psql", "-q", "-d", "postgres", "-c", "drop database if exists scudi_sqlchk with (force)", "-c", "create database scudi_sqlchk"], env=env, check=True, capture_output=True)
-    files = ["tests/sql/supabase_stub.sql", *sorted(str(p.relative_to(root)) for p in (root / "supabase/migrations").glob("*.sql")), "tests/sql/feed_checks.sql", "tests/sql/sync_push_checks.sql", "tests/sql/memory_checks.sql"]
+    files = ["tests/sql/supabase_stub.sql", *sorted(str(p.relative_to(root)) for p in (root / "supabase/migrations").glob("*.sql")), "tests/sql/feed_checks.sql", "tests/sql/sync_push_checks.sql", "tests/sql/memory_checks.sql", "tests/sql/truth_checks.sql"]
     r = subprocess.run(["psql", "-q", "-d", "scudi_sqlchk", "-v", "ON_ERROR_STOP=1", *[x for f in files for x in ("-f", f)]], cwd=root, env=env, capture_output=True, text=True)
-    assert r.returncode == 0 and "sync sql checks passed" in r.stdout and "feed sql checks passed" in r.stdout and "memory sql checks passed" in r.stdout, r.stdout[-2000:] + r.stderr[-2000:]
+    assert r.returncode == 0 and "sync sql checks passed" in r.stdout and "feed sql checks passed" in r.stdout and "memory sql checks passed" in r.stdout and "truth sql checks passed" in r.stdout, r.stdout[-2000:] + r.stderr[-2000:]
 
 
 def test_sync_and_notify_store_is_private():
@@ -1706,3 +1706,151 @@ def test_notify_site_block_is_the_page():
     a = html.index("/* ===== Scudi slip maths")
     b = html.index("if (typeof module !== 'undefined') module.exports = Scudi;")
     assert html[a:b].rstrip() in site
+
+
+# ---------- decision 98: the results of every listed match, for the private store ----------
+def _board(items, scores, goals=None):
+    """An ESPN scoreboard for `items` ({id, home, away, kickoff}); scores {id: (h, a)}; goals {id: [(side, "14'")]}."""
+    evs = []
+    for i, m in enumerate(items):
+        if m["id"] not in scores:
+            continue
+        h, a = scores[m["id"]]
+        det = [{"scoringPlay": True, "team": {"id": "1" if side == "home" else "2"}, "clock": {"displayValue": clk}} for side, clk in (goals or {}).get(m["id"], [])]
+        evs.append({"id": str(700 + i), "date": m["kickoff"].replace("+00:00", "Z"), "competitions": [{
+            "status": {"type": {"completed": True, "state": "post", "name": "STATUS_FULL_TIME"}}, "details": det,
+            "competitors": [{"homeAway": "home", "score": str(h), "team": {"id": "1", "displayName": m["home"]}},
+                            {"homeAway": "away", "score": str(a), "team": {"id": "2", "displayName": m["away"]}}]}]})
+    return {"events": evs}
+
+
+def test_results_watch_settle_and_prune():
+    from tools.results import update
+    now = datetime(2026, 10, 13, 9, 0, tzinfo=timezone.utc)
+    week = {"competitions": [{"name": "Serie A", "espn": "ita.1"}],
+            "matches": [{"id": "m1", "competition": "Serie A", "home": "Genoa", "away": "Fiorentina", "kickoff": "2026-10-12T13:00:00+00:00"},
+                        {"id": "m2", "competition": "Serie A", "home": "Torino", "away": "Udinese", "kickoff": "2026-10-12T18:45:00+00:00"},
+                        {"id": "m3", "competition": "Serie A", "home": "Inter", "away": "Parma", "kickoff": "2026-10-13T08:00:00+00:00"},
+                        {"id": "m4", "competition": "Serie A", "home": "Milan", "away": "Roma", "kickoff": "2026-10-15T18:45:00+00:00"},
+                        {"id": "m5", "competition": "Serie A", "home": "Lazio", "away": "Napoli", "kickoff": "2026-10-20T18:45:00+00:00"}],
+            "fixtures": [{"id": "f1", "competition": "Serie B", "home": "Bari", "away": "Pisa", "kickoff": "2026-10-12T13:00:00+00:00"}]}
+    calls = []
+
+    def espn(url):
+        calls.append(url)
+        if "ita.2/" in url:                                                          # Serie B's league comes from the registry
+            assert "dates=20261011-20261013" in url
+            return {"events": []}
+        assert "ita.1/scoreboard?dates=20261011-20261013" in url
+        return _board(week["matches"], {"m1": (2, 1)}, {"m1": [("home", "14'"), ("away", "45'+2'"), ("home", "70'")]})
+    res, notes = update(None, week, now, espn)
+    assert res["done"] == {"m1": [2, 1, 1, 1, "2026-10-12T13:00:00+00:00"]}           # 90-minute score and half time
+    assert set(res["watch"]) == {"m2", "m3", "m4", "f1"}                              # m3 too recent to ask, m4 within 3 days, m5 not yet
+    assert len(calls) == 2 and "results: 1 of 3 finished matches settled from ESPN" in notes   # m1, m2 and f1 were asked about
+    # the next morning nothing new from ESPN: the same section, the same time stamp
+    res2, _ = update(res, week, now, lambda u: {"events": []})
+    assert res2["done"] == res["done"] and res2["at"] == res["at"]
+    # ten days after their kick-off the unsettled ones are dropped; fourteen days after, the settled one leaves the file too
+    later, _ = update(res2, {"matches": [], "fixtures": []}, now + timedelta(days=13), lambda u: {"events": []})
+    assert later["watch"] == {} and "m1" in later["done"]
+    gone, _ = update(later, {"matches": [], "fixtures": []}, now + timedelta(days=15), None)
+    assert gone["done"] == {}
+    # no reader (a replay): only the watch list moves, nothing is invented
+    dry, _ = update(None, week, now, None)
+    assert dry["done"] == {} and "m1" in dry["watch"]
+
+
+def test_weekly_carries_results_and_writes_them_on_quiet_days(tmp_path):
+    from tools.weekly import main
+    feed = _synthetic_feed(random.Random(5), comp="Serie A", day="2026-10-10")
+    f = tmp_path / "feed.json"
+    f.write_text(json.dumps(feed))
+    out, hist = tmp_path / "week.json", tmp_path / "history.json"
+    args = ["--from-file", str(f), "--out", str(out), "--history", str(hist), "--mode", "auto", "--comps", "Serie A"]
+    seen = []
+
+    def espn(url):
+        seen.append(url)
+        w = json.loads(out.read_text())
+        return _board(w["matches"], {m["id"]: (1, 0) for m in w["matches"]})
+    assert main([*args, "--now", "2026-10-09T09:00:00Z"], espn=espn) == 0            # Friday: full pull, matches enter the watch list
+    w = json.loads(out.read_text())
+    assert w["results"]["done"] == {} and {m["id"] for m in w["matches"]} <= set(w["results"]["watch"]) and not seen
+    assert main([*args, "--now", "2026-10-14T09:00:00Z"], espn=espn) == 0            # Wednesday: no pull due, but results arrived
+    w2 = json.loads(out.read_text())
+    assert len(w2["results"]["done"]) == len(w["matches"]) and all(v[:2] == [1, 0] for v in w2["results"]["done"].values())
+    assert w2["matches"] == w["matches"] and len(seen) == 1
+    before = out.read_text()
+    assert main([*args, "--now", "2026-10-14T10:00:00Z"], espn=espn) == 0            # nothing new: nothing written
+    assert out.read_text() == before
+    # a replay without a reader keeps the stored results as they are
+    assert main([*args, "--mode", "full", "--now", "2026-10-16T09:00:00Z"]) == 0
+    assert json.loads(out.read_text())["results"] == w2["results"]
+
+
+def test_weekly_results_never_stop_the_prices(tmp_path):
+    from tools.weekly import main
+    f = tmp_path / "feed.json"
+    f.write_text(json.dumps(_synthetic_feed(random.Random(6), comp="Serie A", day="2026-10-10")))
+    out, hist = tmp_path / "week.json", tmp_path / "history.json"
+
+    def broken(url):
+        raise OSError("ESPN down")
+    assert main(["--from-file", str(f), "--out", str(out), "--history", str(hist), "--mode", "full", "--comps", "Serie A", "--now", "2026-10-09T09:00:00Z"], espn=broken) == 0
+    assert json.loads(out.read_text())["matches"]
+
+
+def test_espn_month_boards_when_the_date_range_is_refused():
+    """Since October 2026 ESPN answers dates=YYYYMMDD-YYYYMMDD with 400 for every sport; the month form still works."""
+    import urllib.error
+
+    from tools.grade import espn_finals
+    ms = [{"id": "a", "competition": "Serie A", "home": "Genoa", "away": "Fiorentina", "kickoff": "2026-10-31T19:45:00+00:00"},
+          {"id": "b", "competition": "Serie A", "home": "Inter", "away": "Parma", "kickoff": "2026-11-01T14:00:00+00:00"}]
+    asked = []
+
+    def espn(url):
+        asked.append(url)
+        if "-2026" in url:
+            raise urllib.error.HTTPError(url, 400, "Failed to get events endpoint.", None, None)
+        if "dates=202610" in url:
+            return _board(ms[:1], {"a": (0, 0)})
+        if "dates=202611" in url:
+            return _board(ms[1:], {"b": (3, 2)})
+        raise AssertionError(url)
+    finals, notes = espn_finals(espn, ms, {"Serie A": "ita.1"})
+    assert finals == {"a": (0, 0, 0, 0), "b": (3, 2)} and not notes            # 0-0 has a known half time; 3-2 lists no goals
+    assert sum("dates=2026103" in u for u in asked) == 2 and any("dates=202611&limit=300" in u for u in asked)
+
+
+def test_results_time_budget_and_matches_that_left_the_week(tmp_path):
+    from tools.results import update
+    from tools.weekly import main
+    now = datetime(2026, 10, 13, 9, 0, tzinfo=timezone.utc)
+    week = {"matches": [{"id": "m1", "competition": "Serie A", "home": "Genoa", "away": "Fiorentina", "kickoff": "2026-10-12T13:00:00+00:00"},
+                        {"id": "m2", "competition": "Premier League", "home": "Chelsea", "away": "Leeds", "kickoff": "2026-10-12T13:00:00+00:00"}]}
+    asked = []
+
+    def slow(url):
+        asked.append(url)
+        raise OSError("hangs")
+    res, _ = update(None, week, now, slow, budget_s=-1)             # the budget is spent before the first request
+    assert asked == [] and res["done"] == {} and set(res["watch"]) == {"m1", "m2"}
+    # the daily job: a match of the stored week that the new pull no longer lists is still settled
+    feed = _synthetic_feed(random.Random(7), comp="Serie A", day="2026-10-10")
+    f = tmp_path / "feed.json"
+    f.write_text(json.dumps(feed))
+    out, hist = tmp_path / "week.json", tmp_path / "history.json"
+    args = ["--from-file", str(f), "--out", str(out), "--history", str(hist), "--comps", "Serie A"]
+    assert main([*args, "--mode", "full", "--now", "2026-10-07T09:00:00Z"]) == 0    # Wednesday: the weekend is more than 3 days away
+    w = json.loads(out.read_text())
+    assert w["matches"] and not (w.get("results") or {}).get("watch")
+    gone = w["matches"][0]
+    f.write_text(json.dumps({"Serie A": [e for e in feed["Serie A"] if e["home_team"] != gone["home"]]}))
+
+    def espn(url):
+        return _board([gone], {gone["id"]: (0, 2)})
+    assert main([*args, "--mode", "full", "--now", "2026-10-13T09:00:00Z"], espn=espn) == 0
+    w2 = json.loads(out.read_text())
+    assert gone["id"] not in {m["id"] for m in w2["matches"]} and w2["results"]["done"][gone["id"]][:2] == [0, 2]
+

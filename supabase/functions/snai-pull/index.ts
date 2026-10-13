@@ -9,9 +9,11 @@
 // the exchanges) in the same requests, fitted into Scudi's own chances (book_events.fit, private like everything here).
 // Decision 96: every reading is kept (price_ticks: what changed, SNAI's and the sharp books' own prices; fit_ticks: the
 // fit when it moved), and one pull is made in the last minutes before each kick-off, so the last reading is the close.
+// Decision 98: the results the daily job settles (week.json → results) are saved into public.match_results whenever a new
+// copy of week.json is read, and every event read in full keeps the time and the books of that reading (near_at).
 import {
   config, plan, pickIds, chunks, eventsOf, selectEvents, scudiItems, itemKeys, freshCount, leagueCounts, snaiOf, mergeCodes,
-  refBooks, sharpFits, oddsUrl, discoverParams, nearParams, quotaOf, failure, memoryBooks, memoryCodes, memoryRows,
+  refBooks, sharpFits, oddsUrl, discoverParams, nearParams, quotaOf, failure, memoryBooks, memoryRows, resultsOf, nearBooks, refAfter,
 } from './logic.mjs';
 
 const SUPA = Deno.env.get('SUPABASE_URL') ?? '';
@@ -119,6 +121,13 @@ Deno.serve(async (req) => {
   /* Scudi's list, every time (a 304 when unchanged): new matches or fixtures → SNAI's list is read now */
   let wk = await weekOf(diag0.week_etag || null, false);
   const fresh = wk.week ? freshCount(wk.week, now, cfg, diag0.week_known) : 0;
+  /* decision 98: a new copy of week.json brings the latest results: saved now, whatever the planner decides */
+  let results: any = null;
+  const rp = resultsOf(wk.week, 5000);
+  if (rp) {
+    try { results = { at: nowIso, saved: await rpc('results_save', { p: rp }), of: Object.keys(rp.done).length }; }
+    catch (e) { results = { at: nowIso, error: String(e).slice(0, 160) }; }
+  }
   const p = plan({ now, st, cfg, kicks, manual, fresh: fresh > 0 });
   if (!ODSS_KEY) {
     await rpc('feed_tick', { p: { checked_at: nowIso, last_status: 'no-key', why: 'no-key' } });
@@ -127,6 +136,7 @@ Deno.serve(async (req) => {
   if (!p.pull) {
     const tick: Record<string, unknown> = { checked_at: nowIso, why: p.why, next_at: p.next ? new Date(p.next).toISOString() : null };
     if (wk.week && !fresh && wk.etag && wk.etag !== diag0.week_etag) tick.diag = { ...diag0, week_etag: wk.etag };   /* nothing new in it: no need to read it again */
+    if (results) tick.diag = { ...(tick.diag || diag0), results };
     await rpc('feed_tick', { p: tick });
     return json({ pulled: false, why: p.why, left: p.left, next: p.next ? new Date(p.next).toISOString() : null });
   }
@@ -138,6 +148,7 @@ Deno.serve(async (req) => {
   let requests = 0, records = 0, err: any = null, note: string | null = null, quota: Record<string, unknown> = {}, discovered = false, sel: any = null, fitted = 0, priced = 0;
   const discover = p.discover || !rows.length;
   if (wk.week && !fresh && wk.etag) diag.week_etag = wk.etag;
+  if (results) diag.results = results;
   try {
     /* 0. the reference books' keys, from odss-api's list of books (one request a week; v4: sharp books, exchanges, big
        international books, and the big Italian books other than SNAI as the last resort) */
@@ -193,13 +204,13 @@ Deno.serve(async (req) => {
           const b = updates.get(id) || base.get(id), c = codes.get(id), e = evs.get(id), f = fits.get(id);
           if (!b || (!c && !f && !res.complete)) continue;   /* a page not read is not a market gone */
           if (f) { fitted++; fitNow.add(id); }
-          const ref: Record<string, any> = Object.assign({}, b.ref || {});
-          for (const [k, byEv] of refs) { const r = byEv.get(id); if (r) ref[k] = memoryCodes(mergeCodes(ref[k], r.m, MARKETS)); }
+          const ref: Record<string, any> = refAfter(b.ref, refs, id, res.complete, MARKETS);
           updates.set(id, {
             ...b, book, home: e && e.home ? e.home : b.home, away: e && e.away ? e.away : b.away, league: e && e.league ? e.league : b.league,
             commence_time: e && e.commence ? e.commence : b.commence_time, m: c || res.complete ? mergeCodes(b.m, c ? c.m : [], MARKETS) : b.m,
             odds_at: c && c.at ? new Date(c.at).toISOString() : b.odds_at, pulled_at: nowIso, full_at: c || res.complete ? nowIso : b.full_at,
             fit: f || b.fit || null, ref: Object.keys(ref).length ? ref : null,
+            ...(res.complete ? { near_at: nowIso, near_books: nearBooks(id, codes, book, refs) } : {}),   /* decision 98: the last full reading, and its books */
           });
           priced++;
         }

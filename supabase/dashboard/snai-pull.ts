@@ -487,6 +487,37 @@ export function memoryRows(id, at, book, before, after, fresh) {
   return { ticks, fit };
 }
 
+/* ---------- decision 98: results and the last full reading ----------
+   The daily job settles every listed match from ESPN and writes the results into week.json ("results": {"done": {match
+   id: [home, away, ht home, ht away, kick-off]}}); the store saves them (results_save) whenever it reads a new copy. */
+export function resultsOf(week, max) {
+  const d = week && week.results && week.results.done;
+  if (!d || typeof d !== 'object' || Array.isArray(d)) return null;
+  const done = {}; let n = 0;
+  for (const [k, v] of Object.entries(d)) {
+    if (n >= (max || 5000)) break;
+    if (k && Array.isArray(v) && v.length === 5 && Number.isInteger(v[0]) && Number.isInteger(v[1]) && v[0] >= 0 && v[1] >= 0) { done[k] = v; n++; }
+  }
+  return n ? { done } : null;
+}
+/* the sharp books' latest prices after a reading: a book seen gets its fresh markets; a book a complete answer no longer
+   has for the event is emptied (memoryRows then keeps its prices as closed), so an old price can never pass for the close */
+export function refAfter(old, refs, id, complete, markets) {
+  const ref = Object.assign({}, old || {});
+  for (const [k, byEv] of refs || []) {
+    const r = byEv && byEv.get(id);
+    if (r) ref[k] = memoryCodes(mergeCodes(ref[k], r.m, markets));
+    else if (complete && ref[k]) ref[k] = [];
+  }
+  return ref;
+}
+/* the books that had prices for an event in a near pull: SNAI, then the sharp books whose own prices are kept */
+export function nearBooks(id, snaiCodes, book, refs) {
+  const out = snaiCodes && snaiCodes.get(id) ? [book] : [];
+  for (const [k, byEv] of refs || []) if (byEv && byEv.get(id)) out.push(k);
+  return out;
+}
+
 /* ---------- the planner ---------- */
 const ROME = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Rome', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
 const OFFSET = new Map();   /* Rome's offset from UTC, worked out once per hour (summer time changes on the hour) */
@@ -643,6 +674,8 @@ export function failure(status, body) {
 // the exchanges) in the same requests, fitted into Scudi's own chances (book_events.fit, private like everything here).
 // Decision 96: every reading is kept (price_ticks: what changed, SNAI's and the sharp books' own prices; fit_ticks: the
 // fit when it moved), and one pull is made in the last minutes before each kick-off, so the last reading is the close.
+// Decision 98: the results the daily job settles (week.json → results) are saved into public.match_results whenever a new
+// copy of week.json is read, and every event read in full keeps the time and the books of that reading (near_at).
 
 const SUPA = Deno.env.get('SUPABASE_URL') ?? '';
 const KEY = (() => {
@@ -749,6 +782,13 @@ Deno.serve(async (req) => {
   /* Scudi's list, every time (a 304 when unchanged): new matches or fixtures → SNAI's list is read now */
   let wk = await weekOf(diag0.week_etag || null, false);
   const fresh = wk.week ? freshCount(wk.week, now, cfg, diag0.week_known) : 0;
+  /* decision 98: a new copy of week.json brings the latest results: saved now, whatever the planner decides */
+  let results: any = null;
+  const rp = resultsOf(wk.week, 5000);
+  if (rp) {
+    try { results = { at: nowIso, saved: await rpc('results_save', { p: rp }), of: Object.keys(rp.done).length }; }
+    catch (e) { results = { at: nowIso, error: String(e).slice(0, 160) }; }
+  }
   const p = plan({ now, st, cfg, kicks, manual, fresh: fresh > 0 });
   if (!ODSS_KEY) {
     await rpc('feed_tick', { p: { checked_at: nowIso, last_status: 'no-key', why: 'no-key' } });
@@ -757,6 +797,7 @@ Deno.serve(async (req) => {
   if (!p.pull) {
     const tick: Record<string, unknown> = { checked_at: nowIso, why: p.why, next_at: p.next ? new Date(p.next).toISOString() : null };
     if (wk.week && !fresh && wk.etag && wk.etag !== diag0.week_etag) tick.diag = { ...diag0, week_etag: wk.etag };   /* nothing new in it: no need to read it again */
+    if (results) tick.diag = { ...(tick.diag || diag0), results };
     await rpc('feed_tick', { p: tick });
     return json({ pulled: false, why: p.why, left: p.left, next: p.next ? new Date(p.next).toISOString() : null });
   }
@@ -768,6 +809,7 @@ Deno.serve(async (req) => {
   let requests = 0, records = 0, err: any = null, note: string | null = null, quota: Record<string, unknown> = {}, discovered = false, sel: any = null, fitted = 0, priced = 0;
   const discover = p.discover || !rows.length;
   if (wk.week && !fresh && wk.etag) diag.week_etag = wk.etag;
+  if (results) diag.results = results;
   try {
     /* 0. the reference books' keys, from odss-api's list of books (one request a week; v4: sharp books, exchanges, big
        international books, and the big Italian books other than SNAI as the last resort) */
@@ -823,13 +865,13 @@ Deno.serve(async (req) => {
           const b = updates.get(id) || base.get(id), c = codes.get(id), e = evs.get(id), f = fits.get(id);
           if (!b || (!c && !f && !res.complete)) continue;   /* a page not read is not a market gone */
           if (f) { fitted++; fitNow.add(id); }
-          const ref: Record<string, any> = Object.assign({}, b.ref || {});
-          for (const [k, byEv] of refs) { const r = byEv.get(id); if (r) ref[k] = memoryCodes(mergeCodes(ref[k], r.m, MARKETS)); }
+          const ref: Record<string, any> = refAfter(b.ref, refs, id, res.complete, MARKETS);
           updates.set(id, {
             ...b, book, home: e && e.home ? e.home : b.home, away: e && e.away ? e.away : b.away, league: e && e.league ? e.league : b.league,
             commence_time: e && e.commence ? e.commence : b.commence_time, m: c || res.complete ? mergeCodes(b.m, c ? c.m : [], MARKETS) : b.m,
             odds_at: c && c.at ? new Date(c.at).toISOString() : b.odds_at, pulled_at: nowIso, full_at: c || res.complete ? nowIso : b.full_at,
             fit: f || b.fit || null, ref: Object.keys(ref).length ? ref : null,
+            ...(res.complete ? { near_at: nowIso, near_books: nearBooks(id, codes, book, refs) } : {}),   /* decision 98: the last full reading, and its books */
           });
           priced++;
         }

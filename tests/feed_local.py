@@ -39,7 +39,7 @@ PUBLISHABLE = "sb_publishable_localtest"
 ODSS_KEY = "odss_live_localtest"
 USERS = {"gianluca@example.com": ("11111111-1111-1111-1111-111111111111", "pw-owner"),
          "other@example.com": ("22222222-2222-2222-2222-222222222222", "pw-other")}
-TABLES = {"book_events", "feed_state", "feed_log", "owners", "user_state", "push_subs", "notify_sent", "memory_events", "price_ticks", "fit_ticks", "closing_prices"}
+TABLES = {"book_events", "feed_state", "feed_log", "owners", "user_state", "push_subs", "notify_sent", "memory_events", "price_ticks", "fit_ticks", "closing_prices", "match_results"}
 STATE: dict = {"quota": 500, "odss_calls": [], "week": None, "events": [], "odss_status": 200, "week_reads": []}
 NOW = datetime.now(timezone.utc).replace(second=0, microsecond=0)
 
@@ -90,7 +90,10 @@ def build_world() -> None:
         if sh:
             events.append({"id": f"evf{j}", "home": sh, "away": sa, "league": comp, "k": k, "true": f"f{j}", "p": 2.0 + j * 0.2})
     fixtures.append({"id": "ffar", "competition": "Serie B", "kickoff": (NOW + timedelta(days=12)).isoformat(), "home": "Bari", "away": "Pisa"})   # beyond SNAI's eight days
-    STATE["week"] = {"built_at": iso(NOW), "matches": matches, "fixtures": fixtures}
+    # decision 98: the results the daily job settled ride in week.json (last weekend's matches, and a malformed entry)
+    results = {"done": {"old1": [2, 1, 1, 0, iso(NOW - timedelta(days=2))], "old0": [0, 0, 0, 0, iso(NOW - timedelta(days=3))], "junk": "x"},
+               "watch": {"m0": ["Serie A", "Juventus", "Internazionale", iso(NOW + timedelta(hours=HOURS[0]))]}}
+    STATE["week"] = {"built_at": iso(NOW), "matches": matches, "fixtures": fixtures, "results": results}
     STATE["events"] = events
 
 
@@ -526,6 +529,13 @@ def checks() -> None:
     check(len(sql("select 1 from public.book_events where ref ? 'pinnacle'")) == len(rows), "the sharp book's latest prices sit beside SNAI's in the current table")
     dm = sql("select diag -> 'memory' from public.feed_state")[0][0] or {}
     check(dm.get("ticks") == 2 * len(rows) and dm.get("fits") == len(rows), f"the pull says what it kept ({dm})")
+    # decision 98: the results in week.json are saved, and every event read in full keeps when and by whom
+    res = dict((r[0], r[1:]) for r in sql("select match_id, ft_h, ft_a, ht_h, ht_a from public.match_results"))
+    check(res == {"old1": (2, 1, 1, 0), "old0": (0, 0, 0, 0)}, f"the settled results are saved, the malformed one is not ({res})")
+    dr = sql("select diag -> 'results' from public.feed_state")[0][0] or {}
+    check(dr.get("saved") == 2 and dr.get("of") == 2, f"the pull says how many results it saved ({dr})")
+    na = sql("select event_id, near_at is not null, near_books from public.memory_events")
+    check(all(x[1] and x[2][:2] == ["snai", "pinnacle"] for x in na), f"every event read in full keeps the time and its books, SNAI then Pinnacle ({na[:2]})")
 
     n = len(STATE["odss_calls"])
     code, r = call({"x-cron-token": token})
@@ -545,6 +555,12 @@ def checks() -> None:
     n = len(STATE["odss_calls"])
     code, r = call({"x-cron-token": token})
     check(not r.get("pulled") and len(STATE["odss_calls"]) == n, f"the next wake has nothing new: nothing spent ({r.get('why')})")
+    # decision 98: the next morning's week.json carries a new result and no new match: saved on a wake that pulls nothing
+    STATE["week"]["results"]["done"]["old2"] = [3, 3, 2, 2, iso(NOW - timedelta(days=1))]
+    code, r = call({"x-cron-token": token})
+    got = sql("select ft_h, ft_a from public.match_results where match_id = 'old2'")
+    check(not r.get("pulled") and len(STATE["odss_calls"]) == n and got == [(3, 3)], f"a new result is saved on a quiet wake, nothing spent ({r.get('why')}, {got})")
+    check((sql("select diag -> 'results' ->> 'saved' from public.feed_state")[0][0]) == "1", "the quiet wake says what it saved: the one new result")
     true = {e["id"]: e["true"] for e in STATE["events"] if e["true"]}
 
     code, r = call({"apikey": PUBLISHABLE, "Authorization": "Bearer tok-22222222-2222-2222-2222-222222222222"})

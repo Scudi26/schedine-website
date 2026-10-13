@@ -391,7 +391,7 @@ def merge_late(old: dict, fresh: list[dict], refreshed: list[str], now: datetime
     return data
 
 
-def main(argv=None, get=None):
+def main(argv=None, get=None, espn=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--comps", nargs="*", help="only these competitions (default: every competition in season)")
     ap.add_argument("--mode", choices=["full", "late", "auto"], default="full")
@@ -402,6 +402,7 @@ def main(argv=None, get=None):
     ap.add_argument("--out", default="data/week.json")
     ap.add_argument("--history", default="data/history.json")
     ap.add_argument("--need-sharp", action="store_true", help="drop matches with no Pinnacle/Betfair price")
+    ap.add_argument("--no-results", action="store_true", help="do not ask ESPN for the results of finished matches")
     a = ap.parse_args(argv)
     now = datetime.fromisoformat(a.now.replace("Z", "+00:00")) if a.now else datetime.now(timezone.utc)
     out, hist_path = Path(a.out), Path(a.history)
@@ -420,14 +421,42 @@ def main(argv=None, get=None):
                 sys.exit("ODDS_API_KEY is not set (keep it in a GitHub secret or a password manager, never in the code)")
             get = live_get(key)
     notes = list(cleaned)
+    # decision 98: the results of the finished matches ride in week.json for the private store (tools/results.py); a replay
+    # asks ESPN nothing unless a test hands it a reader
+    if espn is None and not (a.from_file or a.no_results):
+        from tools.teams import live_fetch
+        espn = live_fetch(pause=0.3)
+
+    def results_for(week: dict) -> dict | None:
+        if espn is None:
+            return old.get("results")
+        from tools.results import update
+        # the old week's matches too: one that kicked off since and left the new week is still settled
+        seen, items = set(), []
+        for it in list(old.get("matches") or []) + list(old.get("fixtures") or []) + list(week.get("matches") or []) + list(week.get("fixtures") or []):
+            if it.get("id") and it["id"] not in seen:
+                seen.add(it["id"])
+                items.append(it)
+        try:
+            res, rnotes = update(old.get("results"), {"competitions": week.get("competitions") or old.get("competitions") or [], "matches": items}, now, espn)
+        except Exception as e:  # ESPN failing never stops the prices: the stored results stay as they were
+            print(f"  results: not updated ({e})")
+            return old.get("results")
+        for n in rnotes:
+            print("  " + n)
+        return res
     if mode == "late":
         due = comps_due(old, now, a.late_hours)
         if a.comps:
             due = [c for c in due if c in a.comps]
         if not due:
             print(f"late pull: no big-league or national-team kickoff in the next {a.late_hours:g} hours, nothing fetched, no credit spent")
-            if cleaned:   # still write the cleaned file, so example prices leave the site today
+            res = results_for(old) if old else None
+            new_results = res is not None and res.get("done") != (old.get("results") or {}).get("done")
+            if cleaned or new_results:   # still write: example prices leave the site today, new results reach the store (not for the watch list alone)
                 data = dict(old, notes=(old.get("notes") or []) + cleaned)
+                if res is not None:
+                    data["results"] = res
                 data["competitions"] = comp_info(sort_names({m["competition"] for m in data.get("matches", [])} | {f["competition"] for f in data.get("fixtures", [])}),
                                                  None, old.get("competitions"))
                 out.write_text(json.dumps(data, indent=1, ensure_ascii=False))
@@ -487,6 +516,9 @@ def main(argv=None, get=None):
         data["fixtures"] = [f for f in old.get("fixtures", []) if datetime.fromisoformat(f["kickoff"]) > now]
         seen = {m["competition"] for m in data.get("matches", [])} | {f["competition"] for f in data["fixtures"]}
         data["competitions"] = comp_info(sort_names(seen, extra), extra, old.get("competitions"))
+    res = results_for(data)
+    if res is not None:
+        data["results"] = res
     history = json.loads(hist_path.read_text()) if hist_path.exists() else {}
     history = add_snapshots(history, fresh, now)
     out.parent.mkdir(parents=True, exist_ok=True)
