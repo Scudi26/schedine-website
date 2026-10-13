@@ -1,0 +1,16 @@
+Scudi upload — 13 Oct 2026 (9 files)
+
+On GitHub (Scudi26/schedine-website) → Add file → Upload files:
+drag in everything in this folder EXCEPT this text file, keeping the folders
+(index.html at the top, the "supabase" and "tests" folders as they are).
+Same files replace the old ones. Commit message: "v23 phone polish + radar phase 1".
+
+What changes:
+- index.html — the phone fixes (team names, match list, coming up, pitch,
+  record tiles, header, Italian), sync and notifications parked
+- supabase/... and tests/... — the price memory and the closing pull
+  (decision 96). They do nothing on their own: Claude installs them in your
+  Supabase project from your Chrome, after your go-ahead.
+
+After uploading: GitHub Pages publishes in a minute or two; then just reopen
+the site on the phone (it always loads the newest version when online).

@@ -1662,7 +1662,7 @@ def test_notify_end_to_end_locally():
 
 
 def test_store_sql_checks_locally():
-    """tests/sql/feed_checks.sql and sync_push_checks.sql on a fresh database with every migration (roles, row-level
+    """tests/sql/feed_checks.sql, sync_push_checks.sql and memory_checks.sql on a fresh database with every migration (roles, row-level
     security, the function's calls). Runs only where SCUDI_PG names a Postgres socket directory (port 55432)."""
     import os
     import shutil
@@ -1673,9 +1673,9 @@ def test_store_sql_checks_locally():
     root = Path(__file__).resolve().parents[1]
     env = dict(os.environ, PGHOST=pg, PGPORT="55432", PGUSER="postgres")
     subprocess.run(["psql", "-q", "-d", "postgres", "-c", "drop database if exists scudi_sqlchk with (force)", "-c", "create database scudi_sqlchk"], env=env, check=True, capture_output=True)
-    files = ["tests/sql/supabase_stub.sql", *sorted(str(p.relative_to(root)) for p in (root / "supabase/migrations").glob("*.sql")), "tests/sql/feed_checks.sql", "tests/sql/sync_push_checks.sql"]
+    files = ["tests/sql/supabase_stub.sql", *sorted(str(p.relative_to(root)) for p in (root / "supabase/migrations").glob("*.sql")), "tests/sql/feed_checks.sql", "tests/sql/sync_push_checks.sql", "tests/sql/memory_checks.sql"]
     r = subprocess.run(["psql", "-q", "-d", "scudi_sqlchk", "-v", "ON_ERROR_STOP=1", *[x for f in files for x in ("-f", f)]], cwd=root, env=env, capture_output=True, text=True)
-    assert r.returncode == 0 and "sync sql checks passed" in r.stdout and "feed sql checks passed" in r.stdout, r.stdout[-2000:] + r.stderr[-2000:]
+    assert r.returncode == 0 and "sync sql checks passed" in r.stdout and "feed sql checks passed" in r.stdout and "memory sql checks passed" in r.stdout, r.stdout[-2000:] + r.stderr[-2000:]
 
 
 def test_sync_and_notify_store_is_private():

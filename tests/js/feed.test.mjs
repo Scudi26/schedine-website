@@ -338,5 +338,89 @@ const rome = (iso) => Date.parse(iso);   /* the ISO strings below carry their of
   ok(F.failure(401, { code: 'auth_invalid' }).status === 'bad-key' && F.failure(429, { code: 'quota_exceeded' }).status === 'quota' && F.failure(429, { code: 'rate_limited' }).wait === 5 * 60e3 && F.failure(502, null).status === 'odss-down', 'errors: bad key, month used up, too fast, odss-api down');
 }
 
+/* ---------- decision 96: the price memory ---------- */
+{
+  ok(F.packCode([3, 0, 1]) === 100001 && F.packCode([28319, 0, 3]) === 200003 && F.packCode([7989, 250, 2]) === 302502 && F.packCode([18, 0, 1]) === 400001, 'selections pack as market × 100000 + line × 10 + outcome');
+  ok([[3, 0, 2], [28319, 0, 2], [7989, 150, 1], [7989, 350, 2], [18, 0, 2]].every(x => same(F.unpackCode(F.packCode(x)), x)), 'and unpack back');
+  const m1 = [[3, 0, 1, 2.1], [3, 0, 2, 3.3], [3, 0, 3, 3.6], [7989, 50, 2, 1.05], [7989, 250, 1, 1.8], [7989, 250, 2, 1.95], [7989, 450, 2, 9], [18, 0, 1, 1.7]];
+  ok(same(F.memoryCodes(m1).map(x => x.slice(0, 3)), [[3, 0, 1], [3, 0, 2], [3, 0, 3], [7989, 250, 1], [7989, 250, 2], [18, 0, 1]]), 'the memory keeps 1X2, double chance, under/over 1.5 / 2.5 / 3.5 and goal/no goal only');
+  const first = F.ticksOf([], m1);
+  ok(first && same(first.c, [100001, 100002, 100003, 302501, 302502, 400001]) && same(first.p, [2.1, 3.3, 3.6, 1.8, 1.95, 1.7]), 'an event\'s first reading is kept whole, sorted by code');
+  ok(F.ticksOf(m1, m1.map(x => x.slice())) === null, 'a reading with nothing changed keeps nothing');
+  const m2 = m1.map(x => x.slice()); m2[0][3] = 2.05; m2[2][3] = null;
+  const t2 = F.ticksOf(m1, m2);
+  ok(t2 && same(t2.c, [100001, 100003]) && same(t2.p, [2.05, null]), 'a price that moved and a padlock are kept, nothing else');
+  const t3 = F.ticksOf(m1, m1.filter(x => x[0] !== 18));
+  ok(t3 && same(t3.c, [400001]) && same(t3.p, [null]), 'a selection no longer offered is kept as closed (null)');
+  ok(F.ticksOf(m1, m1.map(x => x[1] === 450 ? [7989, 450, 2, 7] : x.slice())) === null, 'a line the memory does not keep changes nothing');
+  ok(F.ticksOf([[3, 0, 1, 2.1]], [[3, 0, 1, 2.1000001]]) === null, 'prices are compared to the cent');
+  ok(same(F.memoryBooks(['pinnacle', 'betfair_ex_eu', 'matchbook', 'smarkets', 'bet365', 'sbobet', 'betfair_sportsbook']), ['pinnacle', 'betfair_ex_eu', 'matchbook', 'smarkets']), 'the sharp books whose own prices are kept: Pinnacle and the exchanges');
+  const fit = { p: [0.5, 0.27, 0.23, 0.55], lh: 1.5, la: 1, rho: -0.05, err: 0, books: ['pinnacle', 'matchbook'], sharp: 1, tier: 'ref', at: '2026-10-10T10:00:00.000Z' };
+  ok(F.fitMoved(null, fit) && !F.fitMoved(fit, Object.assign({}, fit, { p: [0.5002, 0.27, 0.23, 0.55] })) && F.fitMoved(fit, Object.assign({}, fit, { p: [0.5006, 0.27, 0.23, 0.55] })), 'a fit is kept the first time and when a chance moves by 0.05 points or more');
+  ok(F.fitMoved(fit, Object.assign({}, fit, { tier: 'it' })) && F.fitMoved(fit, Object.assign({}, fit, { p: [0.5, 0.27, 0.23, null] })), '… or when its tier or its goals line changes');
+  const before = { m: m1, ref: { pinnacle: [[3, 0, 1, 2.2], [3, 0, 2, 3.4], [3, 0, 3, 3.7]] }, fit };
+  const after = { m: m2, ref: { pinnacle: [[3, 0, 1, 2.15], [3, 0, 2, 3.4], [3, 0, 3, 3.75]], matchbook: [[3, 0, 1, 2.18]] }, fit: Object.assign({}, fit, { p: [0.51, 0.27, 0.22, 0.55] }) };
+  const r = F.memoryRows('ev9', '2026-10-10T12:00:00.000Z', 'snai', before, after, true);
+  ok(r.ticks.length === 3 && same(r.ticks.map(t => t.book), ['snai', 'matchbook', 'pinnacle']) && same(r.ticks[2].c, [100001, 100003]) && same(r.ticks[2].p, [2.15, 3.75]), 'one pull: SNAI\'s changes, then each sharp book\'s, a book seen for the first time whole');
+  ok(r.fit && r.fit.event_id === 'ev9' && same(r.fit.p, [0.51, 0.27, 0.22, 0.55]) && r.fit.nb === 2 && r.fit.tier === 'ref' && r.fit.src_at === fit.at, 'the fit that moved is kept with its books and their time');
+  ok(F.memoryRows('ev9', 'x', 'snai', before, after, false).fit === null, 'a fit carried over from an earlier pull is not kept again');
+  ok(F.memoryRows('ev9', 'x', 'snai', null, { m: m1 }, false).ticks.length === 1, 'an event read for the first time keeps all of SNAI\'s prices');
+}
+/* ---------- decision 96: the closing pull ---------- */
+{
+  const cfg = F.config(), M = 60e3, k = rome('2026-10-17T15:00:00+02:00');
+  ok(F.closingKick(k - 10 * M, [k], k - 3 * H, 'prices', cfg) === k, 'ten minutes before a kick-off, with no pull since: the closing pull');
+  ok(F.closingKick(k - 20 * M, [k], k - 3 * H, 'prices', cfg) === null && F.closingKick(k - 1 * M, [k], k - 3 * H, 'prices', cfg) === null, 'not twenty minutes before, not one minute before');
+  ok(F.closingKick(k - 5 * M, [k], k - 10 * M, 'closing', cfg) === null, 'once per kick-off');
+  ok(F.closingKick(k - 5 * M, [k], k - 13 * M, 'prices', cfg) === null, 'an ordinary pull inside the window is the close already');
+  ok(F.closingKick(k - 5 * M, [k], k - 16 * M, 'prices', cfg) === k, 'an ordinary pull a quarter of an hour before is not');
+  const k2 = k + 10 * M, k3 = k + 30 * M;
+  ok(F.closingKick(k2 - 5 * M, [k, k2, k3], k - 10 * M, 'closing', cfg) === null, 'a kick-off ten minutes after one just closed shares its pull');
+  ok(F.closingKick(k3 - 10 * M, [k, k2, k3], k - 10 * M, 'closing', cfg) === k3, 'one half an hour later gets its own');
+  const st = { last_pull_at: new Date(k - 3 * H).toISOString(), last_kind: 'prices', quota_remaining: 300, quota_reset_at: new Date(k + 20 * D).toISOString(), discovered_at: new Date(k - H).toISOString() };
+  const night = rome('2026-10-18T02:00:00+02:00');
+  const pc = F.plan({ now: k - 10 * M, st, cfg, kicks: [k] });
+  ok(pc.pull && pc.why === 'closing' && pc.closing === k && pc.discover === false, 'the planner makes the closing pull, without reading SNAI\'s list');
+  ok(F.plan({ now: night - 10 * M, st, cfg, kicks: [night] }).why === 'closing', 'at night too (a late kick-off)');
+  ok(F.plan({ now: k - 10 * M, st: Object.assign({}, st, { quota_remaining: 20 }), cfg, kicks: [k] }).pull === false, 'not out of the 25 kept for "Update now"');
+  ok(Math.abs(F.closingsAhead(k - H, [k, k2, k3], k + 10 * D, cfg) - (2 + 10 * cfg.closingsPerDay - (30 * M / D) * cfg.closingsPerDay)) < 1e-9, 'closings still to come: the kick-offs known (shared ones once), then five a day');
+  const rows = [{ event_id: 'soon', commence_time: new Date(k).toISOString() }, { event_id: 'evening', commence_time: new Date(k + 5 * H).toISOString() }, { event_id: 'tomorrow', commence_time: new Date(k + 24 * H).toISOString() }];
+  ok(same(F.pickIds(rows, k - 10 * M, cfg, false, cfg.closeNearH), ['soon', 'evening']), 'a closing pull asks only for the matches of the next six hours');
+}
+/* a month of wake-ups every 10 minutes with a full calendar of the radar's eleven leagues: a closing pull for every
+   kick-off, and the month still inside the quota */
+{
+  const cfg = F.config(), start = rome('2026-11-02T00:05:00+01:00'), end = start + 30 * D;
+  const kicksAll = [];
+  for (let d = 0; d < 32; d++) {
+    const day = new Date(start + d * D), dow = day.getUTCDay();
+    const at = (h, m) => Date.UTC(day.getUTCFullYear(), day.getUTCMonth(), day.getUTCDate(), h - 1, m);
+    const slots = dow === 6 ? [[12, 30], [13, 30], [14, 0], [15, 0], [15, 30], [16, 0], [16, 15], [18, 0], [18, 30], [20, 45], [21, 0]]
+      : dow === 0 ? [[12, 30], [13, 0], [14, 0], [15, 0], [15, 15], [16, 30], [17, 30], [18, 0], [18, 45], [20, 45], [21, 0]]
+      : dow === 5 ? [[19, 0], [20, 30], [20, 45]] : dow === 1 ? [[19, 0], [20, 45]] : dow === 2 || dow === 3 ? [[20, 0], [20, 45]] : [];
+    for (const [h, m] of slots) kicksAll.push(at(h, m), at(h, m));
+  }
+  kicksAll.sort((a, b) => a - b);
+  let st = {}, left = 500, used = 0, reset = null, closings = 0;
+  const pulls = [];
+  for (let t = start; t < end; t += 10 * 60e3) {
+    const kicks = kicksAll.filter(k => k > t - H && k <= t + 8 * D);
+    const p = F.plan({ now: t, st, cfg, kicks });
+    if (!p.pull) continue;
+    const cost = p.why === 'closing' ? 1 : p.discover ? 3 : 2;   /* a busy weekend: two requests an ordinary pull */
+    if (reset === null) reset = t + 30 * D;
+    left -= cost; used += cost; if (p.why === 'closing') closings++;
+    pulls.push({ t, why: p.why });
+    st = Object.assign({}, st, { last_pull_at: new Date(t).toISOString(), last_kind: p.why === 'closing' ? 'closing' : 'prices', quota_remaining: left, quota_limit: 500, quota_reset_at: new Date(reset).toISOString(),
+      avg_cost: p.why === 'closing' ? st.avg_cost : st.avg_cost ? 0.8 * st.avg_cost + 0.2 * cost : cost, discovered_at: p.discover ? new Date(t).toISOString() : st.discovered_at });
+  }
+  const inMonth = [...new Set(kicksAll.filter(k => k > start + H && k < end))];
+  const missed = inMonth.filter(k => !pulls.some(p => p.t >= k - 14 * 60e3 && p.t <= k - 2 * 60e3) && !pulls.some(p => p.why === 'closing' && p.t >= k - 24 * 60e3 && p.t < k));
+  console.log(`  a full month of the eleven leagues: ${pulls.length} pulls (${closings} closing), ${used} requests, ${inMonth.length} kick-off times, ${missed.length} without a closing reading`);
+  ok(used <= 500 - cfg.reserve + 3, `the month stays within the quota less the reserve (${used} used)`);
+  ok(missed.length === 0, `every kick-off has a reading in its last minutes (${missed.length} missed)`);
+  ok(pulls.filter(p => p.why !== 'closing').length >= 120, 'the ordinary pulls go on between them');
+}
+
 console.log(`${checks - failures}/${checks} feed checks passed`);
 if (failures) process.exit(1);

@@ -44,6 +44,11 @@ export const DEFAULTS = {
   maxFitError: 0.01,        // the fitted score matrix may miss the market's chances by this much at most
   refBooks: 24,             // reference books asked for beside SNAI (sharp books first; payload only, no extra request)
   minBooks: 2,              // books a fit needs when Pinnacle has no price (the weekly job asks for two)
+  closeFromMin: 14,         // the closing pull (decision 96): between this many minutes before a kick-off …
+  closeToMin: 2,            // … and this many
+  closeShareMin: 10,        // a kick-off this close after one just closed shares its pull
+  closeNearH: 6,            // a closing pull asks only for the matches starting within this many hours (one request)
+  closingsPerDay: 5,        // closing pulls a day expected beyond the kick-offs already known, kept out of the ordinary pulls
 };
 export function config(over) { return Object.assign({}, DEFAULTS, over || {}); }
 
@@ -437,6 +442,51 @@ export function sharpFits(records, keys, now, cfg, why, itKeys) {
   return out;
 }
 
+/* ---------- decision 96: the price memory ----------
+   Every reading is kept with its time (until now each pull replaced the last one), so that the radar can be tested on
+   SNAI against the sharp books: SNAI's prices and the sharp books' own (Pinnacle, the exchanges) for the radar's first
+   markets — 1X2, double chance, under/over 1.5 / 2.5 / 3.5, goal/no goal — and only what changed since the last reading
+   of that book. A selection is stored as one packed number: market (1 = 1X2, 2 = double chance, 3 = under/over,
+   4 = goal/no goal) × 100000 + line (hundredths) × 10 + outcome, e.g. 100001 = home win, 302502 = over 2.5. */
+export const MEMORY_LINES = [150, 250, 350];
+export const MEMORY_BOOK = /^(pinnacle|betfair|matchbook|smarkets)/i;
+export function memoryBooks(keys) { return (keys || []).filter(k => MEMORY_BOOK.test(String(k)) && !/sportsbook/i.test(String(k))); }
+export function memoryCodes(m) { return (m || []).filter(x => x && MK_PACK[x[0]] && (x[0] !== 7989 || MEMORY_LINES.includes(x[1]))); }
+const MK_PACK = { 3: 1, 28319: 2, 7989: 3, 18: 4 }, MK_UNPACK = { 1: 3, 2: 28319, 3: 7989, 4: 18 };
+export function packCode(x) { return MK_PACK[x[0]] * 100000 + x[1] * 10 + x[2]; }
+export function unpackCode(c) { return [MK_UNPACK[Math.floor(c / 100000)], Math.floor((c % 100000) / 10), c % 10]; }
+/* what changed from one reading of a book to the next: { c: packed codes, p: prices } (null = padlocked or no longer
+   offered), sorted by code; null when nothing changed. The first reading of an event is all of it. */
+export function ticksOf(prev, next) {
+  const val = x => (x[3] == null ? null : Math.round(+x[3] * 100) / 100);
+  const was = new Map(memoryCodes(prev).map(x => [packCode(x), val(x)])), now = new Map(memoryCodes(next).map(x => [packCode(x), val(x)]));
+  const out = [];
+  for (const [k, v] of now) if (!was.has(k) || was.get(k) !== v) out.push([k, v]);
+  for (const [k, v] of was) if (!now.has(k) && v != null) out.push([k, null]);
+  if (!out.length) return null;
+  out.sort((a, b) => a[0] - b[0]);
+  return { c: out.map(x => x[0]), p: out.map(x => x[1]) };
+}
+/* a fit worth keeping: the event's first, or one whose chances moved by 0.05 points or more, or a change of tier */
+export function fitMoved(prev, next) {
+  if (!next || !Array.isArray(next.p)) return false;
+  if (!prev || !Array.isArray(prev.p)) return true;
+  if ((next.tier || 'ref') !== (prev.tier || 'ref')) return true;
+  return next.p.some((v, i) => (v == null) !== (prev.p[i] == null) || (v != null && Math.abs(v - prev.p[i]) >= 0.0005));
+}
+/* one pull's rows for the memory: SNAI's codes and each sharp book's against the stored ones, and the fit if it moved.
+   before / after: { m, ref: { book: codes }, fit }; fresh: the fit came with this pull */
+export function memoryRows(id, at, book, before, after, fresh) {
+  const ticks = [], b = before || {}, a = after || {};
+  const t = ticksOf(b.m, a.m); if (t) ticks.push({ event_id: id, book, at, c: t.c, p: t.p });
+  for (const k of Object.keys(a.ref || {}).sort()) {
+    const r = ticksOf((b.ref || {})[k], a.ref[k]); if (r) ticks.push({ event_id: id, book: k, at, c: r.c, p: r.p });
+  }
+  const f = a.fit, fit = fresh && fitMoved(b.fit, f) ? { event_id: id, at, p: f.p, lh: f.lh, la: f.la, rho: f.rho, err: f.err, sharp: f.sharp ?? null,
+    nb: Array.isArray(f.books) ? f.books.length : null, tier: f.tier || 'ref', src_at: f.at || null } : null;
+  return { ticks, fit };
+}
+
 /* ---------- the planner ---------- */
 const ROME = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Rome', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
 const OFFSET = new Map();   /* Rome's offset from UTC, worked out once per hour (summer time changes on the hour) */
@@ -470,6 +520,32 @@ export function weightBetween(a, b, kicks, cfg) {
   }
   return w * cfg.slotMin / 60;   /* in weighted hours */
 }
+/* the closing pull (decision 96): one reading in the last minutes before each kick-off of Scudi's matches, so that the
+   last price kept before a match starts is its closing price. A kick-off shortly after one that has just been closed
+   shares that pull. Returns the kick-off to close now, or null. */
+export function closingKick(now, kicks, last, lastKind, cfg) {
+  cfg = config(cfg);
+  const from = cfg.closeFromMin * 60e3, to = cfg.closeToMin * 60e3, share = cfg.closeShareMin * 60e3;
+  for (const k of kicks || []) {
+    if (k - from > now) break;
+    if (now < k - from || now > k - to) continue;
+    if (last >= k - from || (lastKind === 'closing' && last >= k - from - share)) continue;
+    return k;
+  }
+  return null;
+}
+/* the closing pulls still to come before the quota reopens, kept out of the ordinary pulls' share: one per kick-off
+   known (or group of kick-offs sharing one), and closingsPerDay for every day past the last kick-off known */
+export function closingsAhead(now, kicks, reset, cfg) {
+  cfg = config(cfg);
+  let n = 0, prev = -Infinity, lastK = now;
+  for (const k of kicks || []) {
+    if (k <= now + cfg.closeToMin * 60e3 || k > reset) continue;
+    if (k - prev > cfg.closeShareMin * 60e3) n++;
+    prev = k; lastK = Math.max(lastK, k);
+  }
+  return n + Math.max(0, (reset - lastK) / 864e5) * cfg.closingsPerDay;
+}
 /* pull now or not. st: the stored state; kicks: Scudi's kick-offs ahead (ms, sorted); manual: "Update now" from the site;
    fresh: Scudi's list has matches or fixtures SNAI's list was not read for yet.
    The month's requests left (less the reserve) are spread over the weighted time left until the quota reopens: a pull is
@@ -490,7 +566,10 @@ export function plan({ now, st, cfg, kicks, manual, fresh }) {
     if (now - last < cfg.manualGapMin * 60e3) return Object.assign(base, { pull: false, why: 'just-pulled' });
     return Object.assign(base, { pull: true, why: 'manual' });
   }
-  const spend = left - cfg.reserve;
+  /* the closing pull comes first, at night too (decision 96) */
+  const closing = closingKick(now, kicks, last, st.last_kind, cfg);
+  if (closing != null && left - cfg.reserve > 0) return Object.assign(base, { discover: false, pull: true, why: 'closing', closing });
+  const spend = left - cfg.reserve - closingsAhead(now, kicks, reset, cfg);
   if (spend <= 0) return Object.assign(base, { pull: false, why: 'reserve' });
   if (night(now, cfg)) return Object.assign(base, { pull: false, why: 'night' });
   /* new matches or fixtures in Scudi's list (the Friday pull, a new day in the window): SNAI's list is read now */
@@ -500,14 +579,17 @@ export function plan({ now, st, cfg, kicks, manual, fresh }) {
   const share = ahead * cost / spend;   /* weighted hours per pull */
   const since = last ? weightBetween(Math.max(last, now - 7 * 864e5), now, kicks, cfg) : Infinity;
   const nextIn = since >= share ? 0 : (share - since) / Math.max(weight(now, kicks, cfg), 1) * 3600e3;
-  return Object.assign(base, { pull: since >= share, why: since >= share ? 'due' : 'waiting', share, since, ahead, next: now + nextIn });
+  const nextClose = kicks.find(k => k - cfg.closeFromMin * 60e3 > now), next = Math.min(now + nextIn, nextClose ? nextClose - cfg.closeFromMin * 60e3 : Infinity);
+  return Object.assign(base, { pull: since >= share, why: since >= share ? 'due' : 'waiting', share, since, ahead, next });
 }
 /* the events a pull asks for, soonest first: all within nearH, the further ones only when their markets are old
-   (or all of them on "Update now"); at most maxChunks requests of maxIds */
-export function pickIds(rows, now, cfg, all) {
+   (or all of them on "Update now"; only those within nearOnlyH hours for a closing pull); at most maxChunks requests of
+   maxIds */
+export function pickIds(rows, now, cfg, all, nearOnlyH) {
   cfg = config(cfg);
   return (rows || []).filter(r => {
     const k = Date.parse(r.commence_time); if (!(k > now + 2 * 60e3)) return false;
+    if (nearOnlyH) return k - now <= nearOnlyH * 3600e3;
     if (all || k - now <= cfg.nearH * 3600e3) return true;
     return !r.full_at || now - Date.parse(r.full_at) >= cfg.farEveryH * 3600e3;
   }).sort((a, b) => Date.parse(a.commence_time) - Date.parse(b.commence_time)).slice(0, cfg.maxIds * cfg.maxChunks).map(r => r.event_id);
@@ -559,6 +641,8 @@ export function failure(status, body) {
 // Decision 94: it pairs Scudi's fixtures too (the matches the weekly job has not priced yet), reads SNAI's list again as
 // soon as Scudi's list has new matches, records what it could not pair, and brings the sharp books' prices (Pinnacle,
 // the exchanges) in the same requests, fitted into Scudi's own chances (book_events.fit, private like everything here).
+// Decision 96: every reading is kept (price_ticks: what changed, SNAI's and the sharp books' own prices; fit_ticks: the
+// fit when it moved), and one pull is made in the last minutes before each kick-off, so the last reading is the close.
 
 const SUPA = Deno.env.get('SUPABASE_URL') ?? '';
 const KEY = (() => {
@@ -660,7 +744,7 @@ Deno.serve(async (req) => {
   else { if (!(await ownerOf(req.headers.get('authorization')))) return json({ error: 'sign in as the owner' }, 401); manual = true; }
 
   const cfg = config(loaded.settings), st = loaded.state || {}, book = cfg.books[0] || 'snai', diag0: any = st.diag || {};
-  const rows: any[] = await select(`book_events?select=event_id,home,away,league,commence_time,m,odds_at,full_at,match_id,fit&book=eq.${encodeURIComponent(book)}&commence_time=gt.${encodeURIComponent(new Date(now - 3 * 3600e3).toISOString())}`);
+  const rows: any[] = await select(`book_events?select=event_id,home,away,league,commence_time,m,odds_at,full_at,match_id,fit,ref&book=eq.${encodeURIComponent(book)}&commence_time=gt.${encodeURIComponent(new Date(now - 3 * 3600e3).toISOString())}`);
   const kicks = rows.map(r => Date.parse(r.commence_time)).filter(Number.isFinite).sort((a, b) => a - b);
   /* Scudi's list, every time (a 304 when unchanged): new matches or fixtures → SNAI's list is read now */
   let wk = await weekOf(diag0.week_etag || null, false);
@@ -678,7 +762,7 @@ Deno.serve(async (req) => {
   }
   if (!(await rpc('feed_claim', {}))) return json({ pulled: false, why: 'busy' });
 
-  const unknown: Record<string, number> = {}, updates = new Map<string, any>(), drop: string[] = [];
+  const unknown: Record<string, number> = {}, updates = new Map<string, any>(), drop: string[] = [], fitNow = new Set<string>();
   const byId = new Map(rows.map(r => [r.event_id, r]));
   const diag: Record<string, any> = Object.assign({}, diag0);
   let requests = 0, records = 0, err: any = null, note: string | null = null, quota: Record<string, unknown> = {}, discovered = false, sel: any = null, fitted = 0, priced = 0;
@@ -712,7 +796,7 @@ Deno.serve(async (req) => {
           updates.set(e.id, {
             book, event_id: e.id, home: e.home, away: e.away, league: e.league, commence_time: e.commence,
             m: mergeCodes(old ? old.m : [], c ? c.m : [], ['1x2']), odds_at: c && c.at ? new Date(c.at).toISOString() : (old ? old.odds_at : null),
-            pulled_at: nowIso, full_at: old ? old.full_at : null, match_id: e.match, fit: old ? old.fit : null,
+            pulled_at: nowIso, full_at: old ? old.full_at : null, match_id: e.match, fit: old ? old.fit : null, ref: old ? old.ref || null : null,
           });
         }
         if (res.complete) {
@@ -727,22 +811,25 @@ Deno.serve(async (req) => {
        to 150 events, at most maxChunks of them) */
     if (!err) {
       const pool = [...rows.filter(r => !drop.includes(r.event_id)).map(r => updates.get(r.event_id) || r), ...[...updates.values()].filter(u => !byId.has(u.event_id))];
-      const base = new Map(pool.map(r => [r.event_id, r])), why: Record<string, any> = {};
-      for (const ids of chunks(pickIds(pool, now, cfg, manual), cfg.maxIds)) {
+      const base = new Map(pool.map(r => [r.event_id, r])), why: Record<string, any> = {}, mem = memoryBooks(sharp);
+      for (const ids of chunks(pickIds(pool, now, cfg, manual, p.why === 'closing' ? cfg.closeNearH : 0), cfg.maxIds)) {
         const res = await pull(nearParams(ids, cfg, sharp.concat(itBooks)), cfg.maxPages);
         requests += res.requests; records += res.records.length; Object.assign(quota, res.quota);
         if (res.error) err = res.error;
         const codes = snaiOf(res.records, book, unknown), evs = new Map(eventsOf(res.records).map(e => [e.id, e]));
         const fits = sharp.length || itBooks.length ? sharpFits(res.records, sharp, now, cfg, why, itBooks) : new Map();
+        const refs = new Map(mem.map(k => [k, snaiOf(res.records, k, null)]));   /* the sharp books' own prices, for the memory */
         for (const id of ids) {
           const b = updates.get(id) || base.get(id), c = codes.get(id), e = evs.get(id), f = fits.get(id);
           if (!b || (!c && !f && !res.complete)) continue;   /* a page not read is not a market gone */
-          if (f) fitted++;
+          if (f) { fitted++; fitNow.add(id); }
+          const ref: Record<string, any> = Object.assign({}, b.ref || {});
+          for (const [k, byEv] of refs) { const r = byEv.get(id); if (r) ref[k] = memoryCodes(mergeCodes(ref[k], r.m, MARKETS)); }
           updates.set(id, {
             ...b, book, home: e && e.home ? e.home : b.home, away: e && e.away ? e.away : b.away, league: e && e.league ? e.league : b.league,
             commence_time: e && e.commence ? e.commence : b.commence_time, m: c || res.complete ? mergeCodes(b.m, c ? c.m : [], MARKETS) : b.m,
             odds_at: c && c.at ? new Date(c.at).toISOString() : b.odds_at, pulled_at: nowIso, full_at: c || res.complete ? nowIso : b.full_at,
-            fit: f || b.fit || null,
+            fit: f || b.fit || null, ref: Object.keys(ref).length ? ref : null,
           });
           priced++;
         }
@@ -754,14 +841,22 @@ Deno.serve(async (req) => {
     err = { status: 'error', wait: 10 * 60e3, msg: String(e).slice(0, 200) };
   }
 
+  /* decision 96: what this pull read, kept with its time (only what changed since the stored reading) */
+  const ticks: any[] = [], fitRows: any[] = [];
+  for (const [id, u] of updates) {
+    const r = memoryRows(id, nowIso, book, byId.get(id) || null, u, fitNow.has(id));
+    ticks.push(...r.ticks); if (r.fit) fitRows.push(r.fit);
+  }
+  if (ticks.length || fitRows.length) diag.memory = { at: nowIso, ticks: ticks.length, prices: ticks.reduce((n, t) => n + t.c.length, 0), fits: fitRows.length, books: memoryBooks(diag.books && diag.books.sharp) };
+
   const status = err ? err.status : 'ok';
   const state: Record<string, unknown> = {
-    checked_at: nowIso, last_kind: manual ? 'manual' : discover ? 'list+prices' : 'prices', last_status: status,
+    checked_at: nowIso, last_kind: manual ? 'manual' : p.why === 'closing' ? 'closing' : discover ? 'list+prices' : 'prices', last_status: status,
     last_error: err ? (err.msg || err.code || err.status) : note, why: p.why, ...quota,
   };
   if (requests) {
     state.last_pull_at = nowIso; state.last_requests = requests;
-    if (!manual) state.avg_cost = st.avg_cost > 0 ? Math.round((0.8 * st.avg_cost + 0.2 * requests) * 100) / 100 : requests;
+    if (!manual && p.why !== 'closing') state.avg_cost = st.avg_cost > 0 ? Math.round((0.8 * st.avg_cost + 0.2 * requests) * 100) / 100 : requests;
   }
   if (err && err.wait) state.backoff_until = new Date(now + err.wait).toISOString();
   if (discovered) state.discovered_at = nowIso;
@@ -773,8 +868,8 @@ Deno.serve(async (req) => {
   state.next_at = after.next ? new Date(after.next).toISOString() : null;
 
   await rpc('feed_save', { p: {
-    events: [...updates.values()], drop, state,
-    log: { kind: state.last_kind, requests, records, events: updates.size, status, quota_remaining: (quota as any).quota_remaining ?? null, ms: Date.now() - t0, note: state.last_error ? String(state.last_error).slice(0, 200) : (fitted ? `${fitted} fitted` : null) },
+    events: [...updates.values()], drop, state, ticks, fits: fitRows,
+    log: { kind: state.last_kind, requests, records, events: updates.size, status, quota_remaining: (quota as any).quota_remaining ?? null, ms: Date.now() - t0, note: state.last_error ? String(state.last_error).slice(0, 200) : [fitted ? `${fitted} fitted` : '', ticks.length ? `${ticks.length} readings kept` : ''].filter(Boolean).join(', ') || null },
   } });
   return json({ pulled: true, status, requests, events: updates.size, fitted, left: (quota as any).quota_remaining ?? null, next: state.next_at });
 });

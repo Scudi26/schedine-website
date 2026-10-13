@@ -39,7 +39,7 @@ PUBLISHABLE = "sb_publishable_localtest"
 ODSS_KEY = "odss_live_localtest"
 USERS = {"gianluca@example.com": ("11111111-1111-1111-1111-111111111111", "pw-owner"),
          "other@example.com": ("22222222-2222-2222-2222-222222222222", "pw-other")}
-TABLES = {"book_events", "feed_state", "feed_log", "owners", "user_state", "push_subs", "notify_sent"}
+TABLES = {"book_events", "feed_state", "feed_log", "owners", "user_state", "push_subs", "notify_sent", "memory_events", "price_ticks", "fit_ticks", "closing_prices"}
 STATE: dict = {"quota": 500, "odss_calls": [], "week": None, "events": [], "odss_status": 200, "week_reads": []}
 NOW = datetime.now(timezone.utc).replace(second=0, microsecond=0)
 
@@ -511,6 +511,21 @@ def checks() -> None:
     check(dg.get("fit", {}).get("fitted") == len(rows), f"the fits are counted ({dg.get('fit')})")
     log = sql("select kind, requests, status from public.feed_log order by id")
     check(log[-1] == ("list+prices", 3, "ok"), f"the log has the pull: {log[-1]}")
+    # decision 96: the price memory — the first reading of every paired event, SNAI's and the sharp book's, and the fit
+    mem = {r[0]: r[1] for r in sql("select event_id, match_id from public.memory_events")}
+    check(set(mem) == set(rows) and all(mem[i] == rows[i][1] for i in rows), f"every paired event is in the memory, with its match ({len(mem)}/{len(rows)})")
+    tk = sql("select event_id, book, cardinality(c), c, p from public.price_ticks")
+    snai_t = {t[0]: t for t in tk if t[1] == "snai"}
+    check(set(snai_t) == set(rows) and all(t[2] == 14 for t in snai_t.values()), f"one SNAI reading per event, its 14 prices (1X2, double chance, under/over 1.5 / 2.5 / 3.5, goal/no goal: {sorted({t[2] for t in snai_t.values()})})")
+    a = snai_t["ev00aa"]
+    check(a[3][0] == 100001 and abs(a[4][0] - 1.6) < 1e-6 and a[4][a[3].index(400002)] is None, "the codes and prices are SNAI's, the padlocked No Goal kept as closed")
+    pin = {t[0] for t in tk if t[1] == "pinnacle"}
+    check(pin == set(rows) and not any(t[1] in ("bet365", "betfair_ex") for t in tk), f"Pinnacle's own prices are kept beside SNAI's (bet365 is not a sharp book: never kept) ({len(pin)})")
+    ft = sql("select count(*), min(nb), max(nb) from public.fit_ticks")[0]
+    check(ft == (len(rows), 1, 1), f"one fit per event, from one book ({ft})")
+    check(len(sql("select 1 from public.book_events where ref ? 'pinnacle'")) == len(rows), "the sharp book's latest prices sit beside SNAI's in the current table")
+    dm = sql("select diag -> 'memory' from public.feed_state")[0][0] or {}
+    check(dm.get("ticks") == 2 * len(rows) and dm.get("fits") == len(rows), f"the pull says what it kept ({dm})")
 
     n = len(STATE["odss_calls"])
     code, r = call({"x-cron-token": token})
@@ -544,6 +559,16 @@ def checks() -> None:
     p1 = next(x for x in sql("select m from public.book_events where event_id = 'ev00aa'")[0][0] if x[0] == 3 and x[2] == 1)[3]
     check(p1 == 1.75, f"the moved price is stored ({p1})")
     check(sql("select last_kind from public.feed_state")[0][0] == "manual", "the pull is logged as manual")
+    # decision 96: only what changed is kept: Juventus' 1 and 2 at SNAI, Pinnacle's three, the fit
+    last = sql("select max(at) from public.price_ticks")[0][0]
+    moved = sql("select event_id, book, c, p from public.price_ticks where at = %s order by book", last)
+    check([(m[0], m[1]) for m in moved] == [("ev00aa", "pinnacle"), ("ev00aa", "snai")], f"the second reading keeps only the event that moved ({[(m[0], m[1]) for m in moved]})")
+    sm = next(m for m in moved if m[1] == "snai")
+    check(sm[2] == [100001, 100003] and abs(sm[3][0] - 1.75) < 1e-6 and abs(sm[3][1] - round(6 / 1.75, 2)) < 1e-6, f"SNAI's home and away prices, nothing else ({sm[2]}, {sm[3]})")
+    check(sql("select count(*) from public.price_ticks where event_id = 'ev00aa' and book = 'snai'")[0][0] == 2, "two readings of Juventus - Inter at SNAI now")
+    check(sql("select count(*) from public.fit_ticks where event_id = 'ev00aa'")[0][0] == 2 and sql("select count(*) from public.fit_ticks")[0][0] == len(true) + 1, "the fit moved for Juventus - Inter only, and is kept again")
+    cl = sql("select price from public.closing_prices where event_id = 'ev00aa' and book = 'snai' and code = 100001")
+    check(cl and abs(cl[0][0] - 1.75) < 1e-6, f"before the kick-off, the closing price so far is the last one read ({cl})")
 
     STATE["odss_status"] = 401
     code, r = call(owner)
@@ -554,10 +579,29 @@ def checks() -> None:
     STATE["odss_status"] = 200
     sql("update public.feed_state set backoff_until = null")
 
+    # decision 96: the closing pull — a match ten minutes from its kick-off gets one reading, prices only, its next six hours
+    soon, ev = datetime.now(timezone.utc).replace(microsecond=0) + timedelta(minutes=10), next(e for e in STATE["events"] if e["id"] == "ev01aa")
+    ev["k"] = soon
+    sql("update public.book_events set commence_time = %s where event_id = %s", soon, ev["id"])
+    sql("update public.feed_state set last_pull_at = now() - interval '30 minutes', last_kind = 'prices'")
+    n = len(STATE["odss_calls"])
+    code, r = call({"x-cron-token": token})
+    cc = STATE["odss_calls"][n:]
+    st = sql("select why, last_kind from public.feed_state")[0]
+    asked = set(cc[0].get("event_id", "").split(",")) if cc else set()
+    six = {e["id"] for e in STATE["events"] if e["id"] in true and timedelta(0) < e["k"] - datetime.now(timezone.utc) <= timedelta(hours=6)}
+    check(r.get("pulled") and r.get("requests") == 1 and st == ("closing", "closing"), f"ten minutes before a kick-off the closing pull is made: one request ({r}, {st})")
+    check(asked == six and "ev01aa" in asked, f"it asks only for the matches of the next six hours ({sorted(asked)} vs {sorted(six)})")
+    code, r = call({"x-cron-token": token})
+    check(not r.get("pulled") or sql("select why from public.feed_state")[0][0] != "closing", f"and only once ({r})")
+
     # what the site sees, through the same REST and row-level security
     rows_owner = rest_get("book_events", {"select": ["event_id,m"]}, "authenticated", USERS["gianluca@example.com"][0])
     rows_other = rest_get("book_events", {"select": ["event_id,m"]}, "authenticated", USERS["other@example.com"][0])
     check(len(rows_owner) == len(true) and rows_other == [], f"the owner reads {len(rows_owner)} events, another account none")
+    t_owner = rest_get("price_ticks", {"select": ["event_id"]}, "authenticated", USERS["gianluca@example.com"][0])
+    t_other = rest_get("price_ticks", {"select": ["event_id"]}, "authenticated", USERS["other@example.com"][0])
+    check(len(t_owner) > 2 * len(true) and t_other == [], f"the memory too: the owner reads {len(t_owner)} readings, another account none")
 
 
 def main() -> int:
