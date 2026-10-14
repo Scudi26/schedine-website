@@ -343,6 +343,18 @@ ok(just.ev[0].md === "51'" && just.ev[0].after > just.ev[0].before && just.ev[0]
   ok(bw > 0 && ew > 0 && bm === em, 'extension/reader.js reads SNAI exactly as the bookmark (SNAI_READER) does');
   const man = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'extension', 'manifest.json'), 'utf8'));
   ok(man.manifest_version === 3 && man.permissions.join() === 'storage' && man.content_scripts[0].matches.every(u => /^https:\/\/(www\.)?snai\.it\/\*$/.test(u)), 'the extension asks only for storage and runs its reader only on snai.it');
+  /* decision 100: a change on SNAI's page is read within half a second, and new prices never push the slips' rebuild back.
+     The old pattern (every change restarting a wait) starved on snai.it, which never stays still: readings came only every
+     5 s, and on a busy page the slips waited until the prices stopped moving */
+  const snaiJs = fs.readFileSync(path.join(__dirname, '..', '..', 'extension', 'snai.js'), 'utf8');
+  const restart = /clearTimeout\(R\.deb\);\s*R\.deb\s*=\s*setTimeout/;
+  ok(/function soon\(\)/.test(snaiJs) && /var GAP = 500;/.test(snaiJs) && !restart.test(snaiJs) && /\{ soon\(\); return; \}/.test(snaiJs), 'the extension reads a change at once or within half a second, never restarting its wait');
+  ok(/if \(wait <= 0\) \{ if \(R\.deb\) \{ clearTimeout\(R\.deb\); R\.deb = 0; \} send\(false\); return; \}/.test(snaiJs) && /if \(!R\.deb\) R\.deb = setTimeout/.test(snaiJs), 'a change old enough is read at once even with a timer waiting (a hidden tab may hold it a minute)');
+  const bmk = html.slice(html.indexOf('function SNAI_READER(cfg)'), html.indexOf('function snaiBookmark('));
+  ok(/function soon\(\)/.test(bmk) && !restart.test(bmk) && /var cfg = \{ v: 2,/.test(html), 'the bookmark reads at the same pace, as version 2');
+  const live = html.slice(html.indexOf('function snaiLive(msg, feed)'), html.indexOf('function fromExt(e)'));
+  ok(live.length > 1000 && !/clearTimeout\(SLIVE\.t\)/.test(live) && /if \(!SLIVE\.t\) SLIVE\.t = setTimeout/.test(live) && /2000 - \(performance\.now\(\) - SLIVE\.built\)/.test(live), 'new SNAI prices never postpone a slip rebuild already on its way (at most every 2 s)');
+  ok(man.version === '1.1.0' && /var EXT_LATEST = '1\.1\.0';/.test(html), 'the site knows the extension version it ships');
 }
 console.log(checks + ' checks, ' + failures + ' failed; optimiser exact in ' + exact + ' of ' + feasible + ' feasible cases');
 process.exit(failures ? 1 : 0);

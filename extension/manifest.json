@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Scudi · SNAI",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Reads the SNAI prices on the snai.it pages you open and hands them to your Scudi site. It never clicks, types or bets anything.",
   "icons": { "16": "icons/icon-16.png", "32": "icons/icon-32.png", "48": "icons/icon-48.png", "128": "icons/icon-128.png" },
   "action": { "default_title": "Scudi · SNAI — open Scudi", "default_icon": { "16": "icons/icon-16.png", "32": "icons/icon-32.png" } },

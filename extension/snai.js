@@ -1,6 +1,10 @@
 /* Scudi · SNAI — runs by itself on every snai.it page (decision 91). It reads the SNAI list on screen with the same reading
-   as the bookmark (reader.js), again every 5 seconds and whenever the page changes, and hands it to the extension, which
-   passes it to every Scudi tab that is open. Only what changed is sent, plus a short "still here" every 30 seconds.
+   as the bookmark (reader.js) and hands it to the extension, which passes it to every Scudi tab that is open. It reads
+   whenever the page changes, at most twice a second (decision 100): at once when the last reading is half a second old,
+   otherwise as soon as it is, so a page that never stops moving (clocks, banners) is still read; and every 5 seconds as
+   a safety net. The reading happens inside the page's own change, with no timer in between, so it keeps pace in a SNAI
+   tab left in the background too, where the browser slows timers down. Only what changed is sent, plus a short
+   "still here" every 30 seconds.
    It never clicks, types, fetches or reloads anything on SNAI. A small card at the bottom left says what it is doing,
    only on pages that show prices; its × stops it on this tab until the page is loaded again. */
 /* global scudiReadSnai */
@@ -12,7 +16,8 @@
   var L = IT
     ? { read: 'partite lette', hit: 'abbinate da Scudi', wait: 'in attesa di Scudi…', closed: 'Scudi non è aperto', open: 'Apri Scudi', live: 'collegato', ago: 'inviate', now: 'ora', s: 's fa', stop: 'Ferma su questa scheda', gone: 'estensione aggiornata: ricarica la pagina' }
     : { read: 'matches read', hit: 'matched by Scudi', wait: 'waiting for Scudi…', closed: 'Scudi is not open', open: 'Open Scudi', live: 'connected', ago: 'sent', now: 'now', s: 's ago', stop: 'Stop on this tab', gone: 'extension updated: reload the page' };
-  var R = { alive: true, last: '', n: 0, sentAt: 0, scudi: null, ack: null, t: 0, deb: 0, mo: null, gone: false };
+  var R = { alive: true, last: '', n: 0, sentAt: 0, readAt: 0, scudi: null, ack: null, t: 0, deb: 0, mo: null, gone: false };
+  var GAP = 500;   /* ms between two readings at most: SNAI's list of 300 matches reads in about 10 ms */
 
   function ask(msg, then) {
     try {
@@ -26,6 +31,7 @@
   function send(force) {
     if (!R.alive) return;
     var rows = scudiReadSnai(D), key = JSON.stringify(rows), now = Date.now();
+    R.readAt = performance.now();
     R.n = rows.length;
     var got = function (res) { R.sentAt = Date.now(); R.scudi = res.scudi == null ? null : +res.scudi; R.ack = res.ack || null; draw(); };
     if (!force && key === R.last) {
@@ -60,6 +66,16 @@
     nn.textContent = R.gone ? '' : R.n + ' ' + L.read + (fresh && R.ack.hit != null ? ' · ' + R.ack.hit + ' ' + L.hit : '') + (ago != null ? ' · ' + L.ago + ' ' + (ago < 3 ? L.now : ago + L.s) : '');
     ob.style.display = R.gone || fresh ? 'none' : '';
   }
+  /* the page changed: read it now if the last reading is old enough, otherwise once, as soon as it is. A change never
+     pushes a waiting reading further away (the old 0.7-second wait for a quiet page never came on snai.it), and a change
+     that comes when the last reading is old enough is read at once even if a timer is waiting: in a background tab the
+     browser may hold that timer for up to a minute */
+  function soon() {
+    if (!R.alive) return;
+    var wait = Math.min(GAP, GAP - (performance.now() - R.readAt));
+    if (wait <= 0) { if (R.deb) { clearTimeout(R.deb); R.deb = 0; } send(false); return; }
+    if (!R.deb) R.deb = setTimeout(function () { R.deb = 0; send(false); }, wait);
+  }
   function flash() { box.classList.add('fl'); setTimeout(function () { box.classList.remove('fl'); }, 600); }
   function stop(keepCard) {
     R.alive = false; clearInterval(R.t); clearTimeout(R.deb);
@@ -75,9 +91,11 @@
   R.t = setInterval(function () { send(false); }, 5000);
   if (window.MutationObserver) {
     R.mo = new MutationObserver(function (list) {
-      for (var i = 0; i < list.length; i++) if (list[i].target !== host) { clearTimeout(R.deb); R.deb = setTimeout(function () { send(false); }, 700); return; }
+      for (var i = 0; i < list.length; i++) if (list[i].target !== host) { soon(); return; }
     });
     R.mo.observe(D.body || D.documentElement, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['disabled', 'data-qa'] });
   }
+  /* back to the front after a while in the background: read at once, without waiting for the next change */
+  D.addEventListener('visibilitychange', function () { if (!D.hidden) soon(); });
   send(true);
 })();
