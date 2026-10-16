@@ -1,8 +1,8 @@
 {
  "summary": {
-  "graded": 23,
-  "expected_hits": 0.54,
-  "actual_hits": 0,
+  "graded": 58,
+  "expected_hits": 1.44,
+  "actual_hits": 2,
   "by_name": {
    "National teams": {
     "graded": 12,
@@ -15,23 +15,33 @@
     "actual": 0
    },
    "Top 5 leagues": {
-    "graded": 3,
-    "expected": 0.07,
-    "actual": 0
+    "graded": 7,
+    "expected": 0.18,
+    "actual": 1
    },
    "All competitions": {
-    "graded": 1,
-    "expected": 0.02,
+    "graded": 12,
+    "expected": 0.32,
+    "actual": 1
+   },
+   "Champions League Tue": {
+    "graded": 12,
+    "expected": 0.3,
+    "actual": 0
+   },
+   "Champions League Wed": {
+    "graded": 8,
+    "expected": 0.2,
     "actual": 0
    }
   },
   "closing": {
-   "legs": 91,
-   "close": 46,
+   "legs": 241,
+   "close": 79,
    "pending": 0,
-   "last_pull": 45,
-   "avg_clv": -0.0429,
-   "avg_clv_close": -0.0358
+   "last_pull": 162,
+   "avg_clv": -0.0431,
+   "avg_clv_close": -0.037
   }
  },
  "slips": [
@@ -1958,6 +1968,4190 @@
      ]
     }
    ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|Champions League Tue|25",
+   "name": "Champions League Tue",
+   "target": 25,
+   "legs": 5,
+   "chance": 0.034562805332343634,
+   "odds": 25.05321,
+   "bonus": 0.03499999999999992,
+   "landed": false,
+   "legs_won": 2,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2b0a946cac613732fcbf57ce931490a1",
+     "name": "RC Lens v Sporting Lisbon",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.3808,
+     "odds": 2.52,
+     "won": false,
+     "score": "0-2",
+     "half": "0-1",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.3808,
+     "pull_clv": -0.0404,
+     "close_chance": 0.3808,
+     "clv": -0.0404,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "a9c22e08b395ee5753c8a65bc0eb97cf",
+     "name": "Atlético Madrid v Manchester United",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2491,
+     "odds": 3.8,
+     "won": false,
+     "score": "2-0",
+     "half": "1-0",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.2491,
+     "pull_clv": -0.0534,
+     "close_chance": 0.2491,
+     "clv": -0.0534,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "dd431688ed5c8f383b6434fd4f01e883",
+     "name": "Galatasaray v Barcelona",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.7609,
+     "odds": 1.3,
+     "won": true,
+     "score": "1-4",
+     "half": "1-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.7609,
+     "pull_clv": -0.0108,
+     "close_chance": 0.7609,
+     "clv": -0.0108,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "ca3f4b075d835413f9cb7bd3c439fdd0",
+     "name": "Inter Milan v Club Brugge",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.7913,
+     "odds": 1.25,
+     "won": false,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.7913,
+     "pull_clv": -0.0109,
+     "close_chance": 0.7913,
+     "clv": -0.0109,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "da9e9e9eb9a238ed97827c4a8fbe6044",
+     "name": "RB Leipzig v PSV Eindhoven",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.6052,
+     "odds": 1.61,
+     "won": true,
+     "score": "1-0",
+     "half": "0-0",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.6052,
+     "pull_clv": -0.0256,
+     "close_chance": 0.6052,
+     "clv": -0.0256,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|Champions League Tue|30",
+   "name": "Champions League Tue",
+   "target": 30,
+   "legs": 5,
+   "chance": 0.028656613736970923,
+   "odds": 30.032729999999997,
+   "bonus": 0.03499999999999992,
+   "landed": false,
+   "legs_won": 1,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2b0a946cac613732fcbf57ce931490a1",
+     "name": "RC Lens v Sporting Lisbon",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.3808,
+     "odds": 2.52,
+     "won": false,
+     "score": "0-2",
+     "half": "0-1",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.3808,
+     "pull_clv": -0.0404,
+     "close_chance": 0.3808,
+     "clv": -0.0404,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "46f726554e6876fb828c767bfbfdfdad",
+     "name": "Sabah FK v Slavia Praha",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.5018,
+     "odds": 1.93,
+     "won": false,
+     "score": "2-0",
+     "half": "0-0",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.5018,
+     "pull_clv": -0.0315,
+     "close_chance": 0.5018,
+     "clv": -0.0315,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "a9c22e08b395ee5753c8a65bc0eb97cf",
+     "name": "Atlético Madrid v Manchester United",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2491,
+     "odds": 3.8,
+     "won": false,
+     "score": "2-0",
+     "half": "1-0",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.2491,
+     "pull_clv": -0.0534,
+     "close_chance": 0.2491,
+     "clv": -0.0534,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "dd431688ed5c8f383b6434fd4f01e883",
+     "name": "Galatasaray v Barcelona",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.7609,
+     "odds": 1.3,
+     "won": true,
+     "score": "1-4",
+     "half": "1-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.7609,
+     "pull_clv": -0.0108,
+     "close_chance": 0.7609,
+     "clv": -0.0108,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "ca3f4b075d835413f9cb7bd3c439fdd0",
+     "name": "Inter Milan v Club Brugge",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.7913,
+     "odds": 1.25,
+     "won": false,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.7913,
+     "pull_clv": -0.0109,
+     "close_chance": 0.7913,
+     "clv": -0.0109,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|Champions League Tue|40",
+   "name": "Champions League Tue",
+   "target": 40,
+   "legs": 4,
+   "chance": 0.021254255003504852,
+   "odds": 40.4057472,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 2,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2b0a946cac613732fcbf57ce931490a1",
+     "name": "RC Lens v Sporting Lisbon",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2552,
+     "odds": 3.73,
+     "won": false,
+     "score": "0-2",
+     "half": "0-1",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.2552,
+     "pull_clv": -0.0481,
+     "close_chance": 0.2552,
+     "clv": -0.0481,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "46f726554e6876fb828c767bfbfdfdad",
+     "name": "Sabah FK v Slavia Praha",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2463,
+     "odds": 3.84,
+     "won": false,
+     "score": "2-0",
+     "half": "0-0",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.2463,
+     "pull_clv": -0.0542,
+     "close_chance": 0.2463,
+     "clv": -0.0542,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "dd431688ed5c8f383b6434fd4f01e883",
+     "name": "Galatasaray v Barcelona",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.7609,
+     "odds": 1.3,
+     "won": true,
+     "score": "1-4",
+     "half": "1-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.7609,
+     "pull_clv": -0.0108,
+     "close_chance": 0.7609,
+     "clv": -0.0108,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "09e41b63d1d59bd4d971c54ffce154d3",
+     "name": "Villarreal v Napoli",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.4444,
+     "odds": 2.17,
+     "won": true,
+     "score": "3-1",
+     "half": "2-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.4444,
+     "pull_clv": -0.0357,
+     "close_chance": 0.4444,
+     "clv": -0.0357,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|Champions League Tue|50",
+   "name": "Champions League Tue",
+   "target": 50,
+   "legs": 5,
+   "chance": 0.016818628247122727,
+   "odds": 50.507184,
+   "bonus": 0.03499999999999992,
+   "landed": false,
+   "legs_won": 2,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2b0a946cac613732fcbf57ce931490a1",
+     "name": "RC Lens v Sporting Lisbon",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2552,
+     "odds": 3.73,
+     "won": false,
+     "score": "0-2",
+     "half": "0-1",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.2552,
+     "pull_clv": -0.0481,
+     "close_chance": 0.2552,
+     "clv": -0.0481,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "46f726554e6876fb828c767bfbfdfdad",
+     "name": "Sabah FK v Slavia Praha",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2463,
+     "odds": 3.84,
+     "won": false,
+     "score": "2-0",
+     "half": "0-0",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.2463,
+     "pull_clv": -0.0542,
+     "close_chance": 0.2463,
+     "clv": -0.0542,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "dd431688ed5c8f383b6434fd4f01e883",
+     "name": "Galatasaray v Barcelona",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.7609,
+     "odds": 1.3,
+     "won": true,
+     "score": "1-4",
+     "half": "1-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.7609,
+     "pull_clv": -0.0108,
+     "close_chance": 0.7609,
+     "clv": -0.0108,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "ca3f4b075d835413f9cb7bd3c439fdd0",
+     "name": "Inter Milan v Club Brugge",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.7913,
+     "odds": 1.25,
+     "won": false,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.7913,
+     "pull_clv": -0.0109,
+     "close_chance": 0.7913,
+     "clv": -0.0109,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "09e41b63d1d59bd4d971c54ffce154d3",
+     "name": "Villarreal v Napoli",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.4444,
+     "odds": 2.17,
+     "won": true,
+     "score": "3-1",
+     "half": "2-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.4444,
+     "pull_clv": -0.0357,
+     "close_chance": 0.4444,
+     "clv": -0.0357,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|Champions League Wed|25",
+   "name": "Champions League Wed",
+   "target": 25,
+   "legs": 4,
+   "chance": 0.034819556673388916,
+   "odds": 25.03296,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 3,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2903ee092f7e08c549b130a3d394ac3c",
+     "name": "LASK v Liverpool",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.7687,
+     "odds": 1.28,
+     "won": true,
+     "score": "3-6",
+     "half": "0-3",
+     "kickoff": "2026-10-14T16:45:00+00:00",
+     "pull_chance": 0.7116,
+     "pull_clv": -0.0892,
+     "close_chance": 0.7116,
+     "clv": -0.0892,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "d4ef112438afa4c2cdbbfc9376a009c9",
+     "name": "AS Roma v Real Madrid",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.2554,
+     "odds": 3.75,
+     "won": false,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.2595,
+     "pull_clv": -0.0269,
+     "close_chance": 0.2595,
+     "clv": -0.0269,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "3f3cb74e560dfcc3e795b667ed9ebdef",
+     "name": "Aston Villa v Fenerbahce",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.5924,
+     "odds": 1.64,
+     "won": true,
+     "score": "6-0",
+     "half": "3-0",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.5759,
+     "pull_clv": -0.0555,
+     "close_chance": 0.5759,
+     "clv": -0.0555,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "ca87a3874b0eae31b4173ae4a9324957",
+     "name": "Bodø/Glimt v Borussia Dortmund",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.2993,
+     "odds": 3.18,
+     "won": true,
+     "score": "1-0",
+     "half": "0-0",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.3164,
+     "pull_clv": 0.0062,
+     "close_chance": 0.3164,
+     "clv": 0.0062,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|Champions League Wed|30",
+   "name": "Champions League Wed",
+   "target": 30,
+   "legs": 3,
+   "chance": 0.028853102413778073,
+   "odds": 30.002250000000004,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 0,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "d4ef112438afa4c2cdbbfc9376a009c9",
+     "name": "AS Roma v Real Madrid",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.2554,
+     "odds": 3.75,
+     "won": false,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.2595,
+     "pull_clv": -0.0269,
+     "close_chance": 0.2595,
+     "clv": -0.0269,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "5a1a6a04c5561897741105e30d5d7ec4",
+     "name": "Manchester City v Paris Saint Germain",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.4474,
+     "odds": 2.18,
+     "won": false,
+     "score": "2-4",
+     "half": "0-3",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.4668,
+     "pull_clv": 0.0176,
+     "close_chance": 0.4668,
+     "clv": 0.0176,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "4c7f87780ae5ab8bec9e83d6d6ec9909",
+     "name": "Real Betis v Porto",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2525,
+     "odds": 3.67,
+     "won": false,
+     "score": "3-2",
+     "half": "0-0",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.2563,
+     "pull_clv": -0.0594,
+     "close_chance": 0.2563,
+     "clv": -0.0594,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|Champions League Wed|40",
+   "name": "Champions League Wed",
+   "target": 40,
+   "legs": 4,
+   "chance": 0.02129317262154323,
+   "odds": 40.1489946,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 2,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "5d6f9accd6f79ae4216dfd29ccc342b2",
+     "name": "Feyenoord v Como",
+     "competition": "Champions League",
+     "code": "O25",
+     "chance": 0.6812,
+     "odds": 1.43,
+     "won": true,
+     "score": "3-2",
+     "half": "1-1",
+     "kickoff": "2026-10-14T16:45:00+00:00",
+     "pull_chance": 0.6437,
+     "pull_clv": -0.0795,
+     "close_chance": 0.6437,
+     "clv": -0.0795,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "d4ef112438afa4c2cdbbfc9376a009c9",
+     "name": "AS Roma v Real Madrid",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2334,
+     "odds": 4.05,
+     "won": false,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.2374,
+     "pull_clv": -0.0385,
+     "close_chance": 0.2374,
+     "clv": -0.0385,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "ca87a3874b0eae31b4173ae4a9324957",
+     "name": "Bodø/Glimt v Borussia Dortmund",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.2993,
+     "odds": 3.18,
+     "won": true,
+     "score": "1-0",
+     "half": "0-0",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.3164,
+     "pull_clv": 0.0062,
+     "close_chance": 0.3164,
+     "clv": 0.0062,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "5a1a6a04c5561897741105e30d5d7ec4",
+     "name": "Manchester City v Paris Saint Germain",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.4474,
+     "odds": 2.18,
+     "won": false,
+     "score": "2-4",
+     "half": "0-3",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.4668,
+     "pull_clv": 0.0176,
+     "close_chance": 0.4668,
+     "clv": 0.0176,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|Champions League Wed|50",
+   "name": "Champions League Wed",
+   "target": 50,
+   "legs": 4,
+   "chance": 0.01685267473983146,
+   "odds": 50.1165,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 3,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "5d6f9accd6f79ae4216dfd29ccc342b2",
+     "name": "Feyenoord v Como",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.2693,
+     "odds": 3.5,
+     "won": true,
+     "score": "3-2",
+     "half": "1-1",
+     "kickoff": "2026-10-14T16:45:00+00:00",
+     "pull_chance": 0.2977,
+     "pull_clv": 0.042,
+     "close_chance": 0.2977,
+     "clv": 0.042,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "d4ef112438afa4c2cdbbfc9376a009c9",
+     "name": "AS Roma v Real Madrid",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.2554,
+     "odds": 3.75,
+     "won": false,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.2595,
+     "pull_clv": -0.0269,
+     "close_chance": 0.2595,
+     "clv": -0.0269,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "5a1a6a04c5561897741105e30d5d7ec4",
+     "name": "Manchester City v Paris Saint Germain",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3202,
+     "odds": 2.96,
+     "won": true,
+     "score": "2-4",
+     "half": "0-3",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.3004,
+     "pull_clv": -0.1108,
+     "close_chance": 0.3004,
+     "clv": -0.1108,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "d7576351b8cb2396e32cc3de0446f3de",
+     "name": "ŠK Slovan Bratislava v VfB Stuttgart",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.765,
+     "odds": 1.29,
+     "won": true,
+     "score": "0-3",
+     "half": "0-1",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.7629,
+     "pull_clv": -0.0159,
+     "close_chance": 0.7629,
+     "clv": -0.0159,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|All competitions|25",
+   "name": "All competitions",
+   "target": 25,
+   "legs": 5,
+   "chance": 0.035296879419350335,
+   "odds": 25.144665000000007,
+   "bonus": 0.03499999999999992,
+   "landed": false,
+   "legs_won": 3,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "dd431688ed5c8f383b6434fd4f01e883",
+     "name": "Galatasaray v Barcelona",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.7609,
+     "odds": 1.3,
+     "won": true,
+     "score": "1-4",
+     "half": "1-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.7609,
+     "pull_clv": -0.0108,
+     "close_chance": 0.7609,
+     "clv": -0.0108,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "d4ef112438afa4c2cdbbfc9376a009c9",
+     "name": "AS Roma v Real Madrid",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.2554,
+     "odds": 3.75,
+     "won": false,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.2595,
+     "pull_clv": -0.0269,
+     "close_chance": 0.2595,
+     "clv": -0.0269,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "5a1a6a04c5561897741105e30d5d7ec4",
+     "name": "Manchester City v Paris Saint Germain",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.4474,
+     "odds": 2.18,
+     "won": false,
+     "score": "2-4",
+     "half": "0-3",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.4668,
+     "pull_clv": 0.0176,
+     "close_chance": 0.4668,
+     "clv": 0.0176,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "431fc65e67cd737bceb5827118d3f7eb",
+     "name": "Salzburg v AC Milan",
+     "competition": "Europa League",
+     "code": "2",
+     "chance": 0.5365,
+     "odds": 1.82,
+     "won": true,
+     "score": "0-4",
+     "half": "0-2",
+     "kickoff": "2026-10-15T16:45:00+00:00",
+     "pull_chance": 0.5365,
+     "pull_clv": -0.0236,
+     "close_chance": 0.5365,
+     "clv": -0.0236,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "b712f6ee1a8b3f7ea8c6cad4929a2728",
+     "name": "Sint Truiden v FC Iberia 1999",
+     "competition": "Conference League",
+     "code": "1",
+     "chance": 0.7567,
+     "odds": 1.3,
+     "won": true,
+     "score": "2-0",
+     "half": "1-0",
+     "kickoff": "2026-10-15T19:00:00+00:00",
+     "pull_chance": 0.7567,
+     "pull_clv": -0.0163,
+     "close_chance": 0.7567,
+     "clv": -0.0163,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|All competitions|30",
+   "name": "All competitions",
+   "target": 30,
+   "legs": 3,
+   "chance": 0.029167405082778024,
+   "odds": 30.492750000000004,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 0,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2b0a946cac613732fcbf57ce931490a1",
+     "name": "RC Lens v Sporting Lisbon",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2552,
+     "odds": 3.73,
+     "won": false,
+     "score": "0-2",
+     "half": "0-1",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.2552,
+     "pull_clv": -0.0481,
+     "close_chance": 0.2552,
+     "clv": -0.0481,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "d4ef112438afa4c2cdbbfc9376a009c9",
+     "name": "AS Roma v Real Madrid",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.2554,
+     "odds": 3.75,
+     "won": false,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.2595,
+     "pull_clv": -0.0269,
+     "close_chance": 0.2595,
+     "clv": -0.0269,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "5a1a6a04c5561897741105e30d5d7ec4",
+     "name": "Manchester City v Paris Saint Germain",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.4474,
+     "odds": 2.18,
+     "won": false,
+     "score": "2-4",
+     "half": "0-3",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.4668,
+     "pull_clv": 0.0176,
+     "close_chance": 0.4668,
+     "clv": 0.0176,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|All competitions|40",
+   "name": "All competitions",
+   "target": 40,
+   "legs": 4,
+   "chance": 0.021772664267552755,
+   "odds": 40.07385,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 1,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "a9c22e08b395ee5753c8a65bc0eb97cf",
+     "name": "Atlético Madrid v Manchester United",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2491,
+     "odds": 3.8,
+     "won": false,
+     "score": "2-0",
+     "half": "1-0",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.2491,
+     "pull_clv": -0.0534,
+     "close_chance": 0.2491,
+     "clv": -0.0534,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "d4ef112438afa4c2cdbbfc9376a009c9",
+     "name": "AS Roma v Real Madrid",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.2554,
+     "odds": 3.75,
+     "won": false,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.2595,
+     "pull_clv": -0.0269,
+     "close_chance": 0.2595,
+     "clv": -0.0269,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "5a1a6a04c5561897741105e30d5d7ec4",
+     "name": "Manchester City v Paris Saint Germain",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.4474,
+     "odds": 2.18,
+     "won": false,
+     "score": "2-4",
+     "half": "0-3",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.4668,
+     "pull_clv": 0.0176,
+     "close_chance": 0.4668,
+     "clv": 0.0176,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "d7576351b8cb2396e32cc3de0446f3de",
+     "name": "ŠK Slovan Bratislava v VfB Stuttgart",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.765,
+     "odds": 1.29,
+     "won": true,
+     "score": "0-3",
+     "half": "0-1",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.7629,
+     "pull_clv": -0.0159,
+     "close_chance": 0.7629,
+     "clv": -0.0159,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|All competitions|50",
+   "name": "All competitions",
+   "target": 50,
+   "legs": 4,
+   "chance": 0.017278377922604855,
+   "odds": 50.00811,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 1,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2b0a946cac613732fcbf57ce931490a1",
+     "name": "RC Lens v Sporting Lisbon",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2552,
+     "odds": 3.73,
+     "won": false,
+     "score": "0-2",
+     "half": "0-1",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.2552,
+     "pull_clv": -0.0481,
+     "close_chance": 0.2552,
+     "clv": -0.0481,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "d4ef112438afa4c2cdbbfc9376a009c9",
+     "name": "AS Roma v Real Madrid",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.2554,
+     "odds": 3.75,
+     "won": false,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.2595,
+     "pull_clv": -0.0269,
+     "close_chance": 0.2595,
+     "clv": -0.0269,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "3f3cb74e560dfcc3e795b667ed9ebdef",
+     "name": "Aston Villa v Fenerbahce",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.5924,
+     "odds": 1.64,
+     "won": true,
+     "score": "6-0",
+     "half": "3-0",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.5759,
+     "pull_clv": -0.0555,
+     "close_chance": 0.5759,
+     "clv": -0.0555,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "5a1a6a04c5561897741105e30d5d7ec4",
+     "name": "Manchester City v Paris Saint Germain",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.4474,
+     "odds": 2.18,
+     "won": false,
+     "score": "2-4",
+     "half": "0-3",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.4668,
+     "pull_clv": 0.0176,
+     "close_chance": 0.4668,
+     "clv": 0.0176,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-06T09:07:32.329740+00:00|Top 5 leagues|25",
+   "name": "Top 5 leagues",
+   "target": 25,
+   "legs": 4,
+   "chance": 0.03464557156920794,
+   "odds": 25.089030200000003,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 2,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "380b8f24ec5430fb545a7490c1017285",
+     "name": "Sunderland v Brighton and Hove Albion",
+     "competition": "Premier League",
+     "code": "2",
+     "chance": 0.4072,
+     "odds": 2.3600000000000003,
+     "won": true,
+     "score": "0-2",
+     "half": "0-0",
+     "kickoff": "2026-10-10T14:00:00+00:00",
+     "pull_chance": 0.4161,
+     "pull_clv": -0.018,
+     "close_chance": 0.4107,
+     "clv": -0.0307,
+     "close_source": "close:betfair",
+     "close_odds": 2.42,
+     "xg": [
+      0.72,
+      1.41
+     ]
+    },
+    {
+     "match": "2997b68cc93f62d8a1dee9f06bedbefd",
+     "name": "Real Sociedad v Deportivo La Coruña",
+     "competition": "La Liga",
+     "code": "1",
+     "chance": 0.579,
+     "odds": 1.69,
+     "won": true,
+     "score": "3-2",
+     "half": "2-0",
+     "kickoff": "2026-10-11T14:15:00+00:00",
+     "pull_chance": 0.6034,
+     "pull_clv": 0.0197,
+     "close_chance": 0.5455,
+     "clv": -0.0781,
+     "close_source": "close:betfair",
+     "close_odds": 1.83,
+     "xg": [
+      1.44,
+      2.13
+     ]
+    },
+    {
+     "match": "17694e68f399fdf9c5030021ec9bb595",
+     "name": "RC Lens v Lyon",
+     "competition": "Ligue 1",
+     "code": "2",
+     "chance": 0.3498,
+     "odds": 2.7350000000000003,
+     "won": false,
+     "score": "2-1",
+     "half": "1-0",
+     "kickoff": "2026-10-09T18:45:00+00:00",
+     "pull_chance": 0.361,
+     "pull_clv": -0.0127,
+     "close_chance": 0.3691,
+     "clv": 0.0095,
+     "close_source": "close:betfair",
+     "close_odds": 2.7,
+     "xg": [
+      1.37,
+      0.99
+     ]
+    },
+    {
+     "match": "3aa72885e0aa107c62843749f7930a9a",
+     "name": "Lorient v Paris FC",
+     "competition": "Ligue 1",
+     "code": "2",
+     "chance": 0.4201,
+     "odds": 2.3,
+     "won": false,
+     "score": "1-0",
+     "half": "0-0",
+     "kickoff": "2026-10-10T18:45:00+00:00",
+     "pull_chance": 0.462,
+     "pull_clv": 0.0626,
+     "close_chance": 0.4568,
+     "clv": 0.0506,
+     "close_source": "close:betfair",
+     "close_odds": 2.18,
+     "xg": [
+      0.55,
+      0.97
+     ]
+    }
+   ]
+  },
+  {
+   "key": "2026-10-06T09:07:32.329740+00:00|Top 5 leagues|30",
+   "name": "Top 5 leagues",
+   "target": 30,
+   "legs": 4,
+   "chance": 0.028657386257350564,
+   "odds": 30.0293565,
+   "bonus": 0.0,
+   "landed": true,
+   "legs_won": 4,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2997b68cc93f62d8a1dee9f06bedbefd",
+     "name": "Real Sociedad v Deportivo La Coruña",
+     "competition": "La Liga",
+     "code": "1",
+     "chance": 0.579,
+     "odds": 1.69,
+     "won": true,
+     "score": "3-2",
+     "half": "2-0",
+     "kickoff": "2026-10-11T14:15:00+00:00",
+     "pull_chance": 0.6034,
+     "pull_clv": 0.0197,
+     "close_chance": 0.5455,
+     "clv": -0.0781,
+     "close_source": "close:betfair",
+     "close_odds": 1.83,
+     "xg": [
+      1.44,
+      2.13
+     ]
+    },
+    {
+     "match": "529fc26c7774d5b469932e275c668921",
+     "name": "Levante v Sevilla",
+     "competition": "La Liga",
+     "code": "X",
+     "chance": 0.2865,
+     "odds": 3.3,
+     "won": true,
+     "score": "3-3",
+     "half": "0-1",
+     "kickoff": "2026-10-12T19:00:00+00:00",
+     "pull_chance": 0.298,
+     "pull_clv": -0.0166,
+     "close_chance": 0.2966,
+     "clv": -0.0212,
+     "close_source": "close:betfair",
+     "close_odds": 3.35,
+     "xg": [
+      1.95,
+      2.53
+     ]
+    },
+    {
+     "match": "418f8c26d46eaabd829f2e265673b855",
+     "name": "FSV Mainz 05 v Bayer Leverkusen",
+     "competition": "Bundesliga",
+     "code": "2",
+     "chance": 0.4351,
+     "odds": 2.225,
+     "won": true,
+     "score": "3-4",
+     "half": "2-2",
+     "kickoff": "2026-10-10T13:30:00+00:00",
+     "pull_chance": 0.4425,
+     "pull_clv": -0.0154,
+     "close_chance": 0.437,
+     "clv": -0.0277,
+     "close_source": "close:betfair",
+     "close_odds": 2.28,
+     "xg": [
+      2.87,
+      1.69
+     ]
+    },
+    {
+     "match": "17694e68f399fdf9c5030021ec9bb595",
+     "name": "RC Lens v Lyon",
+     "competition": "Ligue 1",
+     "code": "1",
+     "chance": 0.397,
+     "odds": 2.42,
+     "won": true,
+     "score": "2-1",
+     "half": "1-0",
+     "kickoff": "2026-10-09T18:45:00+00:00",
+     "pull_chance": 0.3843,
+     "pull_clv": -0.07,
+     "close_chance": 0.3691,
+     "clv": -0.1068,
+     "close_source": "close:betfair",
+     "close_odds": 2.7,
+     "xg": [
+      1.37,
+      0.99
+     ]
+    }
+   ]
+  },
+  {
+   "key": "2026-10-06T09:07:32.329740+00:00|Top 5 leagues|40",
+   "name": "Top 5 leagues",
+   "target": 40,
+   "legs": 4,
+   "chance": 0.0212502865529397,
+   "odds": 40.0801053625,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 3,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "946716d7e5e52822f08be8cb95193d9d",
+     "name": "Lecce v Bologna",
+     "competition": "Serie A",
+     "code": "2",
+     "chance": 0.5001,
+     "odds": 1.94,
+     "won": true,
+     "score": "1-2",
+     "half": "0-1",
+     "kickoff": "2026-10-11T13:00:00+00:00",
+     "pull_chance": 0.4804,
+     "pull_clv": -0.068,
+     "close_chance": 0.4619,
+     "clv": -0.1039,
+     "close_source": "close:betfair",
+     "close_odds": 2.16,
+     "xg": [
+      1.49,
+      1.98
+     ]
+    },
+    {
+     "match": "0bdae4d304810578e47386606bff7106",
+     "name": "Hull City v Everton",
+     "competition": "Premier League",
+     "code": "X",
+     "chance": 0.2792,
+     "odds": 3.395,
+     "won": true,
+     "score": "2-2",
+     "half": "0-0",
+     "kickoff": "2026-10-11T13:00:00+00:00",
+     "pull_chance": 0.2795,
+     "pull_clv": -0.0511,
+     "close_chance": 0.283,
+     "clv": -0.0392,
+     "close_source": "close:betfair",
+     "close_odds": 3.5,
+     "xg": [
+      1.33,
+      1.68
+     ]
+    },
+    {
+     "match": "418f8c26d46eaabd829f2e265673b855",
+     "name": "FSV Mainz 05 v Bayer Leverkusen",
+     "competition": "Bundesliga",
+     "code": "2",
+     "chance": 0.4351,
+     "odds": 2.225,
+     "won": true,
+     "score": "3-4",
+     "half": "2-2",
+     "kickoff": "2026-10-10T13:30:00+00:00",
+     "pull_chance": 0.4425,
+     "pull_clv": -0.0154,
+     "close_chance": 0.437,
+     "clv": -0.0277,
+     "close_source": "close:betfair",
+     "close_odds": 2.28,
+     "xg": [
+      2.87,
+      1.69
+     ]
+    },
+    {
+     "match": "17694e68f399fdf9c5030021ec9bb595",
+     "name": "RC Lens v Lyon",
+     "competition": "Ligue 1",
+     "code": "2",
+     "chance": 0.3498,
+     "odds": 2.7350000000000003,
+     "won": false,
+     "score": "2-1",
+     "half": "1-0",
+     "kickoff": "2026-10-09T18:45:00+00:00",
+     "pull_chance": 0.361,
+     "pull_clv": -0.0127,
+     "close_chance": 0.3691,
+     "clv": 0.0095,
+     "close_source": "close:betfair",
+     "close_odds": 2.7,
+     "xg": [
+      1.37,
+      0.99
+     ]
+    }
+   ]
+  },
+  {
+   "key": "2026-10-06T09:07:32.329740+00:00|Champions League Tue|25",
+   "name": "Champions League Tue",
+   "target": 25,
+   "legs": 4,
+   "chance": 0.033343706153386464,
+   "odds": 25.023096000000002,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 3,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2b0a946cac613732fcbf57ce931490a1",
+     "name": "RC Lens v Sporting Lisbon",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3658,
+     "odds": 2.62,
+     "won": true,
+     "score": "0-2",
+     "half": "0-1",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.3639,
+     "pull_clv": -0.0466,
+     "close_chance": 0.3639,
+     "clv": -0.0466,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "93177465a42a0fb7802f1c8b06d6ee3a",
+     "name": "Arsenal v Lille",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.7799,
+     "odds": 1.26,
+     "won": true,
+     "score": "3-0",
+     "half": "0-0",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.8162,
+     "pull_clv": 0.0284,
+     "close_chance": 0.8162,
+     "clv": 0.0284,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "a9c22e08b395ee5753c8a65bc0eb97cf",
+     "name": "Atlético Madrid v Manchester United",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2445,
+     "odds": 3.79,
+     "won": false,
+     "score": "2-0",
+     "half": "1-0",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.2491,
+     "pull_clv": -0.0559,
+     "close_chance": 0.2491,
+     "clv": -0.0559,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "da9e9e9eb9a238ed97827c4a8fbe6044",
+     "name": "RB Leipzig v PSV Eindhoven",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.4781,
+     "odds": 2.0,
+     "won": true,
+     "score": "1-0",
+     "half": "0-0",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.6052,
+     "pull_clv": 0.2104,
+     "close_chance": 0.6052,
+     "clv": 0.2104,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-06T09:07:32.329740+00:00|Champions League Tue|30",
+   "name": "Champions League Tue",
+   "target": 30,
+   "legs": 3,
+   "chance": 0.027639564130990037,
+   "odds": 30.162750000000003,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 1,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2b0a946cac613732fcbf57ce931490a1",
+     "name": "RC Lens v Sporting Lisbon",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3658,
+     "odds": 2.62,
+     "won": true,
+     "score": "0-2",
+     "half": "0-1",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.3639,
+     "pull_clv": -0.0466,
+     "close_chance": 0.3639,
+     "clv": -0.0466,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "46f726554e6876fb828c767bfbfdfdad",
+     "name": "Sabah FK v Slavia Praha",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2481,
+     "odds": 3.75,
+     "won": false,
+     "score": "2-0",
+     "half": "0-0",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.2463,
+     "pull_clv": -0.0764,
+     "close_chance": 0.2463,
+     "clv": -0.0764,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "09e41b63d1d59bd4d971c54ffce154d3",
+     "name": "Villarreal v Napoli",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3046,
+     "odds": 3.07,
+     "won": false,
+     "score": "3-1",
+     "half": "2-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.2965,
+     "pull_clv": -0.0897,
+     "close_chance": 0.2965,
+     "clv": -0.0897,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-06T09:07:32.329740+00:00|Champions League Tue|40",
+   "name": "Champions League Tue",
+   "target": 40,
+   "legs": 4,
+   "chance": 0.020362106616394305,
+   "odds": 40.036953600000004,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 2,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2b0a946cac613732fcbf57ce931490a1",
+     "name": "RC Lens v Sporting Lisbon",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3658,
+     "odds": 2.62,
+     "won": true,
+     "score": "0-2",
+     "half": "0-1",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.3639,
+     "pull_clv": -0.0466,
+     "close_chance": 0.3639,
+     "clv": -0.0466,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "93177465a42a0fb7802f1c8b06d6ee3a",
+     "name": "Arsenal v Lille",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.7799,
+     "odds": 1.26,
+     "won": true,
+     "score": "3-0",
+     "half": "0-0",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.8162,
+     "pull_clv": 0.0284,
+     "close_chance": 0.8162,
+     "clv": 0.0284,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "a9c22e08b395ee5753c8a65bc0eb97cf",
+     "name": "Atlético Madrid v Manchester United",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2445,
+     "odds": 3.79,
+     "won": false,
+     "score": "2-0",
+     "half": "1-0",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.2491,
+     "pull_clv": -0.0559,
+     "close_chance": 0.2491,
+     "clv": -0.0559,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "da9e9e9eb9a238ed97827c4a8fbe6044",
+     "name": "RB Leipzig v PSV Eindhoven",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.292,
+     "odds": 3.2,
+     "won": false,
+     "score": "1-0",
+     "half": "0-0",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.203,
+     "pull_clv": -0.3504,
+     "close_chance": 0.203,
+     "clv": -0.3504,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-06T09:07:32.329740+00:00|Champions League Tue|50",
+   "name": "Champions League Tue",
+   "target": 50,
+   "legs": 5,
+   "chance": 0.015969727008449654,
+   "odds": 50.58293175000001,
+   "bonus": 0.03499999999999992,
+   "landed": false,
+   "legs_won": 2,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2b0a946cac613732fcbf57ce931490a1",
+     "name": "RC Lens v Sporting Lisbon",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3658,
+     "odds": 2.62,
+     "won": true,
+     "score": "0-2",
+     "half": "0-1",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.3639,
+     "pull_clv": -0.0466,
+     "close_chance": 0.3639,
+     "clv": -0.0466,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "46f726554e6876fb828c767bfbfdfdad",
+     "name": "Sabah FK v Slavia Praha",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2481,
+     "odds": 3.75,
+     "won": false,
+     "score": "2-0",
+     "half": "0-0",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.2463,
+     "pull_clv": -0.0764,
+     "close_chance": 0.2463,
+     "clv": -0.0764,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "dd431688ed5c8f383b6434fd4f01e883",
+     "name": "Galatasaray v Barcelona",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.7568,
+     "odds": 1.3,
+     "won": true,
+     "score": "1-4",
+     "half": "1-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.7609,
+     "pull_clv": -0.0108,
+     "close_chance": 0.7609,
+     "clv": -0.0108,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "ca3f4b075d835413f9cb7bd3c439fdd0",
+     "name": "Inter Milan v Club Brugge",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.7634,
+     "odds": 1.29,
+     "won": false,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.7913,
+     "pull_clv": 0.0208,
+     "close_chance": 0.7913,
+     "clv": 0.0208,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "09e41b63d1d59bd4d971c54ffce154d3",
+     "name": "Villarreal v Napoli",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3046,
+     "odds": 3.07,
+     "won": false,
+     "score": "3-1",
+     "half": "2-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.2965,
+     "pull_clv": -0.0897,
+     "close_chance": 0.2965,
+     "clv": -0.0897,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-06T09:07:32.329740+00:00|All competitions|25",
+   "name": "All competitions",
+   "target": 25,
+   "legs": 4,
+   "chance": 0.03464557156920794,
+   "odds": 25.089030200000007,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 2,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "17694e68f399fdf9c5030021ec9bb595",
+     "name": "RC Lens v Lyon",
+     "competition": "Ligue 1",
+     "code": "2",
+     "chance": 0.3498,
+     "odds": 2.7350000000000003,
+     "won": false,
+     "score": "2-1",
+     "half": "1-0",
+     "kickoff": "2026-10-09T18:45:00+00:00",
+     "pull_chance": 0.361,
+     "pull_clv": -0.0127,
+     "close_chance": 0.3691,
+     "clv": 0.0095,
+     "close_source": "close:betfair",
+     "close_odds": 2.7,
+     "xg": [
+      1.37,
+      0.99
+     ]
+    },
+    {
+     "match": "380b8f24ec5430fb545a7490c1017285",
+     "name": "Sunderland v Brighton and Hove Albion",
+     "competition": "Premier League",
+     "code": "2",
+     "chance": 0.4072,
+     "odds": 2.3600000000000003,
+     "won": true,
+     "score": "0-2",
+     "half": "0-0",
+     "kickoff": "2026-10-10T14:00:00+00:00",
+     "pull_chance": 0.4161,
+     "pull_clv": -0.018,
+     "close_chance": 0.4107,
+     "clv": -0.0307,
+     "close_source": "close:betfair",
+     "close_odds": 2.42,
+     "xg": [
+      0.72,
+      1.41
+     ]
+    },
+    {
+     "match": "3aa72885e0aa107c62843749f7930a9a",
+     "name": "Lorient v Paris FC",
+     "competition": "Ligue 1",
+     "code": "2",
+     "chance": 0.4201,
+     "odds": 2.3,
+     "won": false,
+     "score": "1-0",
+     "half": "0-0",
+     "kickoff": "2026-10-10T18:45:00+00:00",
+     "pull_chance": 0.462,
+     "pull_clv": 0.0626,
+     "close_chance": 0.4568,
+     "clv": 0.0506,
+     "close_source": "close:betfair",
+     "close_odds": 2.18,
+     "xg": [
+      0.55,
+      0.97
+     ]
+    },
+    {
+     "match": "2997b68cc93f62d8a1dee9f06bedbefd",
+     "name": "Real Sociedad v Deportivo La Coruña",
+     "competition": "La Liga",
+     "code": "1",
+     "chance": 0.579,
+     "odds": 1.69,
+     "won": true,
+     "score": "3-2",
+     "half": "2-0",
+     "kickoff": "2026-10-11T14:15:00+00:00",
+     "pull_chance": 0.6034,
+     "pull_clv": 0.0197,
+     "close_chance": 0.5455,
+     "clv": -0.0781,
+     "close_source": "close:betfair",
+     "close_odds": 1.83,
+     "xg": [
+      1.44,
+      2.13
+     ]
+    }
+   ]
+  },
+  {
+   "key": "2026-10-06T09:07:32.329740+00:00|All competitions|30",
+   "name": "All competitions",
+   "target": 30,
+   "legs": 4,
+   "chance": 0.028657386257350568,
+   "odds": 30.0293565,
+   "bonus": 0.0,
+   "landed": true,
+   "legs_won": 4,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "17694e68f399fdf9c5030021ec9bb595",
+     "name": "RC Lens v Lyon",
+     "competition": "Ligue 1",
+     "code": "1",
+     "chance": 0.397,
+     "odds": 2.42,
+     "won": true,
+     "score": "2-1",
+     "half": "1-0",
+     "kickoff": "2026-10-09T18:45:00+00:00",
+     "pull_chance": 0.3843,
+     "pull_clv": -0.07,
+     "close_chance": 0.3691,
+     "clv": -0.1068,
+     "close_source": "close:betfair",
+     "close_odds": 2.7,
+     "xg": [
+      1.37,
+      0.99
+     ]
+    },
+    {
+     "match": "418f8c26d46eaabd829f2e265673b855",
+     "name": "FSV Mainz 05 v Bayer Leverkusen",
+     "competition": "Bundesliga",
+     "code": "2",
+     "chance": 0.4351,
+     "odds": 2.225,
+     "won": true,
+     "score": "3-4",
+     "half": "2-2",
+     "kickoff": "2026-10-10T13:30:00+00:00",
+     "pull_chance": 0.4425,
+     "pull_clv": -0.0154,
+     "close_chance": 0.437,
+     "clv": -0.0277,
+     "close_source": "close:betfair",
+     "close_odds": 2.28,
+     "xg": [
+      2.87,
+      1.69
+     ]
+    },
+    {
+     "match": "2997b68cc93f62d8a1dee9f06bedbefd",
+     "name": "Real Sociedad v Deportivo La Coruña",
+     "competition": "La Liga",
+     "code": "1",
+     "chance": 0.579,
+     "odds": 1.69,
+     "won": true,
+     "score": "3-2",
+     "half": "2-0",
+     "kickoff": "2026-10-11T14:15:00+00:00",
+     "pull_chance": 0.6034,
+     "pull_clv": 0.0197,
+     "close_chance": 0.5455,
+     "clv": -0.0781,
+     "close_source": "close:betfair",
+     "close_odds": 1.83,
+     "xg": [
+      1.44,
+      2.13
+     ]
+    },
+    {
+     "match": "529fc26c7774d5b469932e275c668921",
+     "name": "Levante v Sevilla",
+     "competition": "La Liga",
+     "code": "X",
+     "chance": 0.2865,
+     "odds": 3.3,
+     "won": true,
+     "score": "3-3",
+     "half": "0-1",
+     "kickoff": "2026-10-12T19:00:00+00:00",
+     "pull_chance": 0.298,
+     "pull_clv": -0.0166,
+     "close_chance": 0.2966,
+     "clv": -0.0212,
+     "close_source": "close:betfair",
+     "close_odds": 3.35,
+     "xg": [
+      1.95,
+      2.53
+     ]
+    }
+   ]
+  },
+  {
+   "key": "2026-10-06T09:07:32.329740+00:00|All competitions|40",
+   "name": "All competitions",
+   "target": 40,
+   "legs": 4,
+   "chance": 0.0212502865529397,
+   "odds": 40.08010536250001,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 3,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "17694e68f399fdf9c5030021ec9bb595",
+     "name": "RC Lens v Lyon",
+     "competition": "Ligue 1",
+     "code": "2",
+     "chance": 0.3498,
+     "odds": 2.7350000000000003,
+     "won": false,
+     "score": "2-1",
+     "half": "1-0",
+     "kickoff": "2026-10-09T18:45:00+00:00",
+     "pull_chance": 0.361,
+     "pull_clv": -0.0127,
+     "close_chance": 0.3691,
+     "clv": 0.0095,
+     "close_source": "close:betfair",
+     "close_odds": 2.7,
+     "xg": [
+      1.37,
+      0.99
+     ]
+    },
+    {
+     "match": "418f8c26d46eaabd829f2e265673b855",
+     "name": "FSV Mainz 05 v Bayer Leverkusen",
+     "competition": "Bundesliga",
+     "code": "2",
+     "chance": 0.4351,
+     "odds": 2.225,
+     "won": true,
+     "score": "3-4",
+     "half": "2-2",
+     "kickoff": "2026-10-10T13:30:00+00:00",
+     "pull_chance": 0.4425,
+     "pull_clv": -0.0154,
+     "close_chance": 0.437,
+     "clv": -0.0277,
+     "close_source": "close:betfair",
+     "close_odds": 2.28,
+     "xg": [
+      2.87,
+      1.69
+     ]
+    },
+    {
+     "match": "0bdae4d304810578e47386606bff7106",
+     "name": "Hull City v Everton",
+     "competition": "Premier League",
+     "code": "X",
+     "chance": 0.2792,
+     "odds": 3.395,
+     "won": true,
+     "score": "2-2",
+     "half": "0-0",
+     "kickoff": "2026-10-11T13:00:00+00:00",
+     "pull_chance": 0.2795,
+     "pull_clv": -0.0511,
+     "close_chance": 0.283,
+     "clv": -0.0392,
+     "close_source": "close:betfair",
+     "close_odds": 3.5,
+     "xg": [
+      1.33,
+      1.68
+     ]
+    },
+    {
+     "match": "946716d7e5e52822f08be8cb95193d9d",
+     "name": "Lecce v Bologna",
+     "competition": "Serie A",
+     "code": "2",
+     "chance": 0.5001,
+     "odds": 1.94,
+     "won": true,
+     "score": "1-2",
+     "half": "0-1",
+     "kickoff": "2026-10-11T13:00:00+00:00",
+     "pull_chance": 0.4804,
+     "pull_clv": -0.068,
+     "close_chance": 0.4619,
+     "clv": -0.1039,
+     "close_source": "close:betfair",
+     "close_odds": 2.16,
+     "xg": [
+      1.49,
+      1.98
+     ]
+    }
+   ]
+  },
+  {
+   "key": "2026-10-09T09:08:04.428097+00:00|Top 5 leagues|30",
+   "name": "Top 5 leagues",
+   "target": 30,
+   "legs": 3,
+   "chance": 0.028736780073383837,
+   "odds": 30.043999999999997,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 0,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2f8e871a0f7f66ae22938028645e1066",
+     "name": "Genoa v Fiorentina",
+     "competition": "Serie A",
+     "code": "2",
+     "chance": 0.4179,
+     "odds": 2.32,
+     "won": false,
+     "score": "2-1",
+     "half": "2-0",
+     "kickoff": "2026-10-10T13:00:00+00:00",
+     "pull_chance": 0.4215,
+     "pull_clv": -0.0221,
+     "close_chance": 0.4074,
+     "clv": -0.0548,
+     "close_source": "close:betfair",
+     "close_odds": 2.44,
+     "xg": [
+      1.46,
+      0.82
+     ]
+    },
+    {
+     "match": "40c1bd70fee927f9bfa8901edab02b48",
+     "name": "Napoli v Frosinone",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.1859,
+     "odds": 5.0,
+     "won": false,
+     "score": "3-0",
+     "half": "2-0",
+     "kickoff": "2026-10-10T18:45:00+00:00",
+     "pull_chance": 0.1857,
+     "pull_clv": -0.0715,
+     "close_chance": 0.2146,
+     "clv": 0.073,
+     "close_source": "close:betfair",
+     "close_odds": 4.6,
+     "xg": [
+      3.12,
+      1.01
+     ]
+    },
+    {
+     "match": "4e4c6763037ffc0e1dfe92ed16287b6d",
+     "name": "Málaga v Espanyol",
+     "competition": "La Liga",
+     "code": "2",
+     "chance": 0.3699,
+     "odds": 2.59,
+     "won": false,
+     "score": "1-1",
+     "half": "0-1",
+     "kickoff": "2026-10-09T19:00:00+00:00",
+     "pull_chance": 0.3699,
+     "pull_clv": -0.042,
+     "close_chance": 0.3689,
+     "clv": -0.0445,
+     "close_source": "close:betfair",
+     "close_odds": 2.7,
+     "xg": [
+      0.59,
+      0.99
+     ]
+    }
+   ]
+  },
+  {
+   "key": "2026-10-09T09:08:04.428097+00:00|Champions League Tue|25",
+   "name": "Champions League Tue",
+   "target": 25,
+   "legs": 3,
+   "chance": 0.03401450493704758,
+   "odds": 25.105729999999998,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 1,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2b0a946cac613732fcbf57ce931490a1",
+     "name": "RC Lens v Sporting Lisbon",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3702,
+     "odds": 2.6,
+     "won": true,
+     "score": "0-2",
+     "half": "0-1",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.3639,
+     "pull_clv": -0.0539,
+     "close_chance": 0.3639,
+     "clv": -0.0539,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "8a9d20b23417357011c10585a99335e9",
+     "name": "Viking FK v Bayern Munich",
+     "competition": "Champions League",
+     "code": "U35",
+     "chance": 0.301,
+     "odds": 3.13,
+     "won": false,
+     "score": "3-3",
+     "half": "2-0",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.2827,
+     "pull_clv": -0.1151,
+     "close_chance": 0.2827,
+     "clv": -0.1151,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "09e41b63d1d59bd4d971c54ffce154d3",
+     "name": "Villarreal v Napoli",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3053,
+     "odds": 3.085,
+     "won": false,
+     "score": "3-1",
+     "half": "2-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.2965,
+     "pull_clv": -0.0853,
+     "close_chance": 0.2965,
+     "clv": -0.0853,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-09T09:08:04.428097+00:00|Champions League Tue|30",
+   "name": "Champions League Tue",
+   "target": 30,
+   "legs": 3,
+   "chance": 0.028122280043447148,
+   "odds": 30.07875,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 1,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2b0a946cac613732fcbf57ce931490a1",
+     "name": "RC Lens v Sporting Lisbon",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3702,
+     "odds": 2.6,
+     "won": true,
+     "score": "0-2",
+     "half": "0-1",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.3639,
+     "pull_clv": -0.0539,
+     "close_chance": 0.3639,
+     "clv": -0.0539,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "46f726554e6876fb828c767bfbfdfdad",
+     "name": "Sabah FK v Slavia Praha",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2488,
+     "odds": 3.75,
+     "won": false,
+     "score": "2-0",
+     "half": "0-0",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.2463,
+     "pull_clv": -0.0764,
+     "close_chance": 0.2463,
+     "clv": -0.0764,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "09e41b63d1d59bd4d971c54ffce154d3",
+     "name": "Villarreal v Napoli",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3053,
+     "odds": 3.085,
+     "won": false,
+     "score": "3-1",
+     "half": "2-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.2965,
+     "pull_clv": -0.0853,
+     "close_chance": 0.2965,
+     "clv": -0.0853,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-09T09:08:04.428097+00:00|Champions League Tue|40",
+   "name": "Champions League Tue",
+   "target": 40,
+   "legs": 4,
+   "chance": 0.02094166033702326,
+   "odds": 40.0499463,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 1,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2b0a946cac613732fcbf57ce931490a1",
+     "name": "RC Lens v Sporting Lisbon",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3702,
+     "odds": 2.6,
+     "won": true,
+     "score": "0-2",
+     "half": "0-1",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.3639,
+     "pull_clv": -0.0539,
+     "close_chance": 0.3639,
+     "clv": -0.0539,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "a9c22e08b395ee5753c8a65bc0eb97cf",
+     "name": "Atlético Madrid v Manchester United",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2447,
+     "odds": 3.815,
+     "won": false,
+     "score": "2-0",
+     "half": "1-0",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.2491,
+     "pull_clv": -0.0497,
+     "close_chance": 0.2491,
+     "clv": -0.0497,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "ca3f4b075d835413f9cb7bd3c439fdd0",
+     "name": "Inter Milan v Club Brugge",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.7683,
+     "odds": 1.29,
+     "won": false,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.7913,
+     "pull_clv": 0.0208,
+     "close_chance": 0.7913,
+     "clv": 0.0208,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "8a9d20b23417357011c10585a99335e9",
+     "name": "Viking FK v Bayern Munich",
+     "competition": "Champions League",
+     "code": "U35",
+     "chance": 0.301,
+     "odds": 3.13,
+     "won": false,
+     "score": "3-3",
+     "half": "2-0",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.2827,
+     "pull_clv": -0.1151,
+     "close_chance": 0.2827,
+     "clv": -0.1151,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-09T09:08:04.428097+00:00|Champions League Tue|50",
+   "name": "Champions League Tue",
+   "target": 50,
+   "legs": 5,
+   "chance": 0.01652478322764976,
+   "odds": 50.072973825874996,
+   "bonus": 0.03499999999999992,
+   "landed": false,
+   "legs_won": 4,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2b0a946cac613732fcbf57ce931490a1",
+     "name": "RC Lens v Sporting Lisbon",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3702,
+     "odds": 2.6,
+     "won": true,
+     "score": "0-2",
+     "half": "0-1",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.3639,
+     "pull_clv": -0.0539,
+     "close_chance": 0.3639,
+     "clv": -0.0539,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "93177465a42a0fb7802f1c8b06d6ee3a",
+     "name": "Arsenal v Lille",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.7842,
+     "odds": 1.255,
+     "won": true,
+     "score": "3-0",
+     "half": "0-0",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.8162,
+     "pull_clv": 0.0243,
+     "close_chance": 0.8162,
+     "clv": 0.0243,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "a9c22e08b395ee5753c8a65bc0eb97cf",
+     "name": "Atlético Madrid v Manchester United",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.4541,
+     "odds": 2.135,
+     "won": true,
+     "score": "2-0",
+     "half": "1-0",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.5015,
+     "pull_clv": 0.0707,
+     "close_chance": 0.5015,
+     "clv": 0.0707,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "da9e9e9eb9a238ed97827c4a8fbe6044",
+     "name": "RB Leipzig v PSV Eindhoven",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.2899,
+     "odds": 3.245,
+     "won": false,
+     "score": "1-0",
+     "half": "0-0",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.203,
+     "pull_clv": -0.3413,
+     "close_chance": 0.203,
+     "clv": -0.3413,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "09e41b63d1d59bd4d971c54ffce154d3",
+     "name": "Villarreal v Napoli",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.4324,
+     "odds": 2.215,
+     "won": true,
+     "score": "3-1",
+     "half": "2-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.4444,
+     "pull_clv": -0.0157,
+     "close_chance": 0.4444,
+     "clv": -0.0157,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-09T09:08:04.428097+00:00|Champions League Wed|25",
+   "name": "Champions League Wed",
+   "target": 25,
+   "legs": 5,
+   "chance": 0.034116690363805505,
+   "odds": 25.24071549999999,
+   "bonus": 0.03499999999999992,
+   "landed": false,
+   "legs_won": 3,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "5d6f9accd6f79ae4216dfd29ccc342b2",
+     "name": "Feyenoord v Como",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.5137,
+     "odds": 1.88,
+     "won": false,
+     "score": "3-2",
+     "half": "1-1",
+     "kickoff": "2026-10-14T16:45:00+00:00",
+     "pull_chance": 0.4578,
+     "pull_clv": -0.1393,
+     "close_chance": 0.4578,
+     "clv": -0.1393,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "2903ee092f7e08c549b130a3d394ac3c",
+     "name": "LASK v Liverpool",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.7944,
+     "odds": 1.25,
+     "won": true,
+     "score": "3-6",
+     "half": "0-3",
+     "kickoff": "2026-10-14T16:45:00+00:00",
+     "pull_chance": 0.7116,
+     "pull_clv": -0.1105,
+     "close_chance": 0.7116,
+     "clv": -0.1105,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "d4ef112438afa4c2cdbbfc9376a009c9",
+     "name": "AS Roma v Real Madrid",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.5156,
+     "odds": 1.8849999999999998,
+     "won": true,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.503,
+     "pull_clv": -0.0518,
+     "close_chance": 0.503,
+     "clv": -0.0518,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "ca87a3874b0eae31b4173ae4a9324957",
+     "name": "Bodø/Glimt v Borussia Dortmund",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.4745,
+     "odds": 2.035,
+     "won": false,
+     "score": "1-0",
+     "half": "0-0",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.4463,
+     "pull_clv": -0.0918,
+     "close_chance": 0.4463,
+     "clv": -0.0918,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "5a1a6a04c5561897741105e30d5d7ec4",
+     "name": "Manchester City v Paris Saint Germain",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3418,
+     "odds": 2.8,
+     "won": true,
+     "score": "2-4",
+     "half": "0-3",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.3004,
+     "pull_clv": -0.1589,
+     "close_chance": 0.3004,
+     "clv": -0.1589,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-09T09:08:04.428097+00:00|Champions League Wed|30",
+   "name": "Champions League Wed",
+   "target": 30,
+   "legs": 5,
+   "chance": 0.027955132250797134,
+   "odds": 30.064454062499998,
+   "bonus": 0.03499999999999992,
+   "landed": false,
+   "legs_won": 2,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "5d6f9accd6f79ae4216dfd29ccc342b2",
+     "name": "Feyenoord v Como",
+     "competition": "Champions League",
+     "code": "O25",
+     "chance": 0.6812,
+     "odds": 1.43,
+     "won": true,
+     "score": "3-2",
+     "half": "1-1",
+     "kickoff": "2026-10-14T16:45:00+00:00",
+     "pull_chance": 0.6437,
+     "pull_clv": -0.0795,
+     "close_chance": 0.6437,
+     "clv": -0.0795,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "2903ee092f7e08c549b130a3d394ac3c",
+     "name": "LASK v Liverpool",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.7944,
+     "odds": 1.25,
+     "won": true,
+     "score": "3-6",
+     "half": "0-3",
+     "kickoff": "2026-10-14T16:45:00+00:00",
+     "pull_chance": 0.7116,
+     "pull_clv": -0.1105,
+     "close_chance": 0.7116,
+     "clv": -0.1105,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "ca87a3874b0eae31b4173ae4a9324957",
+     "name": "Bodø/Glimt v Borussia Dortmund",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.4745,
+     "odds": 2.035,
+     "won": false,
+     "score": "1-0",
+     "half": "0-0",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.4463,
+     "pull_clv": -0.0918,
+     "close_chance": 0.4463,
+     "clv": -0.0918,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "5a1a6a04c5561897741105e30d5d7ec4",
+     "name": "Manchester City v Paris Saint Germain",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.4212,
+     "odds": 2.28,
+     "won": false,
+     "score": "2-4",
+     "half": "0-3",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.4668,
+     "pull_clv": 0.0643,
+     "close_chance": 0.4668,
+     "clv": 0.0643,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "4c7f87780ae5ab8bec9e83d6d6ec9909",
+     "name": "Real Betis v Porto",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2585,
+     "odds": 3.625,
+     "won": false,
+     "score": "3-2",
+     "half": "0-0",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.2563,
+     "pull_clv": -0.0709,
+     "close_chance": 0.2563,
+     "clv": -0.0709,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-09T09:08:04.428097+00:00|Champions League Wed|40",
+   "name": "Champions League Wed",
+   "target": 40,
+   "legs": 5,
+   "chance": 0.020838121116152217,
+   "odds": 40.178774999999995,
+   "bonus": 0.03499999999999992,
+   "landed": false,
+   "legs_won": 4,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2903ee092f7e08c549b130a3d394ac3c",
+     "name": "LASK v Liverpool",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.7944,
+     "odds": 1.25,
+     "won": true,
+     "score": "3-6",
+     "half": "0-3",
+     "kickoff": "2026-10-14T16:45:00+00:00",
+     "pull_chance": 0.7116,
+     "pull_clv": -0.1105,
+     "close_chance": 0.7116,
+     "clv": -0.1105,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "d4ef112438afa4c2cdbbfc9376a009c9",
+     "name": "AS Roma v Real Madrid",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.5156,
+     "odds": 1.8849999999999998,
+     "won": true,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.503,
+     "pull_clv": -0.0518,
+     "close_chance": 0.503,
+     "clv": -0.0518,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "3f3cb74e560dfcc3e795b667ed9ebdef",
+     "name": "Aston Villa v Fenerbahce",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.5759,
+     "odds": 1.68,
+     "won": true,
+     "score": "6-0",
+     "half": "3-0",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.5759,
+     "pull_clv": -0.0325,
+     "close_chance": 0.5759,
+     "clv": -0.0325,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "5a1a6a04c5561897741105e30d5d7ec4",
+     "name": "Manchester City v Paris Saint Germain",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3418,
+     "odds": 2.8,
+     "won": true,
+     "score": "2-4",
+     "half": "0-3",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.3004,
+     "pull_clv": -0.1589,
+     "close_chance": 0.3004,
+     "clv": -0.1589,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "4c7f87780ae5ab8bec9e83d6d6ec9909",
+     "name": "Real Betis v Porto",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2585,
+     "odds": 3.625,
+     "won": false,
+     "score": "3-2",
+     "half": "0-0",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.2563,
+     "pull_clv": -0.0709,
+     "close_chance": 0.2563,
+     "clv": -0.0709,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-09T09:08:04.428097+00:00|Champions League Wed|50",
+   "name": "Champions League Wed",
+   "target": 50,
+   "legs": 4,
+   "chance": 0.016494005703074747,
+   "odds": 50.12780499999999,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 3,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "d4ef112438afa4c2cdbbfc9376a009c9",
+     "name": "AS Roma v Real Madrid",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.5156,
+     "odds": 1.8849999999999998,
+     "won": true,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.503,
+     "pull_clv": -0.0518,
+     "close_chance": 0.503,
+     "clv": -0.0518,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "5a1a6a04c5561897741105e30d5d7ec4",
+     "name": "Manchester City v Paris Saint Germain",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3418,
+     "odds": 2.8,
+     "won": true,
+     "score": "2-4",
+     "half": "0-3",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.3004,
+     "pull_clv": -0.1589,
+     "close_chance": 0.3004,
+     "clv": -0.1589,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "4c7f87780ae5ab8bec9e83d6d6ec9909",
+     "name": "Real Betis v Porto",
+     "competition": "Champions League",
+     "code": "X",
+     "chance": 0.2585,
+     "odds": 3.625,
+     "won": false,
+     "score": "3-2",
+     "half": "0-0",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.2563,
+     "pull_clv": -0.0709,
+     "close_chance": 0.2563,
+     "clv": -0.0709,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "0f961390e790ad2c80ecb3f302cad4a6",
+     "name": "Shakhtar Donetsk v AEK Athens",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.3621,
+     "odds": 2.62,
+     "won": true,
+     "score": "3-1",
+     "half": "1-1",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.3545,
+     "pull_clv": -0.0712,
+     "close_chance": 0.3545,
+     "clv": -0.0712,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-09T09:08:04.428097+00:00|All competitions|25",
+   "name": "All competitions",
+   "target": 25,
+   "legs": 6,
+   "chance": 0.03502555326443665,
+   "odds": 25.011951900000003,
+   "bonus": 0.07122499999999987,
+   "landed": false,
+   "legs_won": 3,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2f8e871a0f7f66ae22938028645e1066",
+     "name": "Genoa v Fiorentina",
+     "competition": "Serie A",
+     "code": "2",
+     "chance": 0.4179,
+     "odds": 2.32,
+     "won": false,
+     "score": "2-1",
+     "half": "2-0",
+     "kickoff": "2026-10-10T13:00:00+00:00",
+     "pull_chance": 0.4215,
+     "pull_clv": -0.0221,
+     "close_chance": 0.4074,
+     "clv": -0.0548,
+     "close_source": "close:betfair",
+     "close_odds": 2.44,
+     "xg": [
+      1.46,
+      0.82
+     ]
+    },
+    {
+     "match": "2b0a946cac613732fcbf57ce931490a1",
+     "name": "RC Lens v Sporting Lisbon",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3702,
+     "odds": 2.6,
+     "won": true,
+     "score": "0-2",
+     "half": "0-1",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.3639,
+     "pull_clv": -0.0539,
+     "close_chance": 0.3639,
+     "clv": -0.0539,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "ca3f4b075d835413f9cb7bd3c439fdd0",
+     "name": "Inter Milan v Club Brugge",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.7683,
+     "odds": 1.29,
+     "won": false,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.7913,
+     "pull_clv": 0.0208,
+     "close_chance": 0.7913,
+     "clv": 0.0208,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "da9e9e9eb9a238ed97827c4a8fbe6044",
+     "name": "RB Leipzig v PSV Eindhoven",
+     "competition": "Champions League",
+     "code": "O25",
+     "chance": 0.7021,
+     "odds": 1.39,
+     "won": false,
+     "score": "1-0",
+     "half": "0-0",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.7692,
+     "pull_clv": 0.0692,
+     "close_chance": 0.7692,
+     "clv": 0.0692,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "2903ee092f7e08c549b130a3d394ac3c",
+     "name": "LASK v Liverpool",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.7944,
+     "odds": 1.25,
+     "won": true,
+     "score": "3-6",
+     "half": "0-3",
+     "kickoff": "2026-10-14T16:45:00+00:00",
+     "pull_chance": 0.7116,
+     "pull_clv": -0.1105,
+     "close_chance": 0.7116,
+     "clv": -0.1105,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "431fc65e67cd737bceb5827118d3f7eb",
+     "name": "Salzburg v AC Milan",
+     "competition": "Europa League",
+     "code": "2",
+     "chance": 0.5285,
+     "odds": 1.85,
+     "won": true,
+     "score": "0-4",
+     "half": "0-2",
+     "kickoff": "2026-10-15T16:45:00+00:00",
+     "pull_chance": 0.5365,
+     "pull_clv": -0.0075,
+     "close_chance": 0.5365,
+     "clv": -0.0075,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-09T09:08:04.428097+00:00|All competitions|30",
+   "name": "All competitions",
+   "target": 30,
+   "legs": 6,
+   "chance": 0.029135757719626783,
+   "odds": 30.00534517499999,
+   "bonus": 0.07122499999999987,
+   "landed": false,
+   "legs_won": 3,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2f8e871a0f7f66ae22938028645e1066",
+     "name": "Genoa v Fiorentina",
+     "competition": "Serie A",
+     "code": "2",
+     "chance": 0.4179,
+     "odds": 2.32,
+     "won": false,
+     "score": "2-1",
+     "half": "2-0",
+     "kickoff": "2026-10-10T13:00:00+00:00",
+     "pull_chance": 0.4215,
+     "pull_clv": -0.0221,
+     "close_chance": 0.4074,
+     "clv": -0.0548,
+     "close_source": "close:betfair",
+     "close_odds": 2.44,
+     "xg": [
+      1.46,
+      0.82
+     ]
+    },
+    {
+     "match": "ca3f4b075d835413f9cb7bd3c439fdd0",
+     "name": "Inter Milan v Club Brugge",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.7683,
+     "odds": 1.29,
+     "won": false,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.7913,
+     "pull_clv": 0.0208,
+     "close_chance": 0.7913,
+     "clv": 0.0208,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "2903ee092f7e08c549b130a3d394ac3c",
+     "name": "LASK v Liverpool",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.7944,
+     "odds": 1.25,
+     "won": true,
+     "score": "3-6",
+     "half": "0-3",
+     "kickoff": "2026-10-14T16:45:00+00:00",
+     "pull_chance": 0.7116,
+     "pull_clv": -0.1105,
+     "close_chance": 0.7116,
+     "clv": -0.1105,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "d4ef112438afa4c2cdbbfc9376a009c9",
+     "name": "AS Roma v Real Madrid",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.5156,
+     "odds": 1.8849999999999998,
+     "won": true,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.503,
+     "pull_clv": -0.0518,
+     "close_chance": 0.503,
+     "clv": -0.0518,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "431fc65e67cd737bceb5827118d3f7eb",
+     "name": "Salzburg v AC Milan",
+     "competition": "Europa League",
+     "code": "2",
+     "chance": 0.5285,
+     "odds": 1.85,
+     "won": true,
+     "score": "0-4",
+     "half": "0-2",
+     "kickoff": "2026-10-15T16:45:00+00:00",
+     "pull_chance": 0.5365,
+     "pull_clv": -0.0075,
+     "close_chance": 0.5365,
+     "clv": -0.0075,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "3809b92a425c41c325bafc8d8d598512",
+     "name": "Union Saint-Gilloise v Real Sociedad",
+     "competition": "Europa League",
+     "code": "1",
+     "chance": 0.4193,
+     "odds": 2.3,
+     "won": false,
+     "score": "1-1",
+     "half": "0-0",
+     "kickoff": "2026-10-15T16:45:00+00:00",
+     "pull_chance": 0.3993,
+     "pull_clv": -0.0816,
+     "close_chance": 0.3993,
+     "clv": -0.0816,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-09T09:08:04.428097+00:00|All competitions|40",
+   "name": "All competitions",
+   "target": 40,
+   "legs": 5,
+   "chance": 0.021464476476108257,
+   "odds": 40.3070304,
+   "bonus": 0.03499999999999992,
+   "landed": false,
+   "legs_won": 3,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2f8e871a0f7f66ae22938028645e1066",
+     "name": "Genoa v Fiorentina",
+     "competition": "Serie A",
+     "code": "2",
+     "chance": 0.4179,
+     "odds": 2.32,
+     "won": false,
+     "score": "2-1",
+     "half": "2-0",
+     "kickoff": "2026-10-10T13:00:00+00:00",
+     "pull_chance": 0.4215,
+     "pull_clv": -0.0221,
+     "close_chance": 0.4074,
+     "clv": -0.0548,
+     "close_source": "close:betfair",
+     "close_odds": 2.44,
+     "xg": [
+      1.46,
+      0.82
+     ]
+    },
+    {
+     "match": "2b0a946cac613732fcbf57ce931490a1",
+     "name": "RC Lens v Sporting Lisbon",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3702,
+     "odds": 2.6,
+     "won": true,
+     "score": "0-2",
+     "half": "0-1",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.3639,
+     "pull_clv": -0.0539,
+     "close_chance": 0.3639,
+     "clv": -0.0539,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "ca3f4b075d835413f9cb7bd3c439fdd0",
+     "name": "Inter Milan v Club Brugge",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.7683,
+     "odds": 1.29,
+     "won": false,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.7913,
+     "pull_clv": 0.0208,
+     "close_chance": 0.7913,
+     "clv": 0.0208,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "5a1a6a04c5561897741105e30d5d7ec4",
+     "name": "Manchester City v Paris Saint Germain",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3418,
+     "odds": 2.8,
+     "won": true,
+     "score": "2-4",
+     "half": "0-3",
+     "kickoff": "2026-10-14T19:00:00+00:00",
+     "pull_chance": 0.3004,
+     "pull_clv": -0.1589,
+     "close_chance": 0.3004,
+     "clv": -0.1589,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "431fc65e67cd737bceb5827118d3f7eb",
+     "name": "Salzburg v AC Milan",
+     "competition": "Europa League",
+     "code": "2",
+     "chance": 0.5285,
+     "odds": 1.85,
+     "won": true,
+     "score": "0-4",
+     "half": "0-2",
+     "kickoff": "2026-10-15T16:45:00+00:00",
+     "pull_chance": 0.5365,
+     "pull_clv": -0.0075,
+     "close_chance": 0.5365,
+     "clv": -0.0075,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-09T09:08:04.428097+00:00|All competitions|50",
+   "name": "All competitions",
+   "target": 50,
+   "legs": 6,
+   "chance": 0.016987281769508658,
+   "odds": 50.0411782416,
+   "bonus": 0.07122499999999987,
+   "landed": false,
+   "legs_won": 4,
+   "graded_at": "2026-10-16T08:25:41.058319+00:00",
+   "leg_results": [
+    {
+     "match": "2f8e871a0f7f66ae22938028645e1066",
+     "name": "Genoa v Fiorentina",
+     "competition": "Serie A",
+     "code": "2",
+     "chance": 0.4179,
+     "odds": 2.32,
+     "won": false,
+     "score": "2-1",
+     "half": "2-0",
+     "kickoff": "2026-10-10T13:00:00+00:00",
+     "pull_chance": 0.4215,
+     "pull_clv": -0.0221,
+     "close_chance": 0.4074,
+     "clv": -0.0548,
+     "close_source": "close:betfair",
+     "close_odds": 2.44,
+     "xg": [
+      1.46,
+      0.82
+     ]
+    },
+    {
+     "match": "3869391e3dbdcaa74153b11df56a3fe5",
+     "name": "Alavés v Atlético Madrid",
+     "competition": "La Liga",
+     "code": "2",
+     "chance": 0.5343,
+     "odds": 1.82,
+     "won": true,
+     "score": "1-2",
+     "half": "1-1",
+     "kickoff": "2026-10-10T14:15:00+00:00",
+     "pull_chance": 0.5369,
+     "pull_clv": -0.0228,
+     "close_chance": 0.5354,
+     "clv": -0.0256,
+     "close_source": "close:betfair",
+     "close_odds": 1.86,
+     "xg": [
+      1.3,
+      2.05
+     ]
+    },
+    {
+     "match": "946716d7e5e52822f08be8cb95193d9d",
+     "name": "Lecce v Bologna",
+     "competition": "Serie A",
+     "code": "2",
+     "chance": 0.5062,
+     "odds": 1.91,
+     "won": true,
+     "score": "1-2",
+     "half": "0-1",
+     "kickoff": "2026-10-11T13:00:00+00:00",
+     "pull_chance": 0.4804,
+     "pull_clv": -0.0824,
+     "close_chance": 0.4619,
+     "clv": -0.1178,
+     "close_source": "close:betfair",
+     "close_odds": 2.16,
+     "xg": [
+      1.49,
+      1.98
+     ]
+    },
+    {
+     "match": "2b0a946cac613732fcbf57ce931490a1",
+     "name": "RC Lens v Sporting Lisbon",
+     "competition": "Champions League",
+     "code": "2",
+     "chance": 0.3702,
+     "odds": 2.6,
+     "won": true,
+     "score": "0-2",
+     "half": "0-1",
+     "kickoff": "2026-10-13T16:45:00+00:00",
+     "pull_chance": 0.3639,
+     "pull_clv": -0.0539,
+     "close_chance": 0.3639,
+     "clv": -0.0539,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "ca3f4b075d835413f9cb7bd3c439fdd0",
+     "name": "Inter Milan v Club Brugge",
+     "competition": "Champions League",
+     "code": "1",
+     "chance": 0.7683,
+     "odds": 1.29,
+     "won": false,
+     "score": "3-4",
+     "half": "1-1",
+     "kickoff": "2026-10-13T19:00:00+00:00",
+     "pull_chance": 0.7913,
+     "pull_clv": 0.0208,
+     "close_chance": 0.7913,
+     "clv": 0.0208,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "431fc65e67cd737bceb5827118d3f7eb",
+     "name": "Salzburg v AC Milan",
+     "competition": "Europa League",
+     "code": "2",
+     "chance": 0.5285,
+     "odds": 1.85,
+     "won": true,
+     "score": "0-4",
+     "half": "0-2",
+     "kickoff": "2026-10-15T16:45:00+00:00",
+     "pull_chance": 0.5365,
+     "pull_clv": -0.0075,
+     "close_chance": 0.5365,
+     "clv": -0.0075,
+     "close_source": "last_pull"
+    }
+   ]
   }
- ]
+ ],
+ "timelines": {
+  "2b0a946cac613732fcbf57ce931490a1": {
+   "ko": "2026-10-13T16:45:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    0,
+    2
+   ],
+   "goals": [
+    [
+     "a",
+     22
+    ],
+    [
+     "a",
+     74
+    ]
+   ],
+   "reds": []
+  },
+  "46f726554e6876fb828c767bfbfdfdad": {
+   "ko": "2026-10-13T16:45:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    2,
+    0
+   ],
+   "goals": [
+    [
+     "h",
+     49
+    ],
+    [
+     "h",
+     88
+    ]
+   ],
+   "reds": []
+  },
+  "a9c22e08b395ee5753c8a65bc0eb97cf": {
+   "ko": "2026-10-13T19:00:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    2,
+    0
+   ],
+   "goals": [
+    [
+     "h",
+     1
+    ],
+    [
+     "h",
+     79
+    ]
+   ],
+   "reds": [
+    [
+     "a",
+     74
+    ]
+   ]
+  },
+  "dd431688ed5c8f383b6434fd4f01e883": {
+   "ko": "2026-10-13T19:00:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    1,
+    4
+   ],
+   "goals": [
+    [
+     "h",
+     28
+    ],
+    [
+     "a",
+     43
+    ],
+    [
+     "a",
+     50
+    ],
+    [
+     "a",
+     53
+    ],
+    [
+     "a",
+     65
+    ]
+   ],
+   "reds": []
+  },
+  "ca3f4b075d835413f9cb7bd3c439fdd0": {
+   "ko": "2026-10-13T19:00:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    3,
+    4
+   ],
+   "goals": [
+    [
+     "a",
+     30
+    ],
+    [
+     "h",
+     44
+    ],
+    [
+     "a",
+     63
+    ],
+    [
+     "a",
+     74
+    ],
+    [
+     "h",
+     81
+    ],
+    [
+     "a",
+     87
+    ],
+    [
+     "h",
+     90
+    ]
+   ],
+   "reds": []
+  },
+  "da9e9e9eb9a238ed97827c4a8fbe6044": {
+   "ko": "2026-10-13T19:00:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    1,
+    0
+   ],
+   "goals": [
+    [
+     "h",
+     75
+    ]
+   ],
+   "reds": []
+  },
+  "09e41b63d1d59bd4d971c54ffce154d3": {
+   "ko": "2026-10-13T19:00:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    3,
+    1
+   ],
+   "goals": [
+    [
+     "a",
+     8
+    ],
+    [
+     "h",
+     23
+    ],
+    [
+     "h",
+     26
+    ],
+    [
+     "h",
+     86
+    ]
+   ],
+   "reds": []
+  },
+  "5d6f9accd6f79ae4216dfd29ccc342b2": {
+   "ko": "2026-10-14T16:45:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    3,
+    2
+   ],
+   "goals": [
+    [
+     "a",
+     18
+    ],
+    [
+     "h",
+     20
+    ],
+    [
+     "h",
+     52
+    ],
+    [
+     "h",
+     81
+    ],
+    [
+     "a",
+     90
+    ]
+   ],
+   "reds": []
+  },
+  "2903ee092f7e08c549b130a3d394ac3c": {
+   "ko": "2026-10-14T16:45:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    3,
+    6
+   ],
+   "goals": [
+    [
+     "a",
+     22
+    ],
+    [
+     "a",
+     24
+    ],
+    [
+     "a",
+     37
+    ],
+    [
+     "a",
+     51
+    ],
+    [
+     "h",
+     63
+    ],
+    [
+     "a",
+     66
+    ],
+    [
+     "a",
+     72
+    ],
+    [
+     "h",
+     74
+    ],
+    [
+     "h",
+     77
+    ]
+   ],
+   "reds": []
+  },
+  "d4ef112438afa4c2cdbbfc9376a009c9": {
+   "ko": "2026-10-14T19:00:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    3,
+    4
+   ],
+   "goals": [
+    [
+     "h",
+     20
+    ],
+    [
+     "a",
+     25
+    ],
+    [
+     "h",
+     51
+    ],
+    [
+     "h",
+     57
+    ],
+    [
+     "a",
+     83
+    ],
+    [
+     "a",
+     85
+    ],
+    [
+     "a",
+     90
+    ]
+   ],
+   "reds": []
+  },
+  "3f3cb74e560dfcc3e795b667ed9ebdef": {
+   "ko": "2026-10-14T19:00:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    6,
+    0
+   ],
+   "goals": [
+    [
+     "h",
+     12
+    ],
+    [
+     "h",
+     31
+    ],
+    [
+     "h",
+     39
+    ],
+    [
+     "h",
+     68
+    ],
+    [
+     "h",
+     72
+    ],
+    [
+     "h",
+     90
+    ]
+   ],
+   "reds": []
+  },
+  "ca87a3874b0eae31b4173ae4a9324957": {
+   "ko": "2026-10-14T19:00:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    1,
+    0
+   ],
+   "goals": [
+    [
+     "h",
+     52
+    ]
+   ],
+   "reds": []
+  },
+  "5a1a6a04c5561897741105e30d5d7ec4": {
+   "ko": "2026-10-14T19:00:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    2,
+    4
+   ],
+   "goals": [
+    [
+     "a",
+     13
+    ],
+    [
+     "a",
+     15
+    ],
+    [
+     "a",
+     32
+    ],
+    [
+     "h",
+     53
+    ],
+    [
+     "a",
+     62
+    ],
+    [
+     "h",
+     75
+    ]
+   ],
+   "reds": []
+  },
+  "4c7f87780ae5ab8bec9e83d6d6ec9909": {
+   "ko": "2026-10-14T19:00:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    3,
+    2
+   ],
+   "goals": [
+    [
+     "h",
+     47
+    ],
+    [
+     "a",
+     54
+    ],
+    [
+     "a",
+     61
+    ],
+    [
+     "h",
+     74
+    ],
+    [
+     "h",
+     84
+    ]
+   ],
+   "reds": []
+  },
+  "d7576351b8cb2396e32cc3de0446f3de": {
+   "ko": "2026-10-14T19:00:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    0,
+    3
+   ],
+   "goals": [
+    [
+     "a",
+     29
+    ],
+    [
+     "a",
+     64
+    ],
+    [
+     "a",
+     90
+    ]
+   ],
+   "reds": []
+  },
+  "93177465a42a0fb7802f1c8b06d6ee3a": {
+   "ko": "2026-10-13T19:00:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    3,
+    0
+   ],
+   "goals": [
+    [
+     "h",
+     64
+    ],
+    [
+     "h",
+     67
+    ],
+    [
+     "h",
+     71
+    ]
+   ],
+   "reds": []
+  },
+  "8a9d20b23417357011c10585a99335e9": {
+   "ko": "2026-10-13T19:00:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    3,
+    3
+   ],
+   "goals": [
+    [
+     "h",
+     2
+    ],
+    [
+     "h",
+     38
+    ],
+    [
+     "a",
+     54
+    ],
+    [
+     "a",
+     60
+    ],
+    [
+     "a",
+     71
+    ],
+    [
+     "h",
+     90
+    ]
+   ],
+   "reds": [
+    [
+     "a",
+     73
+    ]
+   ]
+  },
+  "0f961390e790ad2c80ecb3f302cad4a6": {
+   "ko": "2026-10-14T19:00:00+00:00",
+   "comp": "Champions League",
+   "ft": [
+    3,
+    1
+   ],
+   "goals": [
+    [
+     "a",
+     28
+    ],
+    [
+     "h",
+     34
+    ],
+    [
+     "h",
+     80
+    ],
+    [
+     "h",
+     86
+    ]
+   ],
+   "reds": []
+  },
+  "431fc65e67cd737bceb5827118d3f7eb": {
+   "ko": "2026-10-15T16:45:00+00:00",
+   "comp": "Europa League",
+   "ft": [
+    0,
+    4
+   ],
+   "goals": [
+    [
+     "a",
+     15
+    ],
+    [
+     "a",
+     32
+    ],
+    [
+     "a",
+     49
+    ],
+    [
+     "a",
+     72
+    ]
+   ],
+   "reds": [
+    [
+     "a",
+     83
+    ]
+   ]
+  },
+  "3809b92a425c41c325bafc8d8d598512": {
+   "ko": "2026-10-15T16:45:00+00:00",
+   "comp": "Europa League",
+   "ft": [
+    1,
+    1
+   ],
+   "goals": [
+    [
+     "a",
+     46
+    ],
+    [
+     "h",
+     88
+    ]
+   ],
+   "reds": []
+  },
+  "b712f6ee1a8b3f7ea8c6cad4929a2728": {
+   "ko": "2026-10-15T19:00:00+00:00",
+   "comp": "Conference League",
+   "ft": [
+    2,
+    0
+   ],
+   "goals": [
+    [
+     "h",
+     11
+    ],
+    [
+     "h",
+     88
+    ]
+   ],
+   "reds": []
+  },
+  "17694e68f399fdf9c5030021ec9bb595": {
+   "ko": "2026-10-09T18:45:00+00:00",
+   "comp": "Ligue 1",
+   "ft": [
+    2,
+    1
+   ],
+   "goals": [
+    [
+     "h",
+     36
+    ],
+    [
+     "h",
+     76
+    ],
+    [
+     "a",
+     85
+    ]
+   ],
+   "reds": [
+    [
+     "h",
+     84
+    ]
+   ]
+  },
+  "3aa72885e0aa107c62843749f7930a9a": {
+   "ko": "2026-10-10T18:45:00+00:00",
+   "comp": "Ligue 1",
+   "ft": [
+    1,
+    0
+   ],
+   "goals": [
+    [
+     "h",
+     68
+    ]
+   ],
+   "reds": []
+  },
+  "c2c64ebfc5810226f807c1920d580392": {
+   "ko": "2026-10-10T18:45:00+00:00",
+   "comp": "Ligue 1",
+   "ft": [
+    2,
+    2
+   ],
+   "goals": [
+    [
+     "h",
+     29
+    ],
+    [
+     "h",
+     38
+    ],
+    [
+     "a",
+     48
+    ],
+    [
+     "a",
+     59
+    ]
+   ],
+   "reds": []
+  },
+  "418f8c26d46eaabd829f2e265673b855": {
+   "ko": "2026-10-10T13:30:00+00:00",
+   "comp": "Bundesliga",
+   "ft": [
+    3,
+    4
+   ],
+   "goals": [
+    [
+     "a",
+     5
+    ],
+    [
+     "a",
+     9
+    ],
+    [
+     "h",
+     33
+    ],
+    [
+     "h",
+     42
+    ],
+    [
+     "a",
+     55
+    ],
+    [
+     "a",
+     65
+    ],
+    [
+     "h",
+     90
+    ]
+   ],
+   "reds": []
+  },
+  "380b8f24ec5430fb545a7490c1017285": {
+   "ko": "2026-10-10T14:00:00+00:00",
+   "comp": "Premier League",
+   "ft": [
+    0,
+    2
+   ],
+   "goals": [
+    [
+     "a",
+     53
+    ],
+    [
+     "a",
+     90
+    ]
+   ],
+   "reds": [
+    [
+     "a",
+     57
+    ]
+   ]
+  },
+  "0bdae4d304810578e47386606bff7106": {
+   "ko": "2026-10-11T13:00:00+00:00",
+   "comp": "Premier League",
+   "ft": [
+    2,
+    2
+   ],
+   "goals": [
+    [
+     "h",
+     48
+    ],
+    [
+     "a",
+     55
+    ],
+    [
+     "a",
+     68
+    ],
+    [
+     "h",
+     74
+    ]
+   ],
+   "reds": []
+  },
+  "acd5bd945dd953ad1e300df5bfe696f9": {
+   "ko": "2026-10-12T19:00:00+00:00",
+   "comp": "Premier League",
+   "ft": [
+    4,
+    1
+   ],
+   "goals": [
+    [
+     "h",
+     6
+    ],
+    [
+     "h",
+     48
+    ],
+    [
+     "a",
+     70
+    ],
+    [
+     "h",
+     81
+    ],
+    [
+     "h",
+     86
+    ]
+   ],
+   "reds": []
+  },
+  "946716d7e5e52822f08be8cb95193d9d": {
+   "ko": "2026-10-11T13:00:00+00:00",
+   "comp": "Serie A",
+   "ft": [
+    1,
+    2
+   ],
+   "goals": [
+    [
+     "a",
+     17
+    ],
+    [
+     "h",
+     64
+    ],
+    [
+     "a",
+     75
+    ]
+   ],
+   "reds": []
+  },
+  "2f8e871a0f7f66ae22938028645e1066": {
+   "ko": "2026-10-10T13:00:00+00:00",
+   "comp": "Serie A",
+   "ft": [
+    2,
+    1
+   ],
+   "goals": [
+    [
+     "h",
+     7
+    ],
+    [
+     "h",
+     15
+    ],
+    [
+     "a",
+     73
+    ]
+   ],
+   "reds": []
+  },
+  "40c1bd70fee927f9bfa8901edab02b48": {
+   "ko": "2026-10-10T18:45:00+00:00",
+   "comp": "Serie A",
+   "ft": [
+    3,
+    0
+   ],
+   "goals": [
+    [
+     "h",
+     29
+    ],
+    [
+     "h",
+     32
+    ],
+    [
+     "h",
+     90
+    ]
+   ],
+   "reds": []
+  },
+  "2997b68cc93f62d8a1dee9f06bedbefd": {
+   "ko": "2026-10-11T14:15:00+00:00",
+   "comp": "La Liga",
+   "ft": [
+    3,
+    2
+   ],
+   "goals": [
+    [
+     "h",
+     29
+    ],
+    [
+     "h",
+     34
+    ],
+    [
+     "h",
+     54
+    ],
+    [
+     "a",
+     61
+    ],
+    [
+     "a",
+     69
+    ]
+   ],
+   "reds": [
+    [
+     "h",
+     66
+    ],
+    [
+     "a",
+     90
+    ]
+   ]
+  },
+  "529fc26c7774d5b469932e275c668921": {
+   "ko": "2026-10-12T19:00:00+00:00",
+   "comp": "La Liga",
+   "ft": [
+    3,
+    3
+   ],
+   "goals": [
+    [
+     "a",
+     13
+    ],
+    [
+     "a",
+     54
+    ],
+    [
+     "h",
+     57
+    ],
+    [
+     "h",
+     90
+    ],
+    [
+     "a",
+     90
+    ],
+    [
+     "h",
+     90
+    ]
+   ],
+   "reds": [
+    [
+     "a",
+     90
+    ]
+   ]
+  },
+  "4e4c6763037ffc0e1dfe92ed16287b6d": {
+   "ko": "2026-10-09T19:00:00+00:00",
+   "comp": "La Liga",
+   "ft": [
+    1,
+    1
+   ],
+   "goals": [
+    [
+     "a",
+     13
+    ],
+    [
+     "h",
+     90
+    ]
+   ],
+   "reds": []
+  },
+  "3869391e3dbdcaa74153b11df56a3fe5": {
+   "ko": "2026-10-10T14:15:00+00:00",
+   "comp": "La Liga",
+   "ft": [
+    1,
+    2
+   ],
+   "goals": [
+    [
+     "a",
+     33
+    ],
+    [
+     "h",
+     45
+    ],
+    [
+     "a",
+     87
+    ]
+   ],
+   "reds": [
+    [
+     "h",
+     61
+    ]
+   ]
+  }
+ }
 }
