@@ -1,7 +1,7 @@
 {
  "summary": {
-  "graded": 58,
-  "expected_hits": 1.44,
+  "graded": 76,
+  "expected_hits": 1.87,
   "actual_hits": 2,
   "by_name": {
    "National teams": {
@@ -10,13 +10,13 @@
     "actual": 0
    },
    "Serie A": {
-    "graded": 7,
-    "expected": 0.18,
+    "graded": 16,
+    "expected": 0.4,
     "actual": 0
    },
    "Top 5 leagues": {
-    "graded": 7,
-    "expected": 0.18,
+    "graded": 16,
+    "expected": 0.4,
     "actual": 1
    },
    "All competitions": {
@@ -36,12 +36,12 @@
    }
   },
   "closing": {
-   "legs": 241,
-   "close": 79,
-   "pending": 0,
+   "legs": 303,
+   "close": 85,
+   "pending": 56,
    "last_pull": 162,
-   "avg_clv": -0.0431,
-   "avg_clv_close": -0.037
+   "avg_clv": -0.0452,
+   "avg_clv_close": -0.0358
   }
  },
  "slips": [
@@ -5173,6 +5173,1342 @@
      "close_source": "last_pull"
     }
    ]
+  },
+  {
+   "key": "2026-10-16T09:20:47.630417+00:00|Serie A|25",
+   "name": "Serie A",
+   "target": 25,
+   "legs": 3,
+   "chance": 0.03357478388996626,
+   "odds": 25.064159999999998,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 1,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "7d3160040958fe21778fd5ee485666c3",
+     "name": "Frosinone v Sassuolo",
+     "competition": "Serie A",
+     "code": "1",
+     "chance": 0.4066,
+     "odds": 2.35,
+     "won": true,
+     "score": "4-2",
+     "half": "3-2",
+     "kickoff": "2026-10-16T18:45:00+00:00",
+     "pull_chance": 0.4066,
+     "pull_clv": -0.0445,
+     "close_chance": 0.4066,
+     "clv": -0.0445,
+     "close_source": "pending"
+    },
+    {
+     "match": "367da93aa21a1e13eeafb94fd2263c75",
+     "name": "Udinese v Lecce",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.2651,
+     "odds": 3.52,
+     "won": false,
+     "score": "0-3",
+     "half": "0-2",
+     "kickoff": "2026-10-18T10:30:00+00:00",
+     "pull_chance": 0.2665,
+     "pull_clv": -0.0619,
+     "close_chance": 0.2665,
+     "clv": -0.0619,
+     "close_source": "pending"
+    },
+    {
+     "match": "07014d9adc65ca39710bd9f0c7c0d3f0",
+     "name": "Parma v Torino",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.3114,
+     "odds": 3.03,
+     "won": false,
+     "score": "0-3",
+     "half": "0-2",
+     "kickoff": "2026-10-19T18:45:00+00:00",
+     "pull_chance": 0.3093,
+     "pull_clv": -0.0628,
+     "close_chance": 0.3093,
+     "clv": -0.0628,
+     "close_source": "pending"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-16T09:20:47.630417+00:00|Serie A|30",
+   "name": "Serie A",
+   "target": 30,
+   "legs": 3,
+   "chance": 0.02754805821980033,
+   "odds": 30.221099999999996,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 2,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "907639dade64cca45d1ab639195d201e",
+     "name": "Venezia v Napoli",
+     "competition": "Serie A",
+     "code": "1",
+     "chance": 0.1968,
+     "odds": 4.68,
+     "won": true,
+     "score": "1-0",
+     "half": "0-0",
+     "kickoff": "2026-10-17T13:00:00+00:00",
+     "pull_chance": 0.1968,
+     "pull_clv": -0.079,
+     "close_chance": 0.1968,
+     "clv": -0.079,
+     "close_source": "pending"
+    },
+    {
+     "match": "3ea32a0aa44a5f0ef7fd088155430087",
+     "name": "Fiorentina v Como",
+     "competition": "Serie A",
+     "code": "2",
+     "chance": 0.4688,
+     "odds": 2.05,
+     "won": true,
+     "score": "1-3",
+     "half": "1-2",
+     "kickoff": "2026-10-18T13:00:00+00:00",
+     "pull_chance": 0.47,
+     "pull_clv": -0.0365,
+     "close_chance": 0.47,
+     "clv": -0.0365,
+     "close_source": "pending"
+    },
+    {
+     "match": "ce94aca384a20f6af459366da6e1dd21",
+     "name": "Monza v Cagliari",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.2986,
+     "odds": 3.15,
+     "won": false,
+     "score": "4-0",
+     "half": "1-0",
+     "kickoff": "2026-10-19T16:30:00+00:00",
+     "pull_chance": 0.2943,
+     "pull_clv": -0.073,
+     "close_chance": 0.2943,
+     "clv": -0.073,
+     "close_source": "pending"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-16T09:20:47.630417+00:00|Serie A|40",
+   "name": "Serie A",
+   "target": 40,
+   "legs": 4,
+   "chance": 0.02051202591850771,
+   "odds": 40.0734,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 3,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "18d478f469da3bcc654dd4555b85c7e3",
+     "name": "AS Roma v Genoa",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.2052,
+     "odds": 4.5,
+     "won": false,
+     "score": "2-0",
+     "half": "0-0",
+     "kickoff": "2026-10-17T18:45:00+00:00",
+     "pull_chance": 0.228,
+     "pull_clv": 0.026,
+     "close_chance": 0.228,
+     "clv": 0.026,
+     "close_source": "pending"
+    },
+    {
+     "match": "3ea32a0aa44a5f0ef7fd088155430087",
+     "name": "Fiorentina v Como",
+     "competition": "Serie A",
+     "code": "2",
+     "chance": 0.4688,
+     "odds": 2.05,
+     "won": true,
+     "score": "1-3",
+     "half": "1-2",
+     "kickoff": "2026-10-18T13:00:00+00:00",
+     "pull_chance": 0.47,
+     "pull_clv": -0.0365,
+     "close_chance": 0.47,
+     "clv": -0.0365,
+     "close_source": "pending"
+    },
+    {
+     "match": "f9403dd597edbfaa73abdc974e55344c",
+     "name": "AC Milan v Atalanta BC",
+     "competition": "Serie A",
+     "code": "1",
+     "chance": 0.5354,
+     "odds": 1.81,
+     "won": true,
+     "score": "3-2",
+     "half": "2-0",
+     "kickoff": "2026-10-18T16:00:00+00:00",
+     "pull_chance": 0.559,
+     "pull_clv": 0.0118,
+     "close_chance": 0.559,
+     "clv": 0.0118,
+     "close_source": "pending"
+    },
+    {
+     "match": "ce94aca384a20f6af459366da6e1dd21",
+     "name": "Monza v Cagliari",
+     "competition": "Serie A",
+     "code": "1",
+     "chance": 0.3983,
+     "odds": 2.4,
+     "won": true,
+     "score": "4-0",
+     "half": "1-0",
+     "kickoff": "2026-10-19T16:30:00+00:00",
+     "pull_chance": 0.4092,
+     "pull_clv": -0.0179,
+     "close_chance": 0.4092,
+     "clv": -0.0179,
+     "close_source": "pending"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-16T09:20:47.630417+00:00|Serie A|50",
+   "name": "Serie A",
+   "target": 50,
+   "legs": 4,
+   "chance": 0.016217497436216803,
+   "odds": 50.016816,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 2,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "f9403dd597edbfaa73abdc974e55344c",
+     "name": "AC Milan v Atalanta BC",
+     "competition": "Serie A",
+     "code": "1",
+     "chance": 0.5354,
+     "odds": 1.81,
+     "won": true,
+     "score": "3-2",
+     "half": "2-0",
+     "kickoff": "2026-10-18T16:00:00+00:00",
+     "pull_chance": 0.559,
+     "pull_clv": 0.0118,
+     "close_chance": 0.559,
+     "clv": 0.0118,
+     "close_source": "pending"
+    },
+    {
+     "match": "4c4026e2782f09d6f0ff2bde2a390513",
+     "name": "Juventus v Lazio",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.2442,
+     "odds": 3.8,
+     "won": false,
+     "score": "0-3",
+     "half": "0-1",
+     "kickoff": "2026-10-18T18:45:00+00:00",
+     "pull_chance": 0.2293,
+     "pull_clv": -0.1287,
+     "close_chance": 0.2293,
+     "clv": -0.1287,
+     "close_source": "pending"
+    },
+    {
+     "match": "ce94aca384a20f6af459366da6e1dd21",
+     "name": "Monza v Cagliari",
+     "competition": "Serie A",
+     "code": "1",
+     "chance": 0.3983,
+     "odds": 2.4,
+     "won": true,
+     "score": "4-0",
+     "half": "1-0",
+     "kickoff": "2026-10-19T16:30:00+00:00",
+     "pull_chance": 0.4092,
+     "pull_clv": -0.0179,
+     "close_chance": 0.4092,
+     "clv": -0.0179,
+     "close_source": "pending"
+    },
+    {
+     "match": "07014d9adc65ca39710bd9f0c7c0d3f0",
+     "name": "Parma v Torino",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.3114,
+     "odds": 3.03,
+     "won": false,
+     "score": "0-3",
+     "half": "0-2",
+     "kickoff": "2026-10-19T18:45:00+00:00",
+     "pull_chance": 0.3093,
+     "pull_clv": -0.0628,
+     "close_chance": 0.3093,
+     "clv": -0.0628,
+     "close_source": "pending"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-16T09:20:47.630417+00:00|Top 5 leagues|25",
+   "name": "Top 5 leagues",
+   "target": 25,
+   "legs": 4,
+   "chance": 0.03420795860274499,
+   "odds": 25.025616,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 2,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "6436925dd15916d7041ba32b60000d48",
+     "name": "Espanyol v Atlético Madrid",
+     "competition": "La Liga",
+     "code": "1",
+     "chance": 0.1907,
+     "odds": 4.88,
+     "won": false,
+     "score": "0-1",
+     "half": "0-0",
+     "kickoff": "2026-10-17T12:00:00+00:00",
+     "pull_chance": 0.1857,
+     "pull_clv": -0.0938,
+     "close_chance": 0.1857,
+     "clv": -0.0938,
+     "close_source": "pending"
+    },
+    {
+     "match": "f00cd1ea41fa39149729d14ebc07aa6c",
+     "name": "Valencia v Athletic Bilbao",
+     "competition": "La Liga",
+     "code": "2",
+     "chance": 0.4376,
+     "odds": 2.2,
+     "won": false,
+     "score": "0-0",
+     "half": "0-0",
+     "kickoff": "2026-10-17T19:00:00+00:00",
+     "pull_chance": 0.4221,
+     "pull_clv": -0.0714,
+     "close_chance": 0.4221,
+     "clv": -0.0714,
+     "close_source": "pending"
+    },
+    {
+     "match": "f3034246520a2ee4ff0ac0d5074966f8",
+     "name": "Strasbourg v Paris Saint Germain",
+     "competition": "Ligue 1",
+     "code": "2",
+     "chance": 0.7016,
+     "odds": 1.4,
+     "won": true,
+     "score": "1-3",
+     "half": "1-0",
+     "kickoff": "2026-10-17T15:15:00+00:00",
+     "pull_chance": 0.6997,
+     "pull_clv": -0.0204,
+     "close_chance": 0.6997,
+     "clv": -0.0204,
+     "close_source": "pending"
+    },
+    {
+     "match": "471f891b1f6516a864ad94c8eb649f5e",
+     "name": "Lyon v Nice",
+     "competition": "Ligue 1",
+     "code": "1",
+     "chance": 0.5843,
+     "odds": 1.665,
+     "won": true,
+     "score": "2-1",
+     "half": "2-1",
+     "kickoff": "2026-10-18T18:45:00+00:00",
+     "pull_chance": 0.516,
+     "pull_clv": -0.1409,
+     "close_chance": 0.516,
+     "clv": -0.1409,
+     "close_source": "pending"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-16T09:20:47.630417+00:00|Top 5 leagues|30",
+   "name": "Top 5 leagues",
+   "target": 30,
+   "legs": 3,
+   "chance": 0.028221373446525817,
+   "odds": 30.095519999999997,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 0,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "8f1945e7272bc7e89016439f5ab321c7",
+     "name": "Brentford v Liverpool",
+     "competition": "Premier League",
+     "code": "X",
+     "chance": 0.2597,
+     "odds": 3.6399999999999997,
+     "won": false,
+     "score": "1-2",
+     "half": "1-0",
+     "kickoff": "2026-10-17T14:00:00+00:00",
+     "pull_chance": 0.2608,
+     "pull_clv": -0.0507,
+     "close_chance": 0.2608,
+     "clv": -0.0507,
+     "close_source": "pending"
+    },
+    {
+     "match": "19ee731602634e5c9e3106630e087464",
+     "name": "Deportivo La Coruña v Levante",
+     "competition": "La Liga",
+     "code": "1",
+     "chance": 0.4631,
+     "odds": 2.08,
+     "won": false,
+     "score": "1-1",
+     "half": "0-0",
+     "kickoff": "2026-10-16T19:00:00+00:00",
+     "pull_chance": 0.4631,
+     "pull_clv": -0.0368,
+     "close_chance": 0.4631,
+     "clv": -0.0368,
+     "close_source": "pending"
+    },
+    {
+     "match": "b077aa049133c0358bcd643bfee48da3",
+     "name": "Troyes v RC Lens",
+     "competition": "Ligue 1",
+     "code": "1",
+     "chance": 0.2346,
+     "odds": 3.975,
+     "won": false,
+     "score": "1-3",
+     "half": "1-2",
+     "kickoff": "2026-10-17T18:45:00+00:00",
+     "pull_chance": 0.2393,
+     "pull_clv": -0.0488,
+     "close_chance": 0.2393,
+     "clv": -0.0488,
+     "close_source": "pending"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-16T09:20:47.630417+00:00|Top 5 leagues|40",
+   "name": "Top 5 leagues",
+   "target": 40,
+   "legs": 3,
+   "chance": 0.020942036227153845,
+   "odds": 40.294799999999995,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 0,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "764e6513cb3f348881503df70ccb90e0",
+     "name": "Everton v Chelsea",
+     "competition": "Premier League",
+     "code": "X",
+     "chance": 0.2549,
+     "odds": 3.69,
+     "won": false,
+     "score": "0-2",
+     "half": "0-0",
+     "kickoff": "2026-10-17T11:30:00+00:00",
+     "pull_chance": 0.2596,
+     "pull_clv": -0.0421,
+     "close_chance": 0.2596,
+     "clv": -0.0421,
+     "close_source": "pending"
+    },
+    {
+     "match": "8f1945e7272bc7e89016439f5ab321c7",
+     "name": "Brentford v Liverpool",
+     "competition": "Premier League",
+     "code": "X",
+     "chance": 0.2597,
+     "odds": 3.6399999999999997,
+     "won": false,
+     "score": "1-2",
+     "half": "1-0",
+     "kickoff": "2026-10-17T14:00:00+00:00",
+     "pull_chance": 0.2608,
+     "pull_clv": -0.0507,
+     "close_chance": 0.2608,
+     "clv": -0.0507,
+     "close_source": "pending"
+    },
+    {
+     "match": "66c168c030f3faad3983fcadc3060009",
+     "name": "Le Mans FC v Toulouse",
+     "competition": "Ligue 1",
+     "code": "1",
+     "chance": 0.3163,
+     "odds": 3.0,
+     "won": false,
+     "score": "0-3",
+     "half": "0-0",
+     "kickoff": "2026-10-16T18:45:00+00:00",
+     "pull_chance": 0.3163,
+     "pull_clv": -0.0511,
+     "close_chance": 0.3163,
+     "clv": -0.0511,
+     "close_source": "pending"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-16T09:20:47.630417+00:00|Top 5 leagues|50",
+   "name": "Top 5 leagues",
+   "target": 50,
+   "legs": 3,
+   "chance": 0.016566174290043405,
+   "odds": 50.141999999999996,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 0,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "6436925dd15916d7041ba32b60000d48",
+     "name": "Espanyol v Atlético Madrid",
+     "competition": "La Liga",
+     "code": "1",
+     "chance": 0.1907,
+     "odds": 4.88,
+     "won": false,
+     "score": "0-1",
+     "half": "0-0",
+     "kickoff": "2026-10-17T12:00:00+00:00",
+     "pull_chance": 0.1857,
+     "pull_clv": -0.0938,
+     "close_chance": 0.1857,
+     "clv": -0.0938,
+     "close_source": "pending"
+    },
+    {
+     "match": "66c168c030f3faad3983fcadc3060009",
+     "name": "Le Mans FC v Toulouse",
+     "competition": "Ligue 1",
+     "code": "1",
+     "chance": 0.3163,
+     "odds": 3.0,
+     "won": false,
+     "score": "0-3",
+     "half": "0-0",
+     "kickoff": "2026-10-16T18:45:00+00:00",
+     "pull_chance": 0.3163,
+     "pull_clv": -0.0511,
+     "close_chance": 0.3163,
+     "clv": -0.0511,
+     "close_source": "pending"
+    },
+    {
+     "match": "53f5fe7ed0ba0fbf6345c73270e4cd00",
+     "name": "Lorient v AS Monaco",
+     "competition": "Ligue 1",
+     "code": "X",
+     "chance": 0.2746,
+     "odds": 3.425,
+     "won": false,
+     "score": "1-0",
+     "half": "0-0",
+     "kickoff": "2026-10-18T15:15:00+00:00",
+     "pull_chance": 0.2762,
+     "pull_clv": -0.054,
+     "close_chance": 0.2762,
+     "clv": -0.054,
+     "close_source": "pending"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-09T09:08:04.428097+00:00|Serie A|40",
+   "name": "Serie A",
+   "target": 40,
+   "legs": 3,
+   "chance": 0.02094087765509474,
+   "odds": 40.484,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 0,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "2f8e871a0f7f66ae22938028645e1066",
+     "name": "Genoa v Fiorentina",
+     "competition": "Serie A",
+     "code": "2",
+     "chance": 0.4179,
+     "odds": 2.32,
+     "won": false,
+     "score": "2-1",
+     "half": "2-0",
+     "kickoff": "2026-10-10T13:00:00+00:00",
+     "pull_chance": 0.4215,
+     "pull_clv": -0.0221,
+     "close_chance": 0.4074,
+     "clv": -0.0548,
+     "close_source": "close:betfair",
+     "close_odds": 2.44,
+     "xg": [
+      1.46,
+      0.82
+     ]
+    },
+    {
+     "match": "40c1bd70fee927f9bfa8901edab02b48",
+     "name": "Napoli v Frosinone",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.1859,
+     "odds": 5.0,
+     "won": false,
+     "score": "3-0",
+     "half": "2-0",
+     "kickoff": "2026-10-10T18:45:00+00:00",
+     "pull_chance": 0.1857,
+     "pull_clv": -0.0715,
+     "close_chance": 0.2146,
+     "clv": 0.073,
+     "close_source": "close:betfair",
+     "close_odds": 4.6,
+     "xg": [
+      3.12,
+      1.01
+     ]
+    },
+    {
+     "match": "7d3160040958fe21778fd5ee485666c3",
+     "name": "Frosinone v Sassuolo",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.2696,
+     "odds": 3.49,
+     "won": false,
+     "score": "4-2",
+     "half": "3-2",
+     "kickoff": "2026-10-16T18:45:00+00:00",
+     "pull_chance": 0.2506,
+     "pull_clv": -0.1254,
+     "close_chance": 0.2506,
+     "clv": -0.1254,
+     "close_source": "pending"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-09T09:08:04.428097+00:00|Top 5 leagues|50",
+   "name": "Top 5 leagues",
+   "target": 50,
+   "legs": 5,
+   "chance": 0.016856229363111166,
+   "odds": 50.124954880000004,
+   "bonus": 0.03499999999999992,
+   "landed": false,
+   "legs_won": 1,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "2f8e871a0f7f66ae22938028645e1066",
+     "name": "Genoa v Fiorentina",
+     "competition": "Serie A",
+     "code": "2",
+     "chance": 0.4179,
+     "odds": 2.32,
+     "won": false,
+     "score": "2-1",
+     "half": "2-0",
+     "kickoff": "2026-10-10T13:00:00+00:00",
+     "pull_chance": 0.4215,
+     "pull_clv": -0.0221,
+     "close_chance": 0.4074,
+     "clv": -0.0548,
+     "close_source": "close:betfair",
+     "close_odds": 2.44,
+     "xg": [
+      1.46,
+      0.82
+     ]
+    },
+    {
+     "match": "acd5bd945dd953ad1e300df5bfe696f9",
+     "name": "Coventry City v Newcastle United",
+     "competition": "Premier League",
+     "code": "2",
+     "chance": 0.462,
+     "odds": 2.09,
+     "won": false,
+     "score": "4-1",
+     "half": "1-0",
+     "kickoff": "2026-10-12T19:00:00+00:00",
+     "pull_chance": 0.4434,
+     "pull_clv": -0.0733,
+     "close_chance": 0.487,
+     "clv": 0.0178,
+     "close_source": "close:betfair",
+     "close_odds": 2.04,
+     "xg": [
+      1.43,
+      1.84
+     ]
+    },
+    {
+     "match": "3869391e3dbdcaa74153b11df56a3fe5",
+     "name": "Alavés v Atlético Madrid",
+     "competition": "La Liga",
+     "code": "2",
+     "chance": 0.5343,
+     "odds": 1.82,
+     "won": true,
+     "score": "1-2",
+     "half": "1-1",
+     "kickoff": "2026-10-10T14:15:00+00:00",
+     "pull_chance": 0.5369,
+     "pull_clv": -0.0228,
+     "close_chance": 0.5354,
+     "clv": -0.0256,
+     "close_source": "close:betfair",
+     "close_odds": 1.86,
+     "xg": [
+      1.3,
+      2.05
+     ]
+    },
+    {
+     "match": "19ee731602634e5c9e3106630e087464",
+     "name": "Deportivo La Coruña v Levante",
+     "competition": "La Liga",
+     "code": "2",
+     "chance": 0.2672,
+     "odds": 3.55,
+     "won": false,
+     "score": "1-1",
+     "half": "0-0",
+     "kickoff": "2026-10-16T19:00:00+00:00",
+     "pull_chance": 0.2642,
+     "pull_clv": -0.0621,
+     "close_chance": 0.2642,
+     "clv": -0.0621,
+     "close_source": "pending"
+    },
+    {
+     "match": "c2c64ebfc5810226f807c1920d580392",
+     "name": "AS Monaco v Toulouse",
+     "competition": "Ligue 1",
+     "code": "1",
+     "chance": 0.6117,
+     "odds": 1.6,
+     "won": false,
+     "score": "2-2",
+     "half": "2-0",
+     "kickoff": "2026-10-10T18:45:00+00:00",
+     "pull_chance": 0.5982,
+     "pull_clv": -0.0429,
+     "close_chance": 0.5805,
+     "clv": -0.0712,
+     "close_source": "close:betfair",
+     "close_odds": 1.72,
+     "xg": [
+      1.17,
+      1.43
+     ]
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|Serie A|25",
+   "name": "Serie A",
+   "target": 25,
+   "legs": 3,
+   "chance": 0.033503598779921734,
+   "odds": 25.209600000000002,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 1,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "3ea32a0aa44a5f0ef7fd088155430087",
+     "name": "Fiorentina v Como",
+     "competition": "Serie A",
+     "code": "2",
+     "chance": 0.4732,
+     "odds": 2.02,
+     "won": true,
+     "score": "1-3",
+     "half": "1-2",
+     "kickoff": "2026-10-18T13:00:00+00:00",
+     "pull_chance": 0.47,
+     "pull_clv": -0.0506,
+     "close_chance": 0.47,
+     "clv": -0.0506,
+     "close_source": "pending"
+    },
+    {
+     "match": "4c4026e2782f09d6f0ff2bde2a390513",
+     "name": "Juventus v Lazio",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.2394,
+     "odds": 3.9,
+     "won": false,
+     "score": "0-3",
+     "half": "0-1",
+     "kickoff": "2026-10-18T18:45:00+00:00",
+     "pull_chance": 0.2293,
+     "pull_clv": -0.1057,
+     "close_chance": 0.2293,
+     "clv": -0.1057,
+     "close_source": "pending"
+    },
+    {
+     "match": "ce94aca384a20f6af459366da6e1dd21",
+     "name": "Monza v Cagliari",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.2958,
+     "odds": 3.2,
+     "won": false,
+     "score": "4-0",
+     "half": "1-0",
+     "kickoff": "2026-10-19T16:30:00+00:00",
+     "pull_chance": 0.2943,
+     "pull_clv": -0.0582,
+     "close_chance": 0.2943,
+     "clv": -0.0582,
+     "close_source": "pending"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|Serie A|30",
+   "name": "Serie A",
+   "target": 30,
+   "legs": 4,
+   "chance": 0.02766479973641863,
+   "odds": 30.03264,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 1,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "7d3160040958fe21778fd5ee485666c3",
+     "name": "Frosinone v Sassuolo",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.2608,
+     "odds": 3.6,
+     "won": false,
+     "score": "4-2",
+     "half": "3-2",
+     "kickoff": "2026-10-16T18:45:00+00:00",
+     "pull_chance": 0.2506,
+     "pull_clv": -0.0978,
+     "close_chance": 0.2506,
+     "clv": -0.0978,
+     "close_source": "pending"
+    },
+    {
+     "match": "907639dade64cca45d1ab639195d201e",
+     "name": "Venezia v Napoli",
+     "competition": "Serie A",
+     "code": "2",
+     "chance": 0.585,
+     "odds": 1.65,
+     "won": false,
+     "score": "1-0",
+     "half": "0-0",
+     "kickoff": "2026-10-17T13:00:00+00:00",
+     "pull_chance": 0.5669,
+     "pull_clv": -0.0646,
+     "close_chance": 0.5669,
+     "clv": -0.0646,
+     "close_source": "pending"
+    },
+    {
+     "match": "bfefc309177723410230fee52f650315",
+     "name": "Bologna v Inter Milan",
+     "competition": "Serie A",
+     "code": "2",
+     "chance": 0.6131,
+     "odds": 1.58,
+     "won": true,
+     "score": "1-3",
+     "half": "1-1",
+     "kickoff": "2026-10-17T16:00:00+00:00",
+     "pull_chance": 0.6234,
+     "pull_clv": -0.015,
+     "close_chance": 0.6234,
+     "clv": -0.015,
+     "close_source": "pending"
+    },
+    {
+     "match": "ce94aca384a20f6af459366da6e1dd21",
+     "name": "Monza v Cagliari",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.2958,
+     "odds": 3.2,
+     "won": false,
+     "score": "4-0",
+     "half": "1-0",
+     "kickoff": "2026-10-19T16:30:00+00:00",
+     "pull_chance": 0.2943,
+     "pull_clv": -0.0582,
+     "close_chance": 0.2943,
+     "clv": -0.0582,
+     "close_source": "pending"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|Serie A|40",
+   "name": "Serie A",
+   "target": 40,
+   "legs": 3,
+   "chance": 0.020608423378510286,
+   "odds": 40.016,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 0,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "bfefc309177723410230fee52f650315",
+     "name": "Bologna v Inter Milan",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.2259,
+     "odds": 4.1,
+     "won": false,
+     "score": "1-3",
+     "half": "1-1",
+     "kickoff": "2026-10-17T16:00:00+00:00",
+     "pull_chance": 0.2229,
+     "pull_clv": -0.0861,
+     "close_chance": 0.2229,
+     "clv": -0.0861,
+     "close_source": "pending"
+    },
+    {
+     "match": "ce94aca384a20f6af459366da6e1dd21",
+     "name": "Monza v Cagliari",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.2958,
+     "odds": 3.2,
+     "won": false,
+     "score": "4-0",
+     "half": "1-0",
+     "kickoff": "2026-10-19T16:30:00+00:00",
+     "pull_chance": 0.2943,
+     "pull_clv": -0.0582,
+     "close_chance": 0.2943,
+     "clv": -0.0582,
+     "close_source": "pending"
+    },
+    {
+     "match": "07014d9adc65ca39710bd9f0c7c0d3f0",
+     "name": "Parma v Torino",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.3084,
+     "odds": 3.05,
+     "won": false,
+     "score": "0-3",
+     "half": "0-2",
+     "kickoff": "2026-10-19T18:45:00+00:00",
+     "pull_chance": 0.3093,
+     "pull_clv": -0.0566,
+     "close_chance": 0.3093,
+     "clv": -0.0566,
+     "close_source": "pending"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|Serie A|50",
+   "name": "Serie A",
+   "target": 50,
+   "legs": 4,
+   "chance": 0.0160364287460663,
+   "odds": 50.4504,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 1,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "907639dade64cca45d1ab639195d201e",
+     "name": "Venezia v Napoli",
+     "competition": "Serie A",
+     "code": "2",
+     "chance": 0.585,
+     "odds": 1.65,
+     "won": false,
+     "score": "1-0",
+     "half": "0-0",
+     "kickoff": "2026-10-17T13:00:00+00:00",
+     "pull_chance": 0.5669,
+     "pull_clv": -0.0646,
+     "close_chance": 0.5669,
+     "clv": -0.0646,
+     "close_source": "pending"
+    },
+    {
+     "match": "4c4026e2782f09d6f0ff2bde2a390513",
+     "name": "Juventus v Lazio",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.2394,
+     "odds": 3.9,
+     "won": false,
+     "score": "0-3",
+     "half": "0-1",
+     "kickoff": "2026-10-18T18:45:00+00:00",
+     "pull_chance": 0.2293,
+     "pull_clv": -0.1057,
+     "close_chance": 0.2293,
+     "clv": -0.1057,
+     "close_source": "pending"
+    },
+    {
+     "match": "ce94aca384a20f6af459366da6e1dd21",
+     "name": "Monza v Cagliari",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.2958,
+     "odds": 3.2,
+     "won": false,
+     "score": "4-0",
+     "half": "1-0",
+     "kickoff": "2026-10-19T16:30:00+00:00",
+     "pull_chance": 0.2943,
+     "pull_clv": -0.0582,
+     "close_chance": 0.2943,
+     "clv": -0.0582,
+     "close_source": "pending"
+    },
+    {
+     "match": "07014d9adc65ca39710bd9f0c7c0d3f0",
+     "name": "Parma v Torino",
+     "competition": "Serie A",
+     "code": "2",
+     "chance": 0.3872,
+     "odds": 2.45,
+     "won": true,
+     "score": "0-3",
+     "half": "0-2",
+     "kickoff": "2026-10-19T18:45:00+00:00",
+     "pull_chance": 0.3957,
+     "pull_clv": -0.0305,
+     "close_chance": 0.3957,
+     "clv": -0.0305,
+     "close_source": "pending"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|Top 5 leagues|25",
+   "name": "Top 5 leagues",
+   "target": 25,
+   "legs": 3,
+   "chance": 0.034132995812193805,
+   "odds": 25.023999999999997,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 1,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "ce94aca384a20f6af459366da6e1dd21",
+     "name": "Monza v Cagliari",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.2958,
+     "odds": 3.2,
+     "won": false,
+     "score": "4-0",
+     "half": "1-0",
+     "kickoff": "2026-10-19T16:30:00+00:00",
+     "pull_chance": 0.2943,
+     "pull_clv": -0.0582,
+     "close_chance": 0.2943,
+     "clv": -0.0582,
+     "close_source": "pending"
+    },
+    {
+     "match": "66c168c030f3faad3983fcadc3060009",
+     "name": "Le Mans FC v Toulouse",
+     "competition": "Ligue 1",
+     "code": "2",
+     "chance": 0.416,
+     "odds": 2.3,
+     "won": true,
+     "score": "0-3",
+     "half": "0-0",
+     "kickoff": "2026-10-16T18:45:00+00:00",
+     "pull_chance": 0.4172,
+     "pull_clv": -0.0404,
+     "close_chance": 0.4172,
+     "clv": -0.0404,
+     "close_source": "pending"
+    },
+    {
+     "match": "27f7222d2abde93fc6e8d17b5b05b272",
+     "name": "Paris FC v Rennes",
+     "competition": "Ligue 1",
+     "code": "X",
+     "chance": 0.2774,
+     "odds": 3.4,
+     "won": false,
+     "score": "4-3",
+     "half": "2-1",
+     "kickoff": "2026-10-18T15:15:00+00:00",
+     "pull_chance": 0.2665,
+     "pull_clv": -0.0939,
+     "close_chance": 0.2665,
+     "clv": -0.0939,
+     "close_source": "pending"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|Top 5 leagues|30",
+   "name": "Top 5 leagues",
+   "target": 30,
+   "legs": 4,
+   "chance": 0.028082036557473683,
+   "odds": 30.005164800000006,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 3,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "ce94aca384a20f6af459366da6e1dd21",
+     "name": "Monza v Cagliari",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.2958,
+     "odds": 3.2,
+     "won": false,
+     "score": "4-0",
+     "half": "1-0",
+     "kickoff": "2026-10-19T16:30:00+00:00",
+     "pull_chance": 0.2943,
+     "pull_clv": -0.0582,
+     "close_chance": 0.2943,
+     "clv": -0.0582,
+     "close_source": "pending"
+    },
+    {
+     "match": "9fc08b390a49c4434f7cf631a0bb88fb",
+     "name": "Brighton and Hove Albion v Crystal Palace",
+     "competition": "Premier League",
+     "code": "1",
+     "chance": 0.6241,
+     "odds": 1.56,
+     "won": true,
+     "score": "5-0",
+     "half": "3-0",
+     "kickoff": "2026-10-18T13:00:00+00:00",
+     "pull_chance": 0.6593,
+     "pull_clv": 0.0285,
+     "close_chance": 0.6593,
+     "clv": 0.0285,
+     "close_source": "pending"
+    },
+    {
+     "match": "676b3b0b609e9cf565da450786618d26",
+     "name": "Leeds United v Manchester United",
+     "competition": "Premier League",
+     "code": "X",
+     "chance": 0.2605,
+     "odds": 3.6100000000000003,
+     "won": true,
+     "score": "1-1",
+     "half": "0-1",
+     "kickoff": "2026-10-18T13:00:00+00:00",
+     "pull_chance": 0.2753,
+     "pull_clv": -0.0062,
+     "close_chance": 0.2753,
+     "clv": -0.0062,
+     "close_source": "pending"
+    },
+    {
+     "match": "471f891b1f6516a864ad94c8eb649f5e",
+     "name": "Lyon v Nice",
+     "competition": "Ligue 1",
+     "code": "1",
+     "chance": 0.5838,
+     "odds": 1.665,
+     "won": true,
+     "score": "2-1",
+     "half": "2-1",
+     "kickoff": "2026-10-18T18:45:00+00:00",
+     "pull_chance": 0.516,
+     "pull_clv": -0.1409,
+     "close_chance": 0.516,
+     "clv": -0.1409,
+     "close_source": "pending"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|Top 5 leagues|40",
+   "name": "Top 5 leagues",
+   "target": 40,
+   "legs": 3,
+   "chance": 0.02084123067478084,
+   "odds": 40.032000000000004,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 1,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "ce94aca384a20f6af459366da6e1dd21",
+     "name": "Monza v Cagliari",
+     "competition": "Serie A",
+     "code": "X",
+     "chance": 0.2958,
+     "odds": 3.2,
+     "won": false,
+     "score": "4-0",
+     "half": "1-0",
+     "kickoff": "2026-10-19T16:30:00+00:00",
+     "pull_chance": 0.2943,
+     "pull_clv": -0.0582,
+     "close_chance": 0.2943,
+     "clv": -0.0582,
+     "close_source": "pending"
+    },
+    {
+     "match": "19ee731602634e5c9e3106630e087464",
+     "name": "Deportivo La Coruña v Levante",
+     "competition": "La Liga",
+     "code": "X",
+     "chance": 0.2692,
+     "odds": 3.475,
+     "won": true,
+     "score": "1-1",
+     "half": "0-0",
+     "kickoff": "2026-10-16T19:00:00+00:00",
+     "pull_chance": 0.2728,
+     "pull_clv": -0.052,
+     "close_chance": 0.2728,
+     "clv": -0.052,
+     "close_source": "pending"
+    },
+    {
+     "match": "1f566f17c50fe5162724ec2863d2207b",
+     "name": "CA Osasuna v Real Racing Club de Santander",
+     "competition": "La Liga",
+     "code": "X",
+     "chance": 0.2617,
+     "odds": 3.6,
+     "won": false,
+     "score": "2-0",
+     "half": "1-0",
+     "kickoff": "2026-10-18T12:00:00+00:00",
+     "pull_chance": 0.2568,
+     "pull_clv": -0.0755,
+     "close_chance": 0.2568,
+     "clv": -0.0755,
+     "close_source": "pending"
+    }
+   ]
+  },
+  {
+   "key": "2026-10-13T09:08:33.575447+00:00|Top 5 leagues|50",
+   "name": "Top 5 leagues",
+   "target": 50,
+   "legs": 3,
+   "chance": 0.016452235319604994,
+   "odds": 50.184,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 0,
+   "graded_at": "2026-10-20T08:21:22.269447+00:00",
+   "leg_results": [
+    {
+     "match": "1f566f17c50fe5162724ec2863d2207b",
+     "name": "CA Osasuna v Real Racing Club de Santander",
+     "competition": "La Liga",
+     "code": "X",
+     "chance": 0.2617,
+     "odds": 3.6,
+     "won": false,
+     "score": "2-0",
+     "half": "1-0",
+     "kickoff": "2026-10-18T12:00:00+00:00",
+     "pull_chance": 0.2568,
+     "pull_clv": -0.0755,
+     "close_chance": 0.2568,
+     "clv": -0.0755,
+     "close_source": "pending"
+    },
+    {
+     "match": "27f7222d2abde93fc6e8d17b5b05b272",
+     "name": "Paris FC v Rennes",
+     "competition": "Ligue 1",
+     "code": "X",
+     "chance": 0.2774,
+     "odds": 3.4,
+     "won": false,
+     "score": "4-3",
+     "half": "2-1",
+     "kickoff": "2026-10-18T15:15:00+00:00",
+     "pull_chance": 0.2665,
+     "pull_clv": -0.0939,
+     "close_chance": 0.2665,
+     "clv": -0.0939,
+     "close_source": "pending"
+    },
+    {
+     "match": "471f891b1f6516a864ad94c8eb649f5e",
+     "name": "Lyon v Nice",
+     "competition": "Ligue 1",
+     "code": "X",
+     "chance": 0.2267,
+     "odds": 4.1,
+     "won": false,
+     "score": "2-1",
+     "half": "2-1",
+     "kickoff": "2026-10-18T18:45:00+00:00",
+     "pull_chance": 0.2453,
+     "pull_clv": 0.0057,
+     "close_chance": 0.2453,
+     "clv": 0.0057,
+     "close_source": "pending"
+    }
+   ]
   }
  ],
  "timelines": {
@@ -6152,6 +7488,579 @@
      61
     ]
    ]
+  },
+  "66c168c030f3faad3983fcadc3060009": {
+   "ko": "2026-10-16T18:45:00+00:00",
+   "comp": "Ligue 1",
+   "ft": [
+    0,
+    3
+   ],
+   "goals": [
+    [
+     "a",
+     46
+    ],
+    [
+     "a",
+     59
+    ],
+    [
+     "a",
+     87
+    ]
+   ],
+   "reds": []
+  },
+  "f3034246520a2ee4ff0ac0d5074966f8": {
+   "ko": "2026-10-17T15:15:00+00:00",
+   "comp": "Ligue 1",
+   "ft": [
+    1,
+    3
+   ],
+   "goals": [
+    [
+     "h",
+     17
+    ],
+    [
+     "a",
+     77
+    ],
+    [
+     "a",
+     85
+    ],
+    [
+     "a",
+     90
+    ]
+   ],
+   "reds": []
+  },
+  "b077aa049133c0358bcd643bfee48da3": {
+   "ko": "2026-10-17T18:45:00+00:00",
+   "comp": "Ligue 1",
+   "ft": [
+    1,
+    3
+   ],
+   "goals": [
+    [
+     "a",
+     13
+    ],
+    [
+     "h",
+     26
+    ],
+    [
+     "a",
+     45
+    ],
+    [
+     "a",
+     55
+    ]
+   ],
+   "reds": []
+  },
+  "53f5fe7ed0ba0fbf6345c73270e4cd00": {
+   "ko": "2026-10-18T15:15:00+00:00",
+   "comp": "Ligue 1",
+   "ft": [
+    1,
+    0
+   ],
+   "goals": [
+    [
+     "h",
+     61
+    ]
+   ],
+   "reds": []
+  },
+  "471f891b1f6516a864ad94c8eb649f5e": {
+   "ko": "2026-10-18T18:45:00+00:00",
+   "comp": "Ligue 1",
+   "ft": [
+    2,
+    1
+   ],
+   "goals": [
+    [
+     "a",
+     18
+    ],
+    [
+     "h",
+     32
+    ],
+    [
+     "h",
+     36
+    ]
+   ],
+   "reds": [
+    [
+     "h",
+     70
+    ]
+   ]
+  },
+  "27f7222d2abde93fc6e8d17b5b05b272": {
+   "ko": "2026-10-18T15:15:00+00:00",
+   "comp": "Ligue 1",
+   "ft": [
+    4,
+    3
+   ],
+   "goals": [
+    [
+     "h",
+     14
+    ],
+    [
+     "a",
+     29
+    ],
+    [
+     "h",
+     45
+    ],
+    [
+     "a",
+     74
+    ],
+    [
+     "h",
+     76
+    ],
+    [
+     "a",
+     88
+    ],
+    [
+     "h",
+     90
+    ]
+   ],
+   "reds": []
+  },
+  "7d3160040958fe21778fd5ee485666c3": {
+   "ko": "2026-10-16T18:45:00+00:00",
+   "comp": "Serie A",
+   "ft": [
+    4,
+    2
+   ],
+   "goals": [
+    [
+     "h",
+     9
+    ],
+    [
+     "a",
+     15
+    ],
+    [
+     "h",
+     26
+    ],
+    [
+     "h",
+     30
+    ],
+    [
+     "a",
+     37
+    ],
+    [
+     "h",
+     57
+    ]
+   ],
+   "reds": []
+  },
+  "907639dade64cca45d1ab639195d201e": {
+   "ko": "2026-10-17T13:00:00+00:00",
+   "comp": "Serie A",
+   "ft": [
+    1,
+    0
+   ],
+   "goals": [
+    [
+     "h",
+     49
+    ]
+   ],
+   "reds": []
+  },
+  "18d478f469da3bcc654dd4555b85c7e3": {
+   "ko": "2026-10-17T18:45:00+00:00",
+   "comp": "Serie A",
+   "ft": [
+    2,
+    0
+   ],
+   "goals": [
+    [
+     "h",
+     50
+    ],
+    [
+     "h",
+     68
+    ]
+   ],
+   "reds": []
+  },
+  "367da93aa21a1e13eeafb94fd2263c75": {
+   "ko": "2026-10-18T10:30:00+00:00",
+   "comp": "Serie A",
+   "ft": [
+    0,
+    3
+   ],
+   "goals": [
+    [
+     "a",
+     11
+    ],
+    [
+     "a",
+     33
+    ],
+    [
+     "a",
+     86
+    ]
+   ],
+   "reds": []
+  },
+  "3ea32a0aa44a5f0ef7fd088155430087": {
+   "ko": "2026-10-18T13:00:00+00:00",
+   "comp": "Serie A",
+   "ft": [
+    1,
+    3
+   ],
+   "goals": [
+    [
+     "a",
+     32
+    ],
+    [
+     "a",
+     36
+    ],
+    [
+     "h",
+     42
+    ],
+    [
+     "a",
+     56
+    ]
+   ],
+   "reds": []
+  },
+  "f9403dd597edbfaa73abdc974e55344c": {
+   "ko": "2026-10-18T16:00:00+00:00",
+   "comp": "Serie A",
+   "ft": [
+    3,
+    2
+   ],
+   "goals": [
+    [
+     "h",
+     24
+    ],
+    [
+     "h",
+     43
+    ],
+    [
+     "h",
+     57
+    ],
+    [
+     "a",
+     66
+    ],
+    [
+     "a",
+     81
+    ]
+   ],
+   "reds": []
+  },
+  "4c4026e2782f09d6f0ff2bde2a390513": {
+   "ko": "2026-10-18T18:45:00+00:00",
+   "comp": "Serie A",
+   "ft": [
+    0,
+    3
+   ],
+   "goals": [
+    [
+     "a",
+     37
+    ],
+    [
+     "a",
+     66
+    ],
+    [
+     "a",
+     89
+    ]
+   ],
+   "reds": []
+  },
+  "ce94aca384a20f6af459366da6e1dd21": {
+   "ko": "2026-10-19T16:30:00+00:00",
+   "comp": "Serie A",
+   "ft": [
+    4,
+    0
+   ],
+   "goals": [
+    [
+     "h",
+     39
+    ],
+    [
+     "h",
+     47
+    ],
+    [
+     "h",
+     66
+    ],
+    [
+     "h",
+     79
+    ]
+   ],
+   "reds": []
+  },
+  "07014d9adc65ca39710bd9f0c7c0d3f0": {
+   "ko": "2026-10-19T18:45:00+00:00",
+   "comp": "Serie A",
+   "ft": [
+    0,
+    3
+   ],
+   "goals": [
+    [
+     "a",
+     4
+    ],
+    [
+     "a",
+     24
+    ],
+    [
+     "a",
+     69
+    ]
+   ],
+   "reds": []
+  },
+  "bfefc309177723410230fee52f650315": {
+   "ko": "2026-10-17T16:00:00+00:00",
+   "comp": "Serie A",
+   "ft": [
+    1,
+    3
+   ],
+   "goals": [
+    [
+     "h",
+     10
+    ],
+    [
+     "a",
+     44
+    ],
+    [
+     "a",
+     69
+    ],
+    [
+     "a",
+     83
+    ]
+   ],
+   "reds": []
+  },
+  "19ee731602634e5c9e3106630e087464": {
+   "ko": "2026-10-16T19:00:00+00:00",
+   "comp": "La Liga",
+   "ft": [
+    1,
+    1
+   ],
+   "goals": [
+    [
+     "h",
+     63
+    ],
+    [
+     "a",
+     82
+    ]
+   ],
+   "reds": []
+  },
+  "6436925dd15916d7041ba32b60000d48": {
+   "ko": "2026-10-17T12:00:00+00:00",
+   "comp": "La Liga",
+   "ft": [
+    0,
+    1
+   ],
+   "goals": [
+    [
+     "a",
+     89
+    ]
+   ],
+   "reds": []
+  },
+  "f00cd1ea41fa39149729d14ebc07aa6c": {
+   "ko": "2026-10-17T19:00:00+00:00",
+   "comp": "La Liga",
+   "ft": [
+    0,
+    0
+   ],
+   "goals": [],
+   "reds": []
+  },
+  "1f566f17c50fe5162724ec2863d2207b": {
+   "ko": "2026-10-18T12:00:00+00:00",
+   "comp": "La Liga",
+   "ft": [
+    2,
+    0
+   ],
+   "goals": [
+    [
+     "h",
+     9
+    ],
+    [
+     "h",
+     88
+    ]
+   ],
+   "reds": []
+  },
+  "764e6513cb3f348881503df70ccb90e0": {
+   "ko": "2026-10-17T11:30:00+00:00",
+   "comp": "Premier League",
+   "ft": [
+    0,
+    2
+   ],
+   "goals": [
+    [
+     "a",
+     46
+    ],
+    [
+     "a",
+     90
+    ]
+   ],
+   "reds": []
+  },
+  "8f1945e7272bc7e89016439f5ab321c7": {
+   "ko": "2026-10-17T14:00:00+00:00",
+   "comp": "Premier League",
+   "ft": [
+    1,
+    2
+   ],
+   "goals": [
+    [
+     "h",
+     44
+    ],
+    [
+     "a",
+     62
+    ],
+    [
+     "a",
+     70
+    ]
+   ],
+   "reds": [
+    [
+     "h",
+     45
+    ],
+    [
+     "h",
+     90
+    ]
+   ]
+  },
+  "9fc08b390a49c4434f7cf631a0bb88fb": {
+   "ko": "2026-10-18T13:00:00+00:00",
+   "comp": "Premier League",
+   "ft": [
+    5,
+    0
+   ],
+   "goals": [
+    [
+     "h",
+     4
+    ],
+    [
+     "h",
+     7
+    ],
+    [
+     "h",
+     10
+    ],
+    [
+     "h",
+     49
+    ],
+    [
+     "h",
+     84
+    ]
+   ],
+   "reds": []
+  },
+  "676b3b0b609e9cf565da450786618d26": {
+   "ko": "2026-10-18T13:00:00+00:00",
+   "comp": "Premier League",
+   "ft": [
+    1,
+    1
+   ],
+   "goals": [
+    [
+     "a",
+     35
+    ],
+    [
+     "h",
+     51
+    ]
+   ],
+   "reds": []
   }
  }
 }
