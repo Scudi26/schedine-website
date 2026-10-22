@@ -45568,7 +45568,7 @@
   }
  ],
  "results": {
-  "at": "2026-10-21T09:23:02.713689+00:00",
+  "at": "2026-10-22T09:23:49.434371+00:00",
   "done": {
    "00625830dd764a06f12f78c0d0a72ff8": [
     5,
@@ -45576,6 +45576,13 @@
     2,
     0,
     "2026-10-20T19:00:00+00:00"
+   ],
+   "015d619d774655965e17ba67a025634e": [
+    2,
+    4,
+    2,
+    2,
+    "2026-10-21T16:45:00+00:00"
    ],
    "0224e82bd16812baab3052eb13db3b8d": [
     0,
@@ -45590,6 +45597,13 @@
     1,
     0,
     "2026-10-17T13:00:00+00:00"
+   ],
+   "0599bf0c4147293ec40e4e4f894461c2": [
+    1,
+    0,
+    0,
+    0,
+    "2026-10-21T19:00:00+00:00"
    ],
    "0686ce05e8489734fd66e5ee97fbbfa2": [
     0,
@@ -45913,12 +45927,26 @@
     1,
     "2026-10-18T11:30:00+00:00"
    ],
+   "2ebbccdeea2dab59717d5c3d802c3fed": [
+    2,
+    2,
+    1,
+    1,
+    "2026-10-21T19:00:00+00:00"
+   ],
    "30af1081a1518dbc0164323134511308": [
     2,
     0,
     1,
     0,
     "2026-10-18T11:30:00+00:00"
+   ],
+   "30f27b8e9719e9ae71c25b4c8aa265f7": [
+    4,
+    1,
+    1,
+    0,
+    "2026-10-21T19:00:00+00:00"
    ],
    "31a5e341a643cd6612c66da770a6f236": [
     0,
@@ -46599,6 +46627,13 @@
     0,
     "2026-10-20T18:45:00+00:00"
    ],
+   "8af9379136075f45b290208b35a706c8": [
+    4,
+    1,
+    1,
+    0,
+    "2026-10-21T16:45:00+00:00"
+   ],
    "8b4173a5e68ffca9cca9acd19def2e1b": [
     0,
     1,
@@ -46619,6 +46654,13 @@
     1,
     0,
     "2026-10-17T14:00:00+00:00"
+   ],
+   "8fdcaee14b3e8966e09d468a0b17ce18": [
+    2,
+    3,
+    1,
+    1,
+    "2026-10-21T19:00:00+00:00"
    ],
    "907639dade64cca45d1ab639195d201e": [
     1,
@@ -46725,6 +46767,13 @@
     0,
     "2026-10-13T18:45:00+00:00"
    ],
+   "a362cccad837f1ffae61ff43a3536688": [
+    3,
+    1,
+    2,
+    0,
+    "2026-10-21T18:00:00+00:00"
+   ],
    "a46c19cc6ee20067da4e68356f247bfb": [
     2,
     2,
@@ -46745,6 +46794,13 @@
     0,
     1,
     "2026-10-15T19:00:00+00:00"
+   ],
+   "a889456204e8ef1b64294efbee8dc3e5": [
+    1,
+    0,
+    0,
+    0,
+    "2026-10-21T19:00:00+00:00"
    ],
    "a9c22e08b395ee5753c8a65bc0eb97cf": [
     2,
@@ -46998,6 +47054,13 @@
     1,
     "2026-10-17T16:30:00+00:00"
    ],
+   "d306a78e402e5f505e8644fdf3f75dcd": [
+    3,
+    0,
+    1,
+    0,
+    "2026-10-21T19:00:00+00:00"
+   ],
    "d3113d05007ddfba3077a7fafbef05c4": [
     0,
     3,
@@ -47011,6 +47074,13 @@
     1,
     0,
     "2026-10-18T13:00:00+00:00"
+   ],
+   "d3b3e714b6af9e5430e3030ed639e6dd": [
+    3,
+    1,
+    2,
+    0,
+    "2026-10-21T19:00:00+00:00"
    ],
    "d4ef112438afa4c2cdbbfc9376a009c9": [
     3,
@@ -47208,6 +47278,13 @@
     0,
     "2026-10-17T15:15:00+00:00"
    ],
+   "f5905225efa837b0dc89b7dcdbb6c625": [
+    1,
+    0,
+    0,
+    0,
+    "2026-10-21T19:00:00+00:00"
+   ],
    "f5d80319320a5b57f7e9db975b5436bf": [
     3,
     1,
@@ -47308,17 +47385,53 @@
    ]
   },
   "watch": {
-   "015d619d774655965e17ba67a025634e": [
-    "Champions League",
-    "Lille",
-    "Galatasaray",
-    "2026-10-21T16:45:00+00:00"
+   "0382a9faef0bb8df1bcc436536cffb05": [
+    "Premier League",
+    "Chelsea",
+    "Tottenham Hotspur",
+    "2026-10-24T16:30:00+00:00"
    ],
-   "0599bf0c4147293ec40e4e4f894461c2": [
-    "League One",
-    "Reading",
-    "Leyton Orient",
-    "2026-10-21T19:00:00+00:00"
+   "04bb232a2940fcf03abf05b308e27577": [
+    "Bundesliga",
+    "Augsburg",
+    "Union Berlin",
+    "2026-10-24T13:30:00+00:00"
+   ],
+   "04dac5e98ab5fc5564980542ca3fc746": [
+    "Bundesliga",
+    "RB Leipzig",
+    "Elversberg",
+    "2026-10-24T13:30:00+00:00"
+   ],
+   "08ffd99b2249c81d8a7410598f32b9b0": [
+    "Serie A",
+    "Como",
+    "Sassuolo",
+    "2026-10-24T13:00:00+00:00"
+   ],
+   "09dc313803566efcd8ca5a5245202591": [
+    "Austrian Bundesliga",
+    "Rapid Wien",
+    "Austria Lustenau",
+    "2026-10-24T17:30:00+00:00"
+   ],
+   "0b4894e9fb123ef3045269f97e339eba": [
+    "Serie A",
+    "Napoli",
+    "AS Roma",
+    "2026-10-24T16:00:00+00:00"
+   ],
+   "0b4ff381f91d622a9204399080535072": [
+    "Championship",
+    "Wolverhampton Wanderers",
+    "Watford",
+    "2026-10-24T14:00:00+00:00"
+   ],
+   "0bbce95e5764e706e6c428bb52dc5536": [
+    "Ligue 1",
+    "Toulouse",
+    "Troyes",
+    "2026-10-24T15:15:00+00:00"
    ],
    "0c104f64573962dd1a690f53ba969caa": [
     "Europa League",
@@ -47326,11 +47439,35 @@
     "AZ Alkmaar",
     "2026-10-22T16:45:00+00:00"
    ],
+   "0d014d00f73c1358dea3658a37df2e39": [
+    "Ligue 2",
+    "Montpellier",
+    "Red Star",
+    "2026-10-24T12:00:00+00:00"
+   ],
+   "0dae715cc56fe201f9e667917c126691": [
+    "La Liga",
+    "Valencia",
+    "Villarreal",
+    "2026-10-24T16:30:00+00:00"
+   ],
+   "0fbb2626ed9534b9dcf21d16925f9bd7": [
+    "Premier League",
+    "Coventry City",
+    "Fulham",
+    "2026-10-24T14:00:00+00:00"
+   ],
    "124c70f8f3248a845bdb983a54e74720": [
     "Serie A",
     "Torino",
     "Monza",
     "2026-10-23T18:45:00+00:00"
+   ],
+   "12c9efa353bb65bb300866cd78a9b101": [
+    "La Liga 2",
+    "Córdoba",
+    "SD Eibar",
+    "2026-10-24T12:00:00+00:00"
    ],
    "13c0a92ee5159d2f1d2e0368811c9421": [
     "Europa League",
@@ -47350,23 +47487,35 @@
     "Hartberg",
     "2026-10-16T17:30:00+00:00"
    ],
+   "255686b0c83c233efdd58c5f3068c185": [
+    "Serie B",
+    "Südtirol",
+    "Sampdoria",
+    "2026-10-24T13:00:00+00:00"
+   ],
+   "2678492461fbb5c2865e8be3389c0e70": [
+    "Belgian Pro League",
+    "Leuven",
+    "Lommel SK",
+    "2026-10-24T16:15:00+00:00"
+   ],
+   "2a9e480cfec16c02519cb7cddf1172d3": [
+    "Greek Super League",
+    "Iraklis FC",
+    "AE Kifisia FC",
+    "2026-10-24T16:00:00+00:00"
+   ],
    "2aaa3f2dadf2de70597d93754542635e": [
     "Eredivisie",
     "Go Ahead Eagles",
     "SC Telstar",
     "2026-10-23T18:00:00+00:00"
    ],
-   "2ebbccdeea2dab59717d5c3d802c3fed": [
-    "Champions League",
-    "Bayern Munich",
-    "Arsenal",
-    "2026-10-21T19:00:00+00:00"
-   ],
-   "30f27b8e9719e9ae71c25b4c8aa265f7": [
-    "Champions League",
-    "Real Madrid",
-    "RB Leipzig",
-    "2026-10-21T19:00:00+00:00"
+   "2fdd5b6eaa94bcdf2f61444eef54b645": [
+    "Primeira Liga",
+    "Gil Vicente",
+    "FC Porto",
+    "2026-10-24T19:30:00+00:00"
    ],
    "31593142c4077b2efdb19f5ce52c2972": [
     "Conference League",
@@ -47380,11 +47529,35 @@
     "PFC CSKA Sofia",
     "2026-10-22T16:45:00+00:00"
    ],
+   "35338730dd2de8ae05fc62d9d314e05b": [
+    "Championship",
+    "Lincoln City",
+    "Burnley",
+    "2026-10-24T14:00:00+00:00"
+   ],
    "35497c9395eb0c0d721e8af2c34bacbc": [
     "Danish Superliga",
     "FC Copenhagen",
     "AGF Aarhus",
     "2026-10-18T16:00:00+00:00"
+   ],
+   "35a5ac1fb9cd77d3a814f13b7e6fda8b": [
+    "Greek Super League",
+    "AEK Athens",
+    "Panetolikos Agrinio",
+    "2026-10-24T17:00:00+00:00"
+   ],
+   "3768f51852c54237b7ac7d4d76df7167": [
+    "League One",
+    "Stevenage",
+    "Milton Keynes Dons",
+    "2026-10-24T14:00:00+00:00"
+   ],
+   "37b2e2ce6ac958b456f8b82543199993": [
+    "Eredivisie",
+    "ADO Den Haag",
+    "Heerenveen",
+    "2026-10-24T19:00:00+00:00"
    ],
    "382e017f27a6fbffbc48f736ca1680f2": [
     "Europa League",
@@ -47392,11 +47565,41 @@
     "Hapoel Be'er Sheva",
     "2026-10-22T16:45:00+00:00"
    ],
+   "3df8b7b32387782e62875983921a9fd7": [
+    "Belgian Pro League",
+    "RAAL La Louvière",
+    "SV Zulte-Waregem",
+    "2026-10-24T18:45:00+00:00"
+   ],
+   "3ed4d1e775910625c50518a384e9c547": [
+    "Bundesliga",
+    "Borussia Dortmund",
+    "Eintracht Frankfurt",
+    "2026-10-24T16:30:00+00:00"
+   ],
+   "3ed7a9307111bc1128b45bcd285b3205": [
+    "Belgian Pro League",
+    "Westerlo",
+    "SK Beveren",
+    "2026-10-24T18:45:00+00:00"
+   ],
+   "3f752f1b9f725906b91ae5b699705cca": [
+    "Primeira Liga",
+    "Alverca",
+    "Arouca",
+    "2026-10-24T17:00:00+00:00"
+   ],
    "403cbd7b75159c7d75a0988bd6d602b0": [
     "Ligue 2",
     "USL Dunkerque",
     "Metz",
     "2026-10-23T18:00:00+00:00"
+   ],
+   "40c73eacfe39333531ece107096a26f5": [
+    "Austrian Bundesliga",
+    "WSG Tirol",
+    "Grazer AK",
+    "2026-10-24T15:00:00+00:00"
    ],
    "410fd021774146ae969af3713990ed87": [
     "Europa League",
@@ -47410,11 +47613,35 @@
     "Middlesbrough",
     "2026-10-23T19:00:00+00:00"
    ],
+   "48ff496c5b9ad78f94388b4b86605144": [
+    "Championship",
+    "Queens Park Rangers",
+    "Swansea City",
+    "2026-10-24T14:00:00+00:00"
+   ],
    "4960e19f7f68f29919f7cbf1ca879dce": [
     "Conference League",
     "Inter Club d'Escaldes",
     "Universitatea Craiova",
     "2026-10-22T16:45:00+00:00"
+   ],
+   "4c825bab95f88ab62ebb47ffe4f0680a": [
+    "League One",
+    "Blackpool",
+    "Mansfield Town",
+    "2026-10-24T14:00:00+00:00"
+   ],
+   "4d1ed27d1857507038301436f9f3db98": [
+    "2. Bundesliga",
+    "Hertha Berlin",
+    "Arminia Bielefeld",
+    "2026-10-24T11:00:00+00:00"
+   ],
+   "4e5820453145833132980b8d190998c7": [
+    "Bundesliga",
+    "FSV Mainz 05",
+    "Werder Bremen",
+    "2026-10-24T13:30:00+00:00"
    ],
    "4e761167a147b5282b086d0f801819d3": [
     "Europa League",
@@ -47422,17 +47649,41 @@
     "Torreense",
     "2026-10-22T16:45:00+00:00"
    ],
+   "4edf31eae6f0c764186d3d537a80787c": [
+    "Greek Super League",
+    "Asteras Tripolis",
+    "Levadiakos",
+    "2026-10-24T16:30:00+00:00"
+   ],
+   "521959853c7567aee403433718c0d82a": [
+    "League One",
+    "Cambridge United",
+    "Plymouth Argyle",
+    "2026-10-24T14:00:00+00:00"
+   ],
    "5290ae078657c841a4e1d4ebb626825a": [
     "Europa League",
     "Olympiakos Piraeus",
     "Sparta Prague",
     "2026-10-22T19:00:00+00:00"
    ],
+   "5361a46399319e5c40d77e1b1e1c5933": [
+    "Primeira Liga",
+    "CF Estrela",
+    "Casa Pia",
+    "2026-10-24T14:30:00+00:00"
+   ],
    "53fd1bfc16dfafce5f71d4c4da8a1261": [
     "Serie B",
     "Empoli",
     "Vicenza",
     "2026-10-23T18:30:00+00:00"
+   ],
+   "5557e89c042a0053a5899e977dd3e403": [
+    "La Liga 2",
+    "Girona FC",
+    "Celta Fortuna",
+    "2026-10-24T16:30:00+00:00"
    ],
    "573ca8b5bb0abdb338c4004d610b1824": [
     "Europa League",
@@ -47452,6 +47703,18 @@
     "Brondby IF",
     "2026-10-23T17:00:00+00:00"
    ],
+   "5960b1b6c20acfd78e78764fed47d505": [
+    "La Liga",
+    "Real Racing Club de Santander",
+    "Espanyol",
+    "2026-10-24T14:15:00+00:00"
+   ],
+   "60d0f45831035c374992df8ca58ca380": [
+    "Championship",
+    "Cardiff City",
+    "Birmingham City",
+    "2026-10-24T14:00:00+00:00"
+   ],
    "618df9a8c3b34ce0ec2c309deccb92c8": [
     "2. Bundesliga",
     "VfL Bochum",
@@ -47470,11 +47733,29 @@
     "Hearts",
     "2026-10-22T16:45:00+00:00"
    ],
+   "66286b2b016d02a4615046c9a46307d8": [
+    "League One",
+    "Bromley FC",
+    "Peterborough United",
+    "2026-10-24T14:00:00+00:00"
+   ],
    "66a62fd7a84feb2a7449c2a5b2ce3747": [
     "Austrian Bundesliga",
     "Ried",
     "Austria Wien",
     "2026-10-17T17:30:00+00:00"
+   ],
+   "698b49f4f4aa4d8486e987c6e77fb3df": [
+    "League One",
+    "Oxford United",
+    "Bradford City",
+    "2026-10-24T14:00:00+00:00"
+   ],
+   "69d24684e9eca5b62d25893c4a14b5b3": [
+    "Belgian Pro League",
+    "Royal Antwerp",
+    "Charleroi",
+    "2026-10-24T14:00:00+00:00"
    ],
    "6b5caf555b23eba02e4d090c61e8f665": [
     "Conference League",
@@ -47482,17 +47763,41 @@
     "SK Brann",
     "2026-10-22T16:45:00+00:00"
    ],
+   "6ba5c9e49aac3f34425f72bc0177dcde": [
+    "Championship",
+    "Charlton Athletic",
+    "Norwich City",
+    "2026-10-24T11:30:00+00:00"
+   ],
    "6de4fc21bdcbf78109439aa1d52c3982": [
     "La Liga 2",
     "Granada CF",
     "Real Valladolid CF",
     "2026-10-23T18:30:00+00:00"
    ],
+   "70df1835c3b5ddff1c99e0189532136b": [
+    "La Liga",
+    "Atlético Madrid",
+    "Deportivo La Coruña",
+    "2026-10-24T19:00:00+00:00"
+   ],
+   "717fb513af59181c0579820a3bc6b58a": [
+    "2. Bundesliga",
+    "1. FC Nürnberg",
+    "1. FC Kaiserslautern",
+    "2026-10-24T18:30:00+00:00"
+   ],
    "732473e3a3b9f0e3c0b41e809c03f19b": [
     "Ligue 2",
     "Pau FC",
     "Grenoble",
     "2026-10-23T18:00:00+00:00"
+   ],
+   "734ad601156f5f4e6bc42317e5141516": [
+    "La Liga",
+    "Rayo Vallecano",
+    "Elche CF",
+    "2026-10-24T12:00:00+00:00"
    ],
    "736288807186f504acead7d6ab80a12f": [
     "Allsvenskan",
@@ -47505,6 +47810,24 @@
     "Atromitos Athens",
     "AEK Athens",
     "2026-10-17T16:30:00+00:00"
+   ],
+   "761f32298323d740260644fe7e966f87": [
+    "Eliteserien",
+    "HamKam",
+    "Rosenborg",
+    "2026-10-24T16:00:00+00:00"
+   ],
+   "7630f897583f3acc0f483fa2d17d1ac5": [
+    "Bundesliga",
+    "SC Paderborn",
+    "Hamburger SV",
+    "2026-10-24T13:30:00+00:00"
+   ],
+   "77d87476bbd8635c2eecc94228636ab4": [
+    "Ligue 2",
+    "Saint Etienne",
+    "Nantes",
+    "2026-10-24T18:00:00+00:00"
    ],
    "790e760a4515927d83bc6fa36890b1ce": [
     "Ligue 2",
@@ -47524,6 +47847,18 @@
     "Crystal Palace",
     "2026-10-22T19:00:00+00:00"
    ],
+   "81040c8bffe00f40d8b852afa5b3470d": [
+    "Swiss Super League",
+    "Servette",
+    "FC Vaduz",
+    "2026-10-24T16:00:00+00:00"
+   ],
+   "81581d2638f0779b59b801f45974e23a": [
+    "Ligue 2",
+    "Dijon",
+    "Rodez AF",
+    "2026-10-24T12:00:00+00:00"
+   ],
    "81bfedfcca305af30f0f7cb7a739c878": [
     "Süper Lig",
     "Alanyaspor",
@@ -47542,17 +47877,23 @@
     "Benfica",
     "2026-10-22T19:00:00+00:00"
    ],
+   "89b4f56843ed131dcd5a5ef7d36c6234": [
+    "Championship",
+    "Blackburn Rovers",
+    "Wrexham AFC",
+    "2026-10-24T14:00:00+00:00"
+   ],
+   "89f9940139883ce1f4eed05656aff3e3": [
+    "League One",
+    "Luton",
+    "Leicester City",
+    "2026-10-24T11:30:00+00:00"
+   ],
    "8aa36b30d655d6c81ed98bf9ec1b4039": [
     "Ligue 1",
     "Brest",
     "Nice",
     "2026-10-23T18:45:00+00:00"
-   ],
-   "8af9379136075f45b290208b35a706c8": [
-    "Champions League",
-    "Como",
-    "Manchester United",
-    "2026-10-21T16:45:00+00:00"
    ],
    "8afa92b39d83c062090730e884a9d726": [
     "Conference League",
@@ -47560,11 +47901,11 @@
     "Panathinaikos FC",
     "2026-10-22T14:30:00+00:00"
    ],
-   "8fdcaee14b3e8966e09d468a0b17ce18": [
-    "Champions League",
-    "Sporting Lisbon",
-    "LASK",
-    "2026-10-21T19:00:00+00:00"
+   "8b00989d04a26bf3ae54e6fa6776fc24": [
+    "League One",
+    "Notts County",
+    "Stockport County FC",
+    "2026-10-24T14:00:00+00:00"
    ],
    "903eb4941471ffe20d525b02dd3b77aa": [
     "La Liga",
@@ -47590,23 +47931,59 @@
     "Rennes",
     "2026-10-22T16:45:00+00:00"
    ],
+   "974e5129b9b81586ec6097f045c1ab0c": [
+    "Serie B",
+    "US Catanzaro 1929",
+    "Ascoli",
+    "2026-10-24T15:15:00+00:00"
+   ],
+   "983440c6e348b558c6a3e10e2061ba55": [
+    "Bundesliga",
+    "1. FC Köln",
+    "FC Schalke 04",
+    "2026-10-24T13:30:00+00:00"
+   ],
+   "9b36b7eba9f444405318b6a931ebf229": [
+    "Championship",
+    "Stoke City",
+    "Bristol City",
+    "2026-10-24T14:00:00+00:00"
+   ],
+   "9b380401d549d4c4504f010f5c00c9bc": [
+    "Serie B",
+    "Avellino",
+    "Padova",
+    "2026-10-24T13:00:00+00:00"
+   ],
    "9be240eead573e6718f4ba21ed1a6472": [
     "Europa League",
     "Lillestrom",
     "Real Sociedad",
     "2026-10-22T19:00:00+00:00"
    ],
-   "a362cccad837f1ffae61ff43a3536688": [
-    "La Liga",
-    "Levante",
-    "Athletic Bilbao",
-    "2026-10-21T18:00:00+00:00"
+   "9d4a5d0073f360c5def0e967b50b646e": [
+    "Süper Lig",
+    "Gazişehir Gaziantep",
+    "Erzurum BB",
+    "2026-10-24T13:00:00+00:00"
    ],
-   "a889456204e8ef1b64294efbee8dc3e5": [
-    "Champions League",
-    "Inter Milan",
-    "Shakhtar Donetsk",
-    "2026-10-21T19:00:00+00:00"
+   "9dac6bfdb3c24bcf52239248d0a739a4": [
+    "Allsvenskan",
+    "Djurgardens IF",
+    "Örgryte IS",
+    "2026-10-24T15:30:00+00:00"
+   ],
+   "9e226f761ab9d27803c83ad15867bfda": [
+    "Allsvenskan",
+    "IK Sirius",
+    "AIK",
+    "2026-10-24T13:00:00+00:00"
+   ],
+   "a53bd6976d5b74812560980f0f14accb": [
+    "Swiss Super League",
+    "BSC Young Boys",
+    "FC St Gallen",
+    "2026-10-24T18:30:00+00:00"
    ],
    "a8a501f2068eea24436462c97d0af333": [
     "Austrian Bundesliga",
@@ -47626,11 +48003,29 @@
     "Brighton and Hove Albion",
     "2026-10-22T16:45:00+00:00"
    ],
+   "aca5dd297dbee71f576f7641569fe578": [
+    "Premier League",
+    "Aston Villa",
+    "Manchester City",
+    "2026-10-24T11:30:00+00:00"
+   ],
+   "ad9476e822e7ac24ee51f420dd07f3c9": [
+    "Eliteserien",
+    "Bodø/Glimt",
+    "Vålerenga",
+    "2026-10-24T14:00:00+00:00"
+   ],
    "af99d0f507da72d045d9403ae167a5a8": [
     "Europa League",
     "Bournemouth",
     "AC Milan",
     "2026-10-22T19:00:00+00:00"
+   ],
+   "b27cb3ea731fa3f18d05e6a627bdf984": [
+    "Serie A",
+    "Lazio",
+    "Parma",
+    "2026-10-24T18:45:00+00:00"
    ],
    "b3c60081286aa25692de7e0a482b6c01": [
     "Europa League",
@@ -47638,11 +48033,53 @@
     "Lyon",
     "2026-10-22T19:00:00+00:00"
    ],
+   "b3d144f63187d86835f92328942af7f1": [
+    "Serie B",
+    "Modena",
+    "Cesena FC",
+    "2026-10-24T13:00:00+00:00"
+   ],
    "b541ed567a14bfe5addd1a9ec542708a": [
     "Conference League",
     "Hearts",
     "FC Nordsjaelland",
     "2026-10-15T19:00:00+00:00"
+   ],
+   "b7b81c5b9bbfd3e1ed938347f319f4cd": [
+    "League One",
+    "Doncaster Rovers",
+    "Sheffield Wednesday",
+    "2026-10-24T14:00:00+00:00"
+   ],
+   "b7f0880e3da978f9481f7cb5697e2aa5": [
+    "Serie A",
+    "Cagliari",
+    "Bologna",
+    "2026-10-24T13:00:00+00:00"
+   ],
+   "b8aecd498293b6aefa55835b65d0bb5e": [
+    "La Liga 2",
+    "Las Palmas",
+    "Real Sociedad B",
+    "2026-10-24T16:30:00+00:00"
+   ],
+   "bc0e4febb9d10837375e9e1364c6e245": [
+    "Allsvenskan",
+    "Kalmar FF",
+    "IF Brommapojkarna",
+    "2026-10-24T15:30:00+00:00"
+   ],
+   "bc802855f8465126eb1902b851c0ddcd": [
+    "League One",
+    "Burton Albion",
+    "Leyton Orient",
+    "2026-10-24T14:00:00+00:00"
+   ],
+   "bd16d676015e56b61d35eb1f34ea3842": [
+    "Swiss Super League",
+    "FC Zurich",
+    "FC Luzern",
+    "2026-10-24T16:00:00+00:00"
    ],
    "bfb607123a8580286115b375b77a947f": [
     "Conference League",
@@ -47656,11 +48093,35 @@
     "Atalanta BC",
     "2026-10-22T19:00:00+00:00"
    ],
+   "c11a0d5062867511a8dd2d5c71a9876f": [
+    "La Liga 2",
+    "Almería",
+    "Oviedo",
+    "2026-10-24T19:00:00+00:00"
+   ],
+   "c4d125854e94f7bef22d7d93a5473a5e": [
+    "Championship",
+    "Portsmouth",
+    "Millwall",
+    "2026-10-24T11:30:00+00:00"
+   ],
    "c614844f2e3b782814e4f4e77f98bf2a": [
     "Europa League",
     "Celtic",
     "Celta Vigo",
     "2026-10-22T19:00:00+00:00"
+   ],
+   "c68a97f8c0072a6ae6aa2f95dd3be16c": [
+    "League One",
+    "Reading",
+    "Barnsley",
+    "2026-10-24T14:00:00+00:00"
+   ],
+   "c6cd3b49b753d9223d6e49aee0cd492a": [
+    "League One",
+    "Wimbledon",
+    "Wycombe Wanderers",
+    "2026-10-24T14:00:00+00:00"
    ],
    "c88779b8088f864930fe423c5e0523ce": [
     "Conference League",
@@ -47680,17 +48141,11 @@
     "Nottingham Forest",
     "2026-10-23T19:00:00+00:00"
    ],
-   "d306a78e402e5f505e8644fdf3f75dcd": [
-    "Champions League",
-    "Club Brugge",
-    "RC Lens",
-    "2026-10-21T19:00:00+00:00"
-   ],
-   "d3b3e714b6af9e5430e3030ed639e6dd": [
-    "Champions League",
-    "Aston Villa",
-    "Viking FK",
-    "2026-10-21T19:00:00+00:00"
+   "d0829979a9fbcc740b6758c5d60c3ead": [
+    "Championship",
+    "West Ham United",
+    "Southampton",
+    "2026-10-24T14:00:00+00:00"
    ],
    "d4d56a31d8ccd432e3a6183180e093f3": [
     "Bundesliga",
@@ -47698,17 +48153,47 @@
     "Borussia Monchengladbach",
     "2026-10-23T18:30:00+00:00"
    ],
+   "d4d7c809a6a215ad60d25554203db13d": [
+    "2. Bundesliga",
+    "1. FC Heidenheim",
+    "FC Energie Cottbus",
+    "2026-10-24T11:00:00+00:00"
+   ],
+   "d962e99711c241eb444793ef2e07098b": [
+    "Eredivisie",
+    "Willem II",
+    "SC Cambuur",
+    "2026-10-24T16:45:00+00:00"
+   ],
    "d96bdb46a20ce9e66021e2356a90f7cf": [
     "Conference League",
     "FC Thun",
     "Hajduk Split",
     "2026-10-22T19:00:00+00:00"
    ],
+   "da3509ee80a4eeeab31b61669fd0c675": [
+    "Eredivisie",
+    "FC Utrecht",
+    "FC Zwolle",
+    "2026-10-24T14:30:00+00:00"
+   ],
+   "db43527da94fc1e2b397d48c1b14910a": [
+    "Championship",
+    "Sheffield United",
+    "Derby County",
+    "2026-10-24T11:30:00+00:00"
+   ],
    "dc02d531f844fa790c5dcae1918efd22": [
     "Europa League",
     "Lech Poznań",
     "Sunderland",
     "2026-10-22T16:45:00+00:00"
+   ],
+   "dc96970d397d25e8cf9b68ad9eacebc6": [
+    "Süper Lig",
+    "Eyüpspor",
+    "Kasimpasa SK",
+    "2026-10-24T10:30:00+00:00"
    ],
    "dca36309ad244cd8cbc2e3311fde5a26": [
     "Conference League",
@@ -47722,11 +48207,23 @@
     "KF Egnatia",
     "2026-10-22T19:00:00+00:00"
    ],
+   "e25bb2f4aeeb85ef90b3c09513ba48d1": [
+    "La Liga 2",
+    "Leganés",
+    "Mallorca",
+    "2026-10-24T14:15:00+00:00"
+   ],
    "e2bf033627c92831f81ad76703839d72": [
     "Conference League",
     "SC Braga",
     "Gent",
     "2026-10-22T19:00:00+00:00"
+   ],
+   "e2e3e2273b9104e18630bbe39fac9166": [
+    "Serie B",
+    "Arezzo",
+    "Benevento",
+    "2026-10-24T17:30:00+00:00"
    ],
    "e342a49042c35c6a3f3e8720324b3f3c": [
     "Europa League",
@@ -47734,17 +48231,47 @@
     "Salzburg",
     "2026-10-22T19:00:00+00:00"
    ],
+   "e4f9fb187cdff3c3697632df50e9a4d6": [
+    "Serie B",
+    "Cremonese",
+    "Juve Stabia",
+    "2026-10-24T13:00:00+00:00"
+   ],
+   "e7b52f065c1e57d37e1900ea4b5b0454": [
+    "2. Bundesliga",
+    "1. FC Magdeburg",
+    "Karlsruher SC",
+    "2026-10-24T11:00:00+00:00"
+   ],
+   "e902b8d3a22b31adbdb83678f4a796b3": [
+    "Championship",
+    "Preston North End",
+    "West Bromwich Albion",
+    "2026-10-24T14:00:00+00:00"
+   ],
    "e999dbef3f9ee95f3928190d9a626f8c": [
     "Ligue 2",
     "Sochaux",
     "Annecy FC",
     "2026-10-23T18:00:00+00:00"
    ],
+   "ec64d752823a384ef2ec8d5a44a0b932": [
+    "Austrian Bundesliga",
+    "Hartberg",
+    "Wolfsberger AC",
+    "2026-10-24T15:00:00+00:00"
+   ],
    "ed6da0ed9e5d0c24d1c6f689d9f4b440": [
     "2. Bundesliga",
     "SV Darmstadt 98",
     "FC St. Pauli",
     "2026-10-23T16:30:00+00:00"
+   ],
+   "efe79bde5c4eb41de869c2c24c911b41": [
+    "League One",
+    "Huddersfield Town",
+    "Wigan Athletic",
+    "2026-10-24T11:30:00+00:00"
    ],
    "f359af083324f7a2b6a6df792ab6c7e0": [
     "Conference League",
@@ -47764,17 +48291,41 @@
     "Malmo FF",
     "2026-10-23T17:00:00+00:00"
    ],
-   "f5905225efa837b0dc89b7dcdbb6c625": [
-    "Champions League",
-    "Real Betis",
-    "Feyenoord",
-    "2026-10-21T19:00:00+00:00"
+   "f626d14899701e5e245b843a22273b2d": [
+    "Süper Lig",
+    "Samsunspor",
+    "Amed SK",
+    "2026-10-24T16:00:00+00:00"
+   ],
+   "f65f0fd660c19b681e7a22034fb8a390": [
+    "Serie B",
+    "Virtus Entella",
+    "Mantova",
+    "2026-10-24T13:00:00+00:00"
+   ],
+   "f66e4f29c1b7bcfc5ab58c0b88c8850b": [
+    "Premier League",
+    "Arsenal",
+    "Everton",
+    "2026-10-24T14:00:00+00:00"
+   ],
+   "f96b756998c38ecda833d2a7765ab88a": [
+    "Allsvenskan",
+    "BK Hacken",
+    "Degerfors IF",
+    "2026-10-24T13:00:00+00:00"
    ],
    "fb7fa74f609137bf1a233b57cd6d0c9f": [
     "Belgian Pro League",
     "KV Kortrijk",
     "KV Mechelen",
     "2026-10-23T18:45:00+00:00"
+   ],
+   "fc6c50376190b578cfeb38c029db8487": [
+    "Ligue 1",
+    "RC Lens",
+    "Paris FC",
+    "2026-10-24T18:45:00+00:00"
    ],
    "fcbdc440ac1bfd04e900e145e84ffaca": [
     "Europa League",
