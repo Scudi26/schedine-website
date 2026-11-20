@@ -1,12 +1,12 @@
 {
  "summary": {
-  "graded": 202,
-  "expected_hits": 5.01,
+  "graded": 206,
+  "expected_hits": 5.1,
   "actual_hits": 10,
   "by_name": {
    "National teams": {
-    "graded": 24,
-    "expected": 0.59,
+    "graded": 28,
+    "expected": 0.69,
     "actual": 0
    },
    "Serie A": {
@@ -36,11 +36,11 @@
    }
   },
   "closing": {
-   "legs": 836,
+   "legs": 849,
    "close": 406,
    "pending": 0,
-   "last_pull": 430,
-   "avg_clv": -0.0444,
+   "last_pull": 443,
+   "avg_clv": -0.0447,
    "avg_clv_close": -0.0444
   }
  },
@@ -18936,6 +18936,283 @@
      "close_source": "last_pull"
     }
    ]
+  },
+  {
+   "key": "2026-11-17T17:59:54.986649+00:00|National teams|25",
+   "name": "National teams",
+   "target": 25,
+   "legs": 3,
+   "chance": 0.03316021282886184,
+   "odds": 25.03488,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 1,
+   "graded_at": "2026-11-20T16:46:33.947534+00:00",
+   "leg_results": [
+    {
+     "match": "3eb1d15a190bb1be8c32a020365dc7c2",
+     "name": "Bosnia & Herzegovina v Romania",
+     "competition": "Nations League",
+     "code": "1",
+     "chance": 0.4619,
+     "odds": 2.08,
+     "won": true,
+     "score": "2-1",
+     "half": "1-1",
+     "kickoff": "2026-11-17T19:45:00+00:00",
+     "pull_chance": 0.4619,
+     "pull_clv": -0.0392,
+     "close_chance": 0.4619,
+     "clv": -0.0392,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "e71a4a4fea03d00873c285c5b55a9864",
+     "name": "Israel v Austria",
+     "competition": "Nations League",
+     "code": "1",
+     "chance": 0.224,
+     "odds": 4.08,
+     "won": false,
+     "score": "1-1",
+     "half": "1-0",
+     "kickoff": "2026-11-17T19:45:00+00:00",
+     "pull_chance": 0.224,
+     "pull_clv": -0.0861,
+     "close_chance": 0.224,
+     "clv": -0.0861,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "aab74efad72e8096e774c7104189ff09",
+     "name": "Poland v Sweden",
+     "competition": "Nations League",
+     "code": "2",
+     "chance": 0.3205,
+     "odds": 2.95,
+     "won": false,
+     "score": "1-1",
+     "half": "1-1",
+     "kickoff": "2026-11-17T19:45:00+00:00",
+     "pull_chance": 0.3205,
+     "pull_clv": -0.0545,
+     "close_chance": 0.3205,
+     "clv": -0.0545,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-11-17T17:59:54.986649+00:00|National teams|30",
+   "name": "National teams",
+   "target": 30,
+   "legs": 3,
+   "chance": 0.027225655741209474,
+   "odds": 30.09,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 1,
+   "graded_at": "2026-11-20T16:46:33.947534+00:00",
+   "leg_results": [
+    {
+     "match": "770e80269ec2ffddc826bc50330c475b",
+     "name": "Denmark v Norway",
+     "competition": "Nations League",
+     "code": "2",
+     "chance": 0.3943,
+     "odds": 2.4,
+     "won": true,
+     "score": "2-3",
+     "half": "2-1",
+     "kickoff": "2026-11-17T19:45:00+00:00",
+     "pull_chance": 0.3943,
+     "pull_clv": -0.0537,
+     "close_chance": 0.3943,
+     "clv": -0.0537,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "aab74efad72e8096e774c7104189ff09",
+     "name": "Poland v Sweden",
+     "competition": "Nations League",
+     "code": "2",
+     "chance": 0.3205,
+     "odds": 2.95,
+     "won": false,
+     "score": "1-1",
+     "half": "1-1",
+     "kickoff": "2026-11-17T19:45:00+00:00",
+     "pull_chance": 0.3205,
+     "pull_clv": -0.0545,
+     "close_chance": 0.3205,
+     "clv": -0.0545,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "a6c9b424fddccea76aab09880b69dd31",
+     "name": "Republic of Ireland v Kosovo",
+     "competition": "Nations League",
+     "code": "2",
+     "chance": 0.2154,
+     "odds": 4.25,
+     "won": false,
+     "score": "3-0",
+     "half": "1-0",
+     "kickoff": "2026-11-17T19:45:00+00:00",
+     "pull_chance": 0.2154,
+     "pull_clv": -0.0846,
+     "close_chance": 0.2154,
+     "clv": -0.0846,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-11-17T17:59:54.986649+00:00|National teams|40",
+   "name": "National teams",
+   "target": 40,
+   "legs": 4,
+   "chance": 0.019951585435245278,
+   "odds": 40.06381499999999,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 3,
+   "graded_at": "2026-11-20T16:46:33.947534+00:00",
+   "leg_results": [
+    {
+     "match": "1a07e9080f042594bdb529ab932d680c",
+     "name": "Hungary v Northern Ireland",
+     "competition": "Nations League",
+     "code": "X",
+     "chance": 0.284,
+     "odds": 3.3,
+     "won": true,
+     "score": "1-1",
+     "half": "1-0",
+     "kickoff": "2026-11-17T19:45:00+00:00",
+     "pull_chance": 0.284,
+     "pull_clv": -0.0628,
+     "close_chance": 0.284,
+     "clv": -0.0628,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "a6c9b424fddccea76aab09880b69dd31",
+     "name": "Republic of Ireland v Kosovo",
+     "competition": "Nations League",
+     "code": "2",
+     "chance": 0.2154,
+     "odds": 4.25,
+     "won": false,
+     "score": "3-0",
+     "half": "1-0",
+     "kickoff": "2026-11-17T19:45:00+00:00",
+     "pull_chance": 0.2154,
+     "pull_clv": -0.0846,
+     "close_chance": 0.2154,
+     "clv": -0.0846,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "91b890f5fd20440cb272721b8a89a33d",
+     "name": "Ukraine v Georgia",
+     "competition": "Nations League",
+     "code": "1",
+     "chance": 0.464,
+     "odds": 2.07,
+     "won": true,
+     "score": "1-0",
+     "half": "1-0",
+     "kickoff": "2026-11-17T19:45:00+00:00",
+     "pull_chance": 0.464,
+     "pull_clv": -0.0395,
+     "close_chance": 0.464,
+     "clv": -0.0395,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "955a201ba2266b8b6b0519e0265eb354",
+     "name": "Wales v Portugal",
+     "competition": "Nations League",
+     "code": "2",
+     "chance": 0.7028,
+     "odds": 1.38,
+     "won": true,
+     "score": "2-3",
+     "half": "2-2",
+     "kickoff": "2026-11-17T19:45:00+00:00",
+     "pull_chance": 0.7028,
+     "pull_clv": -0.0301,
+     "close_chance": 0.7028,
+     "clv": -0.0301,
+     "close_source": "last_pull"
+    }
+   ]
+  },
+  {
+   "key": "2026-11-17T17:59:54.986649+00:00|National teams|50",
+   "name": "National teams",
+   "target": 50,
+   "legs": 3,
+   "chance": 0.01589896438436052,
+   "odds": 50.150000000000006,
+   "bonus": 0.0,
+   "landed": false,
+   "legs_won": 0,
+   "graded_at": "2026-11-20T16:46:33.947534+00:00",
+   "leg_results": [
+    {
+     "match": "770e80269ec2ffddc826bc50330c475b",
+     "name": "Denmark v Norway",
+     "competition": "Nations League",
+     "code": "X",
+     "chance": 0.2303,
+     "odds": 4.0,
+     "won": false,
+     "score": "2-3",
+     "half": "2-1",
+     "kickoff": "2026-11-17T19:45:00+00:00",
+     "pull_chance": 0.2303,
+     "pull_clv": -0.0788,
+     "close_chance": 0.2303,
+     "clv": -0.0788,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "aab74efad72e8096e774c7104189ff09",
+     "name": "Poland v Sweden",
+     "competition": "Nations League",
+     "code": "2",
+     "chance": 0.3205,
+     "odds": 2.95,
+     "won": false,
+     "score": "1-1",
+     "half": "1-1",
+     "kickoff": "2026-11-17T19:45:00+00:00",
+     "pull_chance": 0.3205,
+     "pull_clv": -0.0545,
+     "close_chance": 0.3205,
+     "clv": -0.0545,
+     "close_source": "last_pull"
+    },
+    {
+     "match": "a6c9b424fddccea76aab09880b69dd31",
+     "name": "Republic of Ireland v Kosovo",
+     "competition": "Nations League",
+     "code": "2",
+     "chance": 0.2154,
+     "odds": 4.25,
+     "won": false,
+     "score": "3-0",
+     "half": "1-0",
+     "kickoff": "2026-11-17T19:45:00+00:00",
+     "pull_chance": 0.2154,
+     "pull_clv": -0.0846,
+     "close_chance": 0.2154,
+     "clv": -0.0846,
+     "close_source": "last_pull"
+    }
+   ]
   }
  ],
  "timelines": {
@@ -23603,6 +23880,201 @@
     ]
    ],
    "reds": []
+  },
+  "3eb1d15a190bb1be8c32a020365dc7c2": {
+   "ko": "2026-11-17T19:45:00+00:00",
+   "comp": "Nations League",
+   "ft": [
+    2,
+    1
+   ],
+   "goals": [
+    [
+     "a",
+     6
+    ],
+    [
+     "h",
+     44
+    ],
+    [
+     "h",
+     82
+    ]
+   ],
+   "reds": []
+  },
+  "770e80269ec2ffddc826bc50330c475b": {
+   "ko": "2026-11-17T19:45:00+00:00",
+   "comp": "Nations League",
+   "ft": [
+    2,
+    3
+   ],
+   "goals": [
+    [
+     "h",
+     11
+    ],
+    [
+     "h",
+     14
+    ],
+    [
+     "a",
+     37
+    ],
+    [
+     "a",
+     83
+    ],
+    [
+     "a",
+     90
+    ]
+   ],
+   "reds": []
+  },
+  "1a07e9080f042594bdb529ab932d680c": {
+   "ko": "2026-11-17T19:45:00+00:00",
+   "comp": "Nations League",
+   "ft": [
+    1,
+    1
+   ],
+   "goals": [
+    [
+     "h",
+     35
+    ],
+    [
+     "a",
+     65
+    ]
+   ],
+   "reds": []
+  },
+  "e71a4a4fea03d00873c285c5b55a9864": {
+   "ko": "2026-11-17T19:45:00+00:00",
+   "comp": "Nations League",
+   "ft": [
+    1,
+    1
+   ],
+   "goals": [
+    [
+     "h",
+     36
+    ],
+    [
+     "a",
+     62
+    ]
+   ],
+   "reds": []
+  },
+  "aab74efad72e8096e774c7104189ff09": {
+   "ko": "2026-11-17T19:45:00+00:00",
+   "comp": "Nations League",
+   "ft": [
+    1,
+    1
+   ],
+   "goals": [
+    [
+     "h",
+     16
+    ],
+    [
+     "a",
+     24
+    ]
+   ],
+   "reds": []
+  },
+  "a6c9b424fddccea76aab09880b69dd31": {
+   "ko": "2026-11-17T19:45:00+00:00",
+   "comp": "Nations League",
+   "ft": [
+    3,
+    0
+   ],
+   "goals": [
+    [
+     "h",
+     28
+    ],
+    [
+     "h",
+     50
+    ],
+    [
+     "h",
+     75
+    ]
+   ],
+   "reds": [
+    [
+     "a",
+     26
+    ]
+   ]
+  },
+  "91b890f5fd20440cb272721b8a89a33d": {
+   "ko": "2026-11-17T19:45:00+00:00",
+   "comp": "Nations League",
+   "ft": [
+    1,
+    0
+   ],
+   "goals": [
+    [
+     "h",
+     1
+    ]
+   ],
+   "reds": [
+    [
+     "a",
+     90
+    ]
+   ]
+  },
+  "955a201ba2266b8b6b0519e0265eb354": {
+   "ko": "2026-11-17T19:45:00+00:00",
+   "comp": "Nations League",
+   "ft": [
+    2,
+    3
+   ],
+   "goals": [
+    [
+     "a",
+     11
+    ],
+    [
+     "h",
+     13
+    ],
+    [
+     "h",
+     40
+    ],
+    [
+     "a",
+     43
+    ],
+    [
+     "a",
+     70
+    ]
+   ],
+   "reds": [
+    [
+     "a",
+     74
+    ]
+   ]
   }
  }
 }
